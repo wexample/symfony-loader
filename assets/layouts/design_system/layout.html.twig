@@ -1,0 +1,14 @@
+{%- extends '@WexampleSymfonyDesignSystemBundle/layouts/default/layout.html.twig' -%}
+
+{%- block layout_config -%}
+    {{- render_pass.layoutRenderNode.setDefaultView(_self) -}}
+    {{ parent() }}
+{%- endblock -%}
+
+{%- block layout_composer_html -%}
+    {% set page_content %}{{ parent() }}{% endset %}
+
+    {% include '@WexampleSymfonyDesignSystemBundle/layouts/design_system/partials/design_system_layout_inner.html.twig' with {
+        page_content: page_content
+    } %}
+{%- endblock -%}

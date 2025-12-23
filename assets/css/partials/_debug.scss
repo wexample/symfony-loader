@@ -1,0 +1,60 @@
+.debug-render-node {
+  position: fixed;
+  border: 1px solid;
+  box-sizing: border-box;
+  pointer-events: none;
+  opacity: 0.2;
+  overflow: hidden;
+
+  &:hover {
+    overflow: initial;
+    opacity: 1;
+  }
+
+  .debug-info {
+    display: inline-block;
+    color: black;
+    padding: 0.1rem 0.3rem;
+    box-sizing: border-box;
+    border-radius: 0 0 0.2rem 0;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    overflow: hidden;
+    pointer-events: initial;
+
+    .debug-info-line {
+      display: flex;
+      margin: 0 0 0.3rem;
+
+      .line-title {
+        width: 2rem;
+      }
+
+      & > div {
+        opacity: 0.3;
+        color: black;
+        margin-right: 0.2rem;
+        padding: 0 0.2rem;
+        border-radius: 0.2rem;
+
+        &.available {
+          opacity: 0.9;
+        }
+
+        &.active {
+          background: white;
+          color: black;
+          font-weight: bold;
+        }
+      }
+    }
+
+    &.debug-info-closed {
+      opacity: 0.5;
+    }
+  }
+
+  &.focus {
+    opacity: 1;
+  }
+}

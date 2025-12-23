@@ -1,0 +1,13 @@
+$global-color-scheme-name: 'dark' !default;
+
+@use '../mixins/global.color-scheme.dark' as *;
+
+$color-card-text: $color-default-text;
+$color-card-background: #111;
+
+body.usage-color-scheme-#{$global-color-scheme-name} .card,
+body.usage-color-scheme-default .usage-color-scheme-dark.card {
+  background: $color-card-background;
+  color: $color-card-text;
+}
+

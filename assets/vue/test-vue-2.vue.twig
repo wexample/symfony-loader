@@ -1,0 +1,15 @@
+<ul>
+    <li>TEST_VUE_2</li>
+    <li>
+        <span class="test-vue-string-translated-server-2">{{ '@vue::string.server_side' | trans }}</span>
+    </li>
+    <li>
+        <span class="test-vue-string-translated-client-2">{{ 'translatedStringClientSide2' | vue_key }}</span>
+    </li>
+    <li>
+        {{ vue(render_pass, '@WexampleSymfonyDesignSystemBundle/vue/test-vue-3') }}
+    </li>
+    <li>
+        {{ component(render_pass, '@WexampleSymfonyDesignSystemBundle/components/test-component') }}
+    </li>
+</ul>

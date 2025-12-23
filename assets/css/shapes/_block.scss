@@ -1,0 +1,54 @@
+@use 'sass:math';
+
+@use '../mixins/block' as blobk;
+
+.block {
+  margin: blobk.$block-spacing;
+  border-radius: blobk.$block-border-radius;
+  padding: blobk.$block-padding-y blobk.$block-padding-x;
+}
+
+.blocks {
+  display: flex;
+  width: 100%;
+
+  &.blocks-no-stretch {
+    align-items: flex-start;
+  }
+
+  &.blocks-side-column-left > .block:first-of-type,
+  &.blocks-side-column-left > .blocks-col:first-of-type,
+  &.blocks-side-column-right > .block:last-of-type,
+  &.blocks-side-column-right > .blocks-col:last-of-type {
+    flex-basis: blobk.$blocks-side-column-width;
+    width: blobk.$blocks-side-column-width;
+  }
+
+  .block {
+    width: calc(100% - #{blobk.$block-spacing * 2});
+    overflow: visible;
+    // Prevent white-spaces nowrap to change widths.
+    min-width: 0;
+  }
+
+  .blocks-col {
+    width: 100%;
+    padding-left: math.div(blobk.$block-spacing, 2);
+    padding-right: math.div(blobk.$block-spacing, 2);
+    min-width: 0;
+
+    & > .block {
+      margin-left: 0;
+      margin-right: 0;
+      width: auto;
+    }
+
+    &:first-of-type {
+      padding-left: blobk.$block-spacing;
+    }
+
+    &:last-of-type {
+      padding-right: blobk.$block-spacing;
+    }
+  }
+}

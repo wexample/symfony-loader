@@ -1,0 +1,27 @@
+<figure>
+    {% set image_markup %}
+        <picture>
+            <img
+                    src="{{ url }}"
+                    {{ (alt is defined) ? 'alt="' ~ (alt|e) ~ '"' : '' }}
+                    loading="lazy"
+                    decoding="async"
+                    itemprop="image"
+            />
+        </picture>
+    {% endset %}
+
+    {% if href is defined %}
+        <a href="{{ href }}">
+            {{ image_markup|raw }}
+        </a>
+    {% else %}
+        {{ image_markup|raw }}
+    {% endif %}
+
+    {% if caption is defined %}
+        <figcaption>
+            {{ caption }}
+        </figcaption>
+    {% endif %}
+</figure>

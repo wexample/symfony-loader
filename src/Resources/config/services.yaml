@@ -1,0 +1,110 @@
+parameters:
+    design_system.debug: false
+    design_system.environment: '%env(APP_ENV)%'
+    design_system.enable_aggregation: false
+    
+    # Design system colors
+    design_system.colors: {}
+
+    design_system.usages.responsive:
+      list:
+        xs:
+          allow_switch: true
+          breakpoint: 0
+        s:
+          allow_switch: true
+          breakpoint: 576
+        m:
+          allow_switch: true
+          breakpoint: 768
+        l:
+          allow_switch: true
+          breakpoint: 992
+        xl:
+          allow_switch: true
+          breakpoint: 1200
+        xxl:
+          allow_switch: true
+          breakpoint: 1400
+
+    # Color schemes
+    design_system.usages.color_scheme:
+      default: default
+      list:
+        dark:
+          allow_switch: false
+        default:
+          allow_switch: false
+        light:
+          allow_switch: false
+
+    # Margins
+    design_system.usages.margins:
+      default: default
+      list:
+        default:
+          allow_switch: false
+        fat:
+          allow_switch: false
+        slim:
+          allow_switch: false
+        none:
+          allow_switch: false
+
+    # Animations
+    design_system.usages.animations:
+      default: none
+      list:
+        bounce:
+          allow_switch: false
+        none:
+          allow_switch: false
+        soft:
+          allow_switch: false
+
+    # Fonts
+    design_system.usages.fonts:
+      default: none
+      list:
+        none:
+          allow_switch: false
+        demo:
+          allow_switch: false
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Wexample\SymfonyDesignSystem\Rendering\ComponentManager\:
+        resource: '../../Rendering/ComponentManager/*'
+        tags:
+            - { name: 'symfony_design_system.component_manager' }
+
+    Wexample\SymfonyDesignSystem\Rendering\ComponentManagerLocatorService:
+        arguments: [!tagged_locator { tag: 'symfony_design_system.component_manager' }]
+
+    Wexample\SymfonyDesignSystem\Routing\TemplateBasedRouteLoader:
+      arguments:
+        $container: '@service_container'
+        $taggedControllers: !tagged_iterator 'has_template_routes'
+        $parameterBag: '@parameter_bag'
+      tags:
+        - { name: 'routing.loader' }
+
+    Wexample\SymfonyDesignSystem\:
+        resource: '../../{Command,Controller,EventSubscriber,Service,Twig}'
+        tags: ['controller.service_arguments']
+
+    Wexample\SymfonyDesignSystem\Controller\Config\DemoController:
+        tags:
+            - { name: 'has_simple_routes' }
+
+    Wexample\SymfonyDesignSystem\Controller\Config\TestController:
+        tags:
+            - { name: 'has_simple_routes' }
+
+    Wexample\SymfonyDesignSystem\Twig\ColorExtension:
+        arguments:
+            $colors: '%design_system.colors%'

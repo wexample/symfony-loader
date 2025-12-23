@@ -1,0 +1,18 @@
+{%- extends '@WexampleSymfonyDesignSystemBundle/bases/json/default.html.twig' -%}
+
+{%- block layout_composer_json -%}
+    {%- set content -%}
+        {{ parent() }}
+    {%- endset -%}
+    {%- block layout_composer_overlay -%}
+        {{ content }}
+    {%- endblock -%}
+{%- endblock -%}
+
+{%- block page_composer_json -%}
+    <div class="overlay-body">
+        {%- block page_composer_overlay -%}
+            {{ block('page_body') }}
+        {%- endblock -%}
+    </div>
+{%- endblock -%}

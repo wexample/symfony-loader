@@ -1,0 +1,27 @@
+{{- trans_js(render_pass, '@vue::string.client_side') -}}
+
+<ul>
+    <li>
+        <div class="test-string">TEST VUE</div>
+    </li>
+    <li>TEST_VUE_PROP_BOOL : {{ 'testVuePropBool' | vue_key }}</li>
+    <li>TEST_VUE_PROP_OBJECT : {{ 'testVuePropObject' | vue_key }}</li>
+    <li>TEST_VUE_PROP_ARRAY : {{ 'testVuePropArray' | vue_key }}</li>
+    <li>TEST_DATA : {{ 'testData' | vue_key }}</li>
+    <li>TEST_NUMBER : {{ 'testNumber' | vue_key }}</li>
+    <li>
+        {{ '@vue::string.server_side' | trans }}
+    </li>
+    <li>
+        <span class="test-vue-string-translated-server">{{ '@vue::string.server_side' | trans }}</span>
+    </li>
+    <li>
+        <span class="test-vue-string-translated-client">{{ 'translatedStringClientSide' | vue_key }}</span>
+    </li>
+    <li v-if="!hidePartOfDomContainingComponent">
+        PART_CONTAINING_COMPONENT
+        {{ component(render_pass, '@WexampleSymfonyDesignSystemBundle/components/test-component') }}
+    </li>
+    <li>{{ vue(render_pass, '@WexampleSymfonyDesignSystemBundle/vue/test-vue-2') }}</li>
+    <li>{{ vue(render_pass, '@WexampleSymfonyDesignSystemBundle/vue/test-vue-2') }}</li>
+</ul>

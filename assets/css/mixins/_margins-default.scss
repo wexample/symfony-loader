@@ -1,0 +1,6 @@
+$margins-default-unit: 1rem !default;
+$margins-default-unit-half: calc($margins-default-unit / 2) !default;
+$margins-default-border-radius: 1rem !default;
+$margins-default-separator-spacing: 0.2rem !default;
+$margins-default-block-spacing: $margins-default-unit;
+$margins-default-block-spacing-half: $margins-default-unit-half;

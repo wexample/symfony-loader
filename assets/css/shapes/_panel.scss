@@ -1,0 +1,55 @@
+@use '../mixins/global' as global;
+
+.layout-panel {
+  width: 40rem;
+  overflow-y: hidden;
+  max-height: 100vh;
+  max-width: 100vw;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel {
+  @include global.full-parent-size;
+  align-items: center;
+  justify-content: right;
+  position: fixed;
+  // By default, panel is neither opened or closed,
+  // it should have dimensions to be evaluated.
+  visibility: hidden;
+
+  .panel-content {
+    // Before overlay.
+    z-index: 1;
+    height: 100%;
+  }
+
+  &.opened {
+    display: flex;
+    visibility: initial;
+  }
+
+  &.closed {
+    display: none;
+    visibility: initial;
+  }
+}
+
+.panel-header {
+  display: flex;
+  border-bottom: 1px solid global.$medium-gray;
+
+  .header-title {
+    @include global.text-ellipsis;
+    flex-basis: 100%;
+  }
+
+  .panel-close a {
+    display: block;
+    width: 1em;
+  }
+}
+
+.panel-body {
+  overflow-y: auto;
+}

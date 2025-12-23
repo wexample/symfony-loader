@@ -1,0 +1,43 @@
+{% block vue_require %}
+    {{- vue_require(render_pass, '@WexampleSymfonyDesignSystemBundle/vue/debug-assets-explorer-item') -}}
+{% endblock %}
+
+{% block component %}
+    <div class="debug-assets">
+        <div class="debug-explorer">
+            <explorer-item
+                    :increment="0"
+                    :object="app.layout"
+                    :root="this"
+                    :update-time="updateTime"
+                    type="layout"
+            />
+        </div>
+        <div class="debug-details">
+            <table class="assets-table">
+                <tr v-for="asset in allAssets" :class="buildCssAsset(asset)">
+                    <td class="asset-activation">
+                        <div class="tip">
+                        </div>
+                    </td>
+                    <td class="asset-type" :class="`asset-type-${asset.type}`">
+                        {{ 'asset.type' | vue_key }}
+                    </td>
+                    <td class="asset-rendered">
+                        {{ icon('fa:clock') }}
+                    </td>
+                    <td class="asset-responsive" v-html="asset.responsive || '·'">
+                    </td>
+                    <td class="asset-initial">
+                        <div v-if="asset.initialLayout">i</div>
+                    </td>
+                    <td class="asset-path" v-on:click="assetLog(asset)">
+                        <div class="table-td-ellipsis-wrapper">
+                            {{ 'shortenAssetPath(asset)' | vue_key() }}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,15 @@
+@use './global' as global;
+
+@mixin table-cell-text-ellipsis {
+  position: relative;
+  width: 100%;
+
+  .table-td-ellipsis-wrapper {
+    @include table-cell-text-ellipsis-body;
+  }
+}
+
+@mixin table-cell-text-ellipsis-body {
+  @include global.text-ellipsis;
+  @include global.full-parent-size;
+}

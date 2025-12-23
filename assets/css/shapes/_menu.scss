@@ -1,0 +1,16 @@
+@use '../mixins/reset';
+
+.menu {
+  ul {
+    @include reset.reset-list;
+    display: block;
+
+    a {
+      display: block;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, .1);
+      }
+    }
+  }
+}

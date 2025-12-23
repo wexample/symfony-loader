@@ -1,0 +1,4 @@
+@function shadow-soft($color) {
+  @return 0 0.2rem 0.2rem rgba($color, 0.4),
+  0 0.6rem 2.3rem 0.7rem rgba($color, 0.21);
+}

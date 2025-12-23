@@ -1,0 +1,30 @@
+@use '@wexample/symfony-design-system/css/shapes/inline-info';
+
+@use 'assets.color-scheme.default';
+
+.display-breakpoint {
+  .size-name,
+  .size-min {
+    transition-property: font-size;
+    transition-duration: 0.8s;
+  }
+
+  .size-name {
+    width: 3rem;
+    text-align: center;
+    padding: 0.2rem;
+    margin: -0.1rem;
+    margin-right: 1rem;
+  }
+
+  &.display-breakpoint-current {
+    .size-name,
+    .size-min {
+      font-size: 1.6rem;
+    }
+
+    .size-name {
+      color: white;
+    }
+  }
+}

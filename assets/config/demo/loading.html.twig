@@ -1,0 +1,18 @@
+{%- extends '@WexampleSymfonyDesignSystemBundle/layouts/demo/layout.html.twig' -%}
+
+{%- block page_body -%}
+    <div class="blocks blocks-no-stretch blocks-side-column-right">
+        <div class="block">
+            {{ '@page::layout_modal.body' | trans }}
+        </div>
+        <div class="block blocks-col">
+            {{ component(render_pass, '@WexampleSymfonyDesignSystemBundle/components/button', {id:'page-modal-show', text:'Test Two', icon:'material:check'}) }}
+        </div>
+    </div>
+    <div class="blocks blocks-no-stretch blocks-side-column-right">
+        <div class="block">
+            {{ vue(render_pass, '@WexampleSymfonyDesignSystemBundle/pages/demo/vue/demo-vue-component') }}
+        </div>
+    </div>
+    {{ vue(render_pass, '@WexampleSymfonyDesignSystemBundle/vue/debug-assets') }}
+{%- endblock -%}

@@ -1,0 +1,21 @@
+{%- extends '@WexampleSymfonyDesignSystemBundle/bases/base.html.twig' -%}
+
+{%- block layout_base -%}
+    {{- parent() -}}
+    <div class="layout-{{ render_pass.layoutBase }}">
+        {%- block layout -%}
+            {%- block layout_composer_json -%}
+                {%- block page -%}
+                    {{ render_pass.setCurrentContextRenderNode(render_pass.layoutRenderNode.page) }}
+                    {%- block page_config -%}{%- endblock -%}
+                    {%- block page_composer_json -%}
+                        {%- if block('page_body') is defined -%}
+                            {{- block('page_body') -}}
+                        {%- endif -%}
+                    {%- endblock -%}
+                    {{ render_pass.revertCurrentContextRenderNode() }}
+                {%- endblock -%}
+            {%- endblock -%}
+        {%- endblock -%}
+    </div>
+{%- endblock -%}

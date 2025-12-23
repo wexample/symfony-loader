@@ -1,0 +1,25 @@
+{{- trans_js(render_pass, '@component::string.client_side') -}}
+{{- var_export(render_pass, 'testComponentVar', true) -}}
+
+{% set suffix = suffix|default('') %}
+
+<div {{ component_render_tag_attributes({class: 'test-component' ~ suffix}) }}>
+    <span class="test-component-string">TEST_COMPONENT{{ suffix }}</span>
+    <ul>
+        <li><span class="test-component-test-js{{ suffix }}">JS</span> component test</li>
+        <li><span class="test-component-test-css{{ suffix }}">CSS</span> component test</li>
+        <li>
+            BLINK <span class="test-blink{{ suffix }}">...</span>
+        </li>
+        <li>
+            <div class="test-component-string-translated-server{{ suffix }}">{{ '@component::string.server_side' | trans }}</div>
+        </li>
+        <li>
+            <div class="test-component-string-translated-client{{ suffix }}">-</div>
+        </li>
+        {% block sub_component %}
+            <li>{{ component(render_pass, '@WexampleSymfonyDesignSystemBundle/components/test-component-2') }}</li>
+        {% endblock %}
+        <li class="component-playground"></li>
+    </ul>
+</div>

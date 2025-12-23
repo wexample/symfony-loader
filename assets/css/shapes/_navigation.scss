@@ -1,0 +1,7 @@
+@use '../mixins/list' as list;
+
+.navigation {
+  ul {
+    @include list.no-style-list
+  }
+}

@@ -1,0 +1,9 @@
+@font-face {
+  font-family: 'Work Sans Regular';
+  src: url('./work_sans/worksans-regular-webfont.woff2') format('woff2'),
+  url('./work_sans/worksans-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  // https://web.dev/font-display/?utm_source=lighthouse&utm_medium=devtools
+  font-display: swap;
+}

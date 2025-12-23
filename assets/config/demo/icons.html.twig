@@ -1,0 +1,25 @@
+{%- extends '@WexampleSymfonyDesignSystemBundle/layouts/demo/layout.html.twig' -%}
+
+{%- block page_body -%}
+    <h2>{{ '@page::introduction.title' | trans }}</h2>
+    <div class="block">
+        {{ '@page::introduction.body' | trans | nl2br | raw }}
+    </div>
+
+    <h2>Font Awesome</h2>
+    <div class="icons-list">
+        {% for icon in icon_list('fa') %}
+            <div title="{{ 'fa:' ~ icon.name }}">
+                {{ icon('fa:' ~ icon.name) }}
+            </div>
+        {% endfor %}
+    </div>
+    <h2>Material Design</h2>
+    <div class="icons-list">
+        {% for icon in icon_list('material') %}
+            <div title="{{ 'material:' ~ icon.name }}">
+                {{ icon('material:' ~ icon.name) }}
+            </div>
+        {% endfor %}
+    </div>
+{%- endblock -%}

@@ -1,0 +1,10 @@
+{%- extends '@WexampleSymfonyDesignSystemBundle/layouts/demo/layout.html.twig' -%}
+
+{%- block page_config -%}
+    {{ parent() }}
+    {{- var_export(render_pass, 'hasError', true) -}}
+{%- endblock -%}
+
+{%- block page_body -%}
+    {{ exception.message }}
+{%- endblock -%}

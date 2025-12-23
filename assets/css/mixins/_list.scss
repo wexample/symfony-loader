@@ -1,0 +1,6 @@
+@use './margin' as margin;
+
+@mixin no-style-list {
+  list-style: none;
+  @include margin.no-margin-or-padding;
+}

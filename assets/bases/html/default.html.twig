@@ -1,0 +1,122 @@
+{%- extends '@WexampleSymfonyDesignSystemBundle/bases/base.html.twig' -%}
+
+{%- block layout_config -%}
+    {{ parent() }}
+    {{ trans_js(render_pass, '@WexampleSymfonyDesignSystemBundle.common.system::*') }}
+    {{ var_export(render_pass, 'displayBreakpoints', display_breakpoints) }}
+    {{ var_export(render_pass, 'enableAggregation', render_pass.enableAggregation) }}
+    {{ var_export(render_pass, 'usagesConfig', render_pass.usagesConfig) }}
+{% endblock %}
+
+{%- block layout_base -%}
+    {{- parent() -}}
+    <!DOCTYPE html>
+    <html lang="{{ app.request.locale }}">
+    <head>
+        <meta charset="utf-8"/>
+        <title>{{ layout_title|default(('@page::page_title' | trans(layout_title_properties | default({})))) }} | {{ app_title|default(('front.app.global::name' | trans)) }}</title>
+        {%- if render_pass.isUseJs() -%}
+            <script nonce="layout-init">
+              "use strict";
+
+              {# Use old school fashioned javascript notation to improve compatibility. -#}
+              var AppRegistryBundlesManager = function AppRegistryBundlesManager() {
+                this.classes = {};
+              };
+
+              AppRegistryBundlesManager.prototype = {
+                add: function add(view, definition) {
+                    {# Prevent class override. -#}
+                  if (!this.classes[view]) {
+                    this.classes[view] = definition;
+                  }
+
+                  var app = window.app;
+
+                  if (!app) {
+                    throw new Error("Unable to start app.");
+                  }
+
+                    {# When app core is not loaded, -#}
+                    {# js asset might be preloaded. -#}
+                  if (app.hasCoreLoaded) {
+                      {# Mark now that class is loaded. -#}
+                    app.services.assets.jsPendingLoaded(view);
+                  }
+
+                    {# Return to allow export or extending class. -#}
+                  return definition;
+                }
+              };
+
+              window.appRegistry = {bundles: new AppRegistryBundlesManager()};
+            </script>
+        {%- endif -%}
+        {{- constant('\\Wexample\\SymfonyDesignSystem\\Helper\\RenderingHelper::PLACEHOLDER_PRELOAD_TAG') | raw -}}
+        {%- block meta -%}
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <meta name="description" content="{{ document_meta_description | default('front.app.global::meta.description' | trans) }}">
+            <meta name="keywords" content="{{ document_meta_keywords | default('front.app.global::meta.keywords' | trans) }}">
+            <link rel="canonical" href="{{ app.request.schemeAndHttpHost }}{{ app.request.requestUri }}">
+            <!-- Open Graph / Facebook -->
+            <meta property="og:type" content="website">
+            <meta property="og:url" content="{{ app.request.schemeAndHttpHost }}{{ app.request.requestUri }}">
+            <meta property="og:title" content="{{ document_meta_description | default('front.app.global::name' | trans) }}">
+            <meta property="og:description" content="{{ document_meta_description | default('front.app.global::meta.description' | trans) }}">
+            {% if meta_og_image | default(false) %}
+                <meta property="og:image" content="{{ meta_og_image }}">
+            {% endif %}
+
+            <!-- Twitter -->
+            <meta property="twitter:card" content="summary_large_image">
+            <meta property="twitter:url" content="{{ app.request.schemeAndHttpHost }}{{ app.request.requestUri }}">
+            <meta property="twitter:title" content="{{ document_meta_description | default('front.app.global::name' | trans) }}">
+            <meta property="twitter:description" content="{{ document_meta_description | default('front.app.global::meta.description' | trans) }}">
+            {% if meta_og_image | default(false) %}
+                <meta property="twitter:image" content="{{ meta_og_image }}">
+            {% endif %}
+        {%- endblock -%}
+    </head>
+    <body class="{{ body_class|default('') }}">
+    <div id="layout" class="layout-loading {{ layout_class|default('') }}">
+        {%- if render_pass.isUseJs() -%}
+            {# Don't use display none as we need to be able to calculate elements size before display #}
+            <style>
+                .layout-loading {
+                    visibility: hidden;
+                }
+            </style>
+            {#- If javascript fails to complete, force removing loading state after a few time. -#}
+            <script nonce="layout-loading">
+              var classList = document.getElementById('layout').classList;
+              classList.add('layout-loading');
+              setTimeout(function () {
+                classList.remove('layout-loading');
+              }, 1000);
+            </script>
+        {%- endif -%}
+        {%- block layout -%}
+            {%- block layout_composer_html -%}
+                {%- block page -%}
+                    {{ render_pass.setCurrentContextRenderNode(render_pass.layoutRenderNode.page) }}
+                    {%- block page_config -%}{%- endblock -%}
+                    <div class="page">
+                        {%- block page_composer_html -%}
+                            {{- block('page_body') -}}
+                        {%- endblock -%}
+                    </div>
+                    {{ render_pass.revertCurrentContextRenderNode() }}
+                {%- endblock -%}
+            {%- endblock -%}
+        {%- endblock -%}
+
+        {# Global components template like modal #}
+        <div id="components-templates"></div>
+        {# Vues #}
+        <div id="vue-templates">{{ vue_render_templates() | raw }}</div>
+        {# Over all critical alerts #}
+        <div id="prompt-application-message"></div>
+    </div>
+    </body>
+    </html>
+{%- endblock -%}

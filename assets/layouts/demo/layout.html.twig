@@ -1,0 +1,42 @@
+{%- extends '@WexampleSymfonyDesignSystemBundle/layouts/black/layout.html.twig' -%}
+
+{% import '@WexampleSymfonyDesignSystemBundle/macros/tabs.html.twig' as macro_tabs %}
+
+{%- block layout_config -%}
+    {{- render_pass.layoutRenderNode.setDefaultView(_self) -}}
+    {{- render_pass.setUsage('color_scheme', 'dark') -}}
+    {{- parent() -}}
+{%- endblock -%}
+
+{# Has a header bar with mobile burger and user menu #}
+{%- block layout_composer_html -%}
+    <header>
+        <div class="layout-header">
+                <a class="logo" href="{{ url('home_index') }}" title="{{ '@WexampleSymfonyDesignSystemBundle.common.app::name' | trans }}">
+                    <img alt="{{ '@WexampleSymfonyDesignSystemBundle.common.app::name' | trans }}" src="{{ asset('/bundles/wexamplesymfonyhelpers/wex.gif') }}">
+                </a>
+        </div>
+    </header>
+    <div class="container-medium">
+        <nav id="nav-secondary">
+            {{ macro_tabs.start(render_pass) }}
+            {{ macro_tabs.tab_to_page('home_index') }}
+            {{ macro_tabs.tab_to_page('_design_system_demo_index') }}
+            {{ macro_tabs.tab_to_page('_design_system_demo_assets') }}
+            {{ macro_tabs.tab_to_page('_design_system_demo_aggregation') }}
+            {{ macro_tabs.tab_to_page('_design_system_demo_color_schemes') }}
+            {{ macro_tabs.tab_to_page('_design_system_demo_components') }}
+            {{ macro_tabs.tab_to_page('_design_system_demo_loading') }}
+            {{ macro_tabs.tab_to_page('_design_system_demo_translations') }}
+            {{ macro_tabs.tab_to_page('_design_system_demo_icons') }}
+            {{ macro_tabs.tab_to_page('_design_system_test_index') }}
+            {{ macro_tabs.end() }}
+        </nav>
+        {% if page_title is defined %}
+            <h1>{{ page_title | trans }}</h1>
+        {% endif %}
+        <div class="page-content-body">
+            {{ block('page') }}
+        </div>
+    </div>
+{%- endblock -%}

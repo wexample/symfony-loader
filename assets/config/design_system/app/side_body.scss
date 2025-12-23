@@ -1,0 +1,18 @@
+@forward '../../../css/shapes/side-body';
+
+.design-system-page-content {
+  .side-body--horizontal,
+  .side-body--vertical {
+    border: 1px solid black;
+    width: 100%;
+    padding: 1rem;
+
+    & > div {
+      border: 1px solid rgba(0, 0, 0, .5);
+    }
+  }
+
+  .side-body--vertical {
+    min-height: 10rem;
+  }
+}

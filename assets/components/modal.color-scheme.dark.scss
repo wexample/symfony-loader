@@ -1,0 +1,7 @@
+@import '../css/mixins/global.color-scheme.dark';
+@import '../css/mixins/shadow';
+
+.modal .layout-modal {
+  background-color: $color-default-background;
+  box-shadow: shadow-soft($color-default-background);
+}

@@ -1,0 +1,75 @@
+@use '../css/shapes/pill' as pill;
+@use '../css/mixins/global' as global;
+@use '../css/mixins/table' as table;
+
+$color-css: #ff8000;
+$color-js: #7100ff;
+
+.debug-assets {
+  display: flex;
+
+  .debug-explorer {
+    width: 100%;
+    max-width: 16rem;
+  }
+
+  .debug-details {
+    flex: 1;
+
+    .assets-table {
+      td {
+        opacity: 0.6;
+        padding: 0 0.2rem;
+
+        &.asset-activation .tip {
+          width: 10px;
+          height: 10px;
+          border-radius: 10px;
+          background: global.$dark-gray;
+        }
+
+        &.asset-type-js {
+          color: $color-js;
+        }
+
+        &.asset-type-css {
+          color: $color-css;
+        }
+
+        &.asset-size {
+          white-space: nowrap;
+          font-size: 0.7rem;
+        }
+
+        &.asset-color-scheme,
+        &.asset-responsive,
+        &.asset-type {
+          text-align: center;
+        }
+
+        &.asset-path {
+          font-weight: normal;
+          @include table.table-cell-text-ellipsis;
+        }
+      }
+
+      tr.asset-active td {
+        &.asset-activation .tip {
+          background: global.$color-warn;
+        }
+      }
+
+      tr.asset-active.asset-loaded td {
+        opacity: 1;
+
+        &.asset-activation .tip {
+          background: global.$color-success;
+        }
+
+        &.asset-path {
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}

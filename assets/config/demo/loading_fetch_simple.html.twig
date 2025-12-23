@@ -1,0 +1,16 @@
+{%- extends '@WexampleSymfonyDesignSystemBundle/layouts/demo/layout.html.twig' -%}
+
+{%- block page_body -%}
+    <div class="block blocks-col color-scheme-light">
+        Cette page contient une feuille de style spécifique qui se charge autant en pleine page que dans une modale ou
+        un panneau.
+    </div>
+    <div class="blocks blocks-no-stretch blocks-side-column-right">
+        <div class="block">
+            {{ component(render_pass, '@WexampleSymfonyDesignSystemBundle/components/button', {class:'open-another-modal', text:'Ouvrir une autre modale'}) }}
+        </div>
+        <div class="block">
+            {{ component(render_pass, '@WexampleSymfonyDesignSystemBundle/components/button', {class:'close-all-panels-and-modals', text:'Tout fermer'}) }}
+        </div>
+    </div>
+{%- endblock -%}

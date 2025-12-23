@@ -1,0 +1,28 @@
+{%- extends '@WexampleSymfonyDesignSystemBundle/layouts/test/layout.html.twig' -%}
+
+{% set document_title = document_title|default('ADAPTIVE_DOCUMENT_TITLE') %}
+{% set document_meta_description = document_meta_description|default('DOCUMENT_META_DESCRIPTION') %}
+
+{%- block layout_config -%}
+    {{ parent() }}
+    {{- var_export(render_pass, 'layoutLevelTestVar', 'value') -}}
+{%- endblock -%}
+
+{%- block page_config -%}
+    {{ parent() }}
+    {{- var_export(render_pass, 'pageLevelTestVar', 'value') -}}
+{%- endblock -%}
+
+{%- block page_body -%}
+    <div class="test-string">ADAPTIVE</div>
+    <div class="adaptive-page-playground"></div>
+    <ul>
+        <li><span class="adaptive-page-test-js">JS</span> adaptive test</li>
+        <li><span class="adaptive-page-test-css">CSS</span> adaptive test</li>
+        <li class="adaptive-page-test-component">{{ component(render_pass, '@WexampleSymfonyDesignSystemBundle/components/test-component', {testOption:true}) }}</li>
+        <li class="adaptive-page-test-vue">{{ vue(render_pass, '@WexampleSymfonyDesignSystemBundle/vue/test-vue', {testVuePropBool:true, testVuePropObject:{var:'val',var2:{varSub:'valSub'}}, testVuePropArray:['var','var2', true]}) }}</li>
+        {% if not render_pass.useJs %}
+            <li>NO_JS_TEXT</li>
+        {% endif %}
+    </ul>
+{%- endblock -%}

@@ -1,0 +1,6 @@
+@use '../mixins/pill' as pill;
+
+.pill {
+  border-radius: pill.$pill-border-radius;
+  padding: 0 0.4rem;
+}

@@ -1,0 +1,14 @@
+@use 'global' as *;
+
+$color-scheme-default-color-black: #000 !default;
+$color-scheme-default-color-white: #FFF !default;
+
+$color-default-background: $color-scheme-default-color-black !default;
+$color-default-background-invert: $color-scheme-default-color-white !default;
+$color-default-text: #888;
+$color-default-link: $color-default-background-invert !default;
+$color-default-title: $color-default-background-invert !default;
+
+// Disabled.
+$color-disabled-background: #222;
+$color-disabled-text: #888;

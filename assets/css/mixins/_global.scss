@@ -1,0 +1,34 @@
+@use "sass:color";
+
+$dark-gray: #2f2f36;
+$medium-gray: color.scale($dark-gray, $lightness: 50%);
+$light-gray: color.scale($medium-gray, $lightness: 25%);
+
+$color-error: #c40914;
+$color-info: #0e5bce;
+$color-success: #158d28;
+$color-warn: #ecae0d;
+
+$circle-big-size: 9999px;
+
+$selector-title-all: 'h1, h2, h3, h4, h5, h6';
+
+@mixin expanded {
+  width: 100%;
+  height: 100%;
+}
+
+@mixin full-parent-size {
+  @include expanded;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+@mixin text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

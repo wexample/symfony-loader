@@ -1,0 +1,8 @@
+{%- extends '@WexampleSymfonyDesignSystemBundle/layouts/demo/layout.html.twig' -%}
+
+{%- block page_body -%}
+    <h2>{{ '@page::aggregation.title' | trans }}</h2>
+    <div class="block">
+        {{ '@page::aggregation.body' | trans | raw }}
+    </div>
+{%- endblock -%}

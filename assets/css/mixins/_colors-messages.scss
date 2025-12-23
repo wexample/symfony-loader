@@ -1,0 +1,14 @@
+@use "sass:map";
+
+$color-info: #007bff !default;
+$color-success: #28a745 !default;
+$color-warning: #ffc107 !default;
+$color-error: #dc3545 !default;
+$color-bg-opacity: 0.2 !default;
+
+$colors-messages: (
+        info: $color-info,
+        success: $color-success,
+        warning: $color-warning,
+        error: $color-error,
+)

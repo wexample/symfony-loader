@@ -1,0 +1,34 @@
+{%- extends '@WexampleSymfonyDesignSystemBundle/bases/json/default.html.twig' -%}
+
+{%- block layout_composer_json -%}
+    {%- set content -%}
+        {{ parent() }}
+    {%- endset -%}
+    {%- block layout_composer_panel -%}
+        {{ content }}
+    {%- endblock -%}
+{%- endblock -%}
+
+{%- block page_composer_json -%}
+    <div class="panel-header">
+        {% set page_title = page_title | default('@page::page_title' | trans) %}
+        {% if page_title | default(false) %}
+            <h2 class="header-title">{{ page_title | trans }}</h2>
+        {% else %}
+            <div class="header-title"></div>
+        {% endif %}
+        <div class="panel-close">
+            <a href="#">
+                {{ icon('fa:solid/xmark') }}
+            </a>
+        </div>
+    </div>
+    <div class="panel-loading">
+        <div class="panel-loading-bar"></div>
+    </div>
+    <div class="panel-body">
+        {%- block page_composer_panel -%}
+            {{ block('page_body') }}
+        {%- endblock -%}
+    </div>
+{%- endblock -%}
