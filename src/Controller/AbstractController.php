@@ -40,7 +40,7 @@ abstract class AbstractController extends \Wexample\SymfonyHelpers\Controller\Ab
         $parameterBag = $this->container->get('parameter_bag');
         foreach (AssetsService::getAssetsUsagesStatic() as $usageStatic) {
             $usageName = $usageStatic::getName();
-            $key = 'design_system.usages.'.$usageName;
+            $key = 'loader.usages.'.$usageName;
 
             $config = $parameterBag->has($key) ? $this->getParameter($key) : ['list' => []];
             $renderPass->usagesConfig[$usageName] = $config;
@@ -52,13 +52,13 @@ abstract class AbstractController extends \Wexample\SymfonyHelpers\Controller\Ab
         }
 
         $renderPass->enableAggregation = $this->getParameterOrDefault(
-            'design_system.enable_aggregation',
+            'loader.enable_aggregation',
             false
         );
 
         $renderPass->setDebug(
             $this->getParameterOrDefault(
-                'design_system.debug',
+                'loader.debug',
                 false
             )
         );
@@ -94,7 +94,7 @@ abstract class AbstractController extends \Wexample\SymfonyHelpers\Controller\Ab
 
         // Store it for post render events.
         $this->renderPassBagService->setRenderPass($renderPass);
-        $env = $this->getParameter('design_system.environment');
+        $env = $this->getParameter('loader.environment');
 
         $renderPass->setView($view);
 
@@ -182,7 +182,7 @@ abstract class AbstractController extends \Wexample\SymfonyHelpers\Controller\Ab
         return $this->render(
             $view,
             [
-                'debug' => (bool) $this->getParameter('design_system.debug'),
+                'debug' => (bool) $this->getParameter('loader.debug'),
                 'render_pass' => $renderPass,
             ] + $parameters,
             $response

@@ -1,12 +1,12 @@
 parameters:
-    design_system.debug: false
-    design_system.environment: '%env(APP_ENV)%'
-    design_system.enable_aggregation: false
+    loader.debug: false
+    loader.environment: '%env(APP_ENV)%'
+    loader.enable_aggregation: false
     
     # Design system colors
-    design_system.colors: {}
+    loader.colors: {}
 
-    design_system.usages.responsive:
+    loader.usages.responsive:
       list:
         xs:
           allow_switch: true
@@ -28,7 +28,7 @@ parameters:
           breakpoint: 1400
 
     # Color schemes
-    design_system.usages.color_scheme:
+    loader.usages.color_scheme:
       default: default
       list:
         dark:
@@ -39,7 +39,7 @@ parameters:
           allow_switch: false
 
     # Margins
-    design_system.usages.margins:
+    loader.usages.margins:
       default: default
       list:
         default:
@@ -52,7 +52,7 @@ parameters:
           allow_switch: false
 
     # Animations
-    design_system.usages.animations:
+    loader.usages.animations:
       default: none
       list:
         bounce:
@@ -63,7 +63,7 @@ parameters:
           allow_switch: false
 
     # Fonts
-    design_system.usages.fonts:
+    loader.usages.fonts:
       default: none
       list:
         none:
@@ -80,10 +80,10 @@ services:
     Wexample\SymfonyLoader\Rendering\ComponentManager\:
         resource: '../../Rendering/ComponentManager/*'
         tags:
-            - { name: 'symfony_design_system.component_manager' }
+            - { name: 'symfony_loader.component_manager' }
 
     Wexample\SymfonyLoader\Rendering\ComponentManagerLocatorService:
-        arguments: [!tagged_locator { tag: 'symfony_design_system.component_manager' }]
+        arguments: [!tagged_locator { tag: 'symfony_loader.component_manager' }]
 
     Wexample\SymfonyLoader\Routing\TemplateBasedRouteLoader:
       arguments:
@@ -107,4 +107,4 @@ services:
 
     Wexample\SymfonyLoader\Twig\ColorExtension:
         arguments:
-            $colors: '%design_system.colors%'
+            $colors: '%loader.colors%'

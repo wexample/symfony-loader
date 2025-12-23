@@ -32,7 +32,7 @@ class IconExtension extends AbstractExtension
         protected readonly CacheItemPoolInterface $cache
     ) {
         $this->projectDir = $kernel->getProjectDir();
-        $this->cacheItem = $this->cache->getItem('symfony_design_system_icons_list');
+        $this->cacheItem = $this->cache->getItem('symfony_loader_icons_list');
 
         if (! $this->cacheItem->isHit()) {
             $this->icons = (object) [

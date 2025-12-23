@@ -9,7 +9,7 @@ class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder('wexample_symfony_design_system');
+        $treeBuilder = new TreeBuilder('wexample_symfony_loader');
 
         $treeBuilder->getRootNode()
             ->children()

@@ -17,8 +17,8 @@ class ColorExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('design_system_colors', [$this, 'getColors']),
-            new TwigFunction('design_system_color', [$this, 'getColor']),
+            new TwigFunction('loader_colors', [$this, 'getColors']),
+            new TwigFunction('loader_color', [$this, 'getColor']),
         ];
     }
 
