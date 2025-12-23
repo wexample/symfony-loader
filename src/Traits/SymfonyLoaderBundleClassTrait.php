@@ -5,7 +5,7 @@ namespace Wexample\SymfonyLoader\Traits;
 use Wexample\SymfonyLoader\WexampleSymfonyLoaderBundle;
 use Wexample\SymfonyHelpers\Traits\BundleClassTrait;
 
-trait SymfonyDesignSystemBundleClassTrait
+trait SymfonyLoaderBundleClassTrait
 {
     use BundleClassTrait;
 

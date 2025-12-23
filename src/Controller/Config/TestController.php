@@ -7,13 +7,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Wexample\SymfonyLoader\Controller\AbstractPagesController;
 use Wexample\SymfonyLoader\Service\Usage\FontsAssetUsageService;
-use Wexample\SymfonyLoader\Traits\SymfonyDesignSystemBundleClassTrait;
+use Wexample\SymfonyLoader\Traits\SymfonyLoaderBundleClassTrait;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 
 #[Route(path: '_design_system/test/', name: '_design_system_test_')]
 final class TestController extends AbstractPagesController
 {
-    use SymfonyDesignSystemBundleClassTrait;
+    use SymfonyLoaderBundleClassTrait;
 
     final public const ROUTE_ADAPTIVE = 'adaptive';
     final public const ROUTE_ERROR_MISSING_VIEW = 'error_missing_view';

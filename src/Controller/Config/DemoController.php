@@ -8,13 +8,13 @@ use Symfony\Component\Routing\Annotation\Route;
 use Wexample\SymfonyLoader\Controller\AbstractPagesController;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\Usage\FontsAssetUsageService;
-use Wexample\SymfonyLoader\Traits\SymfonyDesignSystemBundleClassTrait;
+use Wexample\SymfonyLoader\Traits\SymfonyLoaderBundleClassTrait;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 
 #[Route(path: '_design_system/demo/', name: '_design_system_demo_')]
 final class DemoController extends AbstractPagesController
 {
-    use SymfonyDesignSystemBundleClassTrait;
+    use SymfonyLoaderBundleClassTrait;
 
     final public const ROUTE_INDEX = VariableHelper::INDEX;
     final public const ROUTE_ASSETS = VariableHelper::ASSETS;

@@ -1,13 +1,21 @@
-const fs = require('fs');
-const path = require('path');
-const {execSync} = require('child_process');
-const Encore = require('@symfony/webpack-encore');
-const webpack = require('webpack');
-const FosRouting = require('fos-router/webpack/FosRouting');
-const VirtualModules = require('webpack-virtual-modules');
+import fs from 'fs';
+import path from 'path';
+import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
+import Encore from '@symfony/webpack-encore';
+import webpack from 'webpack';
+import VirtualModules from 'webpack-virtual-modules';
+
 import { objectMergeDeep } from "@wexample/js-helpers/Helper/Object";
 import { stringToKebabCase } from "@wexample/js-helpers/Helper/String";
 import { COLORS, logTitle, logEntry, logPath } from "@wexample/js-helpers/Helper/Log";
+
+const require = createRequire(import.meta.url);
+const FosRouting = require('fos-router/webpack/FosRouting');
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const DEFAULT_OUTPUT_PATH = 'public/build/';
 const DEFAULT_PUBLIC_PATH = '/build';
@@ -84,7 +92,7 @@ function configureEncoreBase(options = {}) {
         }
       }
 
-      loaderOptions.sassOptions = mergeDeep(
+      loaderOptions.sassOptions = objectMergeDeep(
         loaderOptions.sassOptions || {},
         loaderConfig.sass.sassOptions || {}
       );
@@ -93,7 +101,7 @@ function configureEncoreBase(options = {}) {
       tsOptions.onlyCompileBundledFiles = loaderConfig.ts.onlyCompileBundledFiles !== false;
       tsOptions.transpileOnly = loaderConfig.ts.transpileOnly === true;
 
-      const compilerOptions = mergeDeep({}, loaderConfig.ts.compilerOptions || {});
+      const compilerOptions = objectMergeDeep({}, loaderConfig.ts.compilerOptions || {});
 
       if (!isProd && options.enableTsSourceMaps !== false) {
         compilerOptions.sourceMap = true;
@@ -342,7 +350,7 @@ function renderWrapperTemplate(classPath, className) {
     .replace(/{className}/g, className);
 }
 
-module.exports = {
+export {
   DEFAULT_MANIFEST_PATH,
   configureEncoreBase,
   applyManifestEntries,

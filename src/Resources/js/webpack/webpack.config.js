@@ -8,6 +8,7 @@ const {
 // Ensure routing dump and manifest are up to date before configuring Encore.
 execSync('bin/console fos:js-routing:dump', {stdio: 'inherit'});
 execSync('bin/console loader:generate-encore-manifest', {stdio: 'inherit'});
+execSync('bin/console loader:generate-encore-manifest', {stdio: 'inherit'});
 
 configureEncoreBase();
 applyManifestEntries();
