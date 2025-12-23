@@ -2,6 +2,7 @@
 
 namespace Wexample\SymfonyLoader\Rendering;
 
+use Wexample\Helpers\Class\Traits\HasUniqueId;
 use Wexample\Helpers\Helper\TextHelper;
 use Wexample\SymfonyLoader\Helper\DomHelper;
 use Wexample\SymfonyLoader\Rendering\Traits\WithDomId;
@@ -13,6 +14,7 @@ class Asset extends RenderDataGenerator
 {
     use WithDomId;
     use WithView;
+    use HasUniqueId;
 
     public const ASSETS_EXTENSIONS = [
         Asset::EXTENSION_CSS,
@@ -53,6 +55,8 @@ class Asset extends RenderDataGenerator
         protected string $usage,
         protected string $context
     ) {
+        $this->generateUniqueId();
+
         $info = pathinfo($pathInManifest);
         $this->type = $info['extension'];
         $this->path = $pathInManifest;
@@ -99,6 +103,7 @@ class Asset extends RenderDataGenerator
     public function toRenderData(): array
     {
         return $this->serializeVariables([
+            'uniqueId',
             'active',
             'context',
             'domId',

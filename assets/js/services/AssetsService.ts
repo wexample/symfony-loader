@@ -249,12 +249,14 @@ export default class AssetsService extends AppService {
 
   registerAsset(asset: AssetInterface): AssetInterface {
     const registry = this.app.registry.assetsRegistry;
+    registry[asset.type] = registry[asset.type] || {};
 
     // Each asset has a unique reference object shared between all render node.
-    if (!registry[asset.type][asset.view]) {
-      registry[asset.type][asset.view] = asset;
+    if (!registry[asset.type][asset.uniqueId]) {
+      registry[asset.type][asset.uniqueId] = asset;
     }
-    return registry[asset.type][asset.view];
+
+    return registry[asset.type][asset.uniqueId];
   }
 
   removeAssets(assetsCollection: AssetsCollectionInterface) {
