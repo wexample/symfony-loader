@@ -1,3 +1,3 @@
 import AppDemo from './class/AppDemo';
 
-new AppDemo();
+export default new AppDemo();

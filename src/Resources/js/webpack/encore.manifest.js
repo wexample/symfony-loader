@@ -1,21 +1,18 @@
-import fs from 'fs';
-import path from 'path';
-import { execSync } from 'child_process';
-import { fileURLToPath } from 'url';
-import { createRequire } from 'module';
-import Encore from '@symfony/webpack-encore';
-import webpack from 'webpack';
-import VirtualModules from 'webpack-virtual-modules';
-
-import { objectMergeDeep } from "@wexample/js-helpers/Helper/Object";
-import { stringToKebabCase } from "@wexample/js-helpers/Helper/String";
-import { COLORS, logTitle, logEntry, logPath } from "@wexample/js-helpers/Helper/Log";
-
-const require = createRequire(import.meta.url);
+const fs = require('fs');
+const path = require('path');
+const {execSync} = require('child_process');
+const Encore = require('@symfony/webpack-encore');
+const webpack = require('webpack');
 const FosRouting = require('fos-router/webpack/FosRouting');
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const VirtualModules = require('webpack-virtual-modules');
+const {objectMergeDeep} = require('@wexample/js-helpers/Helper/Object');
+const {stringToKebabCase} = require('@wexample/js-helpers/Helper/String');
+const {
+  COLORS,
+  logTitle,
+  logEntry,
+  logPath,
+} = require('@wexample/js-helpers/Helper/Log');
 
 const DEFAULT_OUTPUT_PATH = 'public/build/';
 const DEFAULT_PUBLIC_PATH = '/build';
@@ -350,7 +347,7 @@ function renderWrapperTemplate(classPath, className) {
     .replace(/{className}/g, className);
 }
 
-export {
+module.exports = {
   DEFAULT_MANIFEST_PATH,
   configureEncoreBase,
   applyManifestEntries,
