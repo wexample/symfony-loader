@@ -1,10 +1,10 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Twig;
+namespace Wexample\SymfonyLoader\Twig;
 
 use Twig\TwigFunction;
-use Wexample\SymfonyDesignSystem\Rendering\RenderPass;
-use Wexample\SymfonyDesignSystem\Service\JsService;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Service\JsService;
 use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 
 class VarExtension extends AbstractExtension

@@ -77,15 +77,15 @@ services:
         autoconfigure: true
         public: false
 
-    Wexample\SymfonyDesignSystem\Rendering\ComponentManager\:
+    Wexample\SymfonyLoader\Rendering\ComponentManager\:
         resource: '../../Rendering/ComponentManager/*'
         tags:
             - { name: 'symfony_design_system.component_manager' }
 
-    Wexample\SymfonyDesignSystem\Rendering\ComponentManagerLocatorService:
+    Wexample\SymfonyLoader\Rendering\ComponentManagerLocatorService:
         arguments: [!tagged_locator { tag: 'symfony_design_system.component_manager' }]
 
-    Wexample\SymfonyDesignSystem\Routing\TemplateBasedRouteLoader:
+    Wexample\SymfonyLoader\Routing\TemplateBasedRouteLoader:
       arguments:
         $container: '@service_container'
         $taggedControllers: !tagged_iterator 'has_template_routes'
@@ -93,18 +93,18 @@ services:
       tags:
         - { name: 'routing.loader' }
 
-    Wexample\SymfonyDesignSystem\:
+    Wexample\SymfonyLoader\:
         resource: '../../{Command,Controller,EventSubscriber,Service,Twig}'
         tags: ['controller.service_arguments']
 
-    Wexample\SymfonyDesignSystem\Controller\Config\DemoController:
+    Wexample\SymfonyLoader\Controller\Config\DemoController:
         tags:
             - { name: 'has_simple_routes' }
 
-    Wexample\SymfonyDesignSystem\Controller\Config\TestController:
+    Wexample\SymfonyLoader\Controller\Config\TestController:
         tags:
             - { name: 'has_simple_routes' }
 
-    Wexample\SymfonyDesignSystem\Twig\ColorExtension:
+    Wexample\SymfonyLoader\Twig\ColorExtension:
         arguments:
             $colors: '%design_system.colors%'

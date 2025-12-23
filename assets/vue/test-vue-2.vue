@@ -1,7 +1,7 @@
 <script>
 export default {
   components: {
-    'vue-test-vue-3': '@WexampleSymfonyDesignSystemBundle/vue/test-vue-3',
+    'vue-test-vue-3': '@WexampleSymfonyLoaderBundle/vue/test-vue-3',
   },
 
   data() {

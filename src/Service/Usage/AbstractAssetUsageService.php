@@ -1,14 +1,14 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Service\Usage;
+namespace Wexample\SymfonyLoader\Service\Usage;
 
 use Exception;
 use Wexample\Helpers\Helper\PathHelper;
 use Wexample\Helpers\Helper\TextHelper;
-use Wexample\SymfonyDesignSystem\Rendering\Asset;
-use Wexample\SymfonyDesignSystem\Rendering\RenderNode\AbstractRenderNode;
-use Wexample\SymfonyDesignSystem\Rendering\RenderPass;
-use Wexample\SymfonyDesignSystem\Service\AssetsRegistryService;
+use Wexample\SymfonyLoader\Rendering\Asset;
+use Wexample\SymfonyLoader\Rendering\RenderNode\AbstractRenderNode;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Service\AssetsRegistryService;
 
 abstract class AbstractAssetUsageService
 {

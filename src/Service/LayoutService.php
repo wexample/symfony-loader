@@ -1,11 +1,11 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Service;
+namespace Wexample\SymfonyLoader\Service;
 
 use Exception;
 use JetBrains\PhpStorm\Pure;
 use Twig\Environment;
-use Wexample\SymfonyDesignSystem\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyTranslations\Translation\Translator;
 
 class LayoutService extends RenderNodeService

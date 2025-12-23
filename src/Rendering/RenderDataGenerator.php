@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Rendering;
+namespace Wexample\SymfonyLoader\Rendering;
 
 use function is_a;
 use function is_object;

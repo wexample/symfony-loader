@@ -1,6 +1,6 @@
-{%- extends '@WexampleSymfonyDesignSystemBundle/layouts/black/layout.html.twig' -%}
+{%- extends '@WexampleSymfonyLoaderBundle/layouts/black/layout.html.twig' -%}
 
-{% import '@WexampleSymfonyDesignSystemBundle/macros/tabs.html.twig' as macro_tabs %}
+{% import '@WexampleSymfonyLoaderBundle/macros/tabs.html.twig' as macro_tabs %}
 
 {%- block layout_config -%}
     {{- render_pass.layoutRenderNode.setDefaultView(_self) -}}
@@ -12,8 +12,8 @@
 {%- block layout_composer_html -%}
     <header>
         <div class="layout-header">
-                <a class="logo" href="{{ url('home_index') }}" title="{{ '@WexampleSymfonyDesignSystemBundle.common.app::name' | trans }}">
-                    <img alt="{{ '@WexampleSymfonyDesignSystemBundle.common.app::name' | trans }}" src="{{ asset('/bundles/wexamplesymfonyhelpers/wex.gif') }}">
+                <a class="logo" href="{{ url('home_index') }}" title="{{ '@WexampleSymfonyLoaderBundle.common.app::name' | trans }}">
+                    <img alt="{{ '@WexampleSymfonyLoaderBundle.common.app::name' | trans }}" src="{{ asset('/bundles/wexamplesymfonyhelpers/wex.gif') }}">
                 </a>
         </div>
     </header>

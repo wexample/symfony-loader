@@ -1,20 +1,20 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Service;
+namespace Wexample\SymfonyLoader\Service;
 
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Wexample\SymfonyDesignSystem\Rendering\Asset;
-use Wexample\SymfonyDesignSystem\Rendering\AssetTag;
-use Wexample\SymfonyDesignSystem\Rendering\RenderNode\AbstractRenderNode;
-use Wexample\SymfonyDesignSystem\Rendering\RenderPass;
-use Wexample\SymfonyDesignSystem\Service\Usage\AbstractAssetUsageService;
-use Wexample\SymfonyDesignSystem\Service\Usage\AnimationsAssetUsageService;
-use Wexample\SymfonyDesignSystem\Service\Usage\ColorSchemeAssetUsageService;
-use Wexample\SymfonyDesignSystem\Service\Usage\DefaultAssetUsageService;
-use Wexample\SymfonyDesignSystem\Service\Usage\FontsAssetUsageService;
-use Wexample\SymfonyDesignSystem\Service\Usage\MarginsAssetUsageService;
-use Wexample\SymfonyDesignSystem\Service\Usage\ResponsiveAssetUsageService;
+use Wexample\SymfonyLoader\Rendering\Asset;
+use Wexample\SymfonyLoader\Rendering\AssetTag;
+use Wexample\SymfonyLoader\Rendering\RenderNode\AbstractRenderNode;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Service\Usage\AbstractAssetUsageService;
+use Wexample\SymfonyLoader\Service\Usage\AnimationsAssetUsageService;
+use Wexample\SymfonyLoader\Service\Usage\ColorSchemeAssetUsageService;
+use Wexample\SymfonyLoader\Service\Usage\DefaultAssetUsageService;
+use Wexample\SymfonyLoader\Service\Usage\FontsAssetUsageService;
+use Wexample\SymfonyLoader\Service\Usage\MarginsAssetUsageService;
+use Wexample\SymfonyLoader\Service\Usage\ResponsiveAssetUsageService;
 
 class AssetsService
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Command;
+namespace Wexample\SymfonyLoader\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -9,9 +9,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Wexample\Helpers\Helper\PathHelper;
-use Wexample\SymfonyDesignSystem\Helper\DesignSystemHelper;
-use Wexample\SymfonyDesignSystem\Traits\SymfonyDesignSystemBundleClassTrait;
-use Wexample\SymfonyDesignSystem\WexampleSymfonyDesignSystemBundle;
+use Wexample\SymfonyLoader\Helper\DesignSystemHelper;
+use Wexample\SymfonyLoader\Traits\SymfonyDesignSystemBundleClassTrait;
+use Wexample\SymfonyLoader\WexampleSymfonyLoaderBundle;
 use Wexample\SymfonyHelpers\Command\AbstractBundleCommand;
 use Wexample\SymfonyHelpers\Helper\FileHelper;
 use Wexample\SymfonyHelpers\Helper\JsonHelper;
@@ -36,7 +36,7 @@ class GetFrontsCommand extends AbstractBundleCommand
 
     public static function getBundleClassName(): string
     {
-        return WexampleSymfonyDesignSystemBundle::class;
+        return WexampleSymfonyLoaderBundle::class;
     }
 
     protected function execute(
@@ -81,7 +81,7 @@ class GetFrontsCommand extends AbstractBundleCommand
 
     private function getFrontPaths(): array
     {
-        $pathsGroups = $this->parameterBag->get('design_system_packages_front_paths');
+        $pathsGroups = $this->parameterBag->get('loader_packages_front_paths');
 
         $projectDir = $this->kernel->getProjectDir().FileHelper::FOLDER_SEPARATOR;
         $rootLen = strlen($projectDir);

@@ -1,12 +1,12 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Rendering;
+namespace Wexample\SymfonyLoader\Rendering;
 
 use Wexample\Helpers\Helper\TextHelper;
-use Wexample\SymfonyDesignSystem\Helper\DomHelper;
-use Wexample\SymfonyDesignSystem\Rendering\Traits\WithDomId;
-use Wexample\SymfonyDesignSystem\Rendering\Traits\WithView;
-use Wexample\SymfonyDesignSystem\Service\AssetsRegistryService;
+use Wexample\SymfonyLoader\Helper\DomHelper;
+use Wexample\SymfonyLoader\Rendering\Traits\WithDomId;
+use Wexample\SymfonyLoader\Rendering\Traits\WithView;
+use Wexample\SymfonyLoader\Service\AssetsRegistryService;
 use Wexample\SymfonyHelpers\Helper\FileHelper;
 
 class Asset extends RenderDataGenerator

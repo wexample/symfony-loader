@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Twig;
+namespace Wexample\SymfonyLoader\Twig;
 
 use Exception;
 use Twig\Environment;
@@ -9,8 +9,8 @@ use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
-use Wexample\SymfonyDesignSystem\Rendering\RenderPass;
-use Wexample\SymfonyDesignSystem\Service\VueService;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Service\VueService;
 use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 
 class VueExtension extends AbstractExtension

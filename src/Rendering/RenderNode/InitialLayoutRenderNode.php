@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Rendering\RenderNode;
+namespace Wexample\SymfonyLoader\Rendering\RenderNode;
 
 class InitialLayoutRenderNode extends AbstractLayoutRenderNode
 {

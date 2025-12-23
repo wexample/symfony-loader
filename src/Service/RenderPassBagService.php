@@ -1,8 +1,8 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Service;
+namespace Wexample\SymfonyLoader\Service;
 
-use Wexample\SymfonyDesignSystem\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
 
 class RenderPassBagService
 {

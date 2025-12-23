@@ -1,8 +1,8 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Command;
+namespace Wexample\SymfonyLoader\Command;
 
-use Wexample\SymfonyDesignSystem\Traits\SymfonyDesignSystemBundleClassTrait;
+use Wexample\SymfonyLoader\Traits\SymfonyDesignSystemBundleClassTrait;
 use Wexample\SymfonyHelpers\Command\AbstractCheckNodeInstallCommand;
 
 class CheckNodeInstallCommand extends AbstractCheckNodeInstallCommand

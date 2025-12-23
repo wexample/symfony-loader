@@ -1,8 +1,8 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Controller\Config;
+namespace Wexample\SymfonyLoader\Controller\Config;
 
-use Wexample\SymfonyDesignSystem\Controller\AbstractPagesController;
+use Wexample\SymfonyLoader\Controller\AbstractPagesController;
 
 abstract class AbstractDesignSystemController extends AbstractPagesController
 {

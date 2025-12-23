@@ -45,7 +45,7 @@ export default class ResponsiveTest extends AbstractTest {
       this.app.layout,
       '#test-playground',
       this.app.layout.page.findChildRenderNodeByView(
-        '@WexampleSymfonyDesignSystemBundle/components/test-component'
+        '@WexampleSymfonyLoaderBundle/components/test-component'
       ) as Component & RenderNodeResponsiveType,
       'background-color',
       'rgb(0, 128, 0)'
@@ -131,7 +131,7 @@ export default class ResponsiveTest extends AbstractTest {
             (this.app.layout.pageFocused) as Page & RenderNodeResponsiveType,
             '.adaptive-page-playground',
             this.app.layout.pageFocused.findChildRenderNodeByView(
-              '@WexampleSymfonyDesignSystemBundle/components/test-component'
+              '@WexampleSymfonyLoaderBundle/components/test-component'
             ) as Component & RenderNodeResponsiveType,
             'border-color',
             'rgb(0, 255, 0)'

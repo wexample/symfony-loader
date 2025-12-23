@@ -1,18 +1,18 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Service;
+namespace Wexample\SymfonyLoader\Service;
 
 use Symfony\Component\Routing\RouterInterface;
 use Wexample\Helpers\Helper\ClassHelper;
 use Wexample\Helpers\Helper\TextHelper;
-use Wexample\SymfonyDesignSystem\Controller\AbstractController;
-use Wexample\SymfonyDesignSystem\Controller\AbstractPagesController;
-use Wexample\SymfonyDesignSystem\Rendering\RenderNode\PageRenderNode;
-use Wexample\SymfonyDesignSystem\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Controller\AbstractController;
+use Wexample\SymfonyLoader\Controller\AbstractPagesController;
+use Wexample\SymfonyLoader\Rendering\RenderNode\PageRenderNode;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyHelpers\Attribute\SimpleMethodResolver;
 use Wexample\SymfonyHelpers\Class\AbstractBundle;
 use Wexample\SymfonyHelpers\Controller\Traits\HasSimpleRoutesControllerTrait;
-use Wexample\SymfonyHelpers\Helper\TemplateHelper;
+use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 use Wexample\SymfonyTranslations\Translation\Translator;
 
 class PageService extends RenderNodeService

@@ -1,11 +1,11 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Rendering\ComponentManager;
+namespace Wexample\SymfonyLoader\Rendering\ComponentManager;
 
 use Symfony\Component\HttpKernel\KernelInterface;
 use Wexample\Helpers\Helper\TextHelper;
-use Wexample\SymfonyDesignSystem\Rendering\RenderNode\ComponentRenderNode;
-use Wexample\SymfonyDesignSystem\Service\AdaptiveResponseService;
+use Wexample\SymfonyLoader\Rendering\RenderNode\ComponentRenderNode;
+use Wexample\SymfonyLoader\Service\AdaptiveResponseService;
 
 abstract class AbstractComponentManager
 {

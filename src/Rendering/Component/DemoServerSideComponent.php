@@ -1,8 +1,8 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Rendering\Component;
+namespace Wexample\SymfonyLoader\Rendering\Component;
 
-use Wexample\SymfonyDesignSystem\Rendering\RenderNode\ComponentRenderNode;
+use Wexample\SymfonyLoader\Rendering\RenderNode\ComponentRenderNode;
 
 class DemoServerSideComponent extends ComponentRenderNode
 {

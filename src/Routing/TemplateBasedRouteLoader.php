@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Routing;
+namespace Wexample\SymfonyLoader\Routing;
 
 use Symfony\Component\DependencyInjection\Argument\RewindableGenerator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -10,9 +10,9 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 use Wexample\Helpers\Helper\ClassHelper;
 use Wexample\Helpers\Helper\FileHelper;
-use Wexample\SymfonyDesignSystem\Controller\AbstractController;
-use Wexample\SymfonyDesignSystem\Routing\Attribute\TemplateBasedRoutes;
-use Wexample\SymfonyHelpers\Helper\TemplateHelper;
+use Wexample\SymfonyLoader\Controller\AbstractController;
+use Wexample\SymfonyLoader\Routing\Attribute\TemplateBasedRoutes;
+use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 use Wexample\SymfonyHelpers\Routing\AbstractRouteLoader;
 use Wexample\SymfonyHelpers\Routing\Traits\RoutePathBuilderTrait;
 

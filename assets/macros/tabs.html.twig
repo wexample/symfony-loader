@@ -1,6 +1,6 @@
 {% macro start(render_pass, group = 'default', class = '') %}
      <ul class="tabs tabs-{{ group }} {{ class }}">
-        {{ component_init_parent(render_pass, '@WexampleSymfonyDesignSystemBundle/components/tabs', {group:group}) }}
+        {{ component_init_parent(render_pass, '@WexampleSymfonyLoaderBundle/components/tabs', {group:group}) }}
 {% endmacro %}
 
     {% macro end() %}

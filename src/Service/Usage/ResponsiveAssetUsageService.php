@@ -1,10 +1,10 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Service\Usage;
+namespace Wexample\SymfonyLoader\Service\Usage;
 
-use Wexample\SymfonyDesignSystem\Rendering\Asset;
-use Wexample\SymfonyDesignSystem\Rendering\RenderNode\AbstractRenderNode;
-use Wexample\SymfonyDesignSystem\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Rendering\Asset;
+use Wexample\SymfonyLoader\Rendering\RenderNode\AbstractRenderNode;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyHelpers\Helper\FileHelper;
 
 final class ResponsiveAssetUsageService extends AbstractAssetUsageService

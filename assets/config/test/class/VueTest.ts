@@ -13,7 +13,7 @@ export default class VueTest extends AbstractTest {
     this.fetchAdaptiveAjaxPage()
       .then((renderData: LayoutInterface) => {
         const vueComponent: VueComponent = this.app.layout.pageFocused
-          .findChildRenderNodeByView('@WexampleSymfonyDesignSystemBundle/components/vue') as VueComponent;
+          .findChildRenderNodeByView('@WexampleSymfonyLoaderBundle/components/vue') as VueComponent;
 
         this.assertTrue(
           !!vueComponent,

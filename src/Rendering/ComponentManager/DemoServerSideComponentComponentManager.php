@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Rendering\ComponentManager;
+namespace Wexample\SymfonyLoader\Rendering\ComponentManager;
 
 class DemoServerSideComponentComponentManager extends AbstractComponentManager
 {

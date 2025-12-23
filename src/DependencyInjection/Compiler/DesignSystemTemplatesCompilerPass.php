@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\DependencyInjection\Compiler;
+namespace Wexample\SymfonyLoader\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -12,7 +12,7 @@ class DesignSystemTemplatesCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container): void
     {
         $definition = $container->getDefinition('twig.loader.native_filesystem');
-        $bundlesPaths = $container->getParameter('design_system_packages_front_paths');
+        $bundlesPaths = $container->getParameter('loader_packages_front_paths');
 
         /**
          * @var AbstractBundle $bundleClass
@@ -21,7 +21,7 @@ class DesignSystemTemplatesCompilerPass implements CompilerPassInterface
         foreach ($bundlesPaths as $bundleClass => $paths) {
             foreach ($paths as $path) {
                 if ($bundleClass != VariableHelper::APP) {
-                    # Add template alias like @WexampleSymfonyDesignSystemBundle for every registered path.
+                    # Add template alias like WexampleSymfonyLoaderBundle for every registered path.
                     $definition->addMethodCall(
                         'addPath',
                         [

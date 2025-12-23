@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Twig;
+namespace Wexample\SymfonyLoader\Twig;
 
 use Exception;
 use Symfony\Component\HttpKernel\KernelInterface;

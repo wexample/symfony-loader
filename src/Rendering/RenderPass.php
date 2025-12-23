@@ -1,15 +1,15 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Rendering;
+namespace Wexample\SymfonyLoader\Rendering;
 
-use Wexample\SymfonyDesignSystem\Helper\DesignSystemHelper;
-use Wexample\SymfonyDesignSystem\Helper\RenderingHelper;
-use Wexample\SymfonyDesignSystem\Rendering\RenderNode\AbstractRenderNode;
-use Wexample\SymfonyDesignSystem\Rendering\RenderNode\AjaxLayoutRenderNode;
-use Wexample\SymfonyDesignSystem\Rendering\RenderNode\InitialLayoutRenderNode;
-use Wexample\SymfonyDesignSystem\Rendering\Traits\WithRenderRequestId;
-use Wexample\SymfonyDesignSystem\Rendering\Traits\WithView;
-use Wexample\SymfonyDesignSystem\Service\Usage\ResponsiveAssetUsageService;
+use Wexample\SymfonyLoader\Helper\DesignSystemHelper;
+use Wexample\SymfonyLoader\Helper\RenderingHelper;
+use Wexample\SymfonyLoader\Rendering\RenderNode\AbstractRenderNode;
+use Wexample\SymfonyLoader\Rendering\RenderNode\AjaxLayoutRenderNode;
+use Wexample\SymfonyLoader\Rendering\RenderNode\InitialLayoutRenderNode;
+use Wexample\SymfonyLoader\Rendering\Traits\WithRenderRequestId;
+use Wexample\SymfonyLoader\Rendering\Traits\WithView;
+use Wexample\SymfonyLoader\Service\Usage\ResponsiveAssetUsageService;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 
 class RenderPass

@@ -1,4 +1,4 @@
-{%- extends '@WexampleSymfonyDesignSystemBundle/layouts/demo/layout.html.twig' -%}
+{%- extends '@WexampleSymfonyLoaderBundle/layouts/demo/layout.html.twig' -%}
 
 {%- block page_body -%}
     <div class="inline-infos">
@@ -27,7 +27,7 @@
     <div class="block">
         {{ ('@page::resources.body_' ~ (render_pass.isUseJs() ? '' : 'no_') ~ 'js') | trans | raw }}
 	    {% if render_pass.isUseJs() %}
-	        {{ vue(render_pass, '@WexampleSymfonyDesignSystemBundle/vue/debug-assets') }}
+	        {{ vue(render_pass, '@WexampleSymfonyLoaderBundle/vue/debug-assets') }}
 	    {% endif %}
     </div>
     <h2>{{ '@page::page.title' | trans }}</h2>

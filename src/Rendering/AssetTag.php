@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Rendering;
+namespace Wexample\SymfonyLoader\Rendering;
 
 class AssetTag
 {

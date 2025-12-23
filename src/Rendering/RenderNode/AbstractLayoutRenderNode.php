@@ -1,10 +1,10 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Rendering\RenderNode;
+namespace Wexample\SymfonyLoader\Rendering\RenderNode;
 
-use Wexample\SymfonyDesignSystem\Helper\RenderingHelper;
-use Wexample\SymfonyDesignSystem\Rendering\RenderPass;
-use Wexample\SymfonyDesignSystem\Rendering\Traits\WithRenderRequestId;
+use Wexample\SymfonyLoader\Helper\RenderingHelper;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Rendering\Traits\WithRenderRequestId;
 
 abstract class AbstractLayoutRenderNode extends AbstractRenderNode
 {

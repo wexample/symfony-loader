@@ -1,11 +1,11 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Service;
+namespace Wexample\SymfonyLoader\Service;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Wexample\SymfonyHelpers\Helper\TemplateHelper;
-use Wexample\SymfonyDesignSystem\Rendering\RenderPass;
+use Wexample\SymfonyTemplate\Helper\TemplateHelper;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyHelpers\Helper\FileHelper;
 
 class AdaptiveResponseService

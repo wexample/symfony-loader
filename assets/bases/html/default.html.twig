@@ -1,8 +1,8 @@
-{%- extends '@WexampleSymfonyDesignSystemBundle/bases/base.html.twig' -%}
+{%- extends '@WexampleSymfonyLoaderBundle/bases/base.html.twig' -%}
 
 {%- block layout_config -%}
     {{ parent() }}
-    {{ trans_js(render_pass, '@WexampleSymfonyDesignSystemBundle.common.system::*') }}
+    {{ trans_js(render_pass, '@WexampleSymfonyLoaderBundle.common.system::*') }}
     {{ var_export(render_pass, 'displayBreakpoints', display_breakpoints) }}
     {{ var_export(render_pass, 'enableAggregation', render_pass.enableAggregation) }}
     {{ var_export(render_pass, 'usagesConfig', render_pass.usagesConfig) }}
@@ -52,7 +52,7 @@
               window.appRegistry = {bundles: new AppRegistryBundlesManager()};
             </script>
         {%- endif -%}
-        {{- constant('\\Wexample\\SymfonyDesignSystem\\Helper\\RenderingHelper::PLACEHOLDER_PRELOAD_TAG') | raw -}}
+        {{- constant('\\Wexample\\SymfonyLoader\\Helper\\RenderingHelper::PLACEHOLDER_PRELOAD_TAG') | raw -}}
         {%- block meta -%}
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <meta name="description" content="{{ document_meta_description | default('front.app.global::meta.description' | trans) }}">

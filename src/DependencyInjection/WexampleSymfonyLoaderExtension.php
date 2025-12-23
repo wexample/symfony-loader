@@ -1,15 +1,15 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\DependencyInjection;
+namespace Wexample\SymfonyLoader\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Wexample\Helpers\Helper\ClassHelper;
-use Wexample\SymfonyDesignSystem\Interface\DesignSystemBundleInterface;
+use Wexample\SymfonyLoader\Interface\LoaderBundleInterface;
 use Wexample\SymfonyHelpers\DependencyInjection\AbstractWexampleSymfonyExtension;
 use Wexample\SymfonyHelpers\Helper\FileHelper;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 
-class WexampleSymfonyDesignSystemExtension extends AbstractWexampleSymfonyExtension
+class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
 {
     public function load(
         array $configs,
@@ -38,9 +38,9 @@ class WexampleSymfonyDesignSystemExtension extends AbstractWexampleSymfonyExtens
         foreach ($bundles as $class) {
             if (ClassHelper::classImplementsInterface(
                 $class,
-                DesignSystemBundleInterface::class
+                LoaderBundleInterface::class
             )) {
-                $bundleFronts = $class::getDesignSystemFrontPaths();
+                $bundleFronts = $class::getLoaderFrontPaths();
 
                 $realPaths = [];
                 foreach ($bundleFronts as $alias => $frontPath) {
@@ -61,6 +61,6 @@ class WexampleSymfonyDesignSystemExtension extends AbstractWexampleSymfonyExtens
 
         // Save new paths
         $container->setParameter('translations_paths', $translationPaths);
-        $container->setParameter('design_system_packages_front_paths', $paths);
+        $container->setParameter('loader_packages_front_paths', $paths);
     }
 }

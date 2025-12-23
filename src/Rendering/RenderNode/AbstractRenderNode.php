@@ -1,15 +1,15 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Rendering\RenderNode;
+namespace Wexample\SymfonyLoader\Rendering\RenderNode;
 
-use Wexample\SymfonyDesignSystem\Helper\DomHelper;
-use Wexample\SymfonyDesignSystem\Helper\RenderingHelper;
-use Wexample\SymfonyDesignSystem\Rendering\Asset;
-use Wexample\SymfonyDesignSystem\Rendering\RenderDataGenerator;
-use Wexample\SymfonyDesignSystem\Rendering\RenderPass;
-use Wexample\SymfonyDesignSystem\Rendering\Traits\WithView;
-use Wexample\SymfonyDesignSystem\Service\AssetsService;
-use Wexample\SymfonyHelpers\Helper\TemplateHelper;
+use Wexample\SymfonyLoader\Helper\DomHelper;
+use Wexample\SymfonyLoader\Helper\RenderingHelper;
+use Wexample\SymfonyLoader\Rendering\Asset;
+use Wexample\SymfonyLoader\Rendering\RenderDataGenerator;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Rendering\Traits\WithView;
+use Wexample\SymfonyLoader\Service\AssetsService;
+use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 
 abstract class AbstractRenderNode extends RenderDataGenerator
 {

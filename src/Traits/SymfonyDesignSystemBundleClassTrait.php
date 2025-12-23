@@ -1,8 +1,8 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Traits;
+namespace Wexample\SymfonyLoader\Traits;
 
-use Wexample\SymfonyDesignSystem\WexampleSymfonyDesignSystemBundle;
+use Wexample\SymfonyLoader\WexampleSymfonyLoaderBundle;
 use Wexample\SymfonyHelpers\Traits\BundleClassTrait;
 
 trait SymfonyDesignSystemBundleClassTrait
@@ -11,6 +11,6 @@ trait SymfonyDesignSystemBundleClassTrait
 
     public static function getBundleClassName(): string
     {
-        return WexampleSymfonyDesignSystemBundle::class;
+        return WexampleSymfonyLoaderBundle::class;
     }
 }

@@ -1,19 +1,19 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Controller;
+namespace Wexample\SymfonyLoader\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Wexample\Helpers\Helper\ClassHelper;
-use Wexample\SymfonyDesignSystem\Rendering\RenderPass;
-use Wexample\SymfonyDesignSystem\Service\AdaptiveResponseService;
-use Wexample\SymfonyDesignSystem\Service\LayoutService;
-use Wexample\SymfonyDesignSystem\Service\PageService;
-use Wexample\SymfonyDesignSystem\Service\RenderPassBagService;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Service\AdaptiveResponseService;
+use Wexample\SymfonyLoader\Service\LayoutService;
+use Wexample\SymfonyLoader\Service\PageService;
+use Wexample\SymfonyLoader\Service\RenderPassBagService;
 use Wexample\SymfonyHelpers\Class\AbstractBundle;
 use Wexample\SymfonyHelpers\Controller\Traits\HasSimpleRoutesControllerTrait;
 use Wexample\SymfonyHelpers\Helper\BundleHelper;
 use Wexample\SymfonyHelpers\Helper\FileHelper;
-use Wexample\SymfonyHelpers\Helper\TemplateHelper;
+use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 use Wexample\SymfonyHelpers\Traits\BundleClassTrait;
 

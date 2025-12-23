@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Service;
+namespace Wexample\SymfonyLoader\Service;
 
 use function class_exists;
 use function is_array;
@@ -11,7 +11,7 @@ use ReflectionClass;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Wexample\SymfonyDesignSystem\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyHelpers\Api\Dto\EntityDto;
 use Wexample\SymfonyHelpers\Entity\Interfaces\AbstractEntityInterface;
 

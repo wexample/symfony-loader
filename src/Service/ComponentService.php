@@ -1,14 +1,14 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Service;
+namespace Wexample\SymfonyLoader\Service;
 
 use Exception;
 use Twig\Environment;
-use Wexample\SymfonyDesignSystem\Helper\DomHelper;
-use Wexample\SymfonyDesignSystem\Rendering\ComponentManagerLocatorService;
-use Wexample\SymfonyDesignSystem\Rendering\RenderNode\ComponentRenderNode;
-use Wexample\SymfonyDesignSystem\Rendering\RenderPass;
-use Wexample\SymfonyDesignSystem\WexampleSymfonyDesignSystemBundle;
+use Wexample\SymfonyLoader\Helper\DomHelper;
+use Wexample\SymfonyLoader\Rendering\ComponentManagerLocatorService;
+use Wexample\SymfonyLoader\Rendering\RenderNode\ComponentRenderNode;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
+use Wexample\SymfonyLoader\WexampleSymfonyLoaderBundle;
 use Wexample\SymfonyHelpers\Helper\BundleHelper;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 use Wexample\SymfonyTranslations\Translation\Translator;
@@ -47,7 +47,7 @@ class ComponentService extends RenderNodeService
 
     public static function buildCoreComponentName(string $shortName): string
     {
-        return BundleHelper::ALIAS_PREFIX.WexampleSymfonyDesignSystemBundle::getAlias().'/'.$shortName;
+        return BundleHelper::ALIAS_PREFIX.WexampleSymfonyLoaderBundle::getAlias().'/'.$shortName;
     }
 
     /**

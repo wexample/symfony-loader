@@ -26,7 +26,7 @@ export default {
     renderItemIcon() {
       let icon;
 
-      if (this.object.view === '@WexampleSymfonyDesignSystemBundle/components/vue') {
+      if (this.object.view === '@WexampleSymfonyLoaderBundle/components/vue') {
         icon = faVuejs;
       } else {
         icon = {

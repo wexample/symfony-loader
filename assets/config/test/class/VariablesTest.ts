@@ -42,7 +42,7 @@ export default class VariablesTest extends AbstractTest {
     );
 
     let component = this.app.layout.page.findChildRenderNodeByView(
-      '@WexampleSymfonyDesignSystemBundle/components/test-component'
+      '@WexampleSymfonyLoaderBundle/components/test-component'
     ) as Component;
 
     this.assertTrue(

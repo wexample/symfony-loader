@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Service\Usage;
+namespace Wexample\SymfonyLoader\Service\Usage;
 
 final class AnimationsAssetUsageService extends AbstractAssetUsageService
 {

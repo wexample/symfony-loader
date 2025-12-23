@@ -1,8 +1,8 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Rendering\RenderNode;
+namespace Wexample\SymfonyLoader\Rendering\RenderNode;
 
-use Wexample\SymfonyDesignSystem\Helper\RenderingHelper;
+use Wexample\SymfonyLoader\Helper\RenderingHelper;
 
 class PageRenderNode extends AbstractRenderNode
 {

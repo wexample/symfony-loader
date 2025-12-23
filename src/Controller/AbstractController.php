@@ -1,22 +1,22 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Controller;
+namespace Wexample\SymfonyLoader\Controller;
 
 use Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Wexample\SymfonyDesignSystem\Helper\DesignSystemHelper;
-use Wexample\SymfonyDesignSystem\Rendering\RenderNode\AjaxLayoutRenderNode;
-use Wexample\SymfonyDesignSystem\Rendering\RenderNode\InitialLayoutRenderNode;
-use Wexample\SymfonyDesignSystem\Rendering\RenderPass;
-use Wexample\SymfonyDesignSystem\Service\AdaptiveResponseService;
-use Wexample\SymfonyDesignSystem\Service\AssetsService;
-use Wexample\SymfonyDesignSystem\Service\LayoutService;
-use Wexample\SymfonyDesignSystem\Service\RenderPassBagService;
-use Wexample\SymfonyDesignSystem\WexampleSymfonyDesignSystemBundle;
+use Wexample\SymfonyLoader\Helper\DesignSystemHelper;
+use Wexample\SymfonyLoader\Rendering\RenderNode\AjaxLayoutRenderNode;
+use Wexample\SymfonyLoader\Rendering\RenderNode\InitialLayoutRenderNode;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Service\AdaptiveResponseService;
+use Wexample\SymfonyLoader\Service\AssetsService;
+use Wexample\SymfonyLoader\Service\LayoutService;
+use Wexample\SymfonyLoader\Service\RenderPassBagService;
+use Wexample\SymfonyLoader\WexampleSymfonyLoaderBundle;
 use Wexample\SymfonyHelpers\Helper\BundleHelper;
-use Wexample\SymfonyHelpers\Helper\TemplateHelper;
+use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 
 abstract class AbstractController extends \Wexample\SymfonyHelpers\Controller\AbstractController
 {
@@ -133,7 +133,7 @@ abstract class AbstractController extends \Wexample\SymfonyHelpers\Controller\Ab
                 return $finalResponse;
             } catch (\Exception $exception) {
                 $errorView = BundleHelper::ALIAS_PREFIX.
-                    WexampleSymfonyDesignSystemBundle::getAlias()
+                    WexampleSymfonyLoaderBundle::getAlias()
                     .'/config/system/error'
                     .TemplateHelper::TEMPLATE_FILE_EXTENSION;
 

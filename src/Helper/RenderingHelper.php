@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Helper;
+namespace Wexample\SymfonyLoader\Helper;
 
 use function implode;
 

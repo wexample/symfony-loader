@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Tests\Traits;
+namespace Wexample\SymfonyLoader\Tests\Traits;
 
 trait DesignSystemTestCaseTrait
 {

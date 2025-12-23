@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Controller;
+namespace Wexample\SymfonyLoader\Controller;
 
 use Wexample\SymfonyHelpers\Controller\Traits\EntityControllerTrait;
 

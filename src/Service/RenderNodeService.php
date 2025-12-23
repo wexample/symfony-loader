@@ -1,9 +1,9 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Service;
+namespace Wexample\SymfonyLoader\Service;
 
-use Wexample\SymfonyDesignSystem\Rendering\RenderNode\AbstractRenderNode;
-use Wexample\SymfonyDesignSystem\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Rendering\RenderNode\AbstractRenderNode;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
 
 abstract class RenderNodeService
 {

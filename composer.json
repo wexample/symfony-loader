@@ -1,5 +1,5 @@
 {
-  "name": "wexample/symfony-design-system",
+  "name": "wexample/symfony-loader",
   "description": "A dynamic rendering system for Symfony",
   "type": "library",
   "license": "MIT",
@@ -9,7 +9,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Wexample\\SymfonyDesignSystem\\": "src/"
+      "Wexample\\WexampleSymfonyLoader\\": "src/"
     }
   },
   "authors": [

@@ -1,10 +1,10 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Service;
+namespace Wexample\SymfonyLoader\Service;
 
 use Symfony\Component\HttpKernel\KernelInterface;
-use Wexample\SymfonyDesignSystem\Rendering\Asset;
-use Wexample\SymfonyDesignSystem\Rendering\RenderDataGenerator;
+use Wexample\SymfonyLoader\Rendering\Asset;
+use Wexample\SymfonyLoader\Rendering\RenderDataGenerator;
 use Wexample\SymfonyHelpers\Helper\JsonHelper;
 
 class AssetsRegistryService extends RenderDataGenerator

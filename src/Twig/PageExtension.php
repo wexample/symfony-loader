@@ -1,9 +1,9 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Twig;
+namespace Wexample\SymfonyLoader\Twig;
 
 use Twig\TwigFunction;
-use Wexample\SymfonyDesignSystem\Service\PageService;
+use Wexample\SymfonyLoader\Service\PageService;
 use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 
 class PageExtension extends AbstractExtension

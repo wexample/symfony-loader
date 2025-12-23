@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Rendering\RenderNode;
+namespace Wexample\SymfonyLoader\Rendering\RenderNode;
 
 use Wexample\SymfonyHelpers\Class\Traits\WithBodyClassTrait;
 

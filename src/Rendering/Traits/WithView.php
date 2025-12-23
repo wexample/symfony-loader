@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Rendering\Traits;
+namespace Wexample\SymfonyLoader\Rendering\Traits;
 
 trait WithView
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Controller\Config;
+namespace Wexample\SymfonyLoader\Controller\Config;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Wexample\SymfonyDesignSystem\Controller\AbstractPagesController;
-use Wexample\SymfonyDesignSystem\Service\Usage\FontsAssetUsageService;
-use Wexample\SymfonyDesignSystem\Traits\SymfonyDesignSystemBundleClassTrait;
+use Wexample\SymfonyLoader\Controller\AbstractPagesController;
+use Wexample\SymfonyLoader\Service\Usage\FontsAssetUsageService;
+use Wexample\SymfonyLoader\Traits\SymfonyDesignSystemBundleClassTrait;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 
 #[Route(path: '_design_system/test/', name: '_design_system_test_')]

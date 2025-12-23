@@ -1,9 +1,9 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Service;
+namespace Wexample\SymfonyLoader\Service;
 
 use Symfony\Component\HttpKernel\KernelInterface;
-use Wexample\SymfonyDesignSystem\Rendering\AssetTag;
+use Wexample\SymfonyLoader\Rendering\AssetTag;
 use Wexample\SymfonyHelpers\Helper\ArrayHelper;
 use Wexample\SymfonyHelpers\Helper\FileHelper;
 

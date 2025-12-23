@@ -1,16 +1,16 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Rendering\RenderNode;
+namespace Wexample\SymfonyLoader\Rendering\RenderNode;
 
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
-use Wexample\SymfonyDesignSystem\Helper\DomHelper;
-use Wexample\SymfonyDesignSystem\Helper\RenderingHelper;
-use Wexample\SymfonyDesignSystem\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Helper\DomHelper;
+use Wexample\SymfonyLoader\Helper\RenderingHelper;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyHelpers\Class\Traits\WithBodyClassTrait;
-use Wexample\SymfonyHelpers\Helper\TemplateHelper;
+use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 
 class ComponentRenderNode extends AbstractRenderNode

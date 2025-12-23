@@ -1,7 +1,7 @@
 <script>
 export default {
   components: {
-    'vue-test-vue-2': '@WexampleSymfonyDesignSystemBundle/vue/test-vue-2',
+    'vue-test-vue-2': '@WexampleSymfonyLoaderBundle/vue/test-vue-2',
   },
 
   props: {

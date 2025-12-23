@@ -1,13 +1,13 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\EventSubscriber;
+namespace Wexample\SymfonyLoader\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Twig\Environment;
-use Wexample\SymfonyDesignSystem\Helper\RenderingHelper;
-use Wexample\SymfonyDesignSystem\Service\RenderPassBagService;
+use Wexample\SymfonyLoader\Helper\RenderingHelper;
+use Wexample\SymfonyLoader\Service\RenderPassBagService;
 
 class AssetsEventSubscriber implements EventSubscriberInterface
 {
@@ -36,7 +36,7 @@ class AssetsEventSubscriber implements EventSubscriberInterface
             && ! $response->isClientError()
         ) {
             $assetsIncludes = $this->twig->render(
-                '@WexampleSymfonyDesignSystemBundle/macros/assets.html.twig',
+                '@WexampleSymfonyLoaderBundle/macros/assets.html.twig',
                 [
                     'render_pass' => $renderPass,
                 ]
@@ -50,7 +50,7 @@ class AssetsEventSubscriber implements EventSubscriberInterface
 
             if ($renderPass->isDebug()) {
                 $content .= $this->twig->render(
-                    '@WexampleSymfonyDesignSystemBundle/macros/debug.html.twig',
+                    '@WexampleSymfonyLoaderBundle/macros/debug.html.twig',
                     [
                         'render_pass' => $renderPass,
                     ]

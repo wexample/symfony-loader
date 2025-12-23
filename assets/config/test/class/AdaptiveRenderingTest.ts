@@ -31,13 +31,13 @@ export default class AdaptiveRenderingTest extends AbstractTest {
 
       this.assertEquals(
         pageFocused.view,
-        `@WexampleSymfonyDesignSystemBundle/pages/test/adaptive`,
+        `WexampleSymfonyLoaderBundle/pages/test/adaptive`,
         'The focused page is the modal content page'
       );
 
       this.assertEquals(
         modal.view,
-        `@WexampleSymfonyDesignSystemBundle/components/modal`,
+        `WexampleSymfonyLoaderBundle/components/modal`,
         'The focused page is a child of modal component'
       );
 
@@ -190,8 +190,8 @@ export default class AdaptiveRenderingTest extends AbstractTest {
     await sleep();
 
     let testComponent = this.app.layout.pageFocused
-      .findChildRenderNodeByView('@WexampleSymfonyDesignSystemBundle/components/vue')
-      .findChildRenderNodeByView('@WexampleSymfonyDesignSystemBundle/components/test-component');
+      .findChildRenderNodeByView('@WexampleSymfonyLoaderBundle/components/vue')
+      .findChildRenderNodeByView('@WexampleSymfonyLoaderBundle/components/test-component');
 
     this.assertFalse(
       testComponent.isMounted,

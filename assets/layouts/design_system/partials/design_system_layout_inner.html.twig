@@ -10,7 +10,7 @@
                     </li>
                 </ul>
                 <div class="menu-separator">
-                    {{ 'WexampleSymfonyDesignSystemBundle.layouts.design_system.layout::menu.components.title' | trans }}
+                    {{ '@WexampleSymfonyLoaderBundle.layouts.design_system.layout::menu.components.title' | trans }}
                 </div>
                 <ul>
                     {% for route_name, route in route_get_controller_routes('App\\Controller\\Config\\DesignSystem\\AppController') %}
