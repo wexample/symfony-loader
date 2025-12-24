@@ -1,7 +1,6 @@
 export default interface AssetInterface {
   // Defines that assets should be loaded
   // even the loading process is not finished.
-  uniqueId: string;
   active: boolean;
   colorScheme?: string;
   context: string;
