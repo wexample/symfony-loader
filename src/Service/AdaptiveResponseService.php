@@ -18,6 +18,7 @@ class AdaptiveResponseService
         RenderPass::BASE_DEFAULT,
     ];
 
+    public const string QUERY_STRING_CONFIG_KEY_FORMAT = '__format';
     public const string QUERY_STRING_CONFIG_KEY_LAYOUT = '__layout';
 
     public function __construct(
@@ -33,6 +34,14 @@ class AdaptiveResponseService
 
     public function detectOutputType(): string
     {
+        if ($forcedFormat = $this->getQueryStringConfigValue(
+            AdaptiveResponseService::QUERY_STRING_CONFIG_KEY_FORMAT
+        )) {
+            if (in_array($forcedFormat, RenderPass::OUTPUT_TYPES)) {
+                return $forcedFormat;
+            }
+        }
+
         return $this->getCurrentRequest()->isXmlHttpRequest() ?
             RenderPass::OUTPUT_TYPE_RESPONSE_JSON :
             RenderPass::OUTPUT_TYPE_RESPONSE_HTML;
@@ -40,7 +49,7 @@ class AdaptiveResponseService
 
     private function getQueryStringConfigValue(
         string $key,
-        string $default
+        ?string $default = null
     ): ?string
     {
         return $this->getCurrentRequest()->query->get($key, $default);

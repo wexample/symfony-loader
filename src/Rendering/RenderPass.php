@@ -37,6 +37,11 @@ class RenderPass
 
     public const RENDER_PARAM_NAME_OUTPUT_TYPE = 'adaptive_output_type';
 
+    public const OUTPUT_TYPES = [
+        self::OUTPUT_TYPE_RESPONSE_HTML,
+        self::OUTPUT_TYPE_RESPONSE_JSON,
+    ];
+
     public InitialLayoutRenderNode|AjaxLayoutRenderNode $layoutRenderNode;
 
     protected array $contextRenderNodeRegistry = [];
