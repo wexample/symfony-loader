@@ -7,11 +7,14 @@ export default class TestManagerPage extends Page {
     let method: Function;
 
     for (testDefinition of Object.values(tests)) {
+      console.log("===============================");
+
       let test = new testDefinition(this.app) as UnitTest;
 
       test.init();
 
       for (method of test.getTestMethods()) {
+        console.log("---");
         await method.apply(test);
       }
     }

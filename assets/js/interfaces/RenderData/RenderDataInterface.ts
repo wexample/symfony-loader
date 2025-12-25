@@ -5,6 +5,7 @@ import RequestOptionsInterface from '../RequestOptions/RequestOptionsInterface';
 export default interface RenderDataInterface {
   assets: null | AssetsCollectionInterface;
   components: ComponentInterface[];
+  contextType: string;
   cssClassName: string;
   id: string;
   ok: false;
@@ -12,6 +13,7 @@ export default interface RenderDataInterface {
   renderRequestId?: string;
   requestOptions?: RequestOptionsInterface;
   translations: {};
+  translationDomains: { [alias: string]: { [view: string]: string } | string };
   vars: {[key: string]: any};
   view: string;
   usages: {};

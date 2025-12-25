@@ -72,6 +72,8 @@ export default abstract class RenderNode extends AppChild {
     this.id = renderData.id;
     this.view = renderData.view;
     this.callerPage = renderData.requestOptions.callerPage;
+    this.translationDomains = renderData.translationDomains;
+    this.contextType = renderData.contextType;
 
     this.translations = {
       ...this.translations,
