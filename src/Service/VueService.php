@@ -118,7 +118,10 @@ class VueService
                 )
             );
 
-            $rootComponent->translations['INCLUDE|'.$view] = (object) $this->translator->transFilter('@vue::*');
+            $rootComponent->translations = array_merge(
+                $rootComponent->translations,
+                $this->translator->transFilter('@vue::*')
+            );
 
             $this->translator->revertDomain(
                 Translator::DOMAIN_TYPE_VUE
