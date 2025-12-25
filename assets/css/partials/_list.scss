@@ -1,0 +1,6 @@
+@use '../../css/partials/margin';
+
+.no-style-list {
+  list-style: none;
+  @extend .no-margin-or-padding;
+}
