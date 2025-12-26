@@ -37,7 +37,7 @@ export default class VueService extends AppService {
     super(app);
 
     this.globalConfig = Object.assign({}, globalConfig);
-    this.globalConfig['globalProperties'] = this.globalConfig['globalProperties'] ? this.globalConfig['globalProperties'] : {};
+    this.globalConfig['globalProperties'] = this.globalConfig['globalProperties'] ? this.globalConfig['globalProperties']: {};
     this.globalConfig['globalProperties']['app'] = app;
 
     this.elTemplates = document.getElementById('vue-templates');

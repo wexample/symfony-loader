@@ -93,14 +93,17 @@ export default class DebugRenderNode extends AppChild {
   update() {
     this.vueInfo.$forceUpdate();
 
-    let rect = this.renderNode.el.getBoundingClientRect();
+    // TODO if out of screen el may not be visible, we should wait for element to appear / be attached.
+    if (this.renderNode.el) {
+      let rect = this.renderNode.el.getBoundingClientRect();
 
-    Object.assign(this.el.style, {
-      top: this.convertPosition(rect.top),
-      left: this.convertPosition(rect.left),
-      width: this.convertPosition(rect.width),
-      height: this.convertPosition(rect.height),
-    });
+      Object.assign(this.el.style, {
+        top: this.convertPosition(rect.top),
+        left: this.convertPosition(rect.left),
+        width: this.convertPosition(rect.width),
+        height: this.convertPosition(rect.height),
+      });
+    }
   }
 
   getBorderColor(): string {
