@@ -179,6 +179,10 @@ export default class VueService extends AppService {
               type: Object,
               default: rootComponent.translations,
             },
+            viewPath: {
+              type: String,
+              default: view,
+            },
           },
         };
 
