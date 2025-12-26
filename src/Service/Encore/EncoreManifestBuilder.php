@@ -185,7 +185,7 @@ class EncoreManifestBuilder
             $descriptor,
             $files,
             'main',
-            // Bundle entries (loader/design-system) need wrappers to register classes (appRegistry).
+            // Bundle entries need wrappers to register classes (appRegistry).
             $descriptor['type'] === 'bundle',
             'main'
         );

@@ -97,7 +97,7 @@ services:
         resource: '../../{Command,Controller,EventSubscriber,Service,Twig}'
         tags: ['controller.service_arguments']
 
-    Wexample\SymfonyLoader\Controller\Config\DemoController:
+    Wexample\SymfonyLoader\Controller\Pages\DemoController:
         tags:
             - { name: 'has_simple_routes' }
 
