@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Twig;
+namespace Wexample\SymfonyLoader\Twig;
 
 use Twig\TwigFunction;
 use Wexample\SymfonyHelpers\Twig\AbstractExtension;

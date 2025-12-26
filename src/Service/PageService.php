@@ -9,6 +9,7 @@ use Wexample\SymfonyLoader\Controller\AbstractController;
 use Wexample\SymfonyLoader\Controller\AbstractPagesController;
 use Wexample\SymfonyLoader\Rendering\RenderNode\PageRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Traits\SymfonyLoaderBundleClassTrait;
 use Wexample\SymfonyHelpers\Attribute\SimpleMethodResolver;
 use Wexample\SymfonyHelpers\Class\AbstractBundle;
 use Wexample\SymfonyHelpers\Controller\Traits\HasSimpleRoutesControllerTrait;
@@ -38,8 +39,13 @@ class PageService extends RenderNodeService
             $view
         );
 
-        $this->translator->setDomainFromTemplatePath(
-            $page->getContextType(),
+        $domain = $page->getContextType();
+        $page->addTranslationDomain(
+            $domain,
+            $this->translator->setDomainFromTemplatePath(
+                $domain,
+                $view
+            ),
             $view
         );
     }
@@ -52,8 +58,15 @@ class PageService extends RenderNodeService
     public function pageTranslationPathFromRoute(string $route): string
     {
         $controllerMethodPath = $this->getControllerClassPathFromRouteName($route);
+        /** @var AbstractController $controllerClass */
         $controllerClass = explode('::', $controllerMethodPath)[0];
-        $templateLocationPrefix = $controllerClass::getTemplateLocationPrefix();
+
+        $bundle = null;
+        if (ClassHelper::classUsesTrait($controllerClass, SymfonyDesignSystemBundleClassTrait::class)) {
+            $bundle = $controllerClass::getBundleClassName();
+        }
+
+        $templateLocationPrefix = $controllerClass::getTemplateLocationPrefix(bundle: $bundle);
 
         if (ClassHelper::hasAttributes(
             $controllerMethodPath,
@@ -80,7 +93,8 @@ class PageService extends RenderNodeService
     public function buildTranslationPathFromClassPath(
         string $classPath,
         string $templateLocationPrefix = null
-    ): string {
+    ): string
+    {
         [$controllerFullPath, $methodName] = explode(ClassHelper::METHOD_SEPARATOR, $classPath);
 
         // Remove useless namespace part.

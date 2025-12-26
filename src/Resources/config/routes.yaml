@@ -1,4 +1,4 @@
-design_system_controllers:
+loader_controllers:
     resource: '../../Controller/'
     type: attribute
 

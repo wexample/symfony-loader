@@ -41,9 +41,9 @@ class AssetsService
         MarginsAssetUsageService $marginsAssetUsageService,
         ResponsiveAssetUsageService $responsiveAssetUsageService,
         FontsAssetUsageService $fontsAssetUsageService,
-        protected readonly KernelInterface $kernel,
-        protected readonly AssetsAggregationService $assetsAggregationService,
-        protected readonly AssetsRegistryService $assetsRegistryService,
+        readonly protected KernelInterface $kernel,
+        readonly protected AssetsAggregationService $assetsAggregationService,
+        readonly protected AssetsRegistryService $assetsRegistryService,
     ) {
         foreach ([
                      // Order is important, it defines the order the assets
@@ -95,16 +95,16 @@ class AssetsService
                 $usageFoundForType = false;
 
                 foreach ($views as $view) {
-                    if (! $usageFoundForType && $usage->addAssetsForRenderNodeAndType(
-                        $renderPass,
-                        $renderNode,
-                        $ext,
-                        $view
-                    )) {
+                    if (!$usageFoundForType && $usage->addAssetsForRenderNodeAndType(
+                            $renderPass,
+                            $renderNode,
+                            $ext,
+                            $view
+                        )) {
                         $usageFoundForType = true;
-                    }
                 }
             }
+        }
         }
     }
 

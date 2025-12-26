@@ -12,8 +12,8 @@
 {%- block layout_composer_html -%}
     <header>
         <div class="layout-header">
-                <a class="logo" href="{{ url('home_index') }}" title="{{ '@WexampleSymfonyLoaderBundle.common.app::name' | trans }}">
-                    <img alt="{{ '@WexampleSymfonyLoaderBundle.common.app::name' | trans }}" src="{{ asset('/bundles/wexamplesymfonyhelpers/wex.gif') }}">
+                <a class="logo" href="{{ url('home_index') }}" title="{{ 'WexampleSymfonyLoaderBundle.common.app::name' | trans }}">
+                    <img alt="{{ 'WexampleSymfonyLoaderBundle.common.app::name' | trans }}" src="{{ asset('/bundles/wexamplesymfonyhelpers/wex.gif') }}">
                 </a>
         </div>
     </header>
@@ -21,15 +21,15 @@
         <nav id="nav-secondary">
             {{ macro_tabs.start(render_pass) }}
             {{ macro_tabs.tab_to_page('home_index') }}
-            {{ macro_tabs.tab_to_page('_design_system_demo_index') }}
-            {{ macro_tabs.tab_to_page('_design_system_demo_assets') }}
-            {{ macro_tabs.tab_to_page('_design_system_demo_aggregation') }}
-            {{ macro_tabs.tab_to_page('_design_system_demo_color_schemes') }}
-            {{ macro_tabs.tab_to_page('_design_system_demo_components') }}
-            {{ macro_tabs.tab_to_page('_design_system_demo_loading') }}
-            {{ macro_tabs.tab_to_page('_design_system_demo_translations') }}
-            {{ macro_tabs.tab_to_page('_design_system_demo_icons') }}
-            {{ macro_tabs.tab_to_page('_design_system_test_index') }}
+            {{ macro_tabs.tab_to_page('_loader_demo_index') }}
+            {{ macro_tabs.tab_to_page('_loader_demo_assets') }}
+            {{ macro_tabs.tab_to_page('_loader_demo_aggregation') }}
+            {{ macro_tabs.tab_to_page('_loader_demo_color_schemes') }}
+            {{ macro_tabs.tab_to_page('_loader_demo_components') }}
+            {{ macro_tabs.tab_to_page('_loader_demo_loading') }}
+            {{ macro_tabs.tab_to_page('_loader_demo_translations') }}
+            {{ macro_tabs.tab_to_page('_loader_demo_icons') }}
+            {{ macro_tabs.tab_to_page('_loader_test_index') }}
             {{ macro_tabs.end() }}
         </nav>
         {% if page_title is defined %}

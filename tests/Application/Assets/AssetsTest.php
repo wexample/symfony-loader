@@ -1,9 +1,9 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Tests\Application\Assets;
+namespace Wexample\SymfonyLoader\Tests\Application\Assets;
 
-use Wexample\SymfonyDesignSystem\Controller\Config\DemoController;
-use Wexample\SymfonyDesignSystem\Tests\Traits\DesignSystemTestCaseTrait;
+use Wexample\SymfonyLoader\Controller\Pages\DemoController;
+use Wexample\SymfonyLoader\Tests\Traits\DesignSystemTestCaseTrait;
 use Wexample\SymfonyTesting\Tests\AbstractSymfonyTestCase;
 use Wexample\SymfonyTesting\Traits\ControllerTestCaseTrait;
 

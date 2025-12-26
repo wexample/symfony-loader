@@ -7,6 +7,7 @@ use Twig\Environment;
 use Wexample\SymfonyLoader\Helper\DomHelper;
 use Wexample\SymfonyLoader\Helper\RenderingHelper;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Rendering\Vue;
 use Wexample\SymfonyLoader\Twig\VueExtension;
 use Wexample\SymfonyTranslations\Translation\Translator;
 
@@ -101,8 +102,12 @@ class VueService
                 $rootComponent
             );
 
-            $this->translator->setDomainFromTemplatePath(
+            $rootComponent->addTranslationDomain(
                 Translator::DOMAIN_TYPE_VUE,
+                $this->translator->setDomainFromTemplatePath(
+                    Translator::DOMAIN_TYPE_VUE,
+                    $view
+                ),
                 $view
             );
 

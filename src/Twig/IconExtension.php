@@ -18,8 +18,19 @@ use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 
 class IconExtension extends AbstractExtension
 {
+    /**
+     * @var string
+     */
     private const ICONS_LIBRARY_FA = 'fa';
+
+    /**
+     * @var string
+     */
     private const ICONS_LIBRARY_MATERIAL = 'material';
+
+    /**
+     * @var string
+     */
     public const LIBRARY_SEPARATOR = ':';
 
     protected stdClass $icons;

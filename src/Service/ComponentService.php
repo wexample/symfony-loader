@@ -66,15 +66,20 @@ class ComponentService extends RenderNodeService
                     $component
                 );
 
-                $this->translator->setDomainFromTemplatePath(
-                    Translator::DOMAIN_TYPE_COMPONENT,
+                $domain = $component->getContextType();
+                $component->addTranslationDomain(
+                    $domain,
+                    $this->translator->setDomainFromTemplatePath(
+                        $domain,
+                        $component->getView()
+                    ),
                     $component->getView()
                 );
 
                 $component->render(
                     $twig,
                     [
-                        'render_pass' => $renderPass,
+                        'render_pass' => $renderPass
                     ]
                 );
 
@@ -195,7 +200,7 @@ class ComponentService extends RenderNodeService
             $options
         );
 
-        if (! $component) {
+        if (!$component) {
             $component = new ComponentRenderNode(
                 $initMode,
                 $options

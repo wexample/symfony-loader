@@ -1,12 +1,12 @@
 <?php
 
-namespace Wexample\SymfonyDesignSystem\Tests\Unit\Service;
+namespace Wexample\SymfonyLoader\Tests\Unit\Service;
 
-use Wexample\SymfonyDesignSystem\Rendering\Asset;
-use Wexample\SymfonyDesignSystem\Rendering\RenderPass;
-use Wexample\SymfonyDesignSystem\Service\AssetsService;
-use Wexample\SymfonyDesignSystem\Service\Usage\DefaultAssetUsageService;
-use Wexample\SymfonyDesignSystem\Service\Usage\ResponsiveAssetUsageService;
+use Wexample\SymfonyLoader\Rendering\Asset;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Service\AssetsService;
+use Wexample\SymfonyLoader\Service\Usage\DefaultAssetUsageService;
+use Wexample\SymfonyLoader\Service\Usage\ResponsiveAssetUsageService;
 use Wexample\SymfonyTesting\Tests\AbstractSymfonyTestCase;
 
 class AssetsServiceTest extends AbstractSymfonyTestCase
