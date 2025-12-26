@@ -6,7 +6,7 @@ use Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Wexample\SymfonyLoader\Helper\DesignSystemHelper;
+use Wexample\SymfonyLoader\Helper\LoaderHelper;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AjaxLayoutRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderNode\InitialLayoutRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
@@ -15,16 +15,18 @@ use Wexample\SymfonyLoader\Service\AssetsService;
 use Wexample\SymfonyLoader\Service\LayoutService;
 use Wexample\SymfonyLoader\Service\RenderPassBagService;
 use Wexample\SymfonyLoader\WexampleSymfonyLoaderBundle;
+use Wexample\SymfonyHelpers\Class\AbstractBundle;
 use Wexample\SymfonyHelpers\Helper\BundleHelper;
 use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 
 abstract class AbstractController extends \Wexample\SymfonyHelpers\Controller\AbstractController
 {
     public function __construct(
-        protected readonly AdaptiveResponseService $adaptiveResponseService,
-        protected readonly LayoutService $layoutService,
-        protected readonly RenderPassBagService $renderPassBagService,
-    ) {
+        readonly protected AdaptiveResponseService $adaptiveResponseService,
+        readonly protected LayoutService $layoutService,
+        readonly protected RenderPassBagService $renderPassBagService,
+    )
+    {
     }
 
     protected function createPageRenderPass(): RenderPass
@@ -40,7 +42,7 @@ abstract class AbstractController extends \Wexample\SymfonyHelpers\Controller\Ab
         $parameterBag = $this->container->get('parameter_bag');
         foreach (AssetsService::getAssetsUsagesStatic() as $usageStatic) {
             $usageName = $usageStatic::getName();
-            $key = 'loader.usages.'.$usageName;
+            $key = 'loader.usages.' . $usageName;
 
             $config = $parameterBag->has($key) ? $this->getParameter($key) : ['list' => []];
             $renderPass->usagesConfig[$usageName] = $config;
@@ -76,7 +78,8 @@ abstract class AbstractController extends \Wexample\SymfonyHelpers\Controller\Ab
 
     protected function configureRenderPass(
         RenderPass $renderPass
-    ): RenderPass {
+    ): RenderPass
+    {
         return $renderPass;
     }
 
@@ -89,7 +92,8 @@ abstract class AbstractController extends \Wexample\SymfonyHelpers\Controller\Ab
         array $parameters = [],
         Response $response = null,
         RenderPass $renderPass = null
-    ): Response {
+    ): Response
+    {
         $renderPass = $renderPass ?: $this->createRenderPass();
 
         // Store it for post render events.
@@ -119,8 +123,7 @@ abstract class AbstractController extends \Wexample\SymfonyHelpers\Controller\Ab
                 );
 
                 $finalResponse = new JsonResponse(
-                    $renderPass->layoutRenderNode->toRenderData()
-                );
+                    $renderPass->layoutRenderNode->toRenderData());
 
                 $finalResponse->setStatusCode(
                     $renderPasseResponse->getStatusCode()
@@ -132,10 +135,11 @@ abstract class AbstractController extends \Wexample\SymfonyHelpers\Controller\Ab
 
                 return $finalResponse;
             } catch (\Exception $exception) {
-                $errorView = BundleHelper::ALIAS_PREFIX.
+                $errorView = BundleHelper::ALIAS_PREFIX .
                     WexampleSymfonyLoaderBundle::getAlias()
-                    .'/config/system/error'
-                    .TemplateHelper::TEMPLATE_FILE_EXTENSION;
+                    . '/' . AbstractPagesController::RESOURCES_DIR_PAGE
+                    . 'system/error'
+                    . TemplateHelper::TEMPLATE_FILE_EXTENSION;
 
                 if ($view !== $errorView) {
                     $errorResponse = new JsonResponse();
@@ -172,10 +176,11 @@ abstract class AbstractController extends \Wexample\SymfonyHelpers\Controller\Ab
         RenderPass $renderPass,
         array $parameters = [],
         Response $response = null,
-    ): Response {
+    ): Response
+    {
         $view = $renderPass->getView();
 
-        if (! $view) {
+        if (!$view) {
             throw new Exception('View must be defined before adaptive rendering');
         }
 
@@ -189,11 +194,15 @@ abstract class AbstractController extends \Wexample\SymfonyHelpers\Controller\Ab
         );
     }
 
-    public static function getTemplateLocationPrefix(): string
+    /**
+     * @return string Allow bundle-specific front template directories.
+     */
+    public static function getTemplateLocationPrefix(
+        AbstractBundle|string $bundle = null
+    ): string
     {
-        $bundleClass = static::getControllerBundle();
-
-        return ($bundleClass ? $bundleClass::getAlias() : DesignSystemHelper::TWIG_NAMESPACE_FRONT);
+        $bundleClass = $bundle ?: static::getControllerBundle();
+        return ($bundle ? $bundle::getAlias() : LoaderHelper::TWIG_NAMESPACE_FRONT);
     }
 
     public static function getControllerTemplateDir(): string

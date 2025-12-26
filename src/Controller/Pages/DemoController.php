@@ -1,17 +1,19 @@
 <?php
 
-namespace Wexample\SymfonyLoader\Controller\Config;
+namespace Wexample\SymfonyLoader\Controller\Pages;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Wexample\SymfonyHelpers\Attribute\SimpleRoutesController;
 use Wexample\SymfonyLoader\Controller\AbstractPagesController;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\Usage\FontsAssetUsageService;
 use Wexample\SymfonyLoader\Traits\SymfonyLoaderBundleClassTrait;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 
-#[Route(path: '_design_system/demo/', name: '_design_system_demo_')]
+#[Route(path: '_loader/demo/', name: '_loader_demo_')]
+#[SimpleRoutesController]
 final class DemoController extends AbstractPagesController
 {
     use SymfonyLoaderBundleClassTrait;
@@ -66,7 +68,7 @@ final class DemoController extends AbstractPagesController
     )]
     final public function assets(Request $request): Response
     {
-        $this->useJs = ! $request->get('no_js');
+        $this->useJs = !$request->get('no_js');
 
         return $this->renderPage(
             self::ROUTE_ASSETS,

@@ -2,7 +2,7 @@
 
 namespace Wexample\SymfonyLoader\Rendering;
 
-use Wexample\SymfonyLoader\Helper\DesignSystemHelper;
+use Wexample\SymfonyLoader\Helper\LoaderHelper;
 use Wexample\SymfonyLoader\Helper\RenderingHelper;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AbstractRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AjaxLayoutRenderNode;
@@ -27,7 +27,7 @@ class RenderPass
 
     public const BASE_PAGE = VariableHelper::PAGE;
 
-    public const BASES_MAIN_DIR = DesignSystemHelper::FOLDER_FRONT_ALIAS.'bases/';
+    public const BASES_MAIN_DIR = LoaderHelper::FOLDER_FRONT_ALIAS.'bases/';
 
     public const OUTPUT_TYPE_RESPONSE_HTML = VariableHelper::HTML;
 

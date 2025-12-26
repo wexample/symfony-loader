@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyLoader\Controller\Config\DesignSystem;
+namespace Wexample\SymfonyLoader\Controller\Pages\DesignSystem;
 
 use Wexample\SymfonyLoader\Controller\AbstractPagesController;
 
