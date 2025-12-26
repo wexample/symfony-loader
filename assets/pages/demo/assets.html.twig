@@ -1,7 +1,7 @@
 {%- extends '@WexampleSymfonyLoaderBundle/layouts/demo/layout.html.twig' -%}
 
 {%- block page_body -%}
-    <div class="inline-infos">
+    <div class="inline-info">
         <div class="info">
             {{ '@page::infos.layout_name' | trans }} : <b>{{ render_pass.layoutRenderNode.view }}</b>
         </div>
@@ -10,7 +10,7 @@
     <div class="blocks blocks-no-stretch blocks-side-column-left">
         <div class="blocks-col">
             {% for name, sizeMin in display_breakpoints %}
-                <div class="inline-infos display-breakpoint display-breakpoint-{{ name }}">
+                <div class="inline-info display-breakpoint display-breakpoint-{{ name }}">
                     <div class="pill size-name">{{ name }}</div>
                     <div class="size-min">{{ sizeMin }}px</div>
                 </div>
