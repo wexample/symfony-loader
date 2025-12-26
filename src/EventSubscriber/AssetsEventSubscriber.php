@@ -12,8 +12,8 @@ use Wexample\SymfonyLoader\Service\RenderPassBagService;
 class AssetsEventSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly Environment $twig,
-        protected readonly RenderPassBagService $renderPassBagService
+        readonly private Environment $twig,
+        readonly protected RenderPassBagService $renderPassBagService
     ) {
     }
 

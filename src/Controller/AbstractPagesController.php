@@ -94,4 +94,12 @@ abstract class AbstractPagesController extends AbstractController
             renderPass: $renderPass
         );
     }
+
+    #[SimpleMethodResolver]
+    public function resolveSimpleRoute(string $routeName): Response
+    {
+        return $this->renderPage(
+            $routeName,
+        );
+    }
 }
