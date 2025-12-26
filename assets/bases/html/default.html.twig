@@ -14,7 +14,15 @@
     <html lang="{{ app.request.locale }}">
     <head>
         <meta charset="utf-8"/>
-        <title>{{ layout_title|default(('@page::page_title' | trans(layout_title_properties | default({})))) }} | {{ app_title|default(('front.app.global::name' | trans)) }}</title>
+        <title>
+            {{- base_template_render_title(
+                document_title|default(null),
+                layout_title|default(null),
+                layout_title_properties|default({}),
+                app_title|default(null),
+                app_title_properties|default({}),
+            ) -}}
+        </title>
         {%- if render_pass.isUseJs() -%}
             <script nonce="layout-init">
               "use strict";
