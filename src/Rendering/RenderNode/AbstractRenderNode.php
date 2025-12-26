@@ -10,6 +10,7 @@ use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Rendering\Traits\WithView;
 use Wexample\SymfonyLoader\Service\AssetsService;
 use Wexample\SymfonyTemplate\Helper\TemplateHelper;
+use Wexample\SymfonyTranslations\Translation\Translator;
 
 abstract class AbstractRenderNode extends RenderDataGenerator
 {
@@ -27,6 +28,8 @@ abstract class AbstractRenderNode extends RenderDataGenerator
 
     public array $translations = [];
 
+    protected array $translationsDomains = [];
+
     public array $vars = [];
 
     public array $usages;
@@ -39,6 +42,11 @@ abstract class AbstractRenderNode extends RenderDataGenerator
         RenderPass $renderPass,
         string $view,
     ): void {
+        // Inherit parent translation domains if any to allow alias resolution up the render tree.
+        if ($parent = $renderPass->getCurrentContextRenderNode()) {
+            $this->translationsDomains = $parent->getTranslationsDomains();
+        }
+
         $this->setDefaultView($view);
 
         $this->id = implode('-', [
@@ -50,8 +58,40 @@ abstract class AbstractRenderNode extends RenderDataGenerator
         $this->usages = $renderPass->usages;
         $this->cssClassName = DomHelper::buildStringIdentifier($this->id);
 
+        $domain = \Wexample\SymfonyTemplate\Helper\TemplateHelper::trimPathPrefix(
+            $this->getView()
+        );
+        $this->addTranslationDomain(
+            $domain,
+            Translator::buildDomainFromTemplatePath(
+                $domain
+            ),
+            $this->getView()
+        );
+
         $renderPass->registerContextRenderNode($this);
         $renderPass->registerRenderNode($this);
+    }
+
+    public function addTranslationDomain(
+        string $alias,
+        string $target,
+        ?string $view = null
+    ):void
+    {
+        $viewKey = $view ?? $alias;
+
+        // Keep first mapping per alias+view to avoid overwriting.
+        if (isset($this->translationsDomains[$alias][$viewKey])) {
+            return;
+        }
+
+        $this->translationsDomains[$alias][$viewKey] = $target;
+    }
+
+    public function getTranslationsDomains(): array
+    {
+        return $this->translationsDomains;
     }
 
     public function getContextRenderNodeKey(): string
@@ -73,25 +113,27 @@ abstract class AbstractRenderNode extends RenderDataGenerator
             }
         }
 
-        return ! empty($output) ? implode($output) : null;
+        return !empty($output) ? implode($output) : null;
     }
 
     public function toRenderData(): array
     {
         $data = [
             'components' => $this->arrayToRenderData($this->components),
-            'cssClassName' => $this->cssClassName ?? null,
-            'id' => $this->id ?? null,
+            'cssClassName' => $this->cssClassName,
+            'contextType' => $this->getContextType(),
+            'id' => $this->id,
             'translations' => (object) $this->translations,
+            'translationDomains' => $this->getTranslationsDomains(),
             'view' => $this->getView(),
             'vars' => (object) $this->vars,
-            'usages' => (object) ($this->usages ?? []),
+            'usages' => (object) $this->usages,
         ];
 
         if ($this->hasAssets) {
             $data['assets'] = [
-                Asset::EXTENSION_CSS => $this->arrayToRenderData($this->assets[Asset::EXTENSION_CSS] ?? []),
-                Asset::EXTENSION_JS => $this->arrayToRenderData($this->assets[Asset::EXTENSION_JS] ?? []),
+                Asset::EXTENSION_CSS => $this->arrayToRenderData($this->assets[Asset::EXTENSION_CSS]),
+                Asset::EXTENSION_JS => $this->arrayToRenderData($this->assets[Asset::EXTENSION_JS]),
             ];
         }
 
@@ -102,7 +144,7 @@ abstract class AbstractRenderNode extends RenderDataGenerator
     {
         $view = TemplateHelper::removeExtension($view);
 
-        if (! $this->getView()) {
+        if (!$this->getView()) {
             $this->setView($view);
         }
 

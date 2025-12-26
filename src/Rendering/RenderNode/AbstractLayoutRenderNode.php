@@ -13,8 +13,9 @@ abstract class AbstractLayoutRenderNode extends AbstractRenderNode
     public PageRenderNode $page;
 
     public function __construct(
-        protected readonly string $env
-    ) {
+        readonly protected string $env
+    )
+    {
 
     }
 

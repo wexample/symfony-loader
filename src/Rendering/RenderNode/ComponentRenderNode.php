@@ -20,14 +20,16 @@ class ComponentRenderNode extends AbstractRenderNode
     public function __construct(
         public string $initMode,
         public array $options = []
-    ) {
+    )
+    {
 
     }
 
     public function init(
         RenderPass $renderPass,
         string $view,
-    ): void {
+    ): void
+    {
         parent::init($renderPass, $view);
 
         $renderPass
@@ -74,7 +76,10 @@ class ComponentRenderNode extends AbstractRenderNode
      * @throws SyntaxError
      * @throws LoaderError
      */
-    public function render(Environment $env, array $parameters = []): void
+    public function render(
+        Environment $env,
+        array $parameters = []
+    ): void
     {
         $this->setBody($env->render(
             $this->getTemplatePath(),
@@ -84,6 +89,6 @@ class ComponentRenderNode extends AbstractRenderNode
 
     public function getTemplatePath(): string
     {
-        return $this->getView().TemplateHelper::TEMPLATE_FILE_EXTENSION;
+        return $this->getView() . TemplateHelper::TEMPLATE_FILE_EXTENSION;
     }
 }
