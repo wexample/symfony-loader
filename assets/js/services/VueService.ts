@@ -188,9 +188,6 @@ export default class VueService extends AppService {
 
         if (vueClassDefinition.mixins) {
           if (!Array.isArray(vueClassDefinition.mixins)) {
-            console.log(vueClassDefinition);
-            console.log(vueClassDefinition.mixins);
-
             this.app.services.prompt.systemError(
               `${vueClassDefinition}.mixins should be an array, ${typeof vueClassDefinition} given.`,
             );

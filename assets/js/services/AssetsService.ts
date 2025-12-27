@@ -211,7 +211,6 @@ export default class AssetsService extends AppService {
     return new Promise(async (resolveAll) => {
       // Is empty.
       if (!this.assetsInCollection(assetsCollection).length) {
-        this.removeAssets(replacedCollection);
         resolveAll(assetsCollection);
         return;
       }

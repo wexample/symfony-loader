@@ -2,7 +2,6 @@ import AppService from '../class/AppService';
 import RenderDataInterface from '../interfaces/RenderData/RenderDataInterface';
 import RequestOptionsInterface from '../interfaces/RequestOptions/RequestOptionsInterface';
 import ComponentsService from './ComponentsService';
-import { appendQueryString } from "../helpers/LocationHelper";
 
 export default class AdaptiveService extends AppService {
   public static dependencies: typeof AppService[] = [ComponentsService];
@@ -32,11 +31,6 @@ export default class AdaptiveService extends AppService {
       requestOptions.callerPage || this.app.layout.pageFocused;
 
     Object.freeze(requestOptions);
-
-    // Add extra query strings.
-    path = appendQueryString(path, {
-      __layout: requestOptions.layout ? requestOptions.layout : 'default'
-    });
 
     return this.fetch(path, requestOptions)
       .then((response: Response) => {
