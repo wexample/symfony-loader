@@ -130,11 +130,7 @@ class AssetsService
         $tags = [];
         $registry = $this->assetsRegistryService->getRegistry();
 
-        // Ensure registry has entries for all asset types
         foreach (Asset::ASSETS_EXTENSIONS as $type) {
-            if (! isset($registry[$type])) {
-                $registry[$type] = [];
-            }
             $tags[$type] = array_fill_keys(Asset::CONTEXTS, []);
 
             foreach (Asset::CONTEXTS as $context) {
