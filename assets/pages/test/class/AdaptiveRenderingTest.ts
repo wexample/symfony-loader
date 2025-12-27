@@ -17,7 +17,7 @@ export default class AdaptiveRenderingTest extends AbstractTest {
   async testNonAdaptivePage() {
     await this.fetchTestPageAdaptiveHtml(
       'VIEW',
-      this.app.services.routing.path('_design_system_test_view')
+      this.app.services.routing.path('_loader_test_view')
     );
   }
 
@@ -31,13 +31,13 @@ export default class AdaptiveRenderingTest extends AbstractTest {
 
       this.assertEquals(
         pageFocused.view,
-        `WexampleSymfonyLoaderBundle/pages/test/adaptive`,
+        `@WexampleSymfonyLoaderBundle/pages/test/adaptive`,
         'The focused page is the modal content page'
       );
 
       this.assertEquals(
         modal.view,
-        `WexampleSymfonyLoaderBundle/components/modal`,
+        `@WexampleSymfonyLoaderBundle/components/modal`,
         'The focused page is a child of modal component'
       );
 
@@ -223,7 +223,7 @@ export default class AdaptiveRenderingTest extends AbstractTest {
 
   async testAdaptiveErrorMissingView() {
     await this.app.services.adaptive
-      .get(this.app.services.routing.path('_design_system_test_error_missing_view'))
+      .get(this.app.services.routing.path('_loader_test_error_missing_view'))
       .then(async () => {
         let pageFocused = this.app.layout.pageFocused;
 

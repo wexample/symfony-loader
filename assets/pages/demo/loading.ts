@@ -12,7 +12,7 @@ export default class extends Page {
 
   async pageReady() {
     this.el.querySelector('#page-modal-show').addEventListener('click', () => {
-      (this.app.getService(ModalsService) as ModalsService).get('/_design_system/demo/loading-fetch-simple');
+      (this.app.getService(ModalsService) as ModalsService).get('/_loader/demo/loading-fetch-simple');
     });
   }
 }

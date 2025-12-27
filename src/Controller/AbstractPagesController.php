@@ -9,6 +9,7 @@ use Wexample\SymfonyLoader\Service\AdaptiveResponseService;
 use Wexample\SymfonyLoader\Service\LayoutService;
 use Wexample\SymfonyLoader\Service\PageService;
 use Wexample\SymfonyLoader\Service\RenderPassBagService;
+use Wexample\SymfonyHelpers\Attribute\SimpleMethodResolver;
 use Wexample\SymfonyHelpers\Class\AbstractBundle;
 use Wexample\SymfonyHelpers\Controller\Traits\HasSimpleRoutesControllerTrait;
 use Wexample\SymfonyHelpers\Helper\BundleHelper;
@@ -23,9 +24,9 @@ abstract class AbstractPagesController extends AbstractController
 
     public const NAMESPACE_CONTROLLER = 'App\\Controller\\';
 
-    public const NAMESPACE_PAGES = self::NAMESPACE_CONTROLLER . 'Pages\\';
+    public const NAMESPACE_PAGES = self::NAMESPACE_CONTROLLER.'Pages\\';
 
-    public const RESOURCES_DIR_PAGE = VariableHelper::PLURAL_PAGE . FileHelper::FOLDER_SEPARATOR;
+    public const RESOURCES_DIR_PAGE = VariableHelper::PLURAL_PAGE.FileHelper::FOLDER_SEPARATOR;
 
     public const BUNDLE_TEMPLATE_SEPARATOR = '::';
 
@@ -38,45 +39,45 @@ abstract class AbstractPagesController extends AbstractController
         parent::__construct(
             $adaptiveResponseService,
             $layoutService,
-            $renderPassBagService
-        );
+            $renderPassBagService);
     }
 
-    public static function buildTemplatePath(
+    protected function buildTemplatePath(
         string $view,
         AbstractBundle|string|null $bundleClass = null
     ): string {
         $base = '';
+        $bundleClass = $bundleClass ?: $this->getControllerBundle();
 
         if (str_contains($view, self::BUNDLE_TEMPLATE_SEPARATOR)) {
             $exp = explode(self::BUNDLE_TEMPLATE_SEPARATOR, $view);
-            $base = $exp[0] . FileHelper::FOLDER_SEPARATOR . BundleHelper::BUNDLE_PATH_TEMPLATES . $base;
+            $base = $exp[0].FileHelper::FOLDER_SEPARATOR.BundleHelper::BUNDLE_PATH_TEMPLATES.$base;
             $view = $exp[1];
         }
 
         return BundleHelper::ALIAS_PREFIX
-            . static::getTemplateLocationPrefix() . '/'
-            . $base . $view . TemplateHelper::TEMPLATE_FILE_EXTENSION;
+            .($bundleClass ? $bundleClass::getAlias() : 'front').'/'
+            .$base.$view.TemplateHelper::TEMPLATE_FILE_EXTENSION;
     }
 
-    public static function buildControllerTemplatePath(
+    protected function buildControllerTemplatePath(
         string $pageName,
         string $bundle = null
     ): string {
-        $bundle = $bundle ?: static::getDefaultPageBundleClass();
+        $bundle = $bundle ?: $this->getDefaultPageBundleClass();
 
         $parts = TemplateHelper::explodeControllerNamespaceSubParts(static::class, $bundle);
         $parts[] = $pageName;
 
-        return static::buildTemplatePath(TemplateHelper::joinNormalizedParts($parts), $bundle);
+        return $this->buildTemplatePath(TemplateHelper::joinNormalizedParts($parts), $bundle);
     }
 
-    public static function getDefaultPageBundleClass(): ?string
+    protected function getDefaultPageBundleClass(): ?string
     {
-        if (ClassHelper::classUsesTrait(static::class, BundleClassTrait::class)) {
-            return static::getControllerBundle();
+        if (ClassHelper::classUsesTrait($this, BundleClassTrait::class)) {
+            return $this::getControllerBundle();
         }
-
+        
         return null;
     }
 

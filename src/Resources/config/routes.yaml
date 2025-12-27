@@ -1,7 +1,3 @@
 loader_controllers:
     resource: '../../Controller/'
     type: attribute
-
-template_routes:
-    resource: .
-    type: template_based_routes

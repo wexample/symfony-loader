@@ -85,14 +85,6 @@ services:
     Wexample\SymfonyLoader\Rendering\ComponentManagerLocatorService:
         arguments: [!tagged_locator { tag: 'symfony_loader.component_manager' }]
 
-    Wexample\SymfonyLoader\Routing\TemplateBasedRouteLoader:
-      arguments:
-        $container: '@service_container'
-        $taggedControllers: !tagged_iterator 'has_template_routes'
-        $parameterBag: '@parameter_bag'
-      tags:
-        - { name: 'routing.loader' }
-
     Wexample\SymfonyLoader\:
         resource: '../../{Command,Controller,EventSubscriber,Service,Twig}'
         tags: ['controller.service_arguments']

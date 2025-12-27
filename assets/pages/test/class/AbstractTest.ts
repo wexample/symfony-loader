@@ -5,7 +5,7 @@ export default abstract class AbstractTest extends UnitTest {
   protected pathCoreTestAdaptive: string;
 
   public init() {
-    this.pathCoreTestAdaptive = this.app.services.routing.path('_design_system_test_adaptive');
+    this.pathCoreTestAdaptive = this.app.services.routing.path('_loader_test_adaptive');
   }
 
   protected async fetchAdaptiveAjaxPage(path: string = this.pathCoreTestAdaptive): Promise<LayoutInterface> {

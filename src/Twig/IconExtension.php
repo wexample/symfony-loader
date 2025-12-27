@@ -4,15 +4,14 @@ namespace Wexample\SymfonyLoader\Twig;
 
 use DOMDocument;
 use Exception;
-use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use stdClass;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Twig\Environment;
 use Twig\TwigFunction;
-use Wexample\Helpers\Helper\TextHelper;
 use Wexample\SymfonyLoader\Helper\DomHelper;
 use Wexample\SymfonyHelpers\Helper\FileHelper;
+use Wexample\Helpers\Helper\TextHelper;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 
@@ -34,8 +33,10 @@ class IconExtension extends AbstractExtension
     public const LIBRARY_SEPARATOR = ':';
 
     protected stdClass $icons;
+
     private string $projectDir;
-    private CacheItemInterface $cacheItem;
+
+    private \Psr\Cache\CacheItemInterface $cacheItem;
 
     public function __construct(
         KernelInterface $kernel,
@@ -44,13 +45,13 @@ class IconExtension extends AbstractExtension
     ) {
         $this->projectDir = $kernel->getProjectDir();
         $this->cacheItem = $this->cache->getItem('symfony_loader_icons_list');
-
-        if (! $this->cacheItem->isHit()) {
+        if (!$this->cacheItem->isHit()) {
             $this->icons = (object) [
                 self::ICONS_LIBRARY_FA => $this->buildIconsListFa(),
                 self::ICONS_LIBRARY_MATERIAL => $this->buildIconsListMaterial(),
             ];
             $this->saveRegistryCache();
+
         } else {
             $this->icons = $this->cacheItem->get();
         }
@@ -67,88 +68,35 @@ class IconExtension extends AbstractExtension
     {
         return [
             new TwigFunction(
-                VariableHelper::ICON . '_source',
-                [$this, VariableHelper::ICON . 'Source'],
+                VariableHelper::ICON,
+                [
+                    $this,
+                    VariableHelper::ICON,
+                ],
                 [
                     self::FUNCTION_OPTION_IS_SAFE => self::FUNCTION_OPTION_IS_SAFE_VALUE_HTML,
                     self::FUNCTION_OPTION_NEEDS_ENVIRONMENT => true,
                 ]
             ),
-            new TwigFunction('icon_list', [$this, 'iconList']),
             new TwigFunction(
-                'icon',
-                [$this, 'icon'],
-                [self::FUNCTION_OPTION_IS_SAFE => self::FUNCTION_OPTION_IS_SAFE_VALUE_HTML]
+                'icon_list',
+                [
+                    $this,
+                    'iconList',
+                ]
             ),
         ];
-    }
-
-    /**
-     * Render an icon via tag instead of inline SVG.
-     *
-     * @param string $name Icon name, optionally prefixed with library (e.g. "fa:coffee").
-     * @param string $class CSS classes.
-     * @param string $tagName HTML tag to use.
-     * @param string|null $type Force library ('fa' or 'material'), otherwise auto-detect.
-     *
-     * @return string
-     */
-    public function icon(
-        string $name,
-        $class = '',
-        $tagName = 'i',
-        $type = null
-    ) {
-        [$prefix, $icon] = array_pad(explode(self::LIBRARY_SEPARATOR, $name, 2), 2, '');
-
-        $lib = $type ?? $prefix;
-        $class = trim($class);
-        $baseClass = $class !== '' ? $class . ' icon' : 'icon';
-
-
-        // Material Icons
-        if (
-            (self::ICONS_LIBRARY_MATERIAL === $lib || ($lib === null && null === $type)
-                && isset($this->icons->{self::ICONS_LIBRARY_MATERIAL}[$icon]))
-        ) {
-            return
-                '<' . $tagName .
-                ' class="' . $baseClass . ' material-icons">' .
-                $icon .
-                '</' . $tagName . '>';
-        }
-
-        // Font Awesome
-        if (
-            (self::ICONS_LIBRARY_FA === $lib || ($lib === null && null === $type))
-            && isset($this->icons->{self::ICONS_LIBRARY_FA}[$icon])
-        ) {
-            $classes = $this->icons->{self::ICONS_LIBRARY_FA}[$icon]["name"];
-            $classes = 'fa-' . str_replace('/', ' fa-', $classes);
-
-            return
-                '<' . $tagName .
-                ' class="' . $baseClass . '">' .
-                '<i class="fa ' . $classes . '"></i>' .
-                '</' . $tagName . '>';
-        }
-
-        return
-            '<' . $tagName .
-            ' class="icon">' .
-            $name .
-            '</' . $tagName . '>';
     }
 
     public function buildIconsListMaterial(): array
     {
         $output = [];
-        $pathFonts = $this->projectDir . '/node_modules/material-design-icons/';
+        $pathFonts = $this->projectDir.'/node_modules/material-design-icons/';
 
         if (is_dir($pathFonts)) {
             foreach (scandir($pathFonts) as $item) {
-                $pathSvg = $pathFonts . $item . '/svg/production/';
-                if ($item[0] !== '.' && is_dir($pathFonts . $item) && file_exists($pathSvg)) {
+                $pathSvg = $pathFonts.$item.'/svg/production/';
+                if ($item[0] !== '.' && is_dir($pathFonts.$item) && file_exists($pathSvg)) {
                     foreach (scandir($pathSvg) as $fileIcon) {
                         if ($fileIcon[0] !== '.') {
                             $prefix = 'ic_';
@@ -164,7 +112,7 @@ class IconExtension extends AbstractExtension
 
                                 $output[$iconName] = [
                                     'content' => null,
-                                    'file' => $pathSvg . $fileIcon,
+                                    'file' => $pathSvg.$fileIcon,
                                     'name' => $iconName,
                                 ];
                             }
@@ -179,7 +127,7 @@ class IconExtension extends AbstractExtension
 
     public function buildIconsListFa(): array
     {
-        $pathSvg = $this->projectDir . '/vendor/fortawesome/font-awesome/svgs/';
+        $pathSvg = $this->projectDir.'/node_modules/@fortawesome/fontawesome-free/svgs/';
         $output = [];
 
         if (is_dir($pathSvg)) {
@@ -187,13 +135,13 @@ class IconExtension extends AbstractExtension
 
             foreach ($groups as $group) {
                 if ('.' !== $group[0]) {
-                    $icons = scandir($pathSvg . $group);
+                    $icons = scandir($pathSvg.$group);
                     foreach ($icons as $fileIcon) {
                         if ('.' !== $fileIcon[0]) {
-                            $iconName = $group . '/' . FileHelper::removeExtension(basename($fileIcon));
+                            $iconName = $group.'/'.FileHelper::removeExtension(basename($fileIcon));
                             $output[$iconName] = [
                                 'name' => $iconName,
-                                'file' => $pathSvg . $group . '/' . $fileIcon,
+                                'file' => $pathSvg.$group.'/'.$fileIcon,
                                 'content' => null,
                             ];
                         }
@@ -208,21 +156,20 @@ class IconExtension extends AbstractExtension
     /**
      * @throws Exception
      */
-    public function iconSource(
+    public function icon(
         Environment $twig,
         string $name,
         array $classes = []
     ): string {
+
         $default = DomHelper::buildTag('span');
 
         if ($icon = $this->loadIconSvg(self::ICONS_LIBRARY_MATERIAL, $name, $classes)) {
             return $icon;
-        }
-
-        if ($icon = $this->loadIconSvg(self::ICONS_LIBRARY_FA, $name, $classes)) {
+        } elseif ($icon = $this->loadIconSvg(self::ICONS_LIBRARY_FA, $name, $classes)) {
             return $icon;
         }
-
+        // Just display tag on error.
         return $default;
     }
 
@@ -248,7 +195,7 @@ class IconExtension extends AbstractExtension
         );
 
         if (isset($registry[$name])) {
-            if (! isset($registry[$name]['content'][$contentName])) {
+            if (!isset($registry[$name]['content'][$contentName])) {
                 $svgContent = file_get_contents($registry[$name]['file']);
 
                 $dom = new DOMDocument();
@@ -261,10 +208,8 @@ class IconExtension extends AbstractExtension
                     $svg->setAttribute(
                         'class',
                         $existingClass
-                        . implode(
-                            ' ',
-                            array_merge(
-                                ['icon'],
+                        .implode(' ',
+                            array_merge(['icon'],
                                 $classes
                             )
                         )
@@ -286,12 +231,15 @@ class IconExtension extends AbstractExtension
     /**
      * @throws Exception
      */
-    public function iconList(string $type): array
-    {
-        return match ($type) {
-            self::ICONS_LIBRARY_FA => $this->buildIconsListFa(),
-            self::ICONS_LIBRARY_MATERIAL => $this->buildIconsListMaterial(),
-            default => [],
-        };
+    public function iconList(
+        string $type
+    ): array {
+        if ($type === self::ICONS_LIBRARY_FA) {
+            return $this->buildIconsListFa();
+        } elseif ($type === self::ICONS_LIBRARY_MATERIAL) {
+            return $this->buildIconsListMaterial();
+        }
+
+        return [];
     }
 }

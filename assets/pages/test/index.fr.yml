@@ -1,1 +1,9 @@
 page_title: Tests
+
+firstGroup:
+  first: First
+  second: Second
+  third: Third
+
+secondGroup:
+  first: First

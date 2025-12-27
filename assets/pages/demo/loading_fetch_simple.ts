@@ -15,7 +15,7 @@ export default class extends Page {
       .querySelector('.open-another-modal')
       .addEventListener('click', () => {
         (this.app.getService(ModalsService) as ModalsService)
-          .get('/_design_system/demo/loading-fetch-simple');
+          .get('/_loader/demo/loading-fetch-simple');
       });
   }
 }
