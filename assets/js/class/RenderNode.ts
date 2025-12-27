@@ -10,6 +10,7 @@ export default abstract class RenderNode extends AppChild {
   public callerPage: Page;
   public childRenderNodes: { [key: string]: RenderNode } = {};
   public components: Component[] = [];
+  public contextType: string;
   public cssClassName: string;
   public el: HTMLElement;
   public elements: { [key: string]: HTMLElement } = {};
@@ -20,6 +21,7 @@ export default abstract class RenderNode extends AppChild {
   public parentRenderNode: RenderNode;
   public renderData: RenderDataInterface;
   public translations: {} = {};
+  public translationDomains: { [alias: string]: { [view: string]: string } | string } = {};
   public usages: {} = {};
   public view: string;
   public destroyed: boolean = false;
