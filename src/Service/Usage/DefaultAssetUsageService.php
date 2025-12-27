@@ -24,7 +24,6 @@ final class DefaultAssetUsageService extends AbstractAssetUsageService
                 $view,
                 $ext
             ),
-            $view,
             $renderNode,
         );
     }
