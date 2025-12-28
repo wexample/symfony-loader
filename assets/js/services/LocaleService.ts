@@ -23,8 +23,11 @@ export default class LocaleService extends AppService {
     domainsMap: any,
     view: string | undefined
   ): string {
-    const alias = key.startsWith('@') && key.includes('::')
-      ? key.substring(1, key.indexOf('::'))
+    const prefix = this.app.layout.vars.translatorDomainPrefix;
+    const separator = this.app.layout.vars.translatorDomainSeparator;
+
+    const alias = key.startsWith(prefix) && key.includes(separator)
+      ? key.substring(prefix.length, key.indexOf(separator))
       : null;
 
     if (alias && domainsMap?.[alias]) {
@@ -32,7 +35,7 @@ export default class LocaleService extends AppService {
       const domain = entry?.[view] || Object.values(entry)[0];
 
       if (domain) {
-        return key.replace(`@${alias}::`, `${domain}::`);
+        return key.replace(`${prefix}${alias}${separator}`, `${domain}${separator}`);
       }
     }
 
@@ -81,6 +84,6 @@ export default class LocaleService extends AppService {
     args: {} = {},
     catalog: object = this.app.layout.translations
   ) {
-    return StringFormat(catalog[string] || string, args);
+    return StringFormat((catalog as any)[string] || string, args);
   }
 }
