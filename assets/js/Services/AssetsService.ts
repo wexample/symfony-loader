@@ -1,9 +1,9 @@
-import AssetsCollectionInterface from '../interfaces/AssetsCollectionInterface';
+import AssetsCollectionInterface from '../Interfaces/AssetsCollectionInterface';
 import AppService from '../Class/AppService';
-import AssetInterface from '../interfaces/AssetInterface';
+import AssetInterface from '../Interfaces/AssetInterface';
 import RenderNode from '../Class/RenderNode';
 import { DOM_ATTRIBUTE, DOM_ATTRIBUTE_VALUE, DOM_TAG_NAME } from '@wexample/js-helpers/Helper/Dom';
-import RenderDataInterface from '../interfaces/RenderData/RenderDataInterface';
+import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import MixinsAppService from '../Class/MixinsAppService';
 import AssetUsage from '../Class/AssetUsage';
 import ColorScheme from '../Class/AssetUsage/ColorScheme';

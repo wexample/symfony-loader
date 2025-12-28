@@ -1,6 +1,6 @@
 import AppService from '../Class/AppService';
-import RenderDataInterface from '../interfaces/RenderData/RenderDataInterface';
-import RequestOptionsInterface from '../interfaces/RequestOptions/RequestOptionsInterface';
+import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
+import RequestOptionsInterface from '../Interfaces/RequestOptions/RequestOptionsInterface';
 import ComponentsService from './ComponentsService';
 
 export default class AdaptiveService extends AppService {

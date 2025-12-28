@@ -1,5 +1,5 @@
 import AbstractTest from "./AbstractTest";
-import LayoutInterface from '../../../js/interfaces/RenderData/LayoutInterface';
+import LayoutInterface from '../../../js/Interfaces/RenderData/LayoutInterface';
 import VueComponent from "../../../components/vue";
 
 export default class VueTest extends AbstractTest {

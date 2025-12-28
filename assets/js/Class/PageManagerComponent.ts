@@ -1,6 +1,6 @@
 import Component from './Component';
 import Page from './Page';
-import ComponentInterface from "../interfaces/RenderData/ComponentInterface";
+import ComponentInterface from "../Interfaces/RenderData/ComponentInterface";
 
 export default abstract class PageManagerComponent extends Component {
   public page: Page;

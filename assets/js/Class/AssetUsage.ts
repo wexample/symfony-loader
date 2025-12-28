@@ -1,5 +1,5 @@
 import AppChild from './AppChild';
-import AssetsInterface from '../interfaces/AssetInterface';
+import AssetsInterface from '../Interfaces/AssetInterface';
 import RenderNode from './RenderNode';
 
 export default abstract class AssetUsage extends AppChild {

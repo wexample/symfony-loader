@@ -1,5 +1,5 @@
 import AppService from '../Class/AppService';
-import ModalInterface from '../interfaces/RequestOptions/ModalInterface';
+import ModalInterface from '../Interfaces/RequestOptions/ModalInterface';
 import PagesService from './PagesService';
 
 export default class ModalsService extends AppService {

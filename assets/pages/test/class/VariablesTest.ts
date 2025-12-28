@@ -1,6 +1,6 @@
 import AbstractTest from "./AbstractTest";
 import Component from '../../../js/Class/Component';
-import LayoutInterface from '../../../js/interfaces/RenderData/LayoutInterface';
+import LayoutInterface from '../../../js/Interfaces/RenderData/LayoutInterface';
 import ModalComponent from '../../../components/modal';
 
 export default class VariablesTest extends AbstractTest {

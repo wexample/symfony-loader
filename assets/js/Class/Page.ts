@@ -1,7 +1,7 @@
-import RenderDataPageInterface from '../interfaces/RenderData/PageInterface';
+import RenderDataPageInterface from '../Interfaces/RenderData/PageInterface';
 import RenderNode from './RenderNode';
 import PageManagerComponent from './PageManagerComponent';
-import ServicesRegistryInterface from '../interfaces/ServicesRegistryInterface';
+import ServicesRegistryInterface from '../Interfaces/ServicesRegistryInterface';
 import { stringBuildIdentifier } from '@wexample/js-helpers/Helper/String';
 import AppService from "./AppService";
 

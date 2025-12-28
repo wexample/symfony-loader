@@ -1,6 +1,6 @@
 import Page from './Page';
 import RenderNode from './RenderNode';
-import LayoutInterface from '../interfaces/RenderData/LayoutInterface';
+import LayoutInterface from '../Interfaces/RenderData/LayoutInterface';
 
 export default abstract class extends RenderNode {
   public page: Page;

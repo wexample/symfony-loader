@@ -1,5 +1,5 @@
 import Component from '../js/Class/Component';
-import ComponentInterface from '../js/interfaces/RenderData/ComponentInterface';
+import ComponentInterface from '../js/Interfaces/RenderData/ComponentInterface';
 import App from '../js/Class/App';
 import { App as VueApp } from 'vue';
 

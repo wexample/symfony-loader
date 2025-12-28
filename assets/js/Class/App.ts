@@ -7,12 +7,12 @@ import MixinsService from '../Services/MixinsService';
 import PagesService from '../Services/PagesService';
 import { RenderNodeResponsiveType } from '../Services/ResponsiveService';
 import RoutingService from '../Services/RoutingService';
-import RenderDataInterface from '../interfaces/RenderData/RenderDataInterface';
+import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import LayoutInitial from './LayoutInitial';
-import LayoutInterface from '../interfaces/RenderData/LayoutInterface';
+import LayoutInterface from '../Interfaces/RenderData/LayoutInterface';
 import AsyncConstructor from './AsyncConstructor';
-import ServicesRegistryInterface from '../interfaces/ServicesRegistryInterface';
-import AssetsCollectionInterface from "../interfaces/AssetsCollectionInterface";
+import ServicesRegistryInterface from '../Interfaces/ServicesRegistryInterface';
+import AssetsCollectionInterface from "../Interfaces/AssetsCollectionInterface";
 import { arrayUnique } from "@wexample/js-helpers/Helper/Array";
 
 interface AppRegistryInterface {

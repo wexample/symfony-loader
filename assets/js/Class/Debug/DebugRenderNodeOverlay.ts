@@ -1,6 +1,6 @@
 // Script par of a Vue component.
 import RenderNode from '../RenderNode';
-import RenderDataInterface from '../../interfaces/RenderData/RenderDataInterface';
+import RenderDataInterface from '../../Interfaces/RenderData/RenderDataInterface';
 import DebugRenderNode from './DebugRenderNode';
 import { EventsServiceEvents } from '../../Services/EventsService';
 

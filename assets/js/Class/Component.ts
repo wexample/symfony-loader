@@ -1,4 +1,4 @@
-import ComponentInterface from '../interfaces/RenderData/ComponentInterface';
+import ComponentInterface from '../Interfaces/RenderData/ComponentInterface';
 import RenderNode from './RenderNode';
 import { domFindPreviousNode } from '@wexample/js-helpers/Helper/Dom';
 

@@ -3,7 +3,7 @@ import RenderNode from '../RenderNode';
 import { h } from 'vue';
 import Page from '../Page';
 import { DOM_TAG_NAME } from '@wexample/js-helpers/Helper/Dom';
-import AssetsInterface from '../../interfaces/AssetInterface';
+import AssetsInterface from '../../Interfaces/AssetInterface';
 
 export default {
   props: {

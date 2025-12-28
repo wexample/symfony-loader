@@ -1,5 +1,5 @@
 import AssetUsage from '../AssetUsage';
-import AssetsInterface from '../../interfaces/AssetInterface';
+import AssetsInterface from '../../Interfaces/AssetInterface';
 import RenderNode from './../RenderNode';
 
 export default class extends AssetUsage {

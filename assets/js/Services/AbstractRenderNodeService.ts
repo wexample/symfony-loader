@@ -1,7 +1,7 @@
 import AppService from '../Class/AppService';
-import RenderDataInterface from '../interfaces/RenderData/RenderDataInterface';
+import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import RenderNode from '../Class/RenderNode';
-import ServicesRegistryInterface from '../interfaces/ServicesRegistryInterface';
+import ServicesRegistryInterface from '../Interfaces/ServicesRegistryInterface';
 
 export class RenderNodeServiceEvents {
   public static CREATE_RENDER_NODE: string = 'create-render-node';

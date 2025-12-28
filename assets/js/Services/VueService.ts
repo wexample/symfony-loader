@@ -1,11 +1,11 @@
 import { createApp } from "vue";
 import AppService from '../Class/AppService';
 import MixinsAppService from '../Class/MixinsAppService';
-import LayoutInterface from '../interfaces/RenderData/LayoutInterface';
+import LayoutInterface from '../Interfaces/RenderData/LayoutInterface';
 import { domAppendInnerHtml } from '@wexample/js-helpers/Helper/Dom';
 import Component from '../Class/Component';
 import App from '../Class/App';
-import ComponentInterface from '../interfaces/RenderData/ComponentInterface';
+import ComponentInterface from '../Interfaces/RenderData/ComponentInterface';
 import { stringBuildIdentifier, stringToKebab } from '@wexample/js-helpers/Helper/String';
 import { objectDeepAssign } from "@wexample/js-helpers/Helper/Object";
 
