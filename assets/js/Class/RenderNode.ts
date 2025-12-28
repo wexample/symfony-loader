@@ -2,7 +2,7 @@ import RenderDataInterface from '../interfaces/RenderData/RenderDataInterface';
 import AppChild from './AppChild';
 import App from './App';
 import Component from './Component';
-import { toKebab } from "../helpers/StringHelper";
+import { stringToKebab } from '@wexample/js-helpers/Helper/String';
 import Page from './Page';
 import { RenderNodeServiceEvents } from "../Services/AbstractRenderNodeService";
 
@@ -288,7 +288,7 @@ export default abstract class RenderNode extends AppChild {
     }
 
     let classList = document.body.classList;
-    let usageKebab = toKebab(usageName)
+    let usageKebab = stringToKebab(usageName)
 
     this.usages[usageName] = usageValue;
 

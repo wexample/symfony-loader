@@ -1,6 +1,6 @@
 import AppService from '../Class/AppService';
 import LocaleService from './LocaleService';
-import { format as StringFormat } from '../helpers/StringHelper';
+import { stringFormat } from '@wexample/js-helpers/Helper/String';
 
 export default class PromptService extends AppService {
   public static dependencies: typeof AppService[] = [LocaleService];
@@ -24,7 +24,7 @@ export default class PromptService extends AppService {
     debugData: any = null,
     fatal: boolean = false
   ) {
-    message = StringFormat(message, args);
+    message = stringFormat(message, args);
 
     if (fatal) {
       throw new Error(message);

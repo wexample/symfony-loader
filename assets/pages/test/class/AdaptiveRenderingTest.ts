@@ -1,7 +1,7 @@
 import ModalComponent from '../../../components/modal';
 import LayoutInterface from '../../../js/interfaces/RenderData/LayoutInterface';
 import { sleep } from '../../../js/helpers/Time';
-import { toScreamingSnake } from '../../../js/helpers/StringHelper';
+import { stringToScreamingSnake } from '@wexample/js-helpers/Helper/String';
 import AbstractTest from "./AbstractTest";
 import { domCreateHtmlDocumentFromHtml } from "@wexample/js-helpers/Helper/Dom";
 
@@ -157,7 +157,7 @@ export default class AdaptiveRenderingTest extends AbstractTest {
       this.app.layout.pageFocused.el.querySelector(
         `.${prefix}-string-translated-server${suffix}`
       ).innerHTML,
-      `SERVER_SIDE_${toScreamingSnake(prefix)}_TRANSLATION${suffix}`,
+      `SERVER_SIDE_${stringToScreamingSnake(prefix)}_TRANSLATION${suffix}`,
       `Test server side translation`
     );
 
@@ -165,7 +165,7 @@ export default class AdaptiveRenderingTest extends AbstractTest {
       this.app.layout.pageFocused.el.querySelector(
         `.${prefix}-string-translated-client${suffix}`
       ).innerHTML,
-      `CLIENT_SIDE_${toScreamingSnake(prefix)}_TRANSLATION${suffix}`,
+      `CLIENT_SIDE_${stringToScreamingSnake(prefix)}_TRANSLATION${suffix}`,
       `Test client side translation`
     );
   };

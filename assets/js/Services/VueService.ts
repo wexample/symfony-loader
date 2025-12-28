@@ -6,7 +6,7 @@ import { domAppendInnerHtml } from '@wexample/js-helpers/Helper/Dom';
 import Component from '../Class/Component';
 import App from '../Class/App';
 import ComponentInterface from '../interfaces/RenderData/ComponentInterface';
-import { buildStringIdentifier, toKebab } from '../helpers/StringHelper';
+import { stringBuildIdentifier, stringToKebab } from '@wexample/js-helpers/Helper/String';
 import { objectDeepAssign } from "@wexample/js-helpers/Helper/Object";
 
 export default class VueService extends AppService {
@@ -134,7 +134,7 @@ export default class VueService extends AppService {
 
   registerComponentsRecursively(vueApp, componentObj) {
     for (const [name, value] of Object.entries(componentObj)) {
-      vueApp.component(toKebab(name), value);
+      vueApp.component(stringToKebab(name), value);
 
       if ((value as any).components) {
         this.registerComponentsRecursively(vueApp, (value as any).components);
@@ -152,7 +152,7 @@ export default class VueService extends AppService {
   }
 
   initComponent(view: string, rootComponent: Component): object {
-    const vueName = buildStringIdentifier(view);
+    const vueName = stringBuildIdentifier(view);
 
     if (!this.componentRegistered[vueName]) {
       const domId = 'vue-template-' + vueName;

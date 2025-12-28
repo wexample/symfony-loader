@@ -2,7 +2,7 @@ import RenderDataPageInterface from '../interfaces/RenderData/PageInterface';
 import RenderNode from './RenderNode';
 import PageManagerComponent from './PageManagerComponent';
 import ServicesRegistryInterface from '../interfaces/ServicesRegistryInterface';
-import { buildStringIdentifier } from "../helpers/StringHelper";
+import { stringBuildIdentifier } from '@wexample/js-helpers/Helper/String';
 import AppService from "./AppService";
 
 export default class extends RenderNode {
@@ -34,7 +34,7 @@ export default class extends RenderNode {
       this.app.services.prompt.systemError('Unable to find DOM HTMLElement for page');
     }
 
-    this.el.classList.add(`page-${buildStringIdentifier(this.view)}`);
+    this.el.classList.add(`page-${stringBuildIdentifier(this.view)}`);
   }
 
   mergeRenderData(renderData: RenderDataPageInterface) {

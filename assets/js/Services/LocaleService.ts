@@ -1,5 +1,5 @@
 import AppService from '../Class/AppService';
-import { format as StringFormat } from '../helpers/StringHelper';
+import { stringFormat } from '@wexample/js-helpers/Helper/String';
 
 export type RenderNodeLocaleType = {
   trans?: Function;
@@ -84,6 +84,6 @@ export default class LocaleService extends AppService {
     args: {} = {},
     catalog: object = this.app.layout.translations
   ) {
-    return StringFormat((catalog as any)[string] || string, args);
+    return stringFormat((catalog as any)[string] || string, args);
   }
 }
