@@ -34,7 +34,7 @@ export default class ResponsiveTest extends AbstractTest {
   async testDefault() {
     this.assertTrue(
       document
-        .getElementById('layout')
+        .getElementById('layout-initial')
         .classList.contains(
         `responsive-${this.app.layout.responsiveSizeCurrent}`
       ),

@@ -88,7 +88,7 @@
         {%- endblock -%}
     </head>
     <body class="{{ body_class|default('') }}">
-    <div id="layout" class="layout-loading {{ layout_class|default('') }}">
+    <div id="layout-initial" class="layout-loading {{ layout_class|default('') }}">
         {%- if render_pass.isUseJs() -%}
             {# Don't use display none as we need to be able to calculate elements size before display #}
             <style>
@@ -98,7 +98,7 @@
             </style>
             {#- If javascript fails to complete, force removing loading state after a few time. -#}
             <script nonce="layout-loading">
-              var classList = document.getElementById('layout').classList;
+              var classList = document.getElementById('layout-initial').classList;
               classList.add('layout-loading');
               setTimeout(function () {
                 classList.remove('layout-loading');

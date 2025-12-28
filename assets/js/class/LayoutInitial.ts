@@ -4,7 +4,7 @@ export default class extends Layout {
   public id: string = 'layout-initial';
 
   attachCoreHtmlElements() {
-    this.el = document.getElementById('layout');
+    this.el = document.getElementById('layout-initial');
   }
 
   getElWidth(forceCache: boolean = false): number {

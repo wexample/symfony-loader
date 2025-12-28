@@ -25,7 +25,7 @@ log/
 cache/
 tmp/
 temp/
-build/
+/build/
 dist/
 out/
 coverage/
@@ -36,12 +36,5 @@ coverage*.lcov
 .php-cs-fixer.cache
 .scannerwork
 /vendor
-.php-cs-fixer.cache
-.scannerwork
-/vendor
-.php-cs-fixer.cache
-.scannerwork
-/vendor
-.php-cs-fixer.cache
-.scannerwork
-/vendor
+tests/Fixtures/App/config/reference.php
+.phpunit.result.cache
