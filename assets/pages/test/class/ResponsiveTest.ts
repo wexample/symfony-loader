@@ -1,6 +1,6 @@
 import AbstractTest from "./AbstractTest";
 import { sleep } from '../../../js/helpers/Time';
-import { appendInnerHtml } from '../../../js/helpers/DomHelper';
+import { domAppendInnerHtml } from '@wexample/js-helpers/Helper/Dom';
 import RenderNode from '../../../js/Class/RenderNode';
 import Component from '../../../js/Class/Component';
 import { RenderNodeResponsiveType } from "../../../js/Services/ResponsiveService";
@@ -224,7 +224,7 @@ export default class ResponsiveTest extends AbstractTest {
 
     html += '</div>';
 
-    appendInnerHtml(elPlayground, html);
+    domAppendInnerHtml(elPlayground, html);
 
     return elPlayground.querySelector('.responsive-tester');
   }

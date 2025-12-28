@@ -1,5 +1,5 @@
 import AbstractTest from "./AbstractTest";
-import { createHtmlDocumentFromHtml } from "../../../js/helpers/DomHelper";
+import { domCreateHtmlDocumentFromHtml } from "@wexample/js-helpers/Helper/Dom";
 
 export default class LayoutTest extends AbstractTest {
   public getTestMethods() {
@@ -10,7 +10,7 @@ export default class LayoutTest extends AbstractTest {
 
   private testNotEmpty() {
     this.fetchAdaptiveHtmlPage().then((html: string) => {
-      let elHtml = createHtmlDocumentFromHtml(html);
+      let elHtml = domCreateHtmlDocumentFromHtml(html);
 
       this.assertEquals(
         elHtml.querySelector('head').querySelector('title').innerText,

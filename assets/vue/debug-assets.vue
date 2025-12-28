@@ -1,11 +1,11 @@
 <script>
-import { ResponsiveServiceEvents } from '../js/Services/ResponsiveService';
-import { Attribute, AttributeValue, TagName } from '../js/helpers/DomHelper';
-import { AssetsServiceType } from '../js/Services/AssetsService';
-import Explorer from './explorer';
-import { EventsServiceEvents } from '../js/Services/EventsService';
-import AbstractRenderNodeService from '../js/Services/AbstractRenderNodeService';
-import { arrayShallowCopy } from "@wexample/js-helpers/Helper/Array";
+	import { ResponsiveServiceEvents } from '../js/Services/ResponsiveService';
+	import { DOM_ATTRIBUTE, DOM_ATTRIBUTE_VALUE, DOM_TAG_NAME } from '@wexample/js-helpers/Helper/Dom';
+	import { AssetsServiceType } from '../js/Services/AssetsService';
+	import Explorer from './explorer';
+	import { EventsServiceEvents } from '../js/Services/EventsService';
+	import AbstractRenderNodeService from '../js/Services/AbstractRenderNodeService';
+	import { arrayShallowCopy } from "@wexample/js-helpers/Helper/Array";
 
 export default {
   extends: Explorer,
@@ -112,10 +112,10 @@ export default {
       this.allAssets = list;
     },
 
-    updateAssetsJs() {
-      // Base loaded assets
-      document.querySelectorAll(TagName.SCRIPT).forEach((el) => {
-        let src = el.getAttribute(Attribute.SRC);
+	    updateAssetsJs() {
+	      // Base loaded assets
+	      document.querySelectorAll(DOM_TAG_NAME.SCRIPT).forEach((el) => {
+	        let src = el.getAttribute(DOM_ATTRIBUTE.SRC);
 
         // Avoid inline scripts.
         if (src !== null) {
@@ -124,17 +124,17 @@ export default {
       });
     },
 
-    updateAssetsCss() {
-      // Base loaded assets
-      document
-          .querySelectorAll(
-              `${TagName.LINK}[${Attribute.REL}=${AttributeValue.STYLESHEET}]`
-          )
-          .forEach((el) => {
-            let href = el.getAttribute(Attribute.HREF);
-            this.loadedPaths.css[href] = href;
-          });
-    },
+	    updateAssetsCss() {
+	      // Base loaded assets
+	      document
+	          .querySelectorAll(
+	              `${DOM_TAG_NAME.LINK}[${DOM_ATTRIBUTE.REL}=${DOM_ATTRIBUTE_VALUE.STYLESHEET}]`
+	          )
+	          .forEach((el) => {
+	            let href = el.getAttribute(DOM_ATTRIBUTE.HREF);
+	            this.loadedPaths.css[href] = href;
+	          });
+	    },
 
     shortenAssetPath(asset) {
       return asset.path.replace(/^(\/build\/)/, '');
