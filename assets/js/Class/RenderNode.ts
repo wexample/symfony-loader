@@ -20,7 +20,7 @@ export default abstract class RenderNode extends AppChild {
   public isMounted: null | boolean = null;
   public parentRenderNode: RenderNode;
   public renderData: RenderDataInterface;
-  public translations: {} = {};
+  public translations: { [key: string]: string } = {}
   public translationDomains: { [alias: string]: { [view: string]: string } | string } = {};
   public usages: {} = {};
   public view: string;

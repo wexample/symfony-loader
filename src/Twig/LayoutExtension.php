@@ -23,7 +23,7 @@ class LayoutExtension extends AbstractExtension
                 'layout_initial_init',
                 [
                     $this,
-                    'layoutInit',
+                    'layoutInitialInit',
                 ],
                 [
                     self::FUNCTION_OPTION_NEEDS_ENVIRONMENT => true,
@@ -42,11 +42,11 @@ class LayoutExtension extends AbstractExtension
     /**
      * @throws Exception
      */
-    public function layoutInit(
+    public function layoutInitialInit(
         Environment $twig,
         RenderPass $renderPass,
     ): void {
-        $this->layoutService->layoutInitInitial(
+        $this->layoutService->layoutInitialInit(
             $twig,
             $renderPass,
         );

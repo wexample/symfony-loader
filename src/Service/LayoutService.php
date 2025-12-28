@@ -25,7 +25,7 @@ class LayoutService extends RenderNodeService
     /**
      * @throws Exception
      */
-    public function layoutInitInitial(
+    public function layoutInitialInit(
         Environment $twig,
         RenderPass $renderPass,
     ): void {
