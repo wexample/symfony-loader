@@ -5,7 +5,7 @@ namespace Wexample\SymfonyLoader\Service;
 use Symfony\Component\Routing\RouterInterface;
 use Wexample\Helpers\Helper\ClassHelper;
 use Wexample\Helpers\Helper\TextHelper;
-use Wexample\SymfonyLoader\Controller\AbstractController;
+use Wexample\SymfonyLoader\Controller\AbstractLoaderController;
 use Wexample\SymfonyLoader\Controller\AbstractPagesController;
 use Wexample\SymfonyLoader\Rendering\RenderNode\PageRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
@@ -58,7 +58,7 @@ class PageService extends RenderNodeService
     public function pageTranslationPathFromRoute(string $route): string
     {
         $controllerMethodPath = $this->getControllerClassPathFromRouteName($route);
-        /** @var AbstractController $controllerClass */
+        /** @var AbstractLoaderController $controllerClass */
         $controllerClass = explode('::', $controllerMethodPath)[0];
 
         $bundle = null;
@@ -98,7 +98,7 @@ class PageService extends RenderNodeService
         [$controllerFullPath, $methodName] = explode(ClassHelper::METHOD_SEPARATOR, $classPath);
 
         // Remove useless namespace part.
-        $controllerName = AbstractController::removeSuffix($controllerFullPath);
+        $controllerName = AbstractLoaderController::removeSuffix($controllerFullPath);
 
         /** @var AbstractPagesController $controllerFullPath */
         /** @var AbstractBundle $controllerBundle */

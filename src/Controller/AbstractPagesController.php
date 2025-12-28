@@ -18,7 +18,7 @@ use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 use Wexample\SymfonyHelpers\Traits\BundleClassTrait;
 
-abstract class AbstractPagesController extends AbstractController
+abstract class AbstractPagesController extends AbstractLoaderController
 {
     use HasSimpleRoutesControllerTrait;
 

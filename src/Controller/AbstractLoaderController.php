@@ -19,7 +19,7 @@ use Wexample\SymfonyHelpers\Class\AbstractBundle;
 use Wexample\SymfonyHelpers\Helper\BundleHelper;
 use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 
-abstract class AbstractController extends \Wexample\SymfonyHelpers\Controller\AbstractController
+abstract class AbstractLoaderController extends \Wexample\SymfonyHelpers\Controller\AbstractController
 {
     public function __construct(
         readonly protected AdaptiveResponseService $adaptiveResponseService,
@@ -27,11 +27,6 @@ abstract class AbstractController extends \Wexample\SymfonyHelpers\Controller\Ab
         readonly protected RenderPassBagService $renderPassBagService,
     )
     {
-    }
-
-    protected function createPageRenderPass(): RenderPass
-    {
-        return $this->createRenderPass();
     }
 
     protected function createRenderPass(): RenderPass
