@@ -1,17 +1,17 @@
 import AssetsCollectionInterface from '../interfaces/AssetsCollectionInterface';
-import AppService from '../class/AppService';
+import AppService from '../Class/AppService';
 import AssetInterface from '../interfaces/AssetInterface';
-import RenderNode from '../class/RenderNode';
+import RenderNode from '../Class/RenderNode';
 import { Attribute, AttributeValue, TagName } from '../helpers/DomHelper';
 import RenderDataInterface from '../interfaces/RenderData/RenderDataInterface';
-import MixinsAppService from '../class/MixinsAppService';
-import AssetUsage from '../class/AssetUsage';
-import ColorScheme from '../class/AssetUsage/ColorScheme';
-import DefaultAssetUsage from '../class/AssetUsage/Default';
-import Margins from '../class/AssetUsage/Margins';
-import Fonts from '../class/AssetUsage/Fonts';
-import ResponsiveAssetUsage from '../class/AssetUsage/Responsive';
-import Animations from "../class/AssetUsage/Animations";
+import MixinsAppService from '../Class/MixinsAppService';
+import AssetUsage from '../Class/AssetUsage';
+import ColorScheme from '../Class/AssetUsage/ColorScheme';
+import DefaultAssetUsage from '../Class/AssetUsage/Default';
+import Margins from '../Class/AssetUsage/Margins';
+import Fonts from '../Class/AssetUsage/Fonts';
+import ResponsiveAssetUsage from '../Class/AssetUsage/Responsive';
+import Animations from "../Class/AssetUsage/Animations";
 
 export type RenderNodeAssetsType = {
   assetsUpdate?: Function;

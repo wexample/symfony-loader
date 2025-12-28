@@ -1,13 +1,13 @@
-import MixinsAppService from '../class/MixinsAppService';
-import Page from '../class/Page';
+import MixinsAppService from '../Class/MixinsAppService';
+import Page from '../Class/Page';
 import PromptService from './PromptsService';
 import LayoutInterface from '../interfaces/RenderData/LayoutInterface';
-import Component from '../class/Component';
+import Component from '../Class/Component';
 import AbstractRenderNodeService from './AbstractRenderNodeService';
-import RenderNode from '../class/RenderNode';
+import RenderNode from '../Class/RenderNode';
 import { appendInnerHtml } from '../helpers/DomHelper';
 import RenderDataInterface from '../interfaces/RenderData/RenderDataInterface';
-import AppService from '../class/AppService';
+import AppService from '../Class/AppService';
 
 export default class ComponentsService extends AbstractRenderNodeService {
   private elLayoutComponents: HTMLElement;

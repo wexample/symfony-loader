@@ -1,4 +1,4 @@
-import AppService from '../class/AppService';
+import AppService from '../Class/AppService';
 
 export class EventsServiceEvents {
   public static DISPLAY_CHANGED: string = 'display-changed';

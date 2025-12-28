@@ -1,4 +1,4 @@
-import AppService from '../class/AppService';
+import AppService from '../Class/AppService';
 import ModalInterface from '../interfaces/RequestOptions/ModalInterface';
 import PagesService from './PagesService';
 

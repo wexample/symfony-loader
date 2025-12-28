@@ -1,5 +1,5 @@
-import AppService from '../class/AppService';
-import MixinsAppService from '../class/MixinsAppService';
+import AppService from '../Class/AppService';
+import MixinsAppService from '../Class/MixinsAppService';
 
 export default class MixinsService extends AppService {
   public static serviceName: string = 'mixins';

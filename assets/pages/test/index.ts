@@ -12,7 +12,7 @@ import TestTest from './class/TestTest';
 import TranslationTest from './class/TranslationTest';
 import UsageTest from './class/UsageTest';
 import VariablesTest from './class/VariablesTest';
-import TestManagerPage from '../../js/class/TestManagerPage';
+import TestManagerPage from '../../js/Class/TestManagerPage';
 import LayoutTest from "./class/LayoutTest";
 import VueTest from "./class/VueTest";
 

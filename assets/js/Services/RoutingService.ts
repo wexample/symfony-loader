@@ -1,4 +1,4 @@
-import AppService from '../class/AppService';
+import AppService from '../Class/AppService';
 import Routing from 'fos-router';
 
 export default class RoutingService extends AppService {

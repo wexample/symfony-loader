@@ -1,4 +1,4 @@
-import Component from '../js/class/Component';
+import Component from '../js/Class/Component';
 
 export default class extends Component {
   async mounted() {

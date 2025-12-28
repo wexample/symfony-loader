@@ -1,8 +1,8 @@
-import AppService from '../class/AppService';
-import RenderNode from '../class/RenderNode';
+import AppService from '../Class/AppService';
+import RenderNode from '../Class/RenderNode';
 import AbstractRenderNodeService from './AbstractRenderNodeService';
 import Variables from '../helpers/Variables';
-import DebugRenderNode from '../class/Debug/DebugRenderNode';
+import DebugRenderNode from '../Class/Debug/DebugRenderNode';
 import { TagName } from '../helpers/DomHelper';
 import Events from '../helpers/Events';
 

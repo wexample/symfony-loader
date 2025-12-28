@@ -1,4 +1,4 @@
-import PageManagerComponent from "../js/class/PageManagerComponent";
+import PageManagerComponent from "../js/Class/PageManagerComponent";
 
 export default class PageHandlerComponent extends PageManagerComponent {
 }

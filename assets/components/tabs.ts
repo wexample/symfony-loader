@@ -1,4 +1,4 @@
-import Component from '../js/class/Component';
+import Component from '../js/Class/Component';
 import {
   hashParamGet as locationHashParamGet,
   hashParamSet as locationHashParamSet,

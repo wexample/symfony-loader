@@ -1,12 +1,12 @@
 import AssetsService from './AssetsService';
-import AppService from '../class/AppService';
+import AppService from '../Class/AppService';
 import EventsService from '../Services/EventsService';
 import Events from '../helpers/Events';
-import RenderNode from '../class/RenderNode';
-import AssetUsage from '../class/AssetUsage';
-import Page from "../class/Page";
+import RenderNode from '../Class/RenderNode';
+import AssetUsage from '../Class/AssetUsage';
+import Page from "../Class/Page";
 import { callPrototypeMethodIfExists } from "../helpers/Objects";
-import PageResponsiveDisplay from "../class/PageResponsiveDisplay";
+import PageResponsiveDisplay from "../Class/PageResponsiveDisplay";
 
 export class ResponsiveServiceEvents {
   public static RESPONSIVE_CHANGE_SIZE: string = 'responsive-change-size';

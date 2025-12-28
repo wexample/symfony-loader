@@ -1,3 +1,3 @@
-import App from '../../js/class/App';
+import App from '../../js/Class/App';
 
 export default new App();

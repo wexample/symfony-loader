@@ -1,4 +1,4 @@
-import Component from '../js/class/Component';
+import Component from '../js/Class/Component';
 import { MDCRipple } from '@material/ripple/index';
 
 export default class extends Component {

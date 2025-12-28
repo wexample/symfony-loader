@@ -1,6 +1,6 @@
-import AppService from '../class/AppService';
+import AppService from '../Class/AppService';
 import RenderDataInterface from '../interfaces/RenderData/RenderDataInterface';
-import RenderNode from '../class/RenderNode';
+import RenderNode from '../Class/RenderNode';
 import ServicesRegistryInterface from '../interfaces/ServicesRegistryInterface';
 
 export class RenderNodeServiceEvents {

@@ -1,6 +1,6 @@
-import Page from'../../js/class/Page';
+import Page from'../../js/Class/Page';
 import ModalsService from'../../js/Services/ModalsService';
-import AppService from'../../js/class/AppService';
+import AppService from'../../js/Class/AppService';
 import ServicesRegistryInterface from'../../js/interfaces/ServicesRegistryInterface';
 
 export default class extends Page {

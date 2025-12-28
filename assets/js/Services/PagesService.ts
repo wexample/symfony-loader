@@ -1,13 +1,13 @@
 import AdaptiveService from './AdaptiveService';
 import LocaleService from './LocaleService';
-import MixinsAppService from '../class/MixinsAppService';
+import MixinsAppService from '../Class/MixinsAppService';
 import LayoutInterface from '../interfaces/RenderData/LayoutInterface';
 import AbstractRenderNodeService from './AbstractRenderNodeService';
-import Page from '../class/Page';
-import RenderNode from '../class/RenderNode';
-import AppService from '../class/AppService';
+import Page from '../Class/Page';
+import RenderNode from '../Class/RenderNode';
+import AppService from '../Class/AppService';
 import ResponsiveService from "./ResponsiveService";
-import PageManagerComponent from "../class/PageManagerComponent";
+import PageManagerComponent from "../Class/PageManagerComponent";
 
 export default class PagesService extends AbstractRenderNodeService {
   public static dependencies: typeof AppService[] = [

@@ -1,10 +1,10 @@
 import AbstractTest from "./AbstractTest";
 import { sleep } from '../../../js/helpers/Time';
 import { appendInnerHtml } from '../../../js/helpers/DomHelper';
-import RenderNode from '../../../js/class/RenderNode';
-import Component from '../../../js/class/Component';
+import RenderNode from '../../../js/Class/RenderNode';
+import Component from '../../../js/Class/Component';
 import { RenderNodeResponsiveType } from "../../../js/Services/ResponsiveService";
-import Page from "../../../js/class/Page";
+import Page from "../../../js/Class/Page";
 
 export default class ResponsiveTest extends AbstractTest {
   responsiveActivationWaitDuration: number = 20;

@@ -1,4 +1,4 @@
-import Page from '../../js/class/Page';
+import Page from '../../js/Class/Page';
 import Events from '../../js/helpers/Events';
 
 export default class extends Page {

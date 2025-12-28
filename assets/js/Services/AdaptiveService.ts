@@ -1,4 +1,4 @@
-import AppService from '../class/AppService';
+import AppService from '../Class/AppService';
 import RenderDataInterface from '../interfaces/RenderData/RenderDataInterface';
 import RequestOptionsInterface from '../interfaces/RequestOptions/RequestOptionsInterface';
 import ComponentsService from './ComponentsService';

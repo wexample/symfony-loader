@@ -1,4 +1,4 @@
-import AppService from '../class/AppService';
+import AppService from '../Class/AppService';
 import { format as StringFormat } from '../helpers/StringHelper';
 
 export type RenderNodeLocaleType = {

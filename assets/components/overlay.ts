@@ -1,11 +1,11 @@
-import Page from '../js/class/Page';
-import PageManagerComponent from '../js/class/PageManagerComponent';
+import Page from '../js/Class/Page';
+import PageManagerComponent from '../js/Class/PageManagerComponent';
 import Keyboard from '../js/helpers/Keyboard';
 import Mouse from '../js/helpers/Mouse';
 import Variables from '../js/helpers/Variables';
 import Events from '../js/helpers/Events';
-import RenderNode from '../js/class/RenderNode';
-import App from "../js/class/App";
+import RenderNode from '../js/Class/RenderNode';
+import App from "../js/Class/App";
 import { WithKeyboardEventListenerRenderNode } from "../js/mixins/WithKeyboardEventListenerRenderNode";
 import { WithOverlayComponent } from "../js/mixins/WithOverlayComponent";
 

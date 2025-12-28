@@ -1,5 +1,5 @@
-import App from '../../../js/class/App';
-import AppService from '../../../js/class/AppService';
+import App from '../../../js/Class/App';
+import AppService from '../../../js/Class/AppService';
 import DebugService from '../../../js/Services/DebugService';
 import VueService from '../../../js/Services/VueService';
 

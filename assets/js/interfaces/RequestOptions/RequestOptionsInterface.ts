@@ -1,4 +1,4 @@
-import Page from '../../class/Page';
+import Page from '../../Class/Page';
 
 export default interface RequestOptionsInterface {
   headers?: any;

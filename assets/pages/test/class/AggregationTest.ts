@@ -1,4 +1,4 @@
-import UnitTest from '../../../js/class/UnitTest';
+import UnitTest from '../../../js/Class/UnitTest';
 
 export default class AggregationTest extends UnitTest {
   public getTestMethods() {

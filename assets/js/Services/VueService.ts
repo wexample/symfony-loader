@@ -1,10 +1,10 @@
 import { createApp } from "vue";
-import AppService from '../class/AppService';
-import MixinsAppService from '../class/MixinsAppService';
+import AppService from '../Class/AppService';
+import MixinsAppService from '../Class/MixinsAppService';
 import LayoutInterface from '../interfaces/RenderData/LayoutInterface';
 import { appendInnerHtml } from '../helpers/DomHelper';
-import Component from '../class/Component';
-import App from '../class/App';
+import Component from '../Class/Component';
+import App from '../Class/App';
 import ComponentInterface from '../interfaces/RenderData/ComponentInterface';
 import { buildStringIdentifier, toKebab } from '../helpers/StringHelper';
 import { deepAssign } from "../helpers/Objects";
