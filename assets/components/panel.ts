@@ -3,7 +3,7 @@ import PageManagerComponent from '../js/Class/PageManagerComponent';
 import Keyboard from '../js/helpers/Keyboard';
 import Mouse from '../js/helpers/Mouse';
 import Variables from '../js/helpers/Variables';
-import Events from '../js/helpers/Events';
+import { EVENT } from '@wexample/js-helpers/Helper/Event';
 import RenderNode from '../js/Class/RenderNode';
 import App from "../js/Class/App";
 import { WithKeyboardEventListenerRenderNode } from "../js/mixins/WithKeyboardEventListenerRenderNode";
@@ -77,18 +77,18 @@ export default class PanelComponent extends PageManagerComponent {
     this.onMouseUpOverlayProxy = this.onMouseUpOverlay.bind(this);
     this.onClickCloseProxy = this.onClickClose.bind(this);
 
-    this.el.addEventListener(Events.MOUSEDOWN, this.onMouseDownOverlayProxy);
-    this.el.addEventListener(Events.MOUSEUP, this.onMouseUpOverlayProxy);
-    this.elements.close.addEventListener(Events.CLICK, this.onClickCloseProxy);
+    this.el.addEventListener(EVENT.MOUSEDOWN, this.onMouseDownOverlayProxy);
+    this.el.addEventListener(EVENT.MOUSEUP, this.onMouseUpOverlayProxy);
+    this.elements.close.addEventListener(EVENT.CLICK, this.onClickCloseProxy);
   }
 
   protected async deactivateListeners(): Promise<void> {
     await super.deactivateListeners();
     await (this as unknown as WithKeyboardEventListenerRenderNode).deactivateKeyboardListeners();
 
-    this.el.removeEventListener(Events.MOUSEDOWN, this.onMouseDownOverlayProxy);
-    this.el.removeEventListener(Events.MOUSEUP, this.onMouseUpOverlayProxy);
-    this.elements.close.removeEventListener(Events.CLICK, this.onClickCloseProxy);
+    this.el.removeEventListener(EVENT.MOUSEDOWN, this.onMouseDownOverlayProxy);
+    this.el.removeEventListener(EVENT.MOUSEUP, this.onMouseUpOverlayProxy);
+    this.elements.close.removeEventListener(EVENT.CLICK, this.onClickCloseProxy);
   }
 
   showEl() {

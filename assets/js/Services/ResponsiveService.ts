@@ -1,7 +1,7 @@
 import AssetsService from './AssetsService';
 import AppService from '../Class/AppService';
 import EventsService from '../Services/EventsService';
-import Events from '../helpers/Events';
+import { EVENT } from '@wexample/js-helpers/Helper/Event';
 import RenderNode from '../Class/RenderNode';
 import AssetUsage from '../Class/AssetUsage';
 import Page from "../Class/Page";
@@ -28,7 +28,7 @@ export default class ResponsiveService extends AppService {
       app: {
         async hookLoadLayoutRenderData() {
           window.addEventListener(
-            Events.RESIZE,
+            EVENT.RESIZE,
             async () => await this.app.layout.responsiveUpdate(true)
           );
         },

@@ -4,7 +4,7 @@ import AbstractRenderNodeService from './AbstractRenderNodeService';
 import Variables from '../helpers/Variables';
 import DebugRenderNode from '../Class/Debug/DebugRenderNode';
 import { DOM_TAG_NAME } from '@wexample/js-helpers/Helper/Dom';
-import Events from '../helpers/Events';
+import { EVENT } from '@wexample/js-helpers/Helper/Event';
 
 export default class DebugService extends AppService {
   public debugRenderNodes: any = {};
@@ -29,8 +29,8 @@ export default class DebugService extends AppService {
     this.createEl();
     this.addTrackers();
 
-    window.addEventListener(Events.RESIZE, () => this.update());
-    window.addEventListener(Events.SCROLL, () => this.update(), true);
+    window.addEventListener(EVENT.RESIZE, () => this.update());
+    window.addEventListener(EVENT.SCROLL, () => this.update(), true);
   }
 
   createEl() {

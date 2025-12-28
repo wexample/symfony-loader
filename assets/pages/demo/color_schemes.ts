@@ -1,12 +1,12 @@
 import Page from '../../js/Class/Page';
-import Events from '../../js/helpers/Events';
+import { EVENT } from '@wexample/js-helpers/Helper/Event';
 
 export default class extends Page {
   async pageReady() {
     document
       .querySelectorAll('.demo-button-switch-usage')
       .forEach((el) => {
-        el.addEventListener(Events.CLICK, async () => {
+        el.addEventListener(EVENT.CLICK, async () => {
           await this.app.layout.setUsage(
             el.getAttribute('data-usage-name'),
             el.getAttribute('data-usage-value'),

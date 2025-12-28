@@ -1,4 +1,4 @@
-import Events from "../../js/helpers/Events";
+import { EVENT } from "@wexample/js-helpers/Helper/Event";
 
 export class WithKeyboardEventListenerRenderNode {
   protected listenKeyboardKey: string[] = [];
@@ -15,7 +15,7 @@ export class WithKeyboardEventListenerRenderNode {
       this.onKeyUpProxy = this.onKeyUp.bind(this);
 
       document.addEventListener(
-        Events.KEYUP,
+        EVENT.KEYUP,
         this.onKeyUpProxy as EventListenerOrEventListenerObject
       );
     }
@@ -24,7 +24,7 @@ export class WithKeyboardEventListenerRenderNode {
   public async deactivateKeyboardListeners(): Promise<void> {
     if (Object.values(this.listenKeyboardKey).length) {
       document.removeEventListener(
-        Events.KEYUP,
+        EVENT.KEYUP,
         this.onKeyUpProxy as EventListenerOrEventListenerObject
       );
     }

@@ -3,7 +3,7 @@ import PageManagerComponent from '../js/Class/PageManagerComponent';
 import Keyboard from '../js/helpers/Keyboard';
 import Mouse from '../js/helpers/Mouse';
 import Variables from '../js/helpers/Variables';
-import Events from '../js/helpers/Events';
+import { EVENT } from '@wexample/js-helpers/Helper/Event';
 import RenderNode from '../js/Class/RenderNode';
 import App from "../js/Class/App";
 import { WithKeyboardEventListenerRenderNode } from "../js/mixins/WithKeyboardEventListenerRenderNode";
@@ -77,8 +77,8 @@ export default class ModalComponent extends PageManagerComponent {
     this.onMouseUpOverlayProxy = this.onMouseUpOverlay.bind(this);
     this.onClickCloseProxy = this.onClickClose.bind(this);
 
-    this.el.addEventListener(Events.MOUSEDOWN, this.onMouseDownOverlayProxy);
-    this.el.addEventListener(Events.MOUSEUP, this.onMouseUpOverlayProxy);
+    this.el.addEventListener(EVENT.MOUSEDOWN, this.onMouseDownOverlayProxy);
+    this.el.addEventListener(EVENT.MOUSEUP, this.onMouseUpOverlayProxy);
 
     // TODO Hacky way to help application access to opened overlay.
     window['currentOpenedOverlay'] = this;
@@ -88,8 +88,8 @@ export default class ModalComponent extends PageManagerComponent {
     await super.deactivateListeners();
     await (this as unknown as WithKeyboardEventListenerRenderNode).deactivateKeyboardListeners();
 
-    this.el.removeEventListener(Events.MOUSEDOWN, this.onMouseDownOverlayProxy);
-    this.el.removeEventListener(Events.MOUSEUP, this.onMouseUpOverlayProxy);
+    this.el.removeEventListener(EVENT.MOUSEDOWN, this.onMouseDownOverlayProxy);
+    this.el.removeEventListener(EVENT.MOUSEUP, this.onMouseUpOverlayProxy);
     delete window['currentOpenedOverlay'];
   }
 
