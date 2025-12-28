@@ -48,10 +48,9 @@ abstract class AbstractPagesController extends AbstractLoaderController
 
     protected function buildTemplatePath(
         string $view,
-        AbstractBundle|string|null $bundleClass = null
+        AbstractBundle|string|null $bundle = null
     ): string {
         $base = '';
-        $bundleClass = $bundleClass ?: $this->getControllerBundle();
 
         if (str_contains($view, self::BUNDLE_TEMPLATE_SEPARATOR)) {
             $exp = explode(self::BUNDLE_TEMPLATE_SEPARATOR, $view);
@@ -60,7 +59,7 @@ abstract class AbstractPagesController extends AbstractLoaderController
         }
 
         return BundleHelper::ALIAS_PREFIX
-            .($bundleClass ? $bundleClass::getAlias() : 'front').'/'
+            . static::getTemplateLocationPrefix(bundle: $bundle) . '/'
             .$base.$view.TemplateHelper::TEMPLATE_FILE_EXTENSION;
     }
 
