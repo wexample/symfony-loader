@@ -348,6 +348,10 @@ function renderWrapperTemplate(classPath, className) {
 }
 
 function buildEncoreConfig(options = {}) {
+  if (options.clearCache !== false) {
+    execSync('php bin/console cache:clear --no-warmup', {stdio: 'inherit'});
+  }
+
   configureEncoreBase(options);
   applyManifestEntries(options);
 
