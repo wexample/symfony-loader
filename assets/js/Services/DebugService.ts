@@ -1,7 +1,7 @@
 import AppService from '../Class/AppService';
 import RenderNode from '../Class/RenderNode';
 import AbstractRenderNodeService from './AbstractRenderNodeService';
-import Variables from '../helpers/Variables';
+import Variables from '@wexample/js-helpers/Helper/Variables';
 import DebugRenderNode from '../Class/Debug/DebugRenderNode';
 import { DOM_TAG_NAME } from '@wexample/js-helpers/Helper/Dom';
 import { EVENT } from '@wexample/js-helpers/Helper/Event';

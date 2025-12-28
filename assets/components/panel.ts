@@ -2,7 +2,7 @@ import Page from '../js/Class/Page';
 import PageManagerComponent from '../js/Class/PageManagerComponent';
 import Keyboard from '../js/helpers/Keyboard';
 import Mouse from '../js/helpers/Mouse';
-import Variables from '../js/helpers/Variables';
+import Variables from '@wexample/js-helpers/Helper/Variables';
 import { EVENT } from '@wexample/js-helpers/Helper/Event';
 import RenderNode from '../js/Class/RenderNode';
 import App from "../js/Class/App";
