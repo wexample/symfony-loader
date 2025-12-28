@@ -1,11 +1,11 @@
 <script>
-import { ResponsiveServiceEvents } from '../js/services/ResponsiveService';
+import { ResponsiveServiceEvents } from '../js/Services/ResponsiveService';
 import { Attribute, AttributeValue, TagName } from '../js/helpers/DomHelper';
 import { shallowCopy as ArrayShallowCopy } from '../js/helpers/ArrayHelper';
-import { AssetsServiceType } from '../js/services/AssetsService';
+import { AssetsServiceType } from '../js/Services/AssetsService';
 import Explorer from './explorer';
-import { EventsServiceEvents } from '../js/services/EventsService';
-import AbstractRenderNodeService from '../js/services/AbstractRenderNodeService';
+import { EventsServiceEvents } from '../js/Services/EventsService';
+import AbstractRenderNodeService from '../js/Services/AbstractRenderNodeService';
 
 export default {
   extends: Explorer,

@@ -1,7 +1,7 @@
 import AssetUsage from '../AssetUsage';
 import AssetsInterface from '../../interfaces/AssetInterface';
 import RenderNode from '../RenderNode';
-import { RenderNodeResponsiveType } from '../../services/ResponsiveService';
+import { RenderNodeResponsiveType } from '../../Services/ResponsiveService';
 
 export default class extends AssetUsage {
   public usageName: string = AssetUsage.USAGE_RESPONSIVE;

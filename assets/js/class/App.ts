@@ -1,12 +1,12 @@
 import Page from './Page';
 
 import AppService from './AppService';
-import AssetsService from '../services/AssetsService';
-import LayoutsService from '../services/LayoutsService';
-import MixinsService from '../services/MixinsService';
-import PagesService from '../services/PagesService';
-import { RenderNodeResponsiveType } from '../services/ResponsiveService';
-import RoutingService from '../services/RoutingService';
+import AssetsService from '../Services/AssetsService';
+import LayoutsService from '../Services/LayoutsService';
+import MixinsService from '../Services/MixinsService';
+import PagesService from '../Services/PagesService';
+import { RenderNodeResponsiveType } from '../Services/ResponsiveService';
+import RoutingService from '../Services/RoutingService';
 import { unique as arrayUnique } from '../helpers/ArrayHelper';
 import RenderDataInterface from '../interfaces/RenderData/RenderDataInterface';
 import LayoutInitial from './LayoutInitial';

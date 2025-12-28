@@ -1,7 +1,7 @@
 import AppChild from '../AppChild';
 import RenderNode from '../RenderNode';
-import DebugService from '../../services/DebugService';
-import VueService from '../../services/VueService';
+import DebugService from '../../Services/DebugService';
+import VueService from '../../Services/VueService';
 import DebugRenderNodeInfo from './DebugRenderNodeInfo';
 import DebugRenderNodeOverlay from './DebugRenderNodeOverlay';
 import { Attribute, TagName } from '../../helpers/DomHelper';

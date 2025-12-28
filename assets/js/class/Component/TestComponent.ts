@@ -1,5 +1,5 @@
 import Component from '../Component';
-import { RenderNodeLocaleType } from "../../services/LocaleService";
+import { RenderNodeLocaleType } from "../../Services/LocaleService";
 
 export default class extends Component {
   protected interval: any;

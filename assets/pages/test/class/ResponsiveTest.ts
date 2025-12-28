@@ -3,7 +3,7 @@ import { sleep } from '../../../js/helpers/Time';
 import { appendInnerHtml } from '../../../js/helpers/DomHelper';
 import RenderNode from '../../../js/class/RenderNode';
 import Component from '../../../js/class/Component';
-import { RenderNodeResponsiveType } from "../../../js/services/ResponsiveService";
+import { RenderNodeResponsiveType } from "../../../js/Services/ResponsiveService";
 import Page from "../../../js/class/Page";
 
 export default class ResponsiveTest extends AbstractTest {

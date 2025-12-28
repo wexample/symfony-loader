@@ -1,5 +1,5 @@
 import AbstractTest from "./AbstractTest";
-import { RenderNodeLocaleType } from "../../../js/services/LocaleService";
+import { RenderNodeLocaleType } from "../../../js/Services/LocaleService";
 
 export default class TranslationTest extends AbstractTest {
   public getTestMethods() {

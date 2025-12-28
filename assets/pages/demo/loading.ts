@@ -1,5 +1,5 @@
 import Page from'../../js/class/Page';
-import ModalsService from'../../js/services/ModalsService';
+import ModalsService from'../../js/Services/ModalsService';
 import AppService from'../../js/class/AppService';
 import ServicesRegistryInterface from'../../js/interfaces/ServicesRegistryInterface';
 

@@ -1,6 +1,6 @@
 import AssetsService from './AssetsService';
 import AppService from '../class/AppService';
-import EventsService from '../services/EventsService';
+import EventsService from '../Services/EventsService';
 import Events from '../helpers/Events';
 import RenderNode from '../class/RenderNode';
 import AssetUsage from '../class/AssetUsage';
