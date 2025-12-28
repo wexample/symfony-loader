@@ -65,26 +65,13 @@
         {{- constant('\\Wexample\\SymfonyLoader\\Helper\\RenderingHelper::PLACEHOLDER_PRELOAD_TAG') | raw -}}
         {%- block meta -%}
             <meta name="viewport" content="width=device-width, initial-scale=1">
-            <meta name="description" content="{{ document_meta_description | default('front.app.global::meta.description' | trans) }}">
-            <meta name="keywords" content="{{ document_meta_keywords | default('front.app.global::meta.keywords' | trans) }}">
-            <link rel="canonical" href="{{ app.request.schemeAndHttpHost }}{{ app.request.requestUri }}">
-            <!-- Open Graph / Facebook -->
-            <meta property="og:type" content="website">
-            <meta property="og:url" content="{{ app.request.schemeAndHttpHost }}{{ app.request.requestUri }}">
-            <meta property="og:title" content="{{ document_meta_description | default('front.app.global::name' | trans) }}">
-            <meta property="og:description" content="{{ document_meta_description | default('front.app.global::meta.description' | trans) }}">
-            {% if meta_og_image | default(false) %}
-                <meta property="og:image" content="{{ meta_og_image }}">
-            {% endif %}
-
-            <!-- Twitter -->
-            <meta property="twitter:card" content="summary_large_image">
-            <meta property="twitter:url" content="{{ app.request.schemeAndHttpHost }}{{ app.request.requestUri }}">
-            <meta property="twitter:title" content="{{ document_meta_description | default('front.app.global::name' | trans) }}">
-            <meta property="twitter:description" content="{{ document_meta_description | default('front.app.global::meta.description' | trans) }}">
-            {% if meta_og_image | default(false) %}
-                <meta property="twitter:image" content="{{ meta_og_image }}">
-            {% endif %}
+            {{- base_template_render_meta({
+                'description': document_meta_description|default(null)
+            }) -}}
+            {%- set canonical_href = base_template_render_canonical(document_canonical|default(null)) -%}
+            {%- if canonical_href -%}
+                <link rel="canonical" href="{{ canonical_href }}">
+            {%- endif -%}
         {%- endblock -%}
     </head>
     <body class="{{ body_class|default('') }}">
