@@ -10,13 +10,18 @@ abstract class AbstractLayoutRenderNode extends AbstractRenderNode
 {
     use WithRenderRequestId;
 
-    public PageRenderNode $page;
+    protected PageRenderNode $page;
 
     public function __construct(
         readonly protected string $env
     )
     {
 
+    }
+
+    public function getPage(): PageRenderNode
+    {
+        return $this->page;
     }
 
     public function getContextType(): string
@@ -38,7 +43,8 @@ abstract class AbstractLayoutRenderNode extends AbstractRenderNode
     public function init(
         RenderPass $renderPass,
         string $view,
-    ): void {
+    ): void
+    {
         parent::init($renderPass, $view);
 
         $this->setRenderRequestId(

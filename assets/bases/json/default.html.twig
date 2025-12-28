@@ -6,7 +6,7 @@
         {%- block layout -%}
             {%- block layout_composer_json -%}
                 {%- block page -%}
-                    {{ render_pass.setCurrentContextRenderNode(render_pass.layoutRenderNode.page) }}
+                    {{ render_pass.setCurrentContextRenderNode(render_pass.layoutRenderNode.getPage()) }}
                     {%- block page_config -%}{%- endblock -%}
                     {%- block page_composer_json -%}
                         {%- if block('page_body') is defined -%}
