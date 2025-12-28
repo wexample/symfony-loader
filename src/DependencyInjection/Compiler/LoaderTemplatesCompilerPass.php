@@ -7,7 +7,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Wexample\SymfonyHelpers\Class\AbstractBundle;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 
-class DesignSystemTemplatesCompilerPass implements CompilerPassInterface
+class LoaderTemplatesCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
