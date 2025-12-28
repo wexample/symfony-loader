@@ -20,7 +20,7 @@ class LayoutExtension extends AbstractExtension
     {
         return [
             new TwigFunction(
-                'layout_init',
+                'layout_initial_init',
                 [
                     $this,
                     'layoutInit',
