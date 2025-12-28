@@ -1,11 +1,11 @@
 <script>
 import { ResponsiveServiceEvents } from '../js/Services/ResponsiveService';
 import { Attribute, AttributeValue, TagName } from '../js/helpers/DomHelper';
-import { shallowCopy as ArrayShallowCopy } from '../js/helpers/ArrayHelper';
 import { AssetsServiceType } from '../js/Services/AssetsService';
 import Explorer from './explorer';
 import { EventsServiceEvents } from '../js/Services/EventsService';
 import AbstractRenderNodeService from '../js/Services/AbstractRenderNodeService';
+import { arrayShallowCopy } from "@wexample/js-helpers/Helper/Array";
 
 export default {
   extends: Explorer,
@@ -66,7 +66,7 @@ export default {
 
     getAssetsTypeList(type) {
       if (this.selectedItem) {
-        return ArrayShallowCopy(
+        return arrayShallowCopy(
             this.selectedItem.object.renderData.assets[type]
         );
       }
