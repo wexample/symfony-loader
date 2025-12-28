@@ -1,6 +1,6 @@
 import ModalComponent from '../../../components/modal';
 import LayoutInterface from '../../../js/interfaces/RenderData/LayoutInterface';
-import { sleep } from '@wexample/js-helpers/Helper/Time';
+import { timeSleep } from '@wexample/js-helpers/Helper/Time';
 import { stringToScreamingSnake } from '@wexample/js-helpers/Helper/String';
 import AbstractTest from "./AbstractTest";
 import { domCreateHtmlDocumentFromHtml } from "@wexample/js-helpers/Helper/Dom";
@@ -187,7 +187,7 @@ export default class AdaptiveRenderingTest extends AbstractTest {
     });
 
     // Need to wait for dom to break up.
-    await sleep();
+    await timeSleep();
 
     let testComponent = this.app.layout.pageFocused
       .findChildRenderNodeByView('@WexampleSymfonyLoaderBundle/components/vue')
@@ -208,7 +208,7 @@ export default class AdaptiveRenderingTest extends AbstractTest {
     });
 
     // Wait for remounting dom.
-    await sleep();
+    await timeSleep();
 
     this.assertTrue(
       testComponent.isMounted,

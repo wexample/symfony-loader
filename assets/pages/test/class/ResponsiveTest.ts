@@ -1,5 +1,5 @@
 import AbstractTest from "./AbstractTest";
-import { sleep } from '@wexample/js-helpers/Helper/Time';
+import { timeSleep } from '@wexample/js-helpers/Helper/Time';
 import { domAppendInnerHtml } from '@wexample/js-helpers/Helper/Dom';
 import RenderNode from '../../../js/Class/RenderNode';
 import Component from '../../../js/Class/Component';
@@ -69,7 +69,7 @@ export default class ResponsiveTest extends AbstractTest {
     for (let layoutResponsiveSize of breakPoints) {
       mainRenderNode.responsiveSet(layoutResponsiveSize, true);
 
-      await sleep(this.responsiveActivationWaitDuration);
+      await timeSleep(this.responsiveActivationWaitDuration);
 
       this.assertMainResponsiveApplyStyle(
         layoutResponsiveSize,
@@ -82,7 +82,7 @@ export default class ResponsiveTest extends AbstractTest {
       for (let componentResponsiveSize of breakPoints) {
         component.responsiveSet(componentResponsiveSize);
 
-        await sleep(this.responsiveActivationWaitDuration);
+        await timeSleep(this.responsiveActivationWaitDuration);
 
         this.assertMainResponsiveApplyStyle(
           componentResponsiveSize,
@@ -118,7 +118,7 @@ export default class ResponsiveTest extends AbstractTest {
         for (let responsiveSize of breakPoints) {
           this.app.layout.responsiveSet(responsiveSize, true);
 
-          await sleep(this.responsiveActivationWaitDuration);
+          await timeSleep(this.responsiveActivationWaitDuration);
 
           this.assertMainResponsiveApplyStyle(
             responsiveSize,
@@ -160,7 +160,7 @@ export default class ResponsiveTest extends AbstractTest {
         `Size ${responsiveSize} display set 1`
       );
 
-      await sleep(this.responsiveActivationWaitDuration * 10);
+      await timeSleep(this.responsiveActivationWaitDuration * 10);
     }
   }
 
