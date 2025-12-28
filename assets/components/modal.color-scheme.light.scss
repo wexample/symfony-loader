@@ -1,7 +1,7 @@
-@import '../css/mixins/global.color-scheme.light';
-@import '../css/mixins/shadow';
+@use '../css/mixins/global.color-scheme.light' as *;
+@use '../css/mixins/shadow' as shadow;
 
 .modal .layout-modal {
   background-color: $color-default-background;
-  box-shadow: shadow-soft($color-default-background-invert);
+  box-shadow: shadow.shadow-soft($color-default-background-invert);
 }
