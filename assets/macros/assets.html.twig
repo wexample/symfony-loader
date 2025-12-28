@@ -26,6 +26,6 @@
 {%- if render_pass.isUseJs() -%}
     <script type="text/javascript" nonce="layout-data" id="layout-data">
       window.appRegistry.layoutRenderData = {{ layout_render_initial_data(render_pass) | json_encode() | raw }};
-      window.appRegistry.assetsRegistry = {{ assets_registry() | json_encode() | raw }};
+      window.appRegistry.assetsRegistry = {{ assets_registry(render_pass) | json_encode() | raw }};
     </script>
 {%- endif -%}
