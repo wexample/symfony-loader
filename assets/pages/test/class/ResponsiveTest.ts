@@ -1,5 +1,5 @@
 import AbstractTest from "./AbstractTest";
-import { sleep } from '../../../js/helpers/Time';
+import { sleep } from '@wexample/js-helpers/Helper/Time';
 import { domAppendInnerHtml } from '@wexample/js-helpers/Helper/Dom';
 import RenderNode from '../../../js/Class/RenderNode';
 import Component from '../../../js/Class/Component';

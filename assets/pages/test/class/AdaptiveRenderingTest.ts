@@ -1,6 +1,6 @@
 import ModalComponent from '../../../components/modal';
 import LayoutInterface from '../../../js/interfaces/RenderData/LayoutInterface';
-import { sleep } from '../../../js/helpers/Time';
+import { sleep } from '@wexample/js-helpers/Helper/Time';
 import { stringToScreamingSnake } from '@wexample/js-helpers/Helper/String';
 import AbstractTest from "./AbstractTest";
 import { domCreateHtmlDocumentFromHtml } from "@wexample/js-helpers/Helper/Dom";
