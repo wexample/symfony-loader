@@ -2,7 +2,7 @@
 import RenderNode from '../RenderNode';
 import { h } from 'vue';
 import Page from '../Page';
-import { TagName } from '../../helpers/DomHelper';
+import { DOM_TAG_NAME } from '@wexample/js-helpers/Helper/Dom';
 import AssetsInterface from '../../interfaces/AssetInterface';
 
 export default {
@@ -26,7 +26,7 @@ export default {
 
   render() {
     let elOpener = h(
-      TagName.A,
+      DOM_TAG_NAME.A,
       {
         class: `debug-info debug-info-${this.opened ? 'opened' : 'closed'}`,
         style: this.styleObject(),
@@ -44,7 +44,7 @@ export default {
 
     let renderLineTitle = (title) => {
       return h(
-        TagName.DIV,
+        DOM_TAG_NAME.DIV,
         {
           class: 'line-title',
         },
@@ -54,7 +54,7 @@ export default {
 
     let renderResponsive = (type) => {
       return h(
-        TagName.DIV,
+        DOM_TAG_NAME.DIV,
         {
           class: ['debug-info-line', 'display-breakpoints'],
         },
@@ -62,7 +62,7 @@ export default {
           renderLineTitle(type.toUpperCase()),
           Object.keys(this.app.layout.vars.displayBreakpoints).map((size) => {
             return h(
-              TagName.DIV,
+              DOM_TAG_NAME.DIV,
               {
                 class: {
                   active:
@@ -80,7 +80,7 @@ export default {
     let renderPage = () => {
       if (this.renderNode instanceof Page) {
         return h(
-          TagName.DIV,
+          DOM_TAG_NAME.DIV,
           {
             class: 'debug-info-line',
           },
@@ -92,14 +92,14 @@ export default {
     };
 
     return h(
-      TagName.DIV,
+      DOM_TAG_NAME.DIV,
       {
         class: 'debug-info',
         style: this.styleObject(),
       },
       [
         elOpener,
-        h(TagName.DIV, {}, this.renderDebugInfo()),
+        h(DOM_TAG_NAME.DIV, {}, this.renderDebugInfo()),
         renderPage(),
         renderResponsive('css'),
         renderResponsive('js'),

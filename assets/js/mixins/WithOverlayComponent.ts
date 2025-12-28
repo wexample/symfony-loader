@@ -1,5 +1,5 @@
 import Component from "../Class/Component";
-import { replaceByOneClass } from "../helpers/DomHelper";
+import { domReplaceByOneClass } from "@wexample/js-helpers/Helper/Dom";
 
 export class WithOverlayComponent {
   component: Component;
@@ -12,16 +12,16 @@ export class WithOverlayComponent {
 
   public overlayShow() {
     // Here, we assume 'visible' is the only class we want to ensure is present
-    replaceByOneClass(this.component.elements.overlay, 'visible', ['closing', 'closed']);
+    domReplaceByOneClass(this.component.elements.overlay, 'visible', ['closing', 'closed']);
   }
 
   public overlayClosing() {
     // Transitioning to 'closing', we remove 'visible' and 'closed'
-    replaceByOneClass(this.component.elements.overlay, 'closing', ['visible', 'closed']);
+    domReplaceByOneClass(this.component.elements.overlay, 'closing', ['visible', 'closed']);
   }
 
   public overlayClosed() {
     // Transitioning to 'closed', we remove 'visible' and 'closing'
-    replaceByOneClass(this.component.elements.overlay, 'closed', ['visible', 'closing']);
+    domReplaceByOneClass(this.component.elements.overlay, 'closed', ['visible', 'closing']);
   }
 }

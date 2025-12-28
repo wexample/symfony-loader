@@ -4,7 +4,7 @@ import {
   hashParamSet as locationHashParamSet,
   parseUrl as locationParseUrl
 } from '../js/helpers/LocationHelper';
-import { Attribute } from '../js/helpers/DomHelper';
+import { DOM_ATTRIBUTE } from '@wexample/js-helpers/Helper/Dom';
 
 export default class extends Component {
   protected elTabCurrent?: HTMLElement;
@@ -54,7 +54,7 @@ export default class extends Component {
   }
 
   isCurrentPageTab(elTab) {
-    return locationParseUrl(elTab.getAttribute(Attribute.HREF)).pathname === window.location.pathname;
+    return locationParseUrl(elTab.getAttribute(DOM_ATTRIBUTE.HREF)).pathname === window.location.pathname;
   }
 
   onHistoryChange() {

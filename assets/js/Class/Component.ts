@@ -1,6 +1,6 @@
 import ComponentInterface from '../interfaces/RenderData/ComponentInterface';
 import RenderNode from './RenderNode';
-import { findPreviousNode as DomFindPreviousNode } from '../helpers/DomHelper';
+import { domFindPreviousNode } from '@wexample/js-helpers/Helper/Dom';
 
 export default abstract class Component extends RenderNode {
   protected initMode: string;
@@ -54,7 +54,7 @@ export default abstract class Component extends RenderNode {
         break;
       case Component.INIT_MODE_LAYOUT:
       case Component.INIT_MODE_PREVIOUS:
-        el = DomFindPreviousNode(elPlaceholder);
+        el = domFindPreviousNode(elPlaceholder);
         break;
     }
 

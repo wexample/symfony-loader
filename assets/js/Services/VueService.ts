@@ -2,7 +2,7 @@ import { createApp } from "vue";
 import AppService from '../Class/AppService';
 import MixinsAppService from '../Class/MixinsAppService';
 import LayoutInterface from '../interfaces/RenderData/LayoutInterface';
-import { appendInnerHtml } from '../helpers/DomHelper';
+import { domAppendInnerHtml } from '@wexample/js-helpers/Helper/Dom';
 import Component from '../Class/Component';
 import App from '../Class/App';
 import ComponentInterface from '../interfaces/RenderData/ComponentInterface';
@@ -215,7 +215,7 @@ export default class VueService extends AppService {
 
     for (let name in renderedTemplates) {
       if (!this.renderedTemplates[name]) {
-        appendInnerHtml(elContainer, renderedTemplates[name]);
+        domAppendInnerHtml(elContainer, renderedTemplates[name]);
         this.renderedTemplates[name] = true;
       }
     }

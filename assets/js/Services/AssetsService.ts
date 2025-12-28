@@ -2,7 +2,7 @@ import AssetsCollectionInterface from '../interfaces/AssetsCollectionInterface';
 import AppService from '../Class/AppService';
 import AssetInterface from '../interfaces/AssetInterface';
 import RenderNode from '../Class/RenderNode';
-import { Attribute, AttributeValue, TagName } from '../helpers/DomHelper';
+import { DOM_ATTRIBUTE, DOM_ATTRIBUTE_VALUE, DOM_TAG_NAME } from '@wexample/js-helpers/Helper/Dom';
 import RenderDataInterface from '../interfaces/RenderData/RenderDataInterface';
 import MixinsAppService from '../Class/MixinsAppService';
 import AssetUsage from '../Class/AssetUsage';
@@ -294,8 +294,8 @@ export default class AssetsService extends AppService {
   }
 
   addScript(asset: AssetInterface, assetReplacement?: AssetInterface) {
-    let el = document.createElement(TagName.SCRIPT);
-    el.setAttribute(Attribute.SRC, `/${asset.path}`);
+    let el = document.createElement(DOM_TAG_NAME.SCRIPT);
+    el.setAttribute(DOM_ATTRIBUTE.SRC, `/${asset.path}`);
     asset.el = el;
 
     this.addAssetEl(asset, assetReplacement);
@@ -305,7 +305,7 @@ export default class AssetsService extends AppService {
 
   addStyle(asset: AssetInterface, assetReplacement?: AssetInterface) {
     let el = this.createStyleLinkElement();
-    el.setAttribute(Attribute.HREF, `/${asset.path}`);
+    el.setAttribute(DOM_ATTRIBUTE.HREF, `/${asset.path}`);
     asset.el = el;
 
     this.addAssetEl(asset, assetReplacement);
@@ -342,8 +342,8 @@ export default class AssetsService extends AppService {
   }
 
   createStyleLinkElement() {
-    let el = document.createElement(TagName.LINK);
-    el.setAttribute(Attribute.REL, AttributeValue.STYLESHEET);
+    let el = document.createElement(DOM_TAG_NAME.LINK);
+    el.setAttribute(DOM_ATTRIBUTE.REL, DOM_ATTRIBUTE_VALUE.STYLESHEET);
     return el;
   }
 

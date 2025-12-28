@@ -3,7 +3,7 @@ import LayoutInterface from '../../../js/interfaces/RenderData/LayoutInterface';
 import { sleep } from '../../../js/helpers/Time';
 import { toScreamingSnake } from '../../../js/helpers/StringHelper';
 import AbstractTest from "./AbstractTest";
-import { createHtmlDocumentFromHtml } from "../../../js/helpers/DomHelper";
+import { domCreateHtmlDocumentFromHtml } from "@wexample/js-helpers/Helper/Dom";
 
 export default class AdaptiveRenderingTest extends AbstractTest {
   public getTestMethods() {
@@ -287,7 +287,7 @@ export default class AdaptiveRenderingTest extends AbstractTest {
   private fetchTestPageAdaptiveHtml(testString: string, path: string = undefined) {
     // Use normal fetch to fake a non ajax get request.
     return this.fetchAdaptiveHtmlPage(path).then((html: string) => {
-      let elHtml = createHtmlDocumentFromHtml(html);
+      let elHtml = domCreateHtmlDocumentFromHtml(html);
 
       this.assertTrue(
         !!elHtml.querySelector('body'),

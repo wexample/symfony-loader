@@ -4,7 +4,7 @@ import DebugService from '../../Services/DebugService';
 import VueService from '../../Services/VueService';
 import DebugRenderNodeInfo from './DebugRenderNodeInfo';
 import DebugRenderNodeOverlay from './DebugRenderNodeOverlay';
-import { Attribute, TagName } from '../../helpers/DomHelper';
+import { DOM_ATTRIBUTE, DOM_TAG_NAME } from '@wexample/js-helpers/Helper/Dom';
 
 export default class DebugRenderNode extends AppChild {
   public borderColors: any = {
@@ -79,14 +79,14 @@ export default class DebugRenderNode extends AppChild {
   }
 
   createEl() {
-    this.el = document.createElement(TagName.DIV);
+    this.el = document.createElement(DOM_TAG_NAME.DIV);
     this.el.classList.add('debug-render-node');
     this.el.style.borderColor = this.getBorderColor();
 
     this.service.elDebugHelpers.appendChild(this.el);
 
     this.renderNode.ready(() => {
-      this.el.setAttribute(Attribute.ID, `debug-${this.renderNode.id}`);
+      this.el.setAttribute(DOM_ATTRIBUTE.ID, `debug-${this.renderNode.id}`);
     });
   }
 

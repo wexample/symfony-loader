@@ -5,7 +5,7 @@ import LayoutInterface from '../interfaces/RenderData/LayoutInterface';
 import Component from '../Class/Component';
 import AbstractRenderNodeService from './AbstractRenderNodeService';
 import RenderNode from '../Class/RenderNode';
-import { appendInnerHtml } from '../helpers/DomHelper';
+import { domAppendInnerHtml } from '@wexample/js-helpers/Helper/Dom';
 import RenderDataInterface from '../interfaces/RenderData/RenderDataInterface';
 import AppService from '../Class/AppService';
 
@@ -61,7 +61,7 @@ export default class ComponentsService extends AbstractRenderNodeService {
   async loadLayoutRenderData(renderData: LayoutInterface) {
     if (renderData.templates) {
       // Append html for global components.
-      appendInnerHtml(this.elLayoutComponents, renderData.templates);
+      domAppendInnerHtml(this.elLayoutComponents, renderData.templates);
     }
 
     // Layout components are always child nodes of main layout,

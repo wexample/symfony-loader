@@ -3,7 +3,7 @@ import RenderNode from '../Class/RenderNode';
 import AbstractRenderNodeService from './AbstractRenderNodeService';
 import Variables from '../helpers/Variables';
 import DebugRenderNode from '../Class/Debug/DebugRenderNode';
-import { TagName } from '../helpers/DomHelper';
+import { DOM_TAG_NAME } from '@wexample/js-helpers/Helper/Dom';
 import Events from '../helpers/Events';
 
 export default class DebugService extends AppService {
@@ -34,10 +34,10 @@ export default class DebugService extends AppService {
   }
 
   createEl() {
-    this.elDebugHelpers = document.createElement(TagName.DIV);
+    this.elDebugHelpers = document.createElement(DOM_TAG_NAME.DIV);
     this.elDebugHelpers.setAttribute(Variables.ID, 'layout-debug-helpers');
 
-    this.elDebugHelpersGlobal = document.createElement(TagName.DIV);
+    this.elDebugHelpersGlobal = document.createElement(DOM_TAG_NAME.DIV);
     this.elDebugHelpers.appendChild(this.elDebugHelpersGlobal);
 
     this.app.layout.el.appendChild(this.elDebugHelpers);
