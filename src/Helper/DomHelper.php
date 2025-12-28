@@ -59,6 +59,15 @@ class DomHelper
         return $output;
     }
 
+    /**
+     * Build a stable identifier from a string.
+     *
+     * Rules (kept in sync with @wexample/js-helpers `stringBuildIdentifier()`):
+     * - Replace any non [a-zA-Z0-9-] character with '-'
+     * - Convert to kebab-case
+     * - Collapse multiple '-' into one and trim '-' at both ends
+     * - Keep legacy behavior by removing dashes before numbers (e.g. "vue-2" -> "vue2")
+     */
     public static function buildStringIdentifier(string $string): string
     {
         return trim(
