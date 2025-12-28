@@ -4,6 +4,7 @@ namespace Wexample\SymfonyLoader\Rendering;
 
 use Wexample\SymfonyLoader\Helper\LoaderHelper;
 use Wexample\SymfonyLoader\Helper\RenderingHelper;
+use Wexample\SymfonyLoader\Rendering\RenderNode\AbstractLayoutRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AbstractRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AjaxLayoutRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderNode\InitialLayoutRenderNode;
@@ -214,14 +215,14 @@ class RenderPass
     }
 
     /**
-     * @return AbstractLayoutRenderNode|LoaderRenderNodeTrait
+     * @return AbstractLayoutRenderNode
      */
-    public function getLayoutRenderNode(): AbstractLayoutRenderNode
+    public function getLayoutRenderNode(): InitialLayoutRenderNode|AjaxLayoutRenderNode
     {
         return $this->layoutRenderNode;
     }
 
-    public function setLayoutRenderNode(AbstractLayoutRenderNode $layoutRenderNode): void
+    public function setLayoutRenderNode(InitialLayoutRenderNode|AjaxLayoutRenderNode $layoutRenderNode): void
     {
         $this->layoutRenderNode = $layoutRenderNode;
     }
