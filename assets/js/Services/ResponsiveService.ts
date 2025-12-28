@@ -5,7 +5,7 @@ import { EVENT } from '@wexample/js-helpers/Helper/Event';
 import RenderNode from '../Class/RenderNode';
 import AssetUsage from '../Class/AssetUsage';
 import Page from "../Class/Page";
-import { callPrototypeMethodIfExists } from "../helpers/Objects";
+import { objectCallPrototypeMethodIfExists } from "@wexample/js-helpers/Helper/Object";
 import PageResponsiveDisplay from "../Class/PageResponsiveDisplay";
 
 export class ResponsiveServiceEvents {
@@ -130,7 +130,7 @@ export default class ResponsiveService extends AppService {
         responsiveDisplays: [],
 
         activateListeners(...args) {
-          callPrototypeMethodIfExists(this, 'activateListeners', args);
+          objectCallPrototypeMethodIfExists(this, 'activateListeners', args);
           this.onChangeResponsiveSizeProxy = this.onChangeResponsiveSize.bind(this);
 
           this.app.services.events.listen(
@@ -140,7 +140,7 @@ export default class ResponsiveService extends AppService {
         },
 
         deactivateListeners(...args) {
-          callPrototypeMethodIfExists(this, 'deactivateListeners', args);
+          objectCallPrototypeMethodIfExists(this, 'deactivateListeners', args);
 
           this.app.services.events.forget(
             ResponsiveServiceEvents.RESPONSIVE_CHANGE_SIZE,
@@ -155,7 +155,7 @@ export default class ResponsiveService extends AppService {
         },
 
         async updateCurrentResponsiveDisplay(...args) {
-          callPrototypeMethodIfExists(this, 'updateCurrentResponsiveDisplay', args);
+          objectCallPrototypeMethodIfExists(this, 'updateCurrentResponsiveDisplay', args);
 
           const previous = this.responsiveSizePrevious;
           const current = this.responsiveSizeCurrent;

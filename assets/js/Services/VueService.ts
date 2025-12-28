@@ -7,7 +7,7 @@ import Component from '../Class/Component';
 import App from '../Class/App';
 import ComponentInterface from '../interfaces/RenderData/ComponentInterface';
 import { buildStringIdentifier, toKebab } from '../helpers/StringHelper';
-import { deepAssign } from "../helpers/Objects";
+import { objectDeepAssign } from "@wexample/js-helpers/Helper/Object";
 
 export default class VueService extends AppService {
   protected componentRegistered: { [key: string]: object } = {};
@@ -88,7 +88,7 @@ export default class VueService extends AppService {
       props,
     );
 
-    deepAssign(
+    objectDeepAssign(
       vueApp.config,
       this.globalConfig);
 
