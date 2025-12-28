@@ -1,7 +1,7 @@
 import AppService from '../Class/AppService';
 import RenderNode from '../Class/RenderNode';
 import AbstractRenderNodeService from './AbstractRenderNodeService';
-import Variables from '@wexample/js-helpers/Helper/Variables';
+import { VARIABLES } from '@wexample/js-helpers/Helper/Variables';
 import DebugRenderNode from '../Class/Debug/DebugRenderNode';
 import { DOM_TAG_NAME } from '@wexample/js-helpers/Helper/Dom';
 import { EVENT } from '@wexample/js-helpers/Helper/Event';
@@ -35,7 +35,7 @@ export default class DebugService extends AppService {
 
   createEl() {
     this.elDebugHelpers = document.createElement(DOM_TAG_NAME.DIV);
-    this.elDebugHelpers.setAttribute(Variables.ID, 'layout-debug-helpers');
+    this.elDebugHelpers.setAttribute(VARIABLES.ID, 'layout-debug-helpers');
 
     this.elDebugHelpersGlobal = document.createElement(DOM_TAG_NAME.DIV);
     this.elDebugHelpers.appendChild(this.elDebugHelpersGlobal);

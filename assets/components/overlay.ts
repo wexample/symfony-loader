@@ -2,7 +2,7 @@ import Page from '../js/Class/Page';
 import PageManagerComponent from '../js/Class/PageManagerComponent';
 import { KEY_CODE } from '@wexample/js-helpers/Helper/KeyCode';
 import { POINTER } from '@wexample/js-helpers/Helper/Pointer';
-import Variables from '@wexample/js-helpers/Helper/Variables';
+import { VARIABLES } from '@wexample/js-helpers/Helper/Variables';
 import { EVENT } from '@wexample/js-helpers/Helper/Event';
 import RenderNode from '../js/Class/RenderNode';
 import App from "../js/Class/App";
@@ -94,13 +94,13 @@ export default class ModalComponent extends PageManagerComponent {
   }
 
   showEl() {
-    this.el.classList.remove(Variables.CLOSED);
-    this.el.classList.add(Variables.OPENED);
+    this.el.classList.remove(VARIABLES.CLOSED);
+    this.el.classList.add(VARIABLES.OPENED);
   }
 
   hideEl() {
-    this.el.classList.remove(Variables.OPENED);
-    this.el.classList.add(Variables.CLOSED);
+    this.el.classList.remove(VARIABLES.OPENED);
+    this.el.classList.add(VARIABLES.CLOSED);
   }
 
   open() {
@@ -131,7 +131,7 @@ export default class ModalComponent extends PageManagerComponent {
       setTimeout(async () => {
         (this as unknown as WithOverlayComponent).overlayClosed();
 
-        this.el.classList.remove(Variables.CLOSED);
+        this.el.classList.remove(VARIABLES.CLOSED);
         this.opened = this.closing = false;
 
         await this.exit();
