@@ -347,9 +347,17 @@ function renderWrapperTemplate(classPath, className) {
     .replace(/{className}/g, className);
 }
 
+function buildEncoreConfig(options = {}) {
+  configureEncoreBase(options);
+  applyManifestEntries(options);
+
+  return Encore.getWebpackConfig();
+}
+
 module.exports = {
   DEFAULT_MANIFEST_PATH,
   configureEncoreBase,
   applyManifestEntries,
   loadManifest,
+  buildEncoreConfig,
 };
