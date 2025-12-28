@@ -1,7 +1,7 @@
 import Page from '../js/Class/Page';
 import PageManagerComponent from '../js/Class/PageManagerComponent';
-import Keyboard from '../js/helpers/Keyboard';
-import Mouse from '../js/helpers/Mouse';
+import { KEY_CODE } from '@wexample/js-helpers/Helper/KeyCode';
+import { POINTER } from '@wexample/js-helpers/Helper/Pointer';
 import Variables from '@wexample/js-helpers/Helper/Variables';
 import { EVENT } from '@wexample/js-helpers/Helper/Event';
 import RenderNode from '../js/Class/RenderNode';
@@ -10,7 +10,7 @@ import { WithKeyboardEventListenerRenderNode } from "../js/mixins/WithKeyboardEv
 import { WithOverlayComponent } from "../js/mixins/WithOverlayComponent";
 
 const listenKeyboardKey = {};
-listenKeyboardKey[Keyboard.KEY_ESCAPE] = async function () {
+listenKeyboardKey[KEY_CODE.ESCAPE] = async function () {
   await this.close();
 }
 
@@ -162,7 +162,7 @@ export default class PanelComponent extends PageManagerComponent {
     // Then prevent too long clicks.
     if (
       event.target === this.mouseDownOverlayTarget &&
-      Date.now() - this.mouseDownOverlayTimestamp < Mouse.CLICK_DURATION
+      Date.now() - this.mouseDownOverlayTimestamp < POINTER.CLICK_DURATION
     ) {
       await this.close();
     }
