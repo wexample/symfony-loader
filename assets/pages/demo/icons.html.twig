@@ -10,7 +10,7 @@
     <div class="icons-list">
         {% for icon in icon_list('fa') %}
             <div title="{{ 'fa:' ~ icon.name }}">
-                {{ icon('fa:' ~ icon.name) }}
+                {{ icon_source('fa:' ~ icon.name) }}
             </div>
         {% endfor %}
     </div>
@@ -18,7 +18,7 @@
     <div class="icons-list">
         {% for icon in icon_list('material') %}
             <div title="{{ 'material:' ~ icon.name }}">
-                {{ icon('material:' ~ icon.name) }}
+                {{ icon_source('material:' ~ icon.name) }}
             </div>
         {% endfor %}
     </div>
