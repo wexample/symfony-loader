@@ -186,17 +186,9 @@ export default class VueService extends AppService {
           },
         };
 
-        if (vueClassDefinition.mixins) {
-          if (!Array.isArray(vueClassDefinition.mixins)) {
-            this.app.services.prompt.systemError(
-              `${vueClassDefinition}.mixins should be an array, ${typeof vueClassDefinition} given.`,
-            );
-          }
-
-          vueClassDefinition.mixins = (vueClassDefinition.mixins).concat([
-            this.globalMixin,
-          ]);
-        }
+        vueClassDefinition.mixins = (vueClassDefinition.mixins || []).concat([
+          this.globalMixin,
+        ]);
 
         if (!vueClassDefinition.template) {
           this.app.services.prompt.systemError(
