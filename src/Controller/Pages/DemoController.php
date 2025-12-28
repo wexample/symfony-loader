@@ -82,7 +82,11 @@ final class DemoController extends AbstractPagesController
     final public function aggregation(): Response
     {
         // Prepare specific render pass.
-        $renderPass = $this->createRenderPass();
+        $renderPass = $this->createRenderPass(
+            $this->buildControllerTemplatePath(
+                self::ROUTE_AGGREGATION,
+            )
+        );
         $renderPass->enableAggregation = true;
 
         return $this->renderPage(
@@ -98,7 +102,11 @@ final class DemoController extends AbstractPagesController
     final public function colorSchemes(): Response
     {
         // Prepare specific render pass.
-        $renderPass = $this->createRenderPass();
+        $renderPass = $this->createRenderPass(
+            $this->buildControllerTemplatePath(
+                self::ROUTE_COLOR_SCHEMES,
+            )
+        );
 
         // Allow every usage switch.
         foreach ($renderPass->usagesConfig as &$config) {

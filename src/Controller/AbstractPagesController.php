@@ -3,6 +3,7 @@
 namespace Wexample\SymfonyLoader\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Wexample\Helpers\Helper\ClassHelper;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\AdaptiveResponseService;
@@ -34,12 +35,15 @@ abstract class AbstractPagesController extends AbstractLoaderController
         AdaptiveResponseService $adaptiveResponseService,
         LayoutService $layoutService,
         RenderPassBagService $renderPassBagService,
-        protected PageService $pageService
+        KernelInterface $kernel,
+        protected PageService $pageService,
     ) {
         parent::__construct(
             $adaptiveResponseService,
             $layoutService,
-            $renderPassBagService);
+            $renderPassBagService,
+            $kernel
+        );
     }
 
     protected function buildTemplatePath(

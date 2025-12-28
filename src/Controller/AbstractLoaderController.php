@@ -6,7 +6,9 @@ use Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Wexample\SymfonyLoader\Helper\LoaderHelper;
+use Wexample\SymfonyLoader\Rendering\AssetsRegistry;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AjaxLayoutRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderNode\InitialLayoutRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
@@ -25,13 +27,19 @@ abstract class AbstractLoaderController extends \Wexample\SymfonyHelpers\Control
         readonly protected AdaptiveResponseService $adaptiveResponseService,
         readonly protected LayoutService $layoutService,
         readonly protected RenderPassBagService $renderPassBagService,
+        protected readonly KernelInterface $kernel
     )
     {
     }
 
-    protected function createRenderPass(): RenderPass
+    protected function createRenderPass(string $view): RenderPass
     {
-        $renderPass = new RenderPass();
+        $renderPass = new RenderPass(
+            view: $view,
+            assetsRegistry: new AssetsRegistry(
+                projectDir: $this->kernel->getProjectDir()
+            )
+        );
 
         /** @var ParameterBagInterface $parameterBag */
         $parameterBag = $this->container->get('parameter_bag');
@@ -89,7 +97,7 @@ abstract class AbstractLoaderController extends \Wexample\SymfonyHelpers\Control
         RenderPass $renderPass = null
     ): Response
     {
-        $renderPass = $renderPass ?: $this->createRenderPass();
+        $renderPass = $renderPass ?: $this->createRenderPass($view);
 
         // Store it for post render events.
         $this->renderPassBagService->setRenderPass($renderPass);

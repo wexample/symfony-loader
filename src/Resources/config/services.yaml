@@ -3,7 +3,7 @@ parameters:
     loader.environment: '%env(APP_ENV)%'
     loader.enable_aggregation: false
     
-    # Design system colors
+    # Loader colors
     loader.colors: {}
 
     loader.usages.responsive:

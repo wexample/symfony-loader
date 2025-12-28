@@ -23,7 +23,11 @@ final class TestController extends AbstractPagesController
     #[Route(path: '', name: self::ROUTE_INDEX)]
     final public function index(Request $request): Response
     {
-        $renderPass = $this->createRenderPass();
+        $renderPass = $this->createRenderPass(
+            $this->buildControllerTemplatePath(
+                self::ROUTE_INDEX,
+            )
+        );
 
         $renderPass->setUsage(
             FontsAssetUsageService::getName(),
@@ -41,7 +45,11 @@ final class TestController extends AbstractPagesController
     #[Route(path: self::ROUTE_ADAPTIVE, name: self::ROUTE_ADAPTIVE, options: self::ROUTE_OPTIONS_ONLY_EXPOSE)]
     final public function adaptive(Request $request): Response
     {
-        $renderPass = $this->createRenderPass();
+        $renderPass = $this->createRenderPass(
+            $this->buildControllerTemplatePath(
+                self::ROUTE_ADAPTIVE,
+            )
+        );
 
         if ($request->get('no-js')) {
             $renderPass->setUseJs(false);

@@ -72,7 +72,10 @@ class RenderPass
 
     private bool $useJs = true;
 
-    public function __construct()
+    public function __construct(
+        string $view,
+        protected AssetsRegistry $assetsRegistry
+    )
     {
         $this->createRenderRequestId();
     }

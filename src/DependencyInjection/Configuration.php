@@ -14,6 +14,7 @@ class Configuration implements ConfigurationInterface
         $treeBuilder->getRootNode()
             ->children()
             ->arrayNode('front_paths')
+            ->defaultValue([])
             ->scalarPrototype()->end()
             ->end()
             ->end();

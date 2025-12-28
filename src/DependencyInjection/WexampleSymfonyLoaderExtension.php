@@ -22,12 +22,14 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
 
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-        $translationPaths = $container->getParameter('translations_paths');
+        $translationPaths = $container->hasParameter('translations_paths')
+            ? (array) $container->getParameter('translations_paths')
+            : [];
 
         $bundles = $container->getParameter('kernel.bundles');
         $paths = [];
 
-        foreach ($config['front_paths'] as $frontPath) {
+        foreach ($config['front_paths'] ?? [] as $frontPath) {
             // Ignore invalid paths.
             if ($realpath = realpath($frontPath)) {
                 $paths[VariableHelper::APP][] =
