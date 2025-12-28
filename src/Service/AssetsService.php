@@ -102,9 +102,9 @@ class AssetsService
                             $view
                         )) {
                         $usageFoundForType = true;
+                    }
                 }
             }
-        }
         }
     }
 

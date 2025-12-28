@@ -3,13 +3,13 @@
 namespace Wexample\SymfonyLoader\Twig;
 
 use Twig\TwigFunction;
-use Wexample\SymfonyLoader\Service\PageService;
+use Wexample\SymfonyLoader\Service\PageServiceAbstract;
 use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 
 class PageExtension extends AbstractExtension
 {
     public function __construct(
-        private readonly PageService $pageService,
+        private readonly PageServiceAbstract $pageService,
     ) {
     }
 

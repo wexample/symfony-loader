@@ -13,7 +13,7 @@ use Wexample\SymfonyHelpers\Helper\BundleHelper;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 use Wexample\SymfonyTranslations\Translation\Translator;
 
-class ComponentService extends RenderNodeService
+class ComponentService extends AbstractRenderNodeService
 {
     // Component is loaded with a css class.
     public const INIT_MODE_CLASS = VariableHelper::CLASS_VAR;
