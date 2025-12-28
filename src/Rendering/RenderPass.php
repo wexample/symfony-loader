@@ -77,6 +77,7 @@ class RenderPass
         protected AssetsRegistry $assetsRegistry
     )
     {
+        $this->setView($view);
         $this->createRenderRequestId();
     }
 
@@ -210,5 +211,23 @@ class RenderPass
     public function setLayoutBase(string $layoutBase): void
     {
         $this->layoutBase = $layoutBase;
+    }
+
+    /**
+     * @return AbstractLayoutRenderNode|LoaderRenderNodeTrait
+     */
+    public function getLayoutRenderNode(): AbstractLayoutRenderNode
+    {
+        return $this->layoutRenderNode;
+    }
+
+    public function setLayoutRenderNode(AbstractLayoutRenderNode $layoutRenderNode): void
+    {
+        $this->layoutRenderNode = $layoutRenderNode;
+    }
+
+    public function getAssetsRegistry(): AssetsRegistry
+    {
+        return $this->assetsRegistry;
     }
 }
