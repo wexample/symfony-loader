@@ -6,8 +6,8 @@ import { VARIABLES } from '@wexample/js-helpers/Helper/Variables';
 import { EVENT } from '@wexample/js-helpers/Helper/Event';
 import RenderNode from '../js/Class/RenderNode';
 import App from "../js/Class/App";
-import { WithKeyboardEventListenerRenderNode } from "../js/mixins/WithKeyboardEventListenerRenderNode";
-import { WithOverlayComponent } from "../js/mixins/WithOverlayComponent";
+import { WithKeyboardEventListenerRenderNode } from "../js/Mixins/WithKeyboardEventListenerRenderNode";
+import { WithOverlayComponent } from "../js/Mixins/WithOverlayComponent";
 
 const listenKeyboardKey = {};
 listenKeyboardKey[KEY_CODE.ESCAPE] = async function () {
