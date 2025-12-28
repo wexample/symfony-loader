@@ -8,6 +8,8 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Wexample\SymfonyHelpers\Class\AbstractBundle;
+use Wexample\SymfonyHelpers\Helper\BundleHelper;
 use Wexample\SymfonyLoader\Helper\LoaderHelper;
 use Wexample\SymfonyLoader\Rendering\AssetsRegistry;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AjaxLayoutRenderNode;
@@ -18,8 +20,6 @@ use Wexample\SymfonyLoader\Service\AssetsService;
 use Wexample\SymfonyLoader\Service\LayoutService;
 use Wexample\SymfonyLoader\Service\RenderPassBagService;
 use Wexample\SymfonyLoader\WexampleSymfonyLoaderBundle;
-use Wexample\SymfonyHelpers\Class\AbstractBundle;
-use Wexample\SymfonyHelpers\Helper\BundleHelper;
 use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 
 abstract class AbstractLoaderController extends \Wexample\SymfonyHelpers\Controller\AbstractController
@@ -220,16 +220,28 @@ abstract class AbstractLoaderController extends \Wexample\SymfonyHelpers\Control
         AbstractBundle|string $bundle = null
     ): string
     {
-        $bundleClass = $bundle ?: static::getControllerBundle();
+        $bundle = $bundle ?: static::getControllerBundle();
         return ($bundle ? $bundle::getAlias() : LoaderHelper::TWIG_NAMESPACE_FRONT);
     }
 
-    public static function getControllerTemplateDir(): string
+    /**
+     * Based on the controller name, find the matching template dir.
+     * The controller and its templates should follow the same directories structure.
+     * ex:
+     *   - Config/Loader/AppController.php
+     *   - config/loader/app/(index.html.twig)
+     */
+    public static function getControllerTemplateDir(
+        string $bundle = null
+    ): string
     {
         return TemplateHelper::joinNormalizedParts(
             [
                 self::getTemplateLocationPrefix(),
-                ...TemplateHelper::explodeControllerNamespaceSubParts(static::class),
+                ...TemplateHelper::explodeControllerNamespaceSubParts(
+                    controllerName: static::class,
+                    bundleClassPath: $bundle
+                ),
             ]
         );
     }
