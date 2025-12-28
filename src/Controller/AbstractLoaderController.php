@@ -107,10 +107,10 @@ abstract class AbstractLoaderController extends \Wexample\SymfonyHelpers\Control
         $renderPass->setView($view);
 
         if ($renderPass->isJsonRequest()) {
-            $renderPass->layoutRenderNode = new AjaxLayoutRenderNode($env);
+            $renderPass->setLayoutRenderNode(new AjaxLayoutRenderNode($env));
 
             $this->layoutService->initRenderNode(
-                $renderPass->layoutRenderNode,
+                $renderPass->getLayoutRenderNode(),
                 $renderPass,
                 $view
             );
@@ -122,12 +122,12 @@ abstract class AbstractLoaderController extends \Wexample\SymfonyHelpers\Control
                     $response,
                 );
 
-                $renderPass->layoutRenderNode->setBody(
+                $renderPass->getLayoutRenderNode()->setBody(
                     trim($renderPasseResponse->getContent())
                 );
 
                 $finalResponse = new JsonResponse(
-                    $renderPass->layoutRenderNode->toRenderData());
+                    $renderPass->getLayoutRenderNode()->toRenderData());
 
                 $finalResponse->setStatusCode(
                     $renderPasseResponse->getStatusCode()
@@ -161,7 +161,7 @@ abstract class AbstractLoaderController extends \Wexample\SymfonyHelpers\Control
                 return new JsonResponse($exception->getMessage());
             }
         } else {
-            $renderPass->layoutRenderNode = new InitialLayoutRenderNode($env);
+            $renderPass->setLayoutRenderNode(new InitialLayoutRenderNode($env));
         }
 
         return $this->renderRenderPass(

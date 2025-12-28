@@ -70,7 +70,7 @@ class LayoutService extends RenderNodeService
     public function layoutInit(
         RenderPass $renderPass,
     ): void {
-        $layoutRenderNode = $renderPass->layoutRenderNode;
+        $layoutRenderNode = $renderPass->getLayoutRenderNode();
 
         $this->initRenderNode(
             $layoutRenderNode,

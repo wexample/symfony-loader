@@ -138,7 +138,7 @@ class VueService
         }
 
         if ($renderPass->isJsonRequest()) {
-            $renderPass->layoutRenderNode->vueTemplates = $this->renderedTemplates;
+            $renderPass->getLayoutRenderNode()->vueTemplates = $this->renderedTemplates;
         }
 
         return DomHelper::buildTag(

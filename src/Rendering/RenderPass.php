@@ -43,7 +43,7 @@ class RenderPass
         self::OUTPUT_TYPE_RESPONSE_JSON,
     ];
 
-    public InitialLayoutRenderNode|AjaxLayoutRenderNode $layoutRenderNode;
+    protected InitialLayoutRenderNode|AjaxLayoutRenderNode $layoutRenderNode;
 
     protected array $contextRenderNodeRegistry = [];
 

@@ -55,7 +55,7 @@ class LayoutExtension extends AbstractExtension
     public function layoutRenderInitialData(RenderPass $renderPass): array
     {
         return $renderPass
-            ->layoutRenderNode
+            ->getLayoutRenderNode()
             ->toRenderData();
     }
 }
