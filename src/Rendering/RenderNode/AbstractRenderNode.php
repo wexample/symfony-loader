@@ -2,7 +2,7 @@
 
 namespace Wexample\SymfonyLoader\Rendering\RenderNode;
 
-use Wexample\SymfonyLoader\Helper\DomHelper;
+use Wexample\PhpHtml\Helper\DomHelper;
 use Wexample\SymfonyLoader\Helper\RenderingHelper;
 use Wexample\SymfonyLoader\Rendering\Asset;
 use Wexample\SymfonyLoader\Rendering\RenderDataGenerator;

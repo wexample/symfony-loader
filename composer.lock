@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b231fbed3190b24edb46ce0ce797a617",
+    "content-hash": "d911e468899263eb0febd8d7bcb68657",
     "packages": [
         {
             "name": "doctrine/collections",
@@ -4732,6 +4732,47 @@
                 }
             ],
             "description": "Various helpers",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "wexample/php-html",
+            "version": "0.0.1",
+            "dist": {
+                "type": "path",
+                "url": "../php-html",
+                "reference": "cec3b52ab16bebf30f8a0983ea9157932827df90"
+            },
+            "require": {
+                "php": ">=8.2",
+                "wexample/php-helpers": "^1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Wexample\\PhpHtml\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Wexample\\PhpHtml\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "weeger",
+                    "email": "romain.weeger@wexample.com"
+                }
+            ],
+            "description": "Useful, helpers for html tags manipulations",
             "transport-options": {
                 "symlink": true,
                 "relative": true

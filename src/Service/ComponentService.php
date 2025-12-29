@@ -4,7 +4,7 @@ namespace Wexample\SymfonyLoader\Service;
 
 use Exception;
 use Twig\Environment;
-use Wexample\SymfonyLoader\Helper\DomHelper;
+use Wexample\PhpHtml\Helper\DomHelper;
 use Wexample\SymfonyLoader\Rendering\ComponentManagerLocatorService;
 use Wexample\SymfonyLoader\Rendering\RenderNode\ComponentRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;

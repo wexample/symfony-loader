@@ -5,7 +5,7 @@ namespace Wexample\SymfonyLoader\Twig;
 use Exception;
 use Twig\Environment;
 use Twig\TwigFunction;
-use Wexample\SymfonyLoader\Helper\DomHelper;
+use Wexample\PhpHtml\Helper\DomHelper;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\ComponentService;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;

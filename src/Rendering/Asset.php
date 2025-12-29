@@ -2,7 +2,7 @@
 
 namespace Wexample\SymfonyLoader\Rendering;
 
-use Wexample\SymfonyLoader\Helper\DomHelper;
+use Wexample\PhpHtml\Helper\DomHelper;
 use Wexample\SymfonyLoader\Rendering\Traits\WithDomId;
 use Wexample\SymfonyLoader\Rendering\Traits\WithView;
 use Wexample\SymfonyLoader\Service\AssetsRegistryService;
