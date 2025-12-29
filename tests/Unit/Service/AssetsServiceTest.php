@@ -98,4 +98,16 @@ class AssetsServiceTest extends AbstractSymfonyKernelTestCase
             AssetsService::getAssetsUsagesStatic()
         );
     }
+
+    public function testGetAssetsUsagesReturnsRegisteredUsages(): void
+    {
+        /** @var AssetsService $service */
+        $service = $this->getTestService();
+
+        $usages = $service->getAssetsUsages();
+
+        $this->assertNotEmpty($usages);
+        $this->assertArrayHasKey(DefaultAssetUsageService::getName(), $usages);
+        $this->assertArrayHasKey(ResponsiveAssetUsageService::getName(), $usages);
+    }
 }
