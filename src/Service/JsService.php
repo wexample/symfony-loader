@@ -50,7 +50,9 @@ class JsService
     ): void {
         $renderPass
             ->getCurrentContextRenderNode()
-            ->vars[$name] = $this->serializeValue($value);
+            ->setVar(
+                $name, $this->serializeValue($value)
+            );
     }
 
     /**

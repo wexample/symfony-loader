@@ -30,7 +30,7 @@ abstract class AbstractRenderNode extends RenderDataGenerator
 
     protected array $translationsDomains = [];
 
-    public array $vars = [];
+    protected array $vars = [];
 
     public array $usages;
 
@@ -114,6 +114,24 @@ abstract class AbstractRenderNode extends RenderDataGenerator
         }
 
         return !empty($output) ? implode($output) : null;
+    }
+
+    public function setVars(array $vars): void
+    {
+        $this->vars = $vars;
+    }
+
+    public function setVar(
+        string $key,
+        mixed $value
+    ): void
+    {
+        $this->vars[$key] = $value;
+    }
+
+    public function getVars(): array
+    {
+        return $this->vars;
     }
 
     public function toRenderData(): array
