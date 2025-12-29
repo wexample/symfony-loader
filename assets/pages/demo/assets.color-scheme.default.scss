@@ -1,5 +1,0 @@
-$global-color-scheme-name: 'default' !default;
-
-@use 'assets.color-scheme.dark' with (
-  $global-color-scheme-name: $global-color-scheme-name
-);

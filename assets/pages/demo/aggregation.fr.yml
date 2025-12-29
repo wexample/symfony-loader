@@ -1,8 +1,0 @@
-page_title: Aggregation
-
-aggregation:
-  title: Agrégation des Assets
-  body:
-    L'agrégation des assets est une fonctionnalité simplifiant la gestion des ressources en regroupant plusieurs fichiers CSS ou JavaScript en un seul fichier compacté. Cette approche réduit le nombre de requêtes HTTP nécessaires lors du chargement d'une page, améliorant significativement les temps de chargement et l'expérience utilisateur.
-    <br><br>Le processus d'agrégation analyse et fusionne les fichiers selon leur type, minimisant leur taille. Le résultat est un site plus réactif, avec des ressources optimisées pour une livraison rapide et une performance améliorée.
-    <br><br>Le processus d'agrégation examine les assets susceptibles d'être agrégés, en tenant compte de leurs dépendances et de la manière dont ils sont utilisés au sein de la page. Cette analyse permet d'être compatible avec le chargement dynamique de composants.
