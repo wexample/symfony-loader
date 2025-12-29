@@ -209,6 +209,13 @@ abstract class AbstractLoaderController extends \Wexample\SymfonyHelpers\Control
         return ($bundle ? $bundle::getAlias() : LoaderHelper::TWIG_NAMESPACE_FRONT);
     }
 
+    public static function getTemplateFrontDir(
+        AbstractBundle|string $bundle = null
+    ): string
+    {
+        return ($bundle ? LoaderHelper::TWIG_NAMESPACE_ASSETS : LoaderHelper::TWIG_NAMESPACE_FRONT);
+    }
+
     /**
      * Based on the controller name, find the matching template dir.
      * The controller and its templates should follow the same directories structure.
