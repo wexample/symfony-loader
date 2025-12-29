@@ -6,7 +6,11 @@ use Wexample\SymfonyLoader\Rendering\Asset;
 use Wexample\SymfonyLoader\Rendering\AssetsRegistry;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\AssetsService;
+use Wexample\SymfonyLoader\Service\Usage\AnimationsAssetUsageService;
+use Wexample\SymfonyLoader\Service\Usage\ColorSchemeAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\DefaultAssetUsageService;
+use Wexample\SymfonyLoader\Service\Usage\FontsAssetUsageService;
+use Wexample\SymfonyLoader\Service\Usage\MarginsAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\ResponsiveAssetUsageService;
 use Wexample\SymfonyTesting\Tests\AbstractSymfonyKernelTestCase;
 
@@ -78,5 +82,20 @@ class AssetsServiceTest extends AbstractSymfonyKernelTestCase
 
         // Rollback
         $renderPass->setUseJs(true);
+    }
+
+    public function testGetAssetsUsagesStaticContainsAllUsages(): void
+    {
+        $this->assertSame(
+            [
+                AnimationsAssetUsageService::class,
+                ColorSchemeAssetUsageService::class,
+                DefaultAssetUsageService::class,
+                MarginsAssetUsageService::class,
+                ResponsiveAssetUsageService::class,
+                FontsAssetUsageService::class,
+            ],
+            AssetsService::getAssetsUsagesStatic()
+        );
     }
 }
