@@ -44,9 +44,8 @@ class AssetsServiceTest extends AbstractSymfonyKernelTestCase
 
         $asset = new Asset(
             'test.css',
-            'test',
             DefaultAssetUsageService::getName(),
-            'test'
+            Asset::CONTEXT_PAGE
         );
 
         $this->assertTrue($service->assetNeedsInitialRender(
@@ -63,9 +62,8 @@ class AssetsServiceTest extends AbstractSymfonyKernelTestCase
 
         $asset = new Asset(
             'test.css',
-            'test',
             ResponsiveAssetUsageService::getName(),
-            'test'
+            Asset::CONTEXT_PAGE
         );
 
         // Do not check needs initial render, as we are not sure of what we expect.
