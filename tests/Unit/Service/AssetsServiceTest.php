@@ -3,6 +3,7 @@
 namespace Wexample\SymfonyLoader\Tests\Unit\Service;
 
 use Wexample\SymfonyLoader\Rendering\Asset;
+use Wexample\SymfonyLoader\Rendering\AssetsRegistry;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\AssetsService;
 use Wexample\SymfonyLoader\Service\Usage\DefaultAssetUsageService;
@@ -25,7 +26,12 @@ class AssetsServiceTest extends AbstractSymfonyTestCase
 
     public function testAssetIsReadyForRender()
     {
-        $renderPass = new RenderPass();
+        $renderPass = new RenderPass(
+            view: 'test',
+            assetsRegistry: new AssetsRegistry(
+                projectDir: self::getContainer()->getParameter('kernel.project_dir')
+            )
+        );
 
         $this->checkAssetIsReadyForRenderDefault($renderPass);
         $this->checkAssetIsReadyForRenderResponsive($renderPass);
@@ -38,6 +44,7 @@ class AssetsServiceTest extends AbstractSymfonyTestCase
 
         $asset = new Asset(
             'test.css',
+            'test',
             DefaultAssetUsageService::getName(),
             'test'
         );
@@ -56,6 +63,7 @@ class AssetsServiceTest extends AbstractSymfonyTestCase
 
         $asset = new Asset(
             'test.css',
+            'test',
             ResponsiveAssetUsageService::getName(),
             'test'
         );

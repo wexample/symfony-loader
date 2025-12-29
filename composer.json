@@ -26,11 +26,8 @@
   "require": {
     "php": ">=8.2",
     "wexample/symfony-helpers": "1.0.72",
-    "wexample/php-web-render-node": "0.0.1",
-    "wexample/symfony-testing": "1.0.61",
     "wexample/symfony-routing": "0.0.1",
     "wexample/symfony-translations": "1.0.61",
-    "wexample/php-html": "^0.0.1",
     "friendsofsymfony/jsrouting-bundle": "^3.2.1",
     "symfony/webpack-encore-bundle": "^2.0.1",
     "fortawesome/font-awesome": "^6.7"
@@ -39,12 +36,13 @@
     "phpunit/phpunit": "*",
     "wexample/symfony-testing": "1.0.61"
   },
-  "scripts": {
-    "post-install-cmd": [
-      "php bin/console api:check-node-install"
-    ],
-    "post-update-cmd": [
-      "php bin/console api:check-node-install"
-    ]
-  }
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../*",
+      "options": {
+        "symlink": true
+      }
+    }
+  ]
 }
