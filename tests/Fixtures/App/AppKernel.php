@@ -2,37 +2,35 @@
 
 namespace Wexample\SymfonyLoader\Tests\Fixtures\App;
 
-use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
-use Wexample\SymfonyTesting\Tests\TestKernel;
+use Wexample\SymfonyTesting\Tests\Fixtures\AbstractFixtureKernel;
 
-class AppKernel extends TestKernel
+class AppKernel extends AbstractFixtureKernel
 {
-    public function registerBundles(): iterable
+    protected function getFixtureDir(): string
     {
-        yield from parent::registerBundles();
-
-        yield new \Wexample\SymfonyLoader\WexampleSymfonyLoaderBundle();
-        yield new \Wexample\SymfonyTranslations\WexampleSymfonyTranslationsBundle();
+        return __DIR__;
     }
 
-    protected function configureContainer(
-        ContainerBuilder $container,
-        LoaderInterface $loader
-    ): void {
-        parent::configureContainer($container, $loader);
+    protected function getExtraBundles(): iterable
+    {
+        return [
+            new \Wexample\SymfonyLoader\WexampleSymfonyLoaderBundle(),
+            new \Wexample\SymfonyTranslations\WexampleSymfonyTranslationsBundle(),
+        ];
+    }
 
-        $loader->load(__DIR__.'/config/config.yaml');
+    protected function getConfigFiles(): array
+    {
+        return [
+            __DIR__ . '/config/config.yaml',
+        ];
     }
 
     protected function configureRoutes(RoutingConfigurator $routes): void
     {
-        $routes->import(__DIR__.'/Controller/', 'attribute');
-    }
+        parent::configureRoutes($routes);
 
-    public function getProjectDir(): string
-    {
-        return __DIR__;
+        $routes->import(__DIR__ . '/Controller/', 'attribute');
     }
 }
