@@ -27,7 +27,7 @@ abstract class AbstractRenderNodeService
             $view,
         );
 
-        if ($renderNode->hasAssets) {
+        if ($renderNode->hasAssets()) {
             $this->assetsService->assetsDetect(
                 $renderPass,
                 $renderNode,

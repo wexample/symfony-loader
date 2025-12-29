@@ -24,7 +24,7 @@ abstract class AbstractRenderNode extends RenderDataGenerator
 
     protected string $id;
 
-    public bool $hasAssets = true;
+    protected bool $hasAssets = true;
 
     public array $translations = [];
 
@@ -154,5 +154,15 @@ abstract class AbstractRenderNode extends RenderDataGenerator
     public function getInheritanceStack(): array
     {
         return $this->inheritanceStack;
+    }
+
+    public function hasAssets(): bool
+    {
+        return $this->hasAssets;
+    }
+
+    public function setHasAssets(bool $hasAssets): void
+    {
+        $this->hasAssets = $hasAssets;
     }
 }

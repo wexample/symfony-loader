@@ -8,7 +8,7 @@ class AjaxLayoutRenderNode extends AbstractLayoutRenderNode
 {
     use WithBodyClassTrait;
 
-    public bool $hasAssets = false;
+    protected bool $hasAssets = false;
 
     public array $vueTemplates = [];
 
