@@ -34,14 +34,12 @@ abstract class AbstractPagesController extends AbstractLoaderController
     public function __construct(
         AdaptiveResponseService $adaptiveResponseService,
         LayoutService $layoutService,
-        RenderPassBagService $renderPassBagService,
         KernelInterface $kernel,
         protected PageService $pageService,
     ) {
         parent::__construct(
             $adaptiveResponseService,
             $layoutService,
-            $renderPassBagService,
             $kernel
         );
     }

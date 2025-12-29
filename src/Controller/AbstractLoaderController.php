@@ -8,9 +8,11 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Twig\Environment;
 use Wexample\SymfonyHelpers\Class\AbstractBundle;
 use Wexample\SymfonyHelpers\Helper\BundleHelper;
 use Wexample\SymfonyLoader\Helper\LoaderHelper;
+use Wexample\SymfonyLoader\Helper\RenderingHelper;
 use Wexample\SymfonyLoader\Rendering\AssetsRegistry;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AjaxLayoutRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderNode\InitialLayoutRenderNode;
@@ -18,7 +20,6 @@ use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\AdaptiveResponseService;
 use Wexample\SymfonyLoader\Service\AssetsService;
 use Wexample\SymfonyLoader\Service\LayoutService;
-use Wexample\SymfonyLoader\Service\RenderPassBagService;
 use Wexample\SymfonyLoader\WexampleSymfonyLoaderBundle;
 use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 
@@ -27,7 +28,6 @@ abstract class AbstractLoaderController extends \Wexample\SymfonyHelpers\Control
     public function __construct(
         readonly protected AdaptiveResponseService $adaptiveResponseService,
         readonly protected LayoutService $layoutService,
-        readonly protected RenderPassBagService $renderPassBagService,
         protected readonly KernelInterface $kernel
     )
     {
@@ -101,7 +101,6 @@ abstract class AbstractLoaderController extends \Wexample\SymfonyHelpers\Control
         $renderPass = $renderPass ?: $this->createRenderPass($view);
 
         // Store it for post render events.
-        $this->renderPassBagService->setRenderPass($renderPass);
         $env = $this->getParameter('loader.environment');
 
         $renderPass->setView($view);
@@ -188,7 +187,7 @@ abstract class AbstractLoaderController extends \Wexample\SymfonyHelpers\Control
             throw new Exception('View must be defined before adaptive rendering');
         }
 
-        return $this->render(
+        $response = $this->render(
             $view,
             [
                 'debug' => (bool) $this->getParameter('loader.debug'),
@@ -196,6 +195,67 @@ abstract class AbstractLoaderController extends \Wexample\SymfonyHelpers\Control
             ] + $parameters,
             $response
         );
+
+        return $this->injectLayoutAssets($response, $renderPass);
+    }
+
+    protected function injectLayoutAssets(
+        Response $response,
+        RenderPass $renderPass
+    ): Response
+    {
+        if ($renderPass->isJsonRequest()
+            || $response instanceof JsonResponse
+            || $response->isEmpty()
+            || $response->isRedirection()
+            || $response->isClientError()
+            || $response->isServerError()
+        ) {
+            return $response;
+        }
+
+        try {
+            $content = $response->getContent();
+        } catch (\LogicException) {
+            return $response;
+        }
+
+        if (! $content || ! str_contains($content, RenderingHelper::PLACEHOLDER_PRELOAD_TAG)) {
+            return $response;
+        }
+
+        if (! isset($this->container) || ! $this->container->has('twig')) {
+            return $response;
+        }
+
+        /** @var Environment $twig */
+        $twig = $this->container->get('twig');
+
+        $assetsIncludes = $twig->render(
+            '@WexampleSymfonyLoaderBundle/macros/assets.html.twig',
+            [
+                'render_pass' => $renderPass,
+            ]
+        );
+
+        $content = str_replace(
+            RenderingHelper::PLACEHOLDER_PRELOAD_TAG,
+            $assetsIncludes,
+            $content
+        );
+
+        if ($renderPass->isDebug()) {
+            $content .= $twig->render(
+                '@WexampleSymfonyLoaderBundle/macros/debug.html.twig',
+                [
+                    'render_pass' => $renderPass,
+                ]
+            );
+        }
+
+        $response->setContent($content);
+
+        return $response;
     }
 
     /**

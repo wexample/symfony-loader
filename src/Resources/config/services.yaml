@@ -86,7 +86,7 @@ services:
         arguments: [!tagged_locator { tag: 'symfony_loader.component_manager' }]
 
     Wexample\SymfonyLoader\:
-        resource: '../../{Command,Controller,EventSubscriber,Service,Twig}'
+        resource: '../../{Command,Controller,Service,Twig}'
         tags: ['controller.service_arguments']
 
     Wexample\SymfonyLoader\Twig\ColorExtension:
