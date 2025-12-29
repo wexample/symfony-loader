@@ -2,32 +2,22 @@
 
 namespace Wexample\SymfonyLoader\Tests\Integration\Loader;
 
-use Twig\Environment;
 use Wexample\SymfonyLoader\Rendering\AssetsRegistry;
 use Wexample\SymfonyLoader\Rendering\RenderNode\InitialLayoutRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\Usage\ResponsiveAssetUsageService;
 use Wexample\SymfonyLoader\Tests\Traits\LoaderTestCaseTrait;
 use Wexample\SymfonyTesting\Tests\AbstractSymfonyKernelTestCase;
+use Wexample\SymfonyTesting\Traits\Rendering\TwigRenderTestCaseTrait;
 
 class LoaderTestCaseTraitKernelRenderTest extends AbstractSymfonyKernelTestCase
 {
+    use TwigRenderTestCaseTrait;
     use LoaderTestCaseTrait;
-
-    private string $renderedContent = '';
-
-    public function content(): string
-    {
-        return $this->renderedContent;
-    }
 
     public function testGetPageLayoutDataExtractsLayoutRenderDataFromRenderedTemplate(): void
     {
-        self::bootKernel();
-
-        /** @var Environment $twig */
-        $twig = self::getContainer()->get('twig');
-        $projectDir = self::getContainer()->getParameter('kernel.project_dir');
+        $projectDir = $this->getKernelProjectDir();
 
         $renderPass = new RenderPass(
             '@front/layout/test-layout-with-registry.html.twig',
@@ -44,7 +34,7 @@ class LoaderTestCaseTraitKernelRenderTest extends AbstractSymfonyKernelTestCase
         $layoutRenderNode->setView('@front/layout/test-layout-with-registry.html.twig');
         $renderPass->setLayoutRenderNode($layoutRenderNode);
 
-        $this->renderedContent = $twig->render(
+        $this->renderTwig(
             '@front/layout/test-layout-with-registry.html.twig',
             [
                 'render_pass' => $renderPass,
