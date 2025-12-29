@@ -8,9 +8,9 @@ use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\AssetsService;
 use Wexample\SymfonyLoader\Service\Usage\DefaultAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\ResponsiveAssetUsageService;
-use Wexample\SymfonyTesting\Tests\AbstractSymfonyTestCase;
+use Wexample\SymfonyTesting\Tests\AbstractSymfonyKernelTestCase;
 
-class AssetsServiceTest extends AbstractSymfonyTestCase
+class AssetsServiceTest extends AbstractSymfonyKernelTestCase
 {
     protected function getTestServiceClass(): string
     {

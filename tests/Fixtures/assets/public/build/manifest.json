@@ -1,0 +1,8 @@
+{
+  "build/bundle/css/view.css": "build/bundle/css/view.css",
+  "build/bundle/css/view.color-scheme.dark.css": "build/bundle/css/view.color-scheme.dark.css",
+  "build/bundle/css/view-m.css": "build/bundle/css/view-m.css",
+  "build/bundle/css/view.margins.default.css": "build/bundle/css/view.margins.default.css",
+  "build/bundle/css/view.animations.none.css": "build/bundle/css/view.animations.none.css",
+  "build/bundle/css/view.fonts.none.css": "build/bundle/css/view.fonts.none.css"
+}
