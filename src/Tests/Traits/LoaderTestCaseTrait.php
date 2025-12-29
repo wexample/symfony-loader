@@ -2,7 +2,7 @@
 
 namespace Wexample\SymfonyLoader\Tests\Traits;
 
-trait DesignSystemTestCaseTrait
+trait LoaderTestCaseTrait
 {
     protected function getPageLayoutData(string $content = null): array
     {

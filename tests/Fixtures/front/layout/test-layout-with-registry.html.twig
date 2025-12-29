@@ -1,0 +1,9 @@
+{% do layout_initial_init(render_pass) %}
+
+<div>TEST LAYOUT WITH REGISTRY</div>
+
+<script type="text/javascript" nonce="layout-data" id="layout-data">
+  window.appRegistry = window.appRegistry || {};
+  window.appRegistry.layoutRenderData = {{ layout_render_initial_data(render_pass) | json_encode() | raw }};
+</script>
+

@@ -10,6 +10,13 @@ twig:
   default_path: '%kernel.project_dir%/templates'
 
 services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: true
+
+  Wexample\SymfonyLoader\Tests\Fixtures\App\Controller\TestLoaderController: ~
+
   Wexample\SymfonyHelpers\Service\Entity\EntityNeutralService:
     autowire: false
     arguments:
