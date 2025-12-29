@@ -7,8 +7,8 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Wexample\Helpers\Helper\ClassHelper;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\AdaptiveResponseService;
-use Wexample\SymfonyLoader\Service\LayoutServiceAbstract;
-use Wexample\SymfonyLoader\Service\PageServiceAbstract;
+use Wexample\SymfonyLoader\Service\LayoutService;
+use Wexample\SymfonyLoader\Service\PageService;
 use Wexample\SymfonyLoader\Service\RenderPassBagService;
 use Wexample\SymfonyHelpers\Attribute\SimpleMethodResolver;
 use Wexample\SymfonyHelpers\Class\AbstractBundle;
@@ -33,10 +33,10 @@ abstract class AbstractPagesController extends AbstractLoaderController
 
     public function __construct(
         AdaptiveResponseService $adaptiveResponseService,
-        LayoutServiceAbstract $layoutService,
+        LayoutService $layoutService,
         RenderPassBagService $renderPassBagService,
         KernelInterface $kernel,
-        protected PageServiceAbstract $pageService,
+        protected PageService $pageService,
     ) {
         parent::__construct(
             $adaptiveResponseService,

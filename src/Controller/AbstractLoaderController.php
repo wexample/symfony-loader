@@ -17,7 +17,7 @@ use Wexample\SymfonyLoader\Rendering\RenderNode\InitialLayoutRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\AdaptiveResponseService;
 use Wexample\SymfonyLoader\Service\AssetsService;
-use Wexample\SymfonyLoader\Service\LayoutServiceAbstract;
+use Wexample\SymfonyLoader\Service\LayoutService;
 use Wexample\SymfonyLoader\Service\RenderPassBagService;
 use Wexample\SymfonyLoader\WexampleSymfonyLoaderBundle;
 use Wexample\SymfonyTemplate\Helper\TemplateHelper;
@@ -26,7 +26,7 @@ abstract class AbstractLoaderController extends \Wexample\SymfonyHelpers\Control
 {
     public function __construct(
         readonly protected AdaptiveResponseService $adaptiveResponseService,
-        readonly protected LayoutServiceAbstract $layoutService,
+        readonly protected LayoutService $layoutService,
         readonly protected RenderPassBagService $renderPassBagService,
         protected readonly KernelInterface $kernel
     )

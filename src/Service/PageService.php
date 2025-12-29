@@ -16,7 +16,7 @@ use Wexample\SymfonyHelpers\Controller\Traits\HasSimpleRoutesControllerTrait;
 use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 use Wexample\SymfonyTranslations\Translation\Translator;
 
-class PageServiceAbstract extends AbstractRenderNodeService
+class PageService extends AbstractRenderNodeService
 {
     public function __construct(
         AssetsService $assetsService,
