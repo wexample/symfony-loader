@@ -24,6 +24,22 @@ let virtualModulesInstance = null;
 let pendingVirtualModules = {};
 let wrapperTemplateContent = null;
 
+function maybeGenerateEncoreManifest(options = {}) {
+  if (options.generateEncoreManifest === false) {
+    return;
+  }
+
+  const consolePath = path.resolve(process.cwd(), 'bin', 'console');
+  if (!fs.existsSync(consolePath)) {
+    return;
+  }
+
+  execSync(
+    options.generateEncoreManifestCommand || 'php bin/console loader:generate-encore-manifest',
+    {stdio: 'inherit'}
+  );
+}
+
 function configureEncoreBase(options = {}) {
   const env = options.env || process.env.NODE_ENV || 'dev';
 
@@ -352,6 +368,7 @@ function buildEncoreConfig(options = {}) {
     execSync('php bin/console cache:clear --no-warmup', {stdio: 'inherit'});
   }
 
+  maybeGenerateEncoreManifest(options);
   configureEncoreBase(options);
   applyManifestEntries(options);
 
