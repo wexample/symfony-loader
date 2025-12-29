@@ -89,14 +89,6 @@ services:
         resource: '../../{Command,Controller,EventSubscriber,Service,Twig}'
         tags: ['controller.service_arguments']
 
-    Wexample\SymfonyLoader\Controller\Pages\DemoController:
-        tags:
-            - { name: 'has_simple_routes' }
-
-    Wexample\SymfonyLoader\Controller\Config\TestController:
-        tags:
-            - { name: 'has_simple_routes' }
-
     Wexample\SymfonyLoader\Twig\ColorExtension:
         arguments:
             $colors: '%loader.colors%'
