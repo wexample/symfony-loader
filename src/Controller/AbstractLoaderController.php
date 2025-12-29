@@ -188,7 +188,7 @@ abstract class AbstractLoaderController extends \Wexample\SymfonyHelpers\Control
             throw new Exception('View must be defined before adaptive rendering');
         }
 
-        $response = $this->render(
+        return $this->render(
             $view,
             [
                 'debug' => (bool) $this->getParameter('loader.debug'),
@@ -196,21 +196,6 @@ abstract class AbstractLoaderController extends \Wexample\SymfonyHelpers\Control
             ] + $parameters,
             $response
         );
-
-        return $this->injectLayoutAssets(
-            $response,
-            $renderPass
-        );
-    }
-
-    protected function injectLayoutAssets(
-        Response $response,
-        RenderPass $renderPass
-    ): Response
-    {
-
-        $content = $response->getContent();
-        return $response;
     }
 
     /**
