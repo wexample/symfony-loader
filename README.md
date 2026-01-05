@@ -1,11 +1,12 @@
 # wexample/symfony-design-system
 
-Version: 1.0.64
+Version: 0.0.1
 
 A dynamic rendering system for Symfony
 
 ## Table of Contents
 
+- [Installation](#installation)
 - [Api Reference](#api-reference)
 - [Code Quality](#code-quality)
 - [Versioning](#versioning)
@@ -22,6 +23,45 @@ A dynamic rendering system for Symfony
 - [Dependencies](#dependencies)
 - [Suite Signature](#suite-signature)
 
+
+## Installation
+
+### JS helpers resolution
+
+The webpack helper (`src/Resources/js/webpack/encore.manifest.js`) expects `@wexample/js-helpers` to be installed in the app.
+
+For local dev containers, use `link:` in `package.json`:
+
+```json
+{
+  "devDependencies": {
+    "@wexample/js-helpers": "link:/var/www/javascript-dev/wexample/js-helpers"
+  }
+}
+```
+
+### Local JS packages (dev only)
+
+To use local JS packages in development, configure them in `config/packages/wexample_symfony_dev.yaml`:
+
+```yaml
+wexample_symfony_dev:
+    js_dev_packages:
+        - '/var/www/javascript-dev/wexample/*'
+```
+
+The glob `*` scans all subdirectories containing a `package.json` and automatically:
+- Adds webpack aliases via `Encore.addAliases()`
+- Adds TypeScript paths in `tsconfig.json`
+
+### Run
+
+```bash
+yarn install
+yarn watch
+```
+
+The manifest and tsconfig are updated automatically.
 
 ## API Reference
 
@@ -130,8 +170,9 @@ Refer to each package's documentation for specific version compatibility require
 ## Dependencies
 
 - php: >=8.2
+- wexample/php-html: *
 - wexample/symfony-helpers: 1.0.72
-- wexample/symfony-testing: 1.0.61
+- wexample/symfony-routing: 0.0.1
 - wexample/symfony-translations: 1.0.61
 - friendsofsymfony/jsrouting-bundle: ^3.2.1
 - symfony/webpack-encore-bundle: ^2.0.1

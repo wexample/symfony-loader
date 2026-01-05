@@ -38,3 +38,4 @@ coverage*.lcov
 /vendor
 tests/Fixtures/App/config/reference.php
 .phpunit.result.cache
+build/
