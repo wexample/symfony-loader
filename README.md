@@ -1,4 +1,4 @@
-# wexample/symfony-design-system
+# wexample/symfony-loader
 
 Version: 0.0.1
 

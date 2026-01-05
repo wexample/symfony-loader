@@ -1,5 +1,5 @@
 {
-  "name": "wexample/symfony-design-system",
+  "name": "wexample/symfony-loader",
   "description": "A dynamic rendering system for Symfony",
   "type": "library",
   "license": "MIT",
