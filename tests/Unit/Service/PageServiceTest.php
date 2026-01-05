@@ -43,4 +43,3 @@ class PageServiceTest extends TestCase
         $service->pageInit($renderPass, $page, 'bundle/page');
     }
 }
-

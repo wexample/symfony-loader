@@ -44,4 +44,3 @@ class LayoutExtensionTest extends TestCase
         $this->assertSame(['ok' => true], $data);
     }
 }
-

@@ -94,4 +94,3 @@ class AssetsAggregationServiceTest extends TestCase
         );
     }
 }
-

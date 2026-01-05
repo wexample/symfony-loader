@@ -6,23 +6,41 @@ use Wexample\SymfonyHelpers\Entity\Interfaces\AbstractEntityInterface;
 
 class TestEntity implements AbstractEntityInterface
 {
-    public function __construct(private ?int $id = null) {}
-    public function getId(): ?int { return $this->id; }
-    public function setId(int $id) { $this->id = $id; }
+    public function __construct(private ?int $id = null)
+    {
+    }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+    public function setId(int $id)
+    {
+        $this->id = $id;
+    }
 }
 
 class NoDtoEntity implements AbstractEntityInterface
 {
-    public function __construct(private ?int $id = null) {}
-    public function getId(): ?int { return $this->id; }
-    public function setId(int $id) { $this->id = $id; }
+    public function __construct(private ?int $id = null)
+    {
+    }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+    public function setId(int $id)
+    {
+        $this->id = $id;
+    }
 }
 
 namespace App\Api\Dto;
 
 use Wexample\SymfonyHelpers\Api\Dto\EntityDto;
 
-class TestEntity extends EntityDto {}
+class TestEntity extends EntityDto
+{
+}
 
 namespace Wexample\SymfonyLoader\Tests\Unit\Service;
 
@@ -111,7 +129,8 @@ class JsServiceTest extends TestCase
             ->with(
                 $entity,
                 'jsonld',
-                $this->callback(static fn (array $context): bool =>
+                $this->callback(
+                    static fn (array $context): bool =>
                     ($context['displayFormat'] ?? null) === EntityDto::DISPLAY_FORMAT_DEFAULT
                     && ($context['collection_operation_name'] ?? null) === 'twig_serialize_entity'
                 )
@@ -132,7 +151,7 @@ class JsServiceTest extends TestCase
     {
         $renderPass = new RenderPass('bundle/view', new AssetsRegistry(sys_get_temp_dir()));
 
-        $renderNode = new class extends AbstractRenderNode {
+        $renderNode = new class () extends AbstractRenderNode {
             public function getContextType(): string
             {
                 return 'page';
@@ -145,4 +164,3 @@ class JsServiceTest extends TestCase
         return [$renderPass, $renderNode];
     }
 }
-

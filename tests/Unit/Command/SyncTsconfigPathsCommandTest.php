@@ -53,4 +53,3 @@ class SyncTsconfigPathsCommandTest extends TestCase
         $this->assertSame(Command::SUCCESS, $status);
     }
 }
-

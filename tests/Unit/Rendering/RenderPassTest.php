@@ -13,7 +13,7 @@ class RenderPassTest extends TestCase
     {
         $renderPass = new RenderPass('view', new AssetsRegistry(sys_get_temp_dir()));
 
-        $nodeA = new class extends AbstractRenderNode {
+        $nodeA = new class () extends AbstractRenderNode {
             public function getContextType(): string
             {
                 return 'layout';
@@ -21,7 +21,7 @@ class RenderPassTest extends TestCase
         };
         $nodeA->setView('view-a');
 
-        $nodeB = new class extends AbstractRenderNode {
+        $nodeB = new class () extends AbstractRenderNode {
             public function getContextType(): string
             {
                 return 'layout';
@@ -84,7 +84,7 @@ class RenderPassTest extends TestCase
     {
         $renderPass = new RenderPass('bundle/view', new AssetsRegistry(sys_get_temp_dir()));
 
-        $node = new class extends AbstractRenderNode {
+        $node = new class () extends AbstractRenderNode {
             public function getContextType(): string
             {
                 return 'page';

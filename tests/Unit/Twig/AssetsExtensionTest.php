@@ -39,4 +39,3 @@ class AssetsExtensionTest extends TestCase
         $this->assertSame(['registry' => true], $extension->assetsRegistry($renderPass));
     }
 }
-

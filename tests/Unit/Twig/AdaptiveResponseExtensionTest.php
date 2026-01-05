@@ -30,4 +30,3 @@ class AdaptiveResponseExtensionTest extends TestCase
         $this->assertSame('path', $extension->adaptiveResponseRenderingBasePath($renderPass));
     }
 }
-

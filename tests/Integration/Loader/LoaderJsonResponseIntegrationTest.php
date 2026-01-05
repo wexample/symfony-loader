@@ -44,4 +44,3 @@ class LoaderJsonResponseIntegrationTest extends AbstractSymfonyKernelTestCase
         }
     }
 }
-

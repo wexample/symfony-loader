@@ -33,4 +33,3 @@ class AssetTagTest extends TestCase
         $this->assertSame($asset->getContext(), $tag->getContext());
     }
 }
-

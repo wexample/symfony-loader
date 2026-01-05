@@ -2,10 +2,11 @@
 
 namespace Wexample\SymfonyLoader\Tests\Unit\Service;
 
+use Symfony\Component\HttpKernel\KernelInterface;
 use Wexample\SymfonyLoader\Rendering\Asset;
 use Wexample\SymfonyLoader\Rendering\AssetsRegistry;
-use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AbstractRenderNode;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\AssetsAggregationService;
 use Wexample\SymfonyLoader\Service\AssetsRegistryService;
 use Wexample\SymfonyLoader\Service\AssetsService;
@@ -16,7 +17,6 @@ use Wexample\SymfonyLoader\Service\Usage\FontsAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\MarginsAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\ResponsiveAssetUsageService;
 use Wexample\SymfonyTesting\Tests\AbstractSymfonyKernelTestCase;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 class AssetsServiceTest extends AbstractSymfonyKernelTestCase
 {
@@ -182,7 +182,7 @@ class AssetsServiceTest extends AbstractSymfonyKernelTestCase
         $service->assetsDetect($renderPass, $renderNode, 'bundle/view');
 
         $cssAssets = $renderNode->assets[Asset::EXTENSION_CSS] ?? [];
-        $paths = array_map(static fn(Asset $asset) => $asset->path, $cssAssets);
+        $paths = array_map(static fn (Asset $asset) => $asset->path, $cssAssets);
 
         $this->assertNotEmpty($paths);
         $this->assertContains('build/bundle/css/view.css', $paths);
@@ -243,7 +243,7 @@ class AssetsServiceTest extends AbstractSymfonyKernelTestCase
         $service->assetsDetect($renderPass, $renderNode);
 
         $cssAssets = $renderNode->assets[Asset::EXTENSION_CSS] ?? [];
-        $paths = array_map(static fn(Asset $asset) => $asset->path, $cssAssets);
+        $paths = array_map(static fn (Asset $asset) => $asset->path, $cssAssets);
 
         $this->assertContains('build/bundle/css/view.css', $paths);
         $this->assertContains('build/bundle/css/view.color-scheme.dark.css', $paths);
@@ -302,7 +302,7 @@ class AssetsServiceTest extends AbstractSymfonyKernelTestCase
 
     private function createRenderNode(string $view): AbstractRenderNode
     {
-        $renderNode = new class extends AbstractRenderNode {
+        $renderNode = new class () extends AbstractRenderNode {
             public function getContextType(): string
             {
                 return Asset::CONTEXT_PAGE;

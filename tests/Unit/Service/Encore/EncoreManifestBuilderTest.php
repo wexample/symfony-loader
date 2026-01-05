@@ -263,4 +263,3 @@ class EncoreManifestBuilderTest extends TestCase
         return $refMethod->invokeArgs($object, $args);
     }
 }
-

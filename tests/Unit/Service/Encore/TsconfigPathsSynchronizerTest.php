@@ -94,4 +94,3 @@ class TsconfigPathsSynchronizerTest extends TestCase
         $this->assertSame(['./abs/*'], $updated['compilerOptions']['paths']['abs/*']);
     }
 }
-

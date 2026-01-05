@@ -18,4 +18,3 @@ class AssetTest extends TestCase
         $this->assertSame('bundle/view', $asset->getView());
     }
 }
-

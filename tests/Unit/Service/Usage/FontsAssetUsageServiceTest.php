@@ -63,7 +63,7 @@ class FontsAssetUsageServiceTest extends TestCase
 
         $service = new FontsAssetUsageService($assetsRegistryService);
 
-        $renderNode = new class extends AbstractRenderNode {
+        $renderNode = new class () extends AbstractRenderNode {
             public function getContextType(): string
             {
                 return Asset::CONTEXT_LAYOUT;

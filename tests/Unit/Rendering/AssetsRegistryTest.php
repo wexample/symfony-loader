@@ -72,4 +72,3 @@ class AssetsRegistryTest extends TestCase
         $this->assertSame(['entry.js' => 'build/main.js'], $registry->getManifest());
     }
 }
-

@@ -76,4 +76,3 @@ class AdaptiveResponseServiceTest extends TestCase
         $this->assertStringEndsWith('/html/default.html.twig', str_replace('\\', '/', $path));
     }
 }
-

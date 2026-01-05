@@ -30,4 +30,3 @@ class VarExtensionTest extends TestCase
         $extension->varExport($renderPass, 'name', ['v']);
     }
 }
-
