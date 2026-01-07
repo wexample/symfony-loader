@@ -31,6 +31,14 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
             $config['tsconfig_path'] ?? null
         );
 
+        if (!empty($config['default_color_scheme'])) {
+            $colorSchemeConfig = $container->hasParameter('loader.usages.color_scheme')
+                ? (array) $container->getParameter('loader.usages.color_scheme')
+                : [];
+            $colorSchemeConfig['default'] = $config['default_color_scheme'];
+            $container->setParameter('loader.usages.color_scheme', $colorSchemeConfig);
+        }
+
         $bundles = $container->getParameter('kernel.bundles');
         $paths = [];
 
