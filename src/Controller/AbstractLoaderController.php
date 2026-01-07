@@ -241,14 +241,19 @@ abstract class AbstractLoaderController extends \Wexample\SymfonyHelpers\Control
             );
         } catch (\Throwable $exception) {
             $previous = $exception->getPrevious();
-            if ($exception instanceof AssetsNotBuiltException || $previous instanceof AssetsNotBuiltException) {
-                $message = $previous instanceof AssetsNotBuiltException
-                    ? $previous->getMessage()
-                    : $exception->getMessage();
+            $assetsException = null;
+            if ($exception instanceof AssetsNotBuiltException) {
+                $assetsException = $exception;
+            } elseif ($previous instanceof AssetsNotBuiltException) {
+                $assetsException = $previous;
+            }
+
+            if ($assetsException) {
                 $content = $twig->render(
                     '@WexampleSymfonyLoaderBundle/system/fatal.html.twig',
                     [
-                        'message' => $message,
+                        'message' => $assetsException->getMessage(),
+                        'hint' => $assetsException->getHint(),
                     ]
                 );
                 $response->setContent($content);
