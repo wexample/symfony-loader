@@ -26,6 +26,11 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
             ? (array) $container->getParameter('translations_paths')
             : [];
 
+        $container->setParameter(
+            'wexample_symfony_loader.tsconfig_path',
+            $config['tsconfig_path'] ?? null
+        );
+
         $bundles = $container->getParameter('kernel.bundles');
         $paths = [];
 

@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Wexample\SymfonyLoader\Service\Encore\TsconfigPathsSynchronizer;
 use Wexample\SymfonyLoader\Traits\SymfonyLoaderBundleClassTrait;
 use Wexample\SymfonyHelpers\Command\AbstractBundleCommand;
@@ -18,10 +19,12 @@ class SyncTsconfigPathsCommand extends AbstractBundleCommand
 
     private const OPTION_TSCONFIG = 'tsconfig';
     private const OPTION_MANIFEST = 'manifest';
+    private const DEFAULT_TSCONFIG = 'tsconfig.json';
 
     public function __construct(
         BundleService $bundleService,
         private readonly TsconfigPathsSynchronizer $synchronizer,
+        private readonly ParameterBagInterface $parameterBag,
         string $name = null,
     ) {
         parent::__construct(
@@ -41,7 +44,7 @@ class SyncTsconfigPathsCommand extends AbstractBundleCommand
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Path to tsconfig file (relative to project root)',
-                'tsconfig.json'
+                null
             )
             ->addOption(
                 self::OPTION_MANIFEST,
@@ -68,7 +71,7 @@ class SyncTsconfigPathsCommand extends AbstractBundleCommand
                 $manifestPath = $input->getOption(self::OPTION_MANIFEST);
 
                 $this->synchronizer->sync(
-                    $tsconfigPath ? (string) $tsconfigPath : null,
+                    $this->resolveTsconfigPath($tsconfigPath),
                     $manifestPath ? (string) $manifestPath : null
                 );
 
@@ -77,5 +80,21 @@ class SyncTsconfigPathsCommand extends AbstractBundleCommand
                 return Command::SUCCESS;
             }
         );
+    }
+
+    private function resolveTsconfigPath(mixed $optionValue): string
+    {
+        if (is_string($optionValue) && $optionValue !== '') {
+            return $optionValue;
+        }
+
+        if ($this->parameterBag->has('wexample_symfony_loader.tsconfig_path')) {
+            $configured = $this->parameterBag->get('wexample_symfony_loader.tsconfig_path');
+            if (is_string($configured) && $configured !== '') {
+                return $configured;
+            }
+        }
+
+        return self::DEFAULT_TSCONFIG;
     }
 }

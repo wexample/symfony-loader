@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Wexample\SymfonyLoader\Service\Encore\EncoreManifestBuilder;
@@ -27,11 +28,13 @@ class GenerateEncoreManifestCommand extends AbstractBundleCommand
     private const OPTION_TSCONFIG = 'tsconfig';
     private const DEFAULT_FILENAME = 'assets/encore.manifest.json';
     private const DEFAULT_TSCONFIG = 'tsconfig.json';
+    private const DEFAULT_LOADER_CONFIG_FILENAME = '.encore/loader.config.json';
 
     public function __construct(
         BundleService $bundleService,
         private readonly EncoreManifestBuilder $manifestBuilder,
         private readonly TsconfigPathsSynchronizer $tsconfigPathsSynchronizer,
+        private readonly ParameterBagInterface $parameterBag,
         private readonly KernelInterface $kernel,
         private readonly Filesystem $filesystem,
         string $name = null,
@@ -74,7 +77,7 @@ class GenerateEncoreManifestCommand extends AbstractBundleCommand
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'Path to the tsconfig file to synchronize (relative to project root)',
-                self::DEFAULT_TSCONFIG
+                null
             );
     }
 
@@ -109,15 +112,18 @@ class GenerateEncoreManifestCommand extends AbstractBundleCommand
                     throw new RuntimeException(sprintf('Unable to write Encore manifest to %s', $targetPath));
                 }
 
+                $tsconfigPath = $this->resolveTsconfigPath($input->getOption(self::OPTION_TSCONFIG));
+                $this->writeLoaderConfig($tsconfigPath);
+
                 $tsconfigMessage = null;
                 if ($input->getOption(self::OPTION_SYNC_TSCONFIG) !== false) {
-                    $tsconfigPath = $input->getOption(self::OPTION_TSCONFIG);
                     $this->tsconfigPathsSynchronizer->sync(
                         $tsconfigPath ? (string) $tsconfigPath : null,
                         $targetPath
                     );
+
                     $tsconfigMessage = sprintf(' tsconfig synced (%s)', $this->formatDisplayPath(
-                        $this->resolveOutputPath($tsconfigPath ?: self::DEFAULT_TSCONFIG)
+                        $this->resolveOutputPath($tsconfigPath ?: $this->getDefaultTsconfigPath())
                     ));
                 }
 
@@ -164,5 +170,53 @@ class GenerateEncoreManifestCommand extends AbstractBundleCommand
         return str_starts_with($path, DIRECTORY_SEPARATOR)
             || str_starts_with($path, '\\\\')
             || (bool) preg_match('#^[a-zA-Z]:\\\\#', $path);
+    }
+
+    private function resolveTsconfigPath(mixed $optionValue): ?string
+    {
+        if (is_string($optionValue) && $optionValue !== '') {
+            return $optionValue;
+        }
+
+        $configured = $this->getConfiguredTsconfigPath();
+        if (is_string($configured) && $configured !== '') {
+            return $configured;
+        }
+
+        return $this->getDefaultTsconfigPath();
+    }
+
+    private function getConfiguredTsconfigPath(): ?string
+    {
+        if (!$this->parameterBag->has('wexample_symfony_loader.tsconfig_path')) {
+            return null;
+        }
+
+        $value = $this->parameterBag->get('wexample_symfony_loader.tsconfig_path');
+
+        return is_string($value) ? $value : null;
+    }
+
+    private function getDefaultTsconfigPath(): string
+    {
+        return self::DEFAULT_TSCONFIG;
+    }
+
+    private function writeLoaderConfig(?string $tsconfigPath): void
+    {
+        $targetPath = $this->resolveOutputPath(self::DEFAULT_LOADER_CONFIG_FILENAME);
+        $this->filesystem->mkdir(\dirname($targetPath));
+
+        $payload = [
+            'tsconfigPath' => $tsconfigPath ?: $this->getDefaultTsconfigPath(),
+        ];
+
+        if (!JsonHelper::write(
+            $targetPath,
+            $payload,
+            JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
+        )) {
+            throw new RuntimeException(sprintf('Unable to write loader config to %s', $targetPath));
+        }
     }
 }
