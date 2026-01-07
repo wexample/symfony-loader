@@ -73,7 +73,7 @@ wexample_symfony_loader:
     tsconfig_path: tsconfig.dev.json
 ```
 
-`loader:generate-encore-manifest` writes the chosen value to `.encore/loader.config.json`, which is picked up by `src/Resources/js/webpack/encore.manifest.js` to configure `enableTypeScriptLoader()`.
+`loader:generate-encore-manifest` writes the chosen value to `assets/encore.manifest.json`, which is picked up by `src/Resources/js/webpack/encore.manifest.js` to configure `enableTypeScriptLoader()`.
 
 ## API Reference
 

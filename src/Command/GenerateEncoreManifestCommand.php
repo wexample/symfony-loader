@@ -28,7 +28,6 @@ class GenerateEncoreManifestCommand extends AbstractBundleCommand
     private const OPTION_TSCONFIG = 'tsconfig';
     private const DEFAULT_FILENAME = 'assets/encore.manifest.json';
     private const DEFAULT_TSCONFIG = 'tsconfig.json';
-    private const DEFAULT_LOADER_CONFIG_FILENAME = '.encore/loader.config.json';
 
     public function __construct(
         BundleService $bundleService,
@@ -94,6 +93,8 @@ class GenerateEncoreManifestCommand extends AbstractBundleCommand
                 SymfonyStyle $io
             ): int {
                 $manifest = $this->manifestBuilder->build();
+                $tsconfigPath = $this->resolveTsconfigPath($input->getOption(self::OPTION_TSCONFIG));
+                $manifest['tsconfigPath'] = $tsconfigPath ?: $this->getDefaultTsconfigPath();
 
                 $targetPath = $this->resolveOutputPath(
                     (string) $input->getOption(self::OPTION_OUTPUT)
@@ -111,9 +112,6 @@ class GenerateEncoreManifestCommand extends AbstractBundleCommand
                 )) {
                     throw new RuntimeException(sprintf('Unable to write Encore manifest to %s', $targetPath));
                 }
-
-                $tsconfigPath = $this->resolveTsconfigPath($input->getOption(self::OPTION_TSCONFIG));
-                $this->writeLoaderConfig($tsconfigPath);
 
                 $tsconfigMessage = null;
                 if ($input->getOption(self::OPTION_SYNC_TSCONFIG) !== false) {
@@ -202,21 +200,4 @@ class GenerateEncoreManifestCommand extends AbstractBundleCommand
         return self::DEFAULT_TSCONFIG;
     }
 
-    private function writeLoaderConfig(?string $tsconfigPath): void
-    {
-        $targetPath = $this->resolveOutputPath(self::DEFAULT_LOADER_CONFIG_FILENAME);
-        $this->filesystem->mkdir(\dirname($targetPath));
-
-        $payload = [
-            'tsconfigPath' => $tsconfigPath ?: $this->getDefaultTsconfigPath(),
-        ];
-
-        if (!JsonHelper::write(
-            $targetPath,
-            $payload,
-            JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
-        )) {
-            throw new RuntimeException(sprintf('Unable to write loader config to %s', $targetPath));
-        }
-    }
 }
