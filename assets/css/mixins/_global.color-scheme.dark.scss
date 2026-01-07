@@ -1,7 +1,7 @@
 @use 'global' as *;
 
-$color-scheme-default-color-black: #000 !default;
-$color-scheme-default-color-white: #FFF !default;
+$color-scheme-default-color-black: #000 !default; // Migrated
+$color-scheme-default-color-white: #FFF !default; // Migrated
 
 $color-default-background: $color-scheme-default-color-black !default;
 $color-default-background-invert: $color-scheme-default-color-white !default;
