@@ -8,6 +8,7 @@ use Wexample\SymfonyLoader\Rendering\Asset;
 use Wexample\SymfonyLoader\Rendering\AssetTag;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AbstractRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Exception\AssetsNotBuiltException;
 use Wexample\SymfonyLoader\Service\Usage\AbstractAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\AnimationsAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\ColorSchemeAssetUsageService;
@@ -126,6 +127,10 @@ class AssetsService
     public function buildTags(
         RenderPass $renderPass,
     ): array {
+        if (! $this->assetsRegistryService->isBuildReady()) {
+            throw new AssetsNotBuiltException();
+        }
+
         $usages = $this->getAssetsUsages();
         $tags = [];
         $registry = $this->assetsRegistryService->getRegistry();
