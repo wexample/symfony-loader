@@ -2,7 +2,7 @@
 @use '../default/layout';
 
 // Base shapes.
-@use '../../css/shapes/layout-reset-modern';
+//@use '../../css/shapes/layout-reset-modern'; TODO migrate to design system
 
 // Local partials.
 @forward '../../css/mixins/expanded';
