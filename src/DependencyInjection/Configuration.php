@@ -13,6 +13,12 @@ class Configuration implements ConfigurationInterface
 
         $treeBuilder->getRootNode()
             ->children()
+            ->scalarNode('tsconfig_path')
+            ->defaultNull()
+            ->end()
+            ->scalarNode('default_color_scheme')
+            ->defaultNull()
+            ->end()
             ->arrayNode('front_paths')
             ->defaultValue([])
             ->scalarPrototype()->end()

@@ -13,6 +13,8 @@ class AssetsRegistryService extends RenderDataGenerator
 
     protected array $registry = [];
 
+    private string $pathBuild;
+
     private string $pathPublic;
 
     /**
@@ -31,10 +33,10 @@ class AssetsRegistryService extends RenderDataGenerator
     ) {
         $pathProject = $kernel->getProjectDir() . '/';
         $this->pathPublic = $pathProject . self::DIR_PUBLIC;
-        $pathBuild = $this->pathPublic . self::DIR_BUILD;
+        $this->pathBuild = $this->pathPublic . self::DIR_BUILD;
 
         $this->manifest = JsonHelper::read(
-            $pathBuild . self::FILE_MANIFEST,
+            $this->pathBuild . self::FILE_MANIFEST,
             JSON_OBJECT_AS_ARRAY,
             default: $this->manifest
         );
@@ -81,6 +83,15 @@ class AssetsRegistryService extends RenderDataGenerator
 
     public function getRegistry(): array
     {
-        return $this->registry;
+        return array_merge(
+            AssetsService::ASSETS_DEFAULT_EMPTY,
+            $this->registry
+        );
+    }
+
+    public function isBuildReady(): bool
+    {
+        return is_file($this->pathBuild . self::FILE_MANIFEST)
+            && ! empty($this->manifest);
     }
 }

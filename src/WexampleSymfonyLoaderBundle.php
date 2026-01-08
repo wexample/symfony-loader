@@ -4,7 +4,7 @@ namespace Wexample\SymfonyLoader;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Wexample\SymfonyLoader\DependencyInjection\Compiler\LoaderTemplatesCompilerPass;
-use Wexample\SymfonyLoader\Interface\LoaderBundleInterface;
+use Wexample\SymfonyHelpers\Interface\LoaderBundleInterface;
 use Wexample\SymfonyHelpers\Class\AbstractBundle;
 use Wexample\SymfonyHelpers\Helper\BundleHelper;
 

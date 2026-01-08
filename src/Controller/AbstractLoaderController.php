@@ -11,6 +11,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Twig\Environment;
 use Wexample\SymfonyHelpers\Class\AbstractBundle;
 use Wexample\SymfonyHelpers\Helper\BundleHelper;
+use Wexample\SymfonyLoader\Exception\AssetsNotBuiltException;
 use Wexample\SymfonyLoader\Helper\LoaderHelper;
 use Wexample\SymfonyLoader\Helper\RenderingHelper;
 use Wexample\SymfonyLoader\Rendering\AssetsRegistry;
@@ -231,12 +232,37 @@ abstract class AbstractLoaderController extends \Wexample\SymfonyHelpers\Control
         /** @var Environment $twig */
         $twig = $this->container->get('twig');
 
-        $assetsIncludes = $twig->render(
-            '@WexampleSymfonyLoaderBundle/macros/assets.html.twig',
-            [
-                'render_pass' => $renderPass,
-            ]
-        );
+        try {
+            $assetsIncludes = $twig->render(
+                '@WexampleSymfonyLoaderBundle/macros/assets.html.twig',
+                [
+                    'render_pass' => $renderPass,
+                ]
+            );
+        } catch (\Throwable $exception) {
+            $previous = $exception->getPrevious();
+            $assetsException = null;
+            if ($exception instanceof AssetsNotBuiltException) {
+                $assetsException = $exception;
+            } elseif ($previous instanceof AssetsNotBuiltException) {
+                $assetsException = $previous;
+            }
+
+            if ($assetsException) {
+                $content = $twig->render(
+                    '@WexampleSymfonyLoaderBundle/system/fatal.html.twig',
+                    [
+                        'message' => $assetsException->getMessage(),
+                        'hint' => $assetsException->getHint(),
+                    ]
+                );
+                $response->setContent($content);
+
+                return $response;
+            }
+
+            throw $exception;
+        }
 
         $content = str_replace(
             RenderingHelper::PLACEHOLDER_PRELOAD_TAG,
