@@ -63,18 +63,6 @@ yarn watch
 
 The manifest and tsconfig are updated automatically.
 
-### Select a tsconfig (optional)
-
-To use a different TypeScript config file (for example a dev-only one), set it in Symfony config:
-
-```yaml
-# config/packages/dev/wexample_symfony_loader.yaml
-wexample_symfony_loader:
-    tsconfig_path: tsconfig.dev.json
-```
-
-`loader:generate-encore-manifest` writes the chosen value to `assets/encore.manifest.json`, which is picked up by `src/Resources/js/webpack/encore.manifest.js` to configure `enableTypeScriptLoader()`.
-
 ## API Reference
 
 Full API documentation is available in the source code docstrings.
@@ -199,3 +187,4 @@ Refer to each package's documentation for specific version compatibility require
 This packages suite embodies this spirit. Trusted by professionals and enthusiasts alike, it delivers a consistent, high-quality foundation for modern development — open, elegant, and battle-tested. Its reputation is built on years of collaboration, refinement, and rigorous attention to detail, making it a natural choice for those who demand both robustness and beauty in their tools.
 
 Wexample cultivates a culture of mastery. Each package, each contribution carries the mark of a community that values precision, ethics, and innovation — a community proud to shape the future of digital craftsmanship.
+
