@@ -48,7 +48,8 @@ export default class extends AsyncConstructor {
     let doc = window.document;
 
     let run = async () => {
-      await this.loadAndInitServices(this.getServices());
+      // Allow children to perform setup before main boot sequence.
+      await this.beforeReady();
 
       const registry = this.registry = window['appRegistry'] as AppRegistryInterface;
       // Save layout class definition to allow loading it as a normal render node definition.
@@ -91,6 +92,11 @@ export default class extends AsyncConstructor {
     } else {
       doc.addEventListener('DOMContentLoaded', run);
     }
+  }
+
+  // Hook for children: executed after DOM is ready but before seal().
+  protected async beforeReady(): Promise<void> {
+    await this.loadAndInitServices(this.getServices());
   }
 
   async loadLayoutRenderData(renderData: RenderDataInterface): Promise<any> {
