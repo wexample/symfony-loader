@@ -16,12 +16,17 @@ export type UploadStatus = 'queued' | 'uploading' | 'success' | 'error';
 
 export type UploadOptions = {
   url?: string;
+  endpoint?: string;
   method?: string;
   fieldName?: string;
   data?: { [key: string]: any };
   headers?: { [key: string]: string };
   withCredentials?: boolean;
   responseType?: XMLHttpRequestResponseType;
+};
+
+export type UploadTransport = {
+  upload: (job: UploadJob) => Promise<any>;
 };
 
 export type UploadJob = {
@@ -41,6 +46,7 @@ export default class UploadService extends AppService {
   public static DEFAULT_EVENT_NAME: string = 'upload-handler:change';
 
   private queue: Queue<UploadJob, any>;
+  private transport: UploadTransport | null = null;
   private registeredEvents: Set<string> = new Set();
   private onUploadChangeProxy: EventListener;
   private concurrency = 1;
@@ -57,12 +63,12 @@ export default class UploadService extends AppService {
     };
   }
 
-  registerEvent(name: string): void {
+  registerEvent(name: string, el: EventTarget = window.document): void {
     if (this.registeredEvents.has(name)) {
       return;
     }
 
-    this.app.services.events.listen(name, this.onUploadChangeProxy);
+    this.app.services.events.listen(name, this.onUploadChangeProxy, el);
     this.registeredEvents.add(name);
   }
 
@@ -99,6 +105,15 @@ export default class UploadService extends AppService {
     this.queue.enqueueMany(jobs);
   }
 
+  setTransport(transport: UploadTransport): void {
+    this.transport = transport;
+  }
+
+  updateProgress(job: UploadJob, progress: number): void {
+    job.progress = Math.max(0, Math.min(100, Math.round(progress)));
+    this.app.services.events.trigger(UploadServiceEvents.PROGRESS, { job });
+  }
+
   private initQueue() {
     this.queue = new Queue<UploadJob, any>({
       concurrency: this.concurrency,
@@ -133,71 +148,11 @@ export default class UploadService extends AppService {
   }
 
   private sendJob(job: UploadJob): Promise<any> {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      const method = (job.options.method || 'POST').toUpperCase();
-      const url = job.options.url;
-
-      if (!url) {
-        reject(new Error('Upload url is missing.'));
-        return;
-      }
-
-      xhr.open(method, url, true);
-
-      if (job.options.responseType) {
-        xhr.responseType = job.options.responseType;
-      }
-
-      if (job.options.withCredentials) {
-        xhr.withCredentials = true;
-      }
-
-      if (job.options.headers) {
-        Object.entries(job.options.headers).forEach(([key, value]) => {
-          xhr.setRequestHeader(key, value);
-        });
-      }
-
-      xhr.upload.onprogress = (event: ProgressEvent) => {
-        if (event.lengthComputable) {
-          job.progress = Math.round((event.loaded / event.total) * 100);
-          this.app.services.events.trigger(UploadServiceEvents.PROGRESS, { job });
-        }
-      };
-
-      xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          resolve(xhr.response ?? xhr.responseText);
-        } else {
-          reject(new Error(`Upload failed with status ${xhr.status}.`));
-        }
-      };
-
-      xhr.onerror = () => reject(new Error('Upload failed due to a network error.'));
-      xhr.onabort = () => reject(new Error('Upload was aborted.'));
-
-      xhr.send(this.buildFormData(job));
-    });
-  }
-
-  private buildFormData(job: UploadJob): FormData {
-    const formData = new FormData();
-    const fieldName = job.options.fieldName || 'file';
-
-    if (job.options.data) {
-      Object.entries(job.options.data).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          value.forEach((entry) => formData.append(key, entry));
-        } else if (value !== undefined && value !== null) {
-          formData.append(key, value);
-        }
-      });
+    if (!this.transport) {
+      return Promise.reject(new Error('Upload transport is missing. Call setTransport().'));
     }
 
-    formData.append(fieldName, job.file);
-
-    return formData;
+    return this.transport.upload(job);
   }
 
   private extractOptions(detail: any): UploadOptions {
