@@ -87,6 +87,9 @@ services:
 
     Wexample\SymfonyLoader\:
         resource: '../../{Command,Controller,Service,Twig}'
+        exclude:
+            - '../../Twig/Node'
+            - '../../Twig/TokenParser'
         tags: ['controller.service_arguments']
 
     Wexample\SymfonyLoader\Twig\ColorExtension:

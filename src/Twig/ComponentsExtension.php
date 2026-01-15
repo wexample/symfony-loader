@@ -8,11 +8,16 @@ use Twig\TwigFunction;
 use Wexample\PhpHtml\Helper\DomHelper;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\ComponentService;
+use Wexample\SymfonyLoader\Twig\TokenParser\ComponentTokenParser;
+use Wexample\SymfonyLoader\Twig\TokenParser\SlotTokenParser;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 
 class ComponentsExtension extends AbstractExtension
 {
+    private array $componentStack = [];
+    private array $slotStack = [];
+
     public function __construct(
         protected ComponentService $componentService,
     ) {
@@ -69,6 +74,14 @@ class ComponentsExtension extends AbstractExtension
                     self::FUNCTION_OPTION_NEEDS_CONTEXT => true,
                 ]
             ),
+        ];
+    }
+
+    public function getTokenParsers(): array
+    {
+        return [
+            new ComponentTokenParser(),
+            new SlotTokenParser(),
         ];
     }
 
@@ -163,5 +176,113 @@ class ComponentsExtension extends AbstractExtension
         return DomHelper::buildTagAttributes(
             $attributes
         );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function componentStart(
+        Environment $twig,
+        RenderPass $renderPass,
+        string $path,
+        array $options = []
+    ): string {
+        $component = $this->componentService->registerComponent(
+            $twig,
+            $renderPass,
+            $path,
+            ComponentService::INIT_MODE_PREVIOUS,
+            $options,
+            false
+        );
+
+        $this->componentStack[] = [
+            'path' => $path,
+            'component' => $component,
+            'slots' => [],
+        ];
+
+        ob_start();
+
+        return '';
+    }
+
+    public function componentSlotStart(
+        Environment $twig,
+        RenderPass $renderPass,
+        string $name
+    ): string {
+        if (empty($this->componentStack)) {
+            throw new Exception('component_slot_start called without component_start.');
+        }
+
+        $this->slotStack[] = $name;
+        ob_start();
+
+        return '';
+    }
+
+    public function componentSlotEnd(
+        Environment $twig,
+        RenderPass $renderPass,
+        string $name
+    ): string {
+        if (empty($this->slotStack)) {
+            throw new Exception('component_slot_end called without component_slot_start.');
+        }
+
+        $currentName = array_pop($this->slotStack);
+        if ($currentName !== $name) {
+            throw new Exception('component_slot_end name does not match component_slot_start.');
+        }
+
+        $content = ob_get_clean();
+        $index = array_key_last($this->componentStack);
+
+        $this->componentStack[$index]['slots'][$name] = $content;
+
+        return '';
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function componentEnd(
+        Environment $twig,
+        RenderPass $renderPass,
+        string $path
+    ): string {
+        if (!empty($this->slotStack)) {
+            throw new Exception('component_end called while a slot is still open.');
+        }
+
+        if (empty($this->componentStack)) {
+            throw new Exception('component_end called without component_start.');
+        }
+
+        $entry = array_pop($this->componentStack);
+        if ($entry['path'] !== $path) {
+            throw new Exception('component_end path does not match component_start.');
+        }
+
+        $defaultContent = ob_get_clean();
+        if ('' !== $defaultContent) {
+            $entry['slots']['default'] = $defaultContent;
+        }
+
+        $component = $entry['component'];
+        $component->options['slots'] = $entry['slots'];
+
+        if (!array_key_exists('body', $component->options) && isset($entry['slots']['default'])) {
+            $component->options['body'] = $entry['slots']['default'];
+        }
+
+        $this->componentService->componentRenderBody(
+            $renderPass,
+            $twig,
+            $component
+        );
+
+        return $component->getBody() . $component->renderTag();
     }
 }
