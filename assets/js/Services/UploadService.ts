@@ -1,5 +1,6 @@
 import AppService from '../Class/AppService';
 import EventsService from './EventsService';
+import Queue from '@wexample/js-helpers/Helper/Queue';
 
 export class UploadServiceEvents {
   public static QUEUED: string = 'upload:queued';
@@ -29,6 +30,7 @@ export type UploadJob = {
   status: UploadStatus;
   progress: number;
   options: UploadOptions;
+  context?: any;
   response?: any;
   error?: any;
 };
@@ -38,10 +40,10 @@ export default class UploadService extends AppService {
   public static serviceName: string = 'uploads';
   public static DEFAULT_EVENT_NAME: string = 'upload-handler:change';
 
-  private queue: UploadJob[] = [];
-  private activeJob: UploadJob | null = null;
+  private queue: Queue<UploadJob, any>;
   private registeredEvents: Set<string> = new Set();
   private onUploadChangeProxy: EventListener;
+  private concurrency = 1;
 
   registerHooks() {
     return {
@@ -49,6 +51,7 @@ export default class UploadService extends AppService {
         hookInit() {
           this.onUploadChangeProxy = this.onUploadChange.bind(this);
           this.registerEvent(UploadService.DEFAULT_EVENT_NAME);
+          this.initQueue();
         },
       },
     };
@@ -76,6 +79,9 @@ export default class UploadService extends AppService {
   }
 
   enqueueFiles(files: File[], options: UploadOptions = {}, context: any = {}) {
+    this.ensureQueue();
+    const jobs: UploadJob[] = [];
+
     for (const file of files) {
       const job: UploadJob = {
         id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
@@ -83,45 +89,46 @@ export default class UploadService extends AppService {
         status: 'queued',
         progress: 0,
         options,
+        context,
       };
 
-      this.queue.push(job);
+      jobs.push(job);
       this.app.services.events.trigger(UploadServiceEvents.QUEUED, { job, context });
     }
 
-    this.processQueue();
+    this.queue.enqueueMany(jobs);
   }
 
-  private async processQueue() {
-    if (this.activeJob || this.queue.length === 0) {
-      if (!this.activeJob && this.queue.length === 0) {
+  private initQueue() {
+    this.queue = new Queue<UploadJob, any>({
+      concurrency: this.concurrency,
+      worker: (job) => this.sendJob(job),
+      onItemStart: (job) => {
+        job.status = 'uploading';
+        this.app.services.events.trigger(UploadServiceEvents.START, { job });
+      },
+      onItemSuccess: (job, response) => {
+        job.status = 'success';
+        job.response = response;
+        this.app.services.events.trigger(UploadServiceEvents.SUCCESS, { job });
+      },
+      onItemError: (job, error) => {
+        job.status = 'error';
+        job.error = error;
+        this.app.services.events.trigger(UploadServiceEvents.ERROR, { job, error });
+      },
+      onItemDone: (job) => {
+        this.app.services.events.trigger(UploadServiceEvents.COMPLETE, { job });
+      },
+      onDrain: () => {
         this.app.services.events.trigger(UploadServiceEvents.QUEUE_EMPTY);
-      }
-      return;
-    }
+      },
+    });
+  }
 
-    const job = this.queue.shift();
-    if (!job) {
-      return;
-    }
-
-    this.activeJob = job;
-    job.status = 'uploading';
-    this.app.services.events.trigger(UploadServiceEvents.START, { job });
-
-    try {
-      const response = await this.sendJob(job);
-      job.status = 'success';
-      job.response = response;
-      this.app.services.events.trigger(UploadServiceEvents.SUCCESS, { job });
-    } catch (error) {
-      job.status = 'error';
-      job.error = error;
-      this.app.services.events.trigger(UploadServiceEvents.ERROR, { job, error });
-    } finally {
-      this.app.services.events.trigger(UploadServiceEvents.COMPLETE, { job });
-      this.activeJob = null;
-      this.processQueue();
+  private ensureQueue() {
+    if (!this.queue) {
+      this.initQueue();
     }
   }
 
