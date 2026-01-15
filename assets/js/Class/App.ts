@@ -2,6 +2,7 @@ import Page from './Page';
 
 import AppService from './AppService';
 import AssetsService from '../Services/AssetsService';
+import ApiService from '../Services/ApiService';
 import LayoutsService from '../Services/LayoutsService';
 import MixinsService from '../Services/MixinsService';
 import PagesService from '../Services/PagesService';
@@ -119,6 +120,7 @@ export default class extends AsyncConstructor {
 
   getServices(): (typeof AppService | [typeof AppService, any[]])[] {
     return [
+      ApiService,
       AssetsService,
       LayoutsService,
       MixinsService,
@@ -206,6 +208,10 @@ export default class extends AsyncConstructor {
     }
 
     return bundle;
+  }
+
+  createApiClient(): any {
+    return null;
   }
 
   getService(name: string | object): AppService {
