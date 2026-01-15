@@ -151,6 +151,12 @@ export default class UploadService extends AppService {
       return Promise.reject(new Error('Upload transport is missing. Call setTransport().'));
     }
 
+    if (!job.options.path) {
+      return Promise.reject(
+        new Error('Upload path is missing. Provide options.upload.path in the component.')
+      );
+    }
+
     return this.transport.upload(job);
   }
 
