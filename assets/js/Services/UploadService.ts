@@ -15,8 +15,7 @@ export class UploadServiceEvents {
 export type UploadStatus = 'queued' | 'uploading' | 'success' | 'error';
 
 export type UploadOptions = {
-  url?: string;
-  endpoint?: string;
+  path?: string;
   method?: string;
   fieldName?: string;
   data?: { [key: string]: any };
