@@ -5,14 +5,14 @@ namespace Wexample\SymfonyLoader\Service;
 use Symfony\Component\Routing\RouterInterface;
 use Wexample\Helpers\Helper\ClassHelper;
 use Wexample\Helpers\Helper\TextHelper;
+use Wexample\SymfonyHelpers\Attribute\SimpleMethodResolver;
+use Wexample\SymfonyHelpers\Class\AbstractBundle;
+use Wexample\SymfonyHelpers\Controller\Traits\HasSimpleRoutesControllerTrait;
+use Wexample\SymfonyHelpers\Helper\RouteHelper;
 use Wexample\SymfonyLoader\Controller\AbstractLoaderController;
 use Wexample\SymfonyLoader\Controller\AbstractPagesController;
 use Wexample\SymfonyLoader\Rendering\RenderNode\PageRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
-use Wexample\SymfonyLoader\Traits\SymfonyLoaderBundleClassTrait;
-use Wexample\SymfonyHelpers\Attribute\SimpleMethodResolver;
-use Wexample\SymfonyHelpers\Class\AbstractBundle;
-use Wexample\SymfonyHelpers\Controller\Traits\HasSimpleRoutesControllerTrait;
 use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 use Wexample\SymfonyTranslations\Translation\Translator;
 
@@ -22,7 +22,8 @@ class PageService extends AbstractRenderNodeService
         AssetsService $assetsService,
         protected Translator $translator,
         protected RouterInterface $router
-    ) {
+    )
+    {
         parent::__construct(
             $assetsService,
         );
@@ -32,7 +33,8 @@ class PageService extends AbstractRenderNodeService
         RenderPass $renderPass,
         PageRenderNode $page,
         string $view
-    ): void {
+    ): void
+    {
         $this->initRenderNode(
             $page,
             $renderPass,
@@ -78,7 +80,28 @@ class PageService extends AbstractRenderNodeService
                 ClassHelper::METHOD_SEPARATOR,
             );
 
-            $methodAlias = substr($route, strlen($classPath::getControllerRouteAttribute()->getName()));
+            $controllerRouteAttribute = $classPath::getControllerRouteAttribute();
+            $controllerRouteName = $controllerRouteAttribute
+                ? RouteHelper::getRouteAttributeName($controllerRouteAttribute)
+                : null;
+
+            if (!$controllerRouteName) {
+                $controllerNamespaceParts = TemplateHelper::explodeControllerNamespaceSubParts(
+                    $classPath,
+                    $bundle
+                );
+                if (!empty($controllerNamespaceParts) && $controllerNamespaceParts[0] === 'Pages') {
+                    $controllerNamespaceParts = array_slice($controllerNamespaceParts, 1);
+                }
+
+                $controllerRouteName = RouteHelper::buildRouteNameFromParts($controllerNamespaceParts, '');
+            }
+
+            if ($controllerRouteName !== '') {
+                $methodAlias = TextHelper::removePrefix($route, $controllerRouteName . '_');
+            } else {
+                $methodAlias = TextHelper::getLastChunk($route, '_');
+            }
 
             /** @var string $classPath */
             $controllerMethodPath = ($classPath . ClassHelper::METHOD_SEPARATOR . TextHelper::toCamel($methodAlias));
@@ -114,9 +137,9 @@ class PageService extends AbstractRenderNodeService
             $explodeController[] = $methodName;
 
             return $templateLocationPrefix . '.' . TemplateHelper::joinNormalizedParts(
-                $explodeController,
-                '.'
-            );
+                    $explodeController,
+                    '.'
+                );
         }
         // Remove useless namespace part.
         $controllerRelativePath = TextHelper::removePrefix(
@@ -134,8 +157,8 @@ class PageService extends AbstractRenderNodeService
         $explodeController[] = $methodName;
 
         return $templateLocationPrefix . '.' . TemplateHelper::joinNormalizedParts(
-            $explodeController,
-            '.'
-        );
+                $explodeController,
+                '.'
+            );
     }
 }
