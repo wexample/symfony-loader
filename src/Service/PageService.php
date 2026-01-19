@@ -98,7 +98,7 @@ class PageService extends AbstractRenderNodeService
             }
 
             if ($controllerRouteName !== '') {
-                $methodAlias = TextHelper::removePrefix($route, $controllerRouteName . '_');
+                $methodAlias = TextHelper::removePrefix($route, $controllerRouteName);
             } else {
                 $methodAlias = TextHelper::getLastChunk($route, '_');
             }
