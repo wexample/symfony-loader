@@ -61,7 +61,7 @@ class PageService extends AbstractRenderNodeService
     {
         $controllerMethodPath = $this->getControllerClassPathFromRouteName($route);
         /** @var AbstractLoaderController $controllerClass */
-        $controllerClass = explode('::', $controllerMethodPath)[0];
+        $controllerClass = ClassHelper::getClassPath($controllerMethodPath);
 
         $bundle = null;
         if (ClassHelper::classUsesTrait($controllerClass, SymfonyDesignSystemBundleClassTrait::class)) {
@@ -118,7 +118,8 @@ class PageService extends AbstractRenderNodeService
         string $templateLocationPrefix = null
     ): string
     {
-        [$controllerFullPath, $methodName] = explode(ClassHelper::METHOD_SEPARATOR, $classPath);
+        $controllerFullPath = ClassHelper::getClassPath($classPath);
+        $methodName = ClassHelper::getMethodNameFromClassPath($classPath);
 
         // Remove useless namespace part.
         $controllerName = AbstractLoaderController::removeSuffix($controllerFullPath);
