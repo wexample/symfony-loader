@@ -7,6 +7,14 @@ export type DateFormatKey =
   | 'dateOnly'
   | 'dateShort'
   | 'monthYear';
+export type RelativeTimeUnit =
+  | 'second'
+  | 'minute'
+  | 'hour'
+  | 'day'
+  | 'week'
+  | 'month'
+  | 'year';
 
 export default class DateService extends AppService {
   public static serviceName: string = 'date';
@@ -103,5 +111,68 @@ export default class DateService extends AppService {
 
   formatMonthYear(value: DateInput, locale?: string): string {
     return this.format(value, 'monthYear', locale);
+  }
+
+  formatRelative(
+    value: DateInput,
+    options: {
+      now?: DateInput;
+      unit?: RelativeTimeUnit;
+      style?: Intl.RelativeTimeFormatStyle;
+      numeric?: Intl.RelativeTimeFormatNumeric;
+    } = {}
+  ): string {
+    const date = this.toDate(value);
+    if (!date) {
+      return '';
+    }
+
+    const now = this.toDate(options.now) || new Date();
+    const diffMs = date.getTime() - now.getTime();
+    const diffSeconds = diffMs / 1000;
+
+    const unit = options.unit ?? this.resolveRelativeUnit(diffSeconds);
+    const divider = this.getRelativeUnitDivider(unit);
+    const valueInUnit = Math.round(diffSeconds / divider);
+
+    const formatter = new Intl.RelativeTimeFormat(
+      this.resolveLocale(),
+      {
+        style: options.style ?? 'long',
+        numeric: options.numeric ?? 'auto',
+      }
+    );
+
+    return formatter.format(valueInUnit, unit);
+  }
+
+  private resolveRelativeUnit(diffSeconds: number): RelativeTimeUnit {
+    const absSeconds = Math.abs(diffSeconds);
+    if (absSeconds < 60) return 'second';
+    if (absSeconds < 3600) return 'minute';
+    if (absSeconds < 86400) return 'hour';
+    if (absSeconds < 604800) return 'day';
+    if (absSeconds < 2592000) return 'week';
+    if (absSeconds < 31536000) return 'month';
+    return 'year';
+  }
+
+  private getRelativeUnitDivider(unit: RelativeTimeUnit): number {
+    switch (unit) {
+      case 'minute':
+        return 60;
+      case 'hour':
+        return 3600;
+      case 'day':
+        return 86400;
+      case 'week':
+        return 604800;
+      case 'month':
+        return 2592000;
+      case 'year':
+        return 31536000;
+      default:
+        return 1;
+    }
   }
 }
