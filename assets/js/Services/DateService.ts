@@ -1,9 +1,45 @@
 import AppService from '../Class/AppService';
 
 export type DateInput = Date | string | number | null | undefined;
+export type DateFormatKey =
+  | 'dateTimeFull'
+  | 'dateTime'
+  | 'dateOnly'
+  | 'dateShort'
+  | 'monthYear';
 
 export default class DateService extends AppService {
   public static serviceName: string = 'date';
+  public static formats: Record<DateFormatKey, Intl.DateTimeFormatOptions> = {
+    dateTimeFull: {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    },
+    dateTime: {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    },
+    dateOnly: {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    },
+    dateShort: {
+      month: '2-digit',
+      day: '2-digit',
+    },
+    monthYear: {
+      year: 'numeric',
+      month: '2-digit',
+    },
+  };
 
   private resolveLocale(locale?: string): string {
     return (
@@ -32,39 +68,40 @@ export default class DateService extends AppService {
     return Number.isNaN(date.getTime()) ? null : date;
   }
 
-  formatDate(
+  format(
     value: DateInput,
-    options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    },
-    locale?: string
+    format: DateFormatKey = 'dateTime',
+    locale?: string,
+    options?: Intl.DateTimeFormatOptions
   ): string {
     const date = this.toDate(value);
     if (!date) {
       return '';
     }
 
-    return new Intl.DateTimeFormat(this.resolveLocale(locale), options).format(date);
+    const baseOptions = DateService.formats[format];
+    const resolvedOptions = options ? { ...baseOptions, ...options } : baseOptions;
+
+    return new Intl.DateTimeFormat(this.resolveLocale(locale), resolvedOptions).format(date);
   }
 
-  formatDateTime(
-    value: DateInput,
-    options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-    },
-    locale?: string
-  ): string {
-    const date = this.toDate(value);
-    if (!date) {
-      return '';
-    }
+  formatDateTimeFull(value: DateInput, locale?: string): string {
+    return this.format(value, 'dateTimeFull', locale);
+  }
 
-    return new Intl.DateTimeFormat(this.resolveLocale(locale), options).format(date);
+  formatDateTime(value: DateInput, locale?: string): string {
+    return this.format(value, 'dateTime', locale);
+  }
+
+  formatDateOnly(value: DateInput, locale?: string): string {
+    return this.format(value, 'dateOnly', locale);
+  }
+
+  formatDateShort(value: DateInput, locale?: string): string {
+    return this.format(value, 'dateShort', locale);
+  }
+
+  formatMonthYear(value: DateInput, locale?: string): string {
+    return this.format(value, 'monthYear', locale);
   }
 }
