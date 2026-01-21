@@ -6,12 +6,13 @@ namespace Wexample\SymfonyLoader\Controller;
 use Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Wexample\SymfonyHelpers\Class\AbstractBundle;
+use Wexample\SymfonyHelpers\Controller\AbstractController;
 use Wexample\SymfonyLoader\Helper\LoaderHelper;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\AdaptiveRendererService;
 use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 
-abstract class AbstractLoaderController extends \Wexample\SymfonyHelpers\Controller\AbstractController
+abstract class AbstractLoaderController extends AbstractController
 {
     public function __construct(
         protected readonly AdaptiveRendererService $adaptiveRendererService,
