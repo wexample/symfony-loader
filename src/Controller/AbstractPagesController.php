@@ -3,11 +3,9 @@
 namespace Wexample\SymfonyLoader\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Wexample\Helpers\Helper\ClassHelper;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
-use Wexample\SymfonyLoader\Service\AdaptiveResponseService;
-use Wexample\SymfonyLoader\Service\LayoutService;
+use Wexample\SymfonyLoader\Service\AdaptiveRendererService;
 use Wexample\SymfonyLoader\Service\PageService;
 use Wexample\SymfonyLoader\Service\RenderPassBagService;
 use Wexample\SymfonyHelpers\Attribute\SimpleMethodResolver;
@@ -32,15 +30,11 @@ abstract class AbstractPagesController extends AbstractLoaderController
     public const BUNDLE_TEMPLATE_SEPARATOR = '::';
 
     public function __construct(
-        AdaptiveResponseService $adaptiveResponseService,
-        LayoutService $layoutService,
-        KernelInterface $kernel,
+        AdaptiveRendererService $adaptiveRendererService,
         protected PageService $pageService,
     ) {
         parent::__construct(
-            $adaptiveResponseService,
-            $layoutService,
-            $kernel
+            $adaptiveRendererService,
         );
     }
 
