@@ -10,12 +10,14 @@ import ComponentsService from '../Services/ComponentsService';
 import VueService from '../Services/VueService';
 import DebugService from '../Services/DebugService';
 import LocaleService from '../Services/LocaleService';
+import EntityService from '../Services/EntityService';
 
 export default interface ServicesRegistryInterface {
   adaptive?: AdaptiveService;
   assets?: AssetsService;
   components?: ComponentsService;
   debug?: DebugService;
+  entity?: EntityService;
   events?: EventsService;
   layouts?: LayoutsService;
   locale?: LocaleService;

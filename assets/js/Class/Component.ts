@@ -33,14 +33,8 @@ export default abstract class Component extends RenderNode {
     let removePlaceHolder = true;
 
     if (!elPlaceholder) {
-      this.app.services.prompt.systemError(
-        'Placeholder missing for component ":name" using CSS selector .:selector',
-        {
-          ':name': this.view,
-          ':selector': this.cssClassName
-        },
-        this,
-        true
+      throw new Error(
+        `Component placeholder missing for "${this.view}" using ".${this.cssClassName}".`
       );
     }
 

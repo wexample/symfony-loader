@@ -36,7 +36,15 @@ export default class VueService extends AppService {
   constructor(app: App, globalConfig: object = {}) {
     super(app);
 
-    this.globalConfig = Object.assign({}, globalConfig);
+    this.globalConfig = objectDeepAssign(
+      {},
+      {
+        compilerOptions: {
+          delimiters: ['[[', ']]'],
+        },
+      },
+      globalConfig
+    );
     this.globalConfig['globalProperties'] = this.globalConfig['globalProperties'] ? this.globalConfig['globalProperties']: {};
     this.globalConfig['globalProperties']['app'] = app;
 

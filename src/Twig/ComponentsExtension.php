@@ -8,6 +8,8 @@ use Twig\TwigFunction;
 use Wexample\PhpHtml\Helper\DomHelper;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\ComponentService;
+use Wexample\SymfonyLoader\Twig\TokenParser\ComponentTokenParser;
+use Wexample\SymfonyLoader\Twig\TokenParser\SlotTokenParser;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 
@@ -69,6 +71,14 @@ class ComponentsExtension extends AbstractExtension
                     self::FUNCTION_OPTION_NEEDS_CONTEXT => true,
                 ]
             ),
+        ];
+    }
+
+    public function getTokenParsers(): array
+    {
+        return [
+            new ComponentTokenParser(),
+            new SlotTokenParser(),
         ];
     }
 

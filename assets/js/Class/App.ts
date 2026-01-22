@@ -2,11 +2,13 @@ import Page from './Page';
 
 import AppService from './AppService';
 import AssetsService from '../Services/AssetsService';
+import ApiService from '../Services/ApiService';
 import LayoutsService from '../Services/LayoutsService';
 import MixinsService from '../Services/MixinsService';
 import PagesService from '../Services/PagesService';
 import { RenderNodeResponsiveType } from '../Services/ResponsiveService';
 import RoutingService from '../Services/RoutingService';
+import EntityService from '../Services/EntityService';
 import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import LayoutInitial from './LayoutInitial';
 import LayoutInterface from '../Interfaces/RenderData/LayoutInterface';
@@ -48,7 +50,8 @@ export default class extends AsyncConstructor {
     let doc = window.document;
 
     let run = async () => {
-      await this.loadAndInitServices(this.getServices());
+      // Allow children to perform setup before main boot sequence.
+      await this.beforeReady();
 
       const registry = this.registry = window['appRegistry'] as AppRegistryInterface;
       // Save layout class definition to allow loading it as a normal render node definition.
@@ -93,6 +96,11 @@ export default class extends AsyncConstructor {
     }
   }
 
+  // Hook for children: executed after DOM is ready but before seal().
+  protected async beforeReady(): Promise<void> {
+    await this.loadAndInitServices(this.getServices());
+  }
+
   async loadLayoutRenderData(renderData: RenderDataInterface): Promise<any> {
     // These elements can't be mounted during regular mount pass.
     this.layout.attachCoreHtmlElements();
@@ -113,11 +121,13 @@ export default class extends AsyncConstructor {
 
   getServices(): (typeof AppService | [typeof AppService, any[]])[] {
     return [
+      ApiService,
       AssetsService,
       LayoutsService,
       MixinsService,
       PagesService,
       RoutingService,
+      EntityService,
     ];
   }
 
@@ -200,6 +210,10 @@ export default class extends AsyncConstructor {
     }
 
     return bundle;
+  }
+
+  createApiClient(): any {
+    return null;
   }
 
   getService(name: string | object): AppService {

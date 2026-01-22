@@ -190,6 +190,7 @@ class ComponentService extends AbstractRenderNodeService
         string $name,
         string $initMode,
         array $options = [],
+        bool $renderBody = true,
     ): ComponentRenderNode {
         $componentManager = $this
             ->componentManagerLocatorService
@@ -213,11 +214,13 @@ class ComponentService extends AbstractRenderNodeService
             $name,
         );
 
-        $this->componentRenderBody(
-            $renderPass,
-            $twig,
-            $component
-        );
+        if ($renderBody) {
+            $this->componentRenderBody(
+                $renderPass,
+                $twig,
+                $component
+            );
+        }
 
         return $component;
     }

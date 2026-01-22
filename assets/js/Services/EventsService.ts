@@ -37,6 +37,7 @@ export default class EventsService extends AppService {
     el.dispatchEvent(
       new CustomEvent(name, {
         detail: data,
+        bubbles: true,
       })
     );
   }
