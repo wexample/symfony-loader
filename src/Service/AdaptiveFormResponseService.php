@@ -59,7 +59,7 @@ class AdaptiveFormResponseService
         FormInterface $form,
         string $parameterName = 'form'
     ): self {
-        $this->parameters[$parameterName] = $form;
+        $this->parameters[$parameterName] = $form->createView();
 
         return $this;
     }
