@@ -1,12 +1,18 @@
-const fs = require('fs');
-const path = require('path');
-const {execSync} = require('child_process');
+import fs from 'node:fs';
+import path from 'node:path';
+import { execSync } from 'node:child_process';
+import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
+
+const require = createRequire(import.meta.url);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 const Encore = require('@symfony/webpack-encore');
 const webpack = require('webpack');
 const FosRouting = require('fos-router/webpack/FosRouting');
 const VirtualModules = require('webpack-virtual-modules');
-const {objectMergeDeep} = require('@wexample/js-helpers/Helper/Object');
-const {stringToKebabCase} = require('@wexample/js-helpers/Helper/String');
+const { objectMergeDeep } = require('@wexample/js-helpers/Helper/Object');
+const { stringToKebabCase } = require('@wexample/js-helpers/Helper/String');
 const {
   COLORS,
   logTitle,
@@ -388,7 +394,7 @@ function buildEncoreConfig(options = {}) {
   return Encore.getWebpackConfig();
 }
 
-module.exports = {
+export {
   DEFAULT_MANIFEST_PATH,
   configureEncoreBase,
   applyManifestEntries,
