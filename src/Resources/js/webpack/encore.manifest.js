@@ -145,6 +145,19 @@ function configureEncoreBase(options = {}) {
         tsOptions.configFile = loaderConfig.ts.configFile;
       }
     })
+    .configureWebpack((config) => {
+      config.resolve = config.resolve || {};
+      config.resolve.extensions = Array.from(
+        new Set([...(config.resolve.extensions || []), ".ts", ".tsx", ".js"])
+      );
+
+      config.resolve.extensionAlias = {
+        ...(config.resolve.extensionAlias || {}),
+        ".js": [".ts", ".tsx", ".js"],
+        ".mjs": [".mts", ".mjs"],
+        ".cjs": [".cts", ".cjs"],
+      };
+    })
     .enableIntegrityHashes(options.integrity ?? isProd);
 
   Encore.configureCssLoader((cssOptions) => {
