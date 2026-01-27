@@ -322,13 +322,14 @@ function buildWrapper(entry, absoluteSource, options = {}, encore = Encore) {
   );
   const modulePath = buildWrapperVirtualPath(entry, options);
   pendingVirtualModules[modulePath] = wrapperContent;
-  logPath('    wrapper (virtual)', modulePath);
+  logPath('    wrapper (virtual)', modulePath, COLORS.gray);
 
   return modulePath;
 }
 
 function buildWrapperVirtualPath(entry, options) {
-  const relativeDir = sanitizeRelativeDir(entry.relative);
+  const bundleDir = entry.bundle || 'app';
+  const relativeDir = sanitizeRelativeDir(path.join(bundleDir, entry.relative || ''));
   const targetDir = path.join(options.virtualWrapperRoot || WRAPPER_VIRTUAL_ROOT, relativeDir);
 
   return path.join(targetDir, `${stringToKebabCase(buildWrapperBaseName(entry))}.js`);
