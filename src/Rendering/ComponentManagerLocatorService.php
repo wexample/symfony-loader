@@ -19,6 +19,7 @@ readonly class ComponentManagerLocatorService
 
     public function getComponentService(string $componentName): ?AbstractComponentManager
     {
+        $componentName = $this->normalizeComponentName($componentName);
         $parts = explode('/', $componentName);
         $componentClassPath = 'App';
 
@@ -38,5 +39,30 @@ readonly class ComponentManagerLocatorService
         }
 
         return null;
+    }
+
+    public function normalizeComponentName(string $componentName): string
+    {
+        if ($componentName[0] !== BundleHelper::ALIAS_PREFIX) {
+            return $componentName;
+        }
+
+        $parts = explode('/', $componentName);
+        $bundleIdentifier = ltrim($parts[0], BundleHelper::ALIAS_PREFIX);
+
+        // Already a bundle short name like "@WexampleSymfonyLoaderBundle".
+        if (str_ends_with($bundleIdentifier, 'Bundle')) {
+            return $componentName;
+        }
+
+        $bundle = BundleHelper::getBundle($bundleIdentifier, $this->kernel);
+
+        if (! $bundle) {
+            return $componentName;
+        }
+
+        $parts[0] = BundleHelper::ALIAS_PREFIX . $bundle->getName();
+
+        return implode('/', $parts);
     }
 }
