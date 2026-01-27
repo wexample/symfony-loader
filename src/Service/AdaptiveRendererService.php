@@ -174,12 +174,12 @@ class AdaptiveRendererService
             throw new Exception('View must be defined before adaptive rendering');
         }
 
+        $this->twig->addGlobal('render_pass', $renderPass);
+        $this->twig->addGlobal('debug', (bool) $this->getParameterOrDefault('loader.debug', false));
+
         $content = $this->twig->render(
             $view,
-            [
-                'debug' => (bool) $this->getParameterOrDefault('loader.debug', false),
-                'render_pass' => $renderPass,
-            ] + $parameters
+            $parameters
         );
 
         $response ??= new Response();

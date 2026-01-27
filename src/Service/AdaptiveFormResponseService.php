@@ -78,6 +78,20 @@ class AdaptiveFormResponseService
         return $this;
     }
 
+    public function getRedirect(): ?Response
+    {
+        return $this->redirect;
+    }
+
+    public function getRedirectUrl(): ?string
+    {
+        if ($this->redirect instanceof RedirectResponse) {
+            return $this->redirect->getTargetUrl();
+        }
+
+        return null;
+    }
+
     public function hasAction(): bool
     {
         return (bool) ($this->view || $this->redirect);

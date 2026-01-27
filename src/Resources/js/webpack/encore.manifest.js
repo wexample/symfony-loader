@@ -322,13 +322,14 @@ function buildWrapper(entry, absoluteSource, options = {}, encore = Encore) {
   );
   const modulePath = buildWrapperVirtualPath(entry, options);
   pendingVirtualModules[modulePath] = wrapperContent;
-  logPath('    wrapper (virtual)', modulePath);
+  logPath('    wrapper (virtual)', modulePath, COLORS.gray);
 
   return modulePath;
 }
 
 function buildWrapperVirtualPath(entry, options) {
-  const relativeDir = sanitizeRelativeDir(entry.relative);
+  const bundleDir = entry.bundle || 'app';
+  const relativeDir = sanitizeRelativeDir(path.join(bundleDir, entry.relative || ''));
   const targetDir = path.join(options.virtualWrapperRoot || WRAPPER_VIRTUAL_ROOT, relativeDir);
 
   return path.join(targetDir, `${stringToKebabCase(buildWrapperBaseName(entry))}.js`);
@@ -391,7 +392,21 @@ function buildEncoreConfig(options = {}) {
   configureEncoreBase(options);
   applyManifestEntries(options);
 
-  return Encore.getWebpackConfig();
+  const config = Encore.getWebpackConfig();
+  
+  // Add extensionAlias to resolve .js imports to .ts/.tsx files (for local dev with yarn link)
+  config.resolve = config.resolve || {};
+  config.resolve.extensions = Array.from(
+    new Set([...(config.resolve.extensions || []), ".ts", ".tsx", ".js"])
+  );
+  config.resolve.extensionAlias = {
+    ...(config.resolve.extensionAlias || {}),
+    ".js": [".ts", ".tsx", ".js"],
+    ".mjs": [".mts", ".mjs"],
+    ".cjs": [".cts", ".cjs"],
+  };
+
+  return config;
 }
 
 export {

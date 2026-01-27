@@ -192,6 +192,8 @@ class ComponentService extends AbstractRenderNodeService
         array $options = [],
         bool $renderBody = true,
     ): ComponentRenderNode {
+        $name = $this->componentManagerLocatorService->normalizeComponentName($name);
+
         $componentManager = $this
             ->componentManagerLocatorService
             ->getComponentService($name);
