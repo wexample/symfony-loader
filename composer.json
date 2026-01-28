@@ -1,50 +1,50 @@
 {
-  "name": "wexample/symfony-loader",
-  "description": "A dynamic rendering system for Symfony",
-  "type": "library",
-  "license": "MIT",
-  "version": "0.0.15",
-  "keywords": [
-    "symfony-ux"
-  ],
-  "autoload": {
-    "psr-4": {
-      "Wexample\\SymfonyLoader\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Wexample\\SymfonyLoader\\Tests\\": "tests/"
-    }
-  },
-  "authors": [
-    {
-      "name": "weeger",
-      "email": "romain.weeger@wexample.com"
-    }
-  ],
-  "require": {
-    "php": ">=8.2",
-    "wexample/php-html": "0.0.13",
-    "wexample/symfony-dev": "1.0.75",
-    "wexample/symfony-helpers": "1.0.88",
-    "wexample/symfony-routing": "0.0.16",
-    "wexample/symfony-translations": "1.0.75",
-    "friendsofsymfony/jsrouting-bundle": "^3.2.1",
-    "symfony/webpack-encore-bundle": "^2.0.1",
-    "fortawesome/font-awesome": "^6.7"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "*",
-    "wexample/symfony-testing": "1.0.61"
-  },
-  "repositories": [
-    {
-      "type": "path",
-      "url": "../*",
-      "options": {
-        "symlink": true
-      }
-    }
-  ]
+    "name": "wexample/symfony-loader",
+    "description": "A dynamic rendering system for Symfony",
+    "type": "library",
+    "license": "MIT",
+    "version": "0.0.15",
+    "keywords": [
+        "symfony-ux"
+    ],
+    "autoload": {
+        "psr-4": {
+            "Wexample\\SymfonyLoader\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Wexample\\SymfonyLoader\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "weeger",
+            "email": "romain.weeger@wexample.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "wexample/php-html": "*",
+        "wexample/symfony-dev": "*",
+        "wexample/symfony-helpers": "*",
+        "wexample/symfony-routing": "*",
+        "wexample/symfony-translations": "*",
+        "friendsofsymfony/jsrouting-bundle": "^3.2.1",
+        "symfony/webpack-encore-bundle": "^2.0.1",
+        "fortawesome/font-awesome": "^6.7"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "wexample/symfony-testing": "*"
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../*",
+            "options": {
+                "symlink": true
+            }
+        }
+    ]
 }
