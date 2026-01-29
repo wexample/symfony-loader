@@ -230,6 +230,17 @@ export default class extends AsyncConstructor {
     return this.services[name];
   }
 
+  getServiceOrFail(name: string | object): AppService {
+    const serviceName = (typeof name === 'string' ? name : (name as any).serviceName) as string;
+    const service = this.services[serviceName];
+
+    if (!service) {
+      throw new Error(`Service not found: ${serviceName}`);
+    }
+
+    return service;
+  }
+
   addLib(name: string, object: any) {
     this.lib[name] = object;
   }
