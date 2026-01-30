@@ -1,0 +1,21 @@
+{% if icon is defined and icon %}
+    <button
+        type="submit"
+        {% if name is defined %}name="{{ name }}"{% endif %}
+        {% if id is defined %}id="{{ id }}"{% endif %}
+        {% if value is defined and value != '' %}value="{{ value }}"{% endif %}
+    >
+        {{ icon(icon) }} {% if label is defined %}{{ label }}{% endif %}
+    </button>
+{% else %}
+    <input
+        type="submit"
+        {% if name is defined %}name="{{ name }}"{% endif %}
+        {% if id is defined %}id="{{ id }}"{% endif %}
+        {% if value is defined and value != '' %}
+            value="{{ value }}"
+        {% elseif label is defined %}
+            value="{{ label }}"
+        {% endif %}
+    >
+{% endif %}
