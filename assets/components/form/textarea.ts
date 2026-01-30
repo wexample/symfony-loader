@@ -4,8 +4,8 @@ export default class extends Component {
   private textareaEl: HTMLTextAreaElement | null = null;
   private onInputProxy: EventListener | null = null;
 
-  public async init() {
-    await super.init();
+  attachHtmlElements() {
+    super.attachHtmlElements();
 
     this.textareaEl = this.el.querySelector('textarea');
 
