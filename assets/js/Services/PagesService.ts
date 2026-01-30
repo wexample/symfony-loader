@@ -56,9 +56,7 @@ export default class PagesService extends AbstractRenderNodeService {
       // Cast to unknown first to avoid type errors
       parentNode = this.app.layout as unknown as PageManagerComponent;
     } else if (renderData.renderRequestId) {
-      // S'assurer que l'objet n'est pas undefined
       const registry = this.app.services?.pages?.pageHandlerRegistry || {};
-      // Utiliser l'opérateur d'accès sécurisé pour éviter les erreurs TypeScript
       parentNode = registry?.[renderData.renderRequestId];
 
       if (parentNode) {
@@ -84,12 +82,14 @@ export default class PagesService extends AbstractRenderNodeService {
   createRenderNodeInstance(
     renderRequestId: string,
     classDefinition: any,
-    parentRenderNode: RenderNode
+    parentRenderNode: RenderNode,
+    view: string,
   ): RenderNode | null {
     return super.createRenderNodeInstance(
       renderRequestId,
       classDefinition || this.app.getClassPage(),
-      parentRenderNode
+      parentRenderNode,
+      view
     ) as Page;
   }
 }

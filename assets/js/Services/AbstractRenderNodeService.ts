@@ -52,7 +52,8 @@ export default abstract class AbstractRenderNodeService extends AppService {
     const instance: null | RenderNode = this.createRenderNodeInstance(
       renderRequestId,
       classDefinition,
-      parentRenderNode
+      parentRenderNode,
+      view,
     );
 
     if (instance) {
@@ -67,19 +68,15 @@ export default abstract class AbstractRenderNodeService extends AppService {
   createRenderNodeInstance(
     renderRequestId: string,
     classDefinition: any,
-    parentRenderNode: RenderNode
+    parentRenderNode: RenderNode,
+    view: string,
   ): RenderNode | null {
     try {
       return new classDefinition(renderRequestId, this.app, parentRenderNode);
     } catch {
       this.app.services.prompt.systemError(
-        'Unable to find component with name ":name"',
-        {
-          ":name": classDefinition ? classDefinition.toString() : classDefinition
-        }
+        `Unable to find component with name "${classDefinition ? classDefinition.toString() : view}"`
       );
-
-      return null;
     }
   }
 }
