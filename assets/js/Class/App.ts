@@ -5,6 +5,7 @@ import AssetsService from '../Services/AssetsService';
 import ApiService from '../Services/ApiService';
 import LayoutsService from '../Services/LayoutsService';
 import MixinsService from '../Services/MixinsService';
+import OverlayService from '../Services/OverlayService';
 import PagesService from '../Services/PagesService';
 import { RenderNodeResponsiveType } from '../Services/ResponsiveService';
 import RoutingService from '../Services/RoutingService';
@@ -125,6 +126,7 @@ export default class extends AsyncConstructor {
       AssetsService,
       LayoutsService,
       MixinsService,
+      OverlayService,
       PagesService,
       RoutingService,
       EntityService,

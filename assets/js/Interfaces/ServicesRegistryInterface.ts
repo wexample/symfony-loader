@@ -11,6 +11,7 @@ import VueService from '../Services/VueService';
 import DebugService from '../Services/DebugService';
 import LocaleService from '../Services/LocaleService';
 import EntityService from '../Services/EntityService';
+import OverlayService from '../Services/OverlayService';
 
 export default interface ServicesRegistryInterface {
   adaptive?: AdaptiveService;
@@ -22,6 +23,7 @@ export default interface ServicesRegistryInterface {
   layouts?: LayoutsService;
   locale?: LocaleService;
   mixins?: MixinsService;
+  overlay?: OverlayService;
   pages?: PagesService;
   prompt?: PromptService;
   routing?: RoutingService;
