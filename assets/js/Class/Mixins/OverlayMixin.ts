@@ -1,116 +1,110 @@
-export default class OverlayMixin {
+import AbstractMixin from '@wexample/js-helpers/Helper/AbstractMixin';
+
+export default class OverlayMixin extends AbstractMixin {
   static apply(instance: any) {
-    if (instance.__overlayMixinApplied) {
-      return;
-    }
+    this.applyOnce(instance, (target: any) => {
+      if (target.overlayEnabled === undefined) {
+        target.overlayEnabled = true;
+      }
 
-    instance.__overlayMixinApplied = true;
+      const originalActivate = target.activateListeners
+        ? target.activateListeners.bind(target)
+        : null;
+      const originalDeactivate = target.deactivateListeners
+        ? target.deactivateListeners.bind(target)
+        : null;
 
-    if (instance.overlayEnabled === undefined) {
-      instance.overlayEnabled = true;
-    }
-
-    const originalActivate = instance.activateListeners
-      ? instance.activateListeners.bind(instance)
-      : null;
-    const originalDeactivate = instance.deactivateListeners
-      ? instance.deactivateListeners.bind(instance)
-      : null;
-
-    if (!instance.__overlayListenersWrapped) {
-      instance.activateListeners = async (...args) => {
+      target.activateListeners = async (...args) => {
         if (originalActivate) {
           await originalActivate(...args);
         }
 
-        if (instance.overlayEnabled) {
-          instance.app.services.overlay.register(instance);
+        if (target.overlayEnabled) {
+          target.app.services.overlay.register(target);
         }
       };
 
-      instance.deactivateListeners = async (...args) => {
+      target.deactivateListeners = async (...args) => {
         if (originalDeactivate) {
           await originalDeactivate(...args);
         }
 
-        if (instance.overlayEnabled) {
-          instance.app.services.overlay.unregister(instance);
+        if (target.overlayEnabled) {
+          target.app.services.overlay.unregister(target);
         }
       };
 
-      instance.__overlayListenersWrapped = true;
-    }
+      if (!target.overlayIsOpen) {
+        target.overlayIsOpen = () => {
+          return !!target.el && target.el.classList.contains('is-open');
+        };
+      }
 
-    if (!instance.overlayIsOpen) {
-      instance.overlayIsOpen = () => {
-        return !!instance.el && instance.el.classList.contains('is-open');
-      };
-    }
+      if (!target.overlayGetElement) {
+        target.overlayGetElement = () => {
+          return target.el;
+        };
+      }
 
-    if (!instance.overlayGetElement) {
-      instance.overlayGetElement = () => {
-        return instance.el;
-      };
-    }
+      if (!target.overlayGetFocusTarget) {
+        target.overlayGetFocusTarget = () => {
+          return null;
+        };
+      }
 
-    if (!instance.overlayGetFocusTarget) {
-      instance.overlayGetFocusTarget = () => {
-        return null;
-      };
-    }
+      if (!target.overlayOnOpen) {
+        target.overlayOnOpen = () => {};
+      }
 
-    if (!instance.overlayOnOpen) {
-      instance.overlayOnOpen = () => {};
-    }
+      if (!target.overlayOnClose) {
+        target.overlayOnClose = () => {};
+      }
 
-    if (!instance.overlayOnClose) {
-      instance.overlayOnClose = () => {};
-    }
+      if (!target.overlayOnEscape) {
+        target.overlayOnEscape = () => {
+          target.overlayClose();
+        };
+      }
 
-    if (!instance.overlayOnEscape) {
-      instance.overlayOnEscape = () => {
-        instance.overlayClose();
-      };
-    }
+      if (!target.overlayOnClickOutside) {
+        target.overlayOnClickOutside = () => {
+          target.overlayClose();
+        };
+      }
 
-    if (!instance.overlayOnClickOutside) {
-      instance.overlayOnClickOutside = () => {
-        instance.overlayClose();
-      };
-    }
+      if (!target.overlayOpen) {
+        target.overlayOpen = (event?: Event) => {
+          if (target.overlayIsOpen()) {
+            return;
+          }
 
-    if (!instance.overlayOpen) {
-      instance.overlayOpen = (event?: Event) => {
-        if (instance.overlayIsOpen()) {
-          return;
-        }
+          target.el.classList.add('is-open');
+          target.app.services.overlay.setActive(target);
+          target.overlayOnOpen(event);
+        };
+      }
 
-        instance.el.classList.add('is-open');
-        instance.app.services.overlay.setActive(instance);
-        instance.overlayOnOpen(event);
-      };
-    }
+      if (!target.overlayClose) {
+        target.overlayClose = (event?: Event) => {
+          if (!target.overlayIsOpen()) {
+            return;
+          }
 
-    if (!instance.overlayClose) {
-      instance.overlayClose = (event?: Event) => {
-        if (!instance.overlayIsOpen()) {
-          return;
-        }
+          target.el.classList.remove('is-open');
+          target.overlayOnClose(event);
+          target.app.services.overlay.clearActive(target);
+        };
+      }
 
-        instance.el.classList.remove('is-open');
-        instance.overlayOnClose(event);
-        instance.app.services.overlay.clearActive(instance);
-      };
-    }
-
-    if (!instance.overlayToggle) {
-      instance.overlayToggle = (event?: Event) => {
-        if (instance.overlayIsOpen()) {
-          instance.overlayClose(event);
-        } else {
-          instance.overlayOpen(event);
-        }
-      };
-    }
+      if (!target.overlayToggle) {
+        target.overlayToggle = (event?: Event) => {
+          if (target.overlayIsOpen()) {
+            target.overlayClose(event);
+          } else {
+            target.overlayOpen(event);
+          }
+        };
+      }
+    }, '__overlayMixinApplied');
   }
 }
