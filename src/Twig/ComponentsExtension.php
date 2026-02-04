@@ -220,13 +220,13 @@ class ComponentsExtension extends AbstractExtension
         array $context,
         array $defaults = []
     ): string {
-        $contextAttributes = $context['attr'] ?? $context;
-        $class = trim(($defaults[VariableHelper::CLASS_VAR] ?? '').' '.($contextAttributes[VariableHelper::CLASS_VAR] ?? ''));
+        $attributes = $defaults['attr'] ?? $defaults;
+        $class = trim($attributes[VariableHelper::CLASS_VAR] ?? '');
 
         $attributes = array_merge([
-            VariableHelper::ID => $contextAttributes[VariableHelper::ID] ?? null,
+            VariableHelper::ID => $attributes[VariableHelper::ID] ?? null,
             VariableHelper::CLASS_VAR => '' === $class ? null : $class,
-        ], $defaults, $contextAttributes);
+        ], $attributes);
 
 
         return DomHelper::buildTagAttributes(
