@@ -75,9 +75,6 @@ export default abstract class AbstractRenderNodeService extends AppService {
     const template = this.findComponentTemplate(view);
 
     if (!template) {
-      this.app.services.prompt.systemError(
-        `Component template not found for "${view}"`
-      );
       return null;
     }
 
@@ -131,10 +128,20 @@ export default abstract class AbstractRenderNodeService extends AppService {
     };
   }
 
-  private findComponentTemplate(view: string): HTMLTemplateElement | null {
+  private findRenderNodeTemplate(view: string): HTMLTemplateElement | null {
     return document.querySelector(
       `template[data-component-template="${view}"]`
     ) as HTMLTemplateElement | null;
+  }
+
+  private findComponentTemplate(view: string): HTMLTemplateElement | null {
+    const template = this.findRenderNodeTemplate(view);
+    if (!template) {
+      this.app.services.prompt.systemError(
+        `Component template not found for "${view}"`
+      );
+    }
+    return template;
   }
 
   createRenderNodeInstance(
