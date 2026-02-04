@@ -2,9 +2,7 @@ import AppService from '../Class/AppService';
 import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import RenderNode from '../Class/RenderNode';
 import ServicesRegistryInterface from '../Interfaces/ServicesRegistryInterface';
-import { stringToKebab } from '@wexample/js-helpers/Helper/String';
-import { buildUniqueId } from '@wexample/js-helpers/Helper/Id';
-import RenderDataFactory from '../Utils/RenderDataFactory';
+import TemplateInstanceFactory from '../Utils/TemplateInstanceFactory';
 
 export class RenderNodeServiceEvents {
   public static CREATE_RENDER_NODE: string = 'create-render-node';
@@ -74,36 +72,21 @@ export default abstract class AbstractRenderNodeService extends AppService {
     parentRenderNode: RenderNode,
     mountTarget?: HTMLElement
   ): Promise<null | { instance: RenderNode, el: HTMLElement }> {
-    const template = this.findComponentTemplate(view);
-
-    if (!template) {
-      return null;
-    }
-
-    const rootEl = this.findTemplateRoot(view, template);
-    if (!rootEl) {
-      return null;
-    }
-
-    const uniqueId = buildUniqueId(`component-${stringToKebab(view)}`);
-    const cssClassName = stringToKebab(uniqueId);
-    rootEl.setAttribute('data-component-instance', cssClassName);
-
-    (mountTarget || parentRenderNode.el).appendChild(rootEl);
-
-    const renderData: RenderDataInterface = RenderDataFactory.buildComponent({
+    const templateInstance = TemplateInstanceFactory.create(
+      this.app,
       view,
-      id: uniqueId,
-      cssClassName,
-      initMode: 'template',
-      options: options || {},
-      parentRenderNode
-    });
+      options,
+      parentRenderNode,
+      mountTarget
+    );
+    if (!templateInstance) {
+      return null;
+    }
 
     const instance = await this.createRenderNode(
       parentRenderNode.renderRequestId,
       view,
-      renderData,
+      templateInstance.renderData,
       parentRenderNode
     );
     if (!instance) {
@@ -112,40 +95,8 @@ export default abstract class AbstractRenderNodeService extends AppService {
 
     return {
       instance,
-      el: rootEl
+      el: templateInstance.rootEl
     };
-  }
-
-  private findRenderNodeTemplate(view: string): HTMLTemplateElement | null {
-    return document.querySelector(
-      `template[data-component-template="${view}"]`
-    ) as HTMLTemplateElement | null;
-  }
-
-  private findTemplateRoot(
-    view: string,
-    template: HTMLTemplateElement
-  ): HTMLElement | null {
-    const fragment = template.content.cloneNode(true) as DocumentFragment;
-    const rootEl = fragment.firstElementChild as HTMLElement;
-    if (!rootEl) {
-      this.app.services.prompt.systemError(
-        `Component template "${view}" is empty`
-      );
-      return null;
-    }
-
-    return rootEl;
-  }
-
-  private findComponentTemplate(view: string): HTMLTemplateElement | null {
-    const template = this.findRenderNodeTemplate(view);
-    if (!template) {
-      this.app.services.prompt.systemError(
-        `Component template not found for "${view}"`
-      );
-    }
-    return template;
   }
 
   createRenderNodeInstance(
