@@ -72,9 +72,7 @@ export default abstract class AbstractRenderNodeService extends AppService {
     parentRenderNode: RenderNode,
     mountTarget?: HTMLElement
   ): Promise<null | { instance: RenderNode, el: HTMLElement }> {
-    const template = document.querySelector(
-      `template[data-component-template="${view}"]`
-    ) as HTMLTemplateElement;
+    const template = this.findComponentTemplate(view);
 
     if (!template) {
       this.app.services.prompt.systemError(
@@ -131,6 +129,12 @@ export default abstract class AbstractRenderNodeService extends AppService {
       instance,
       el: rootEl
     };
+  }
+
+  private findComponentTemplate(view: string): HTMLTemplateElement | null {
+    return document.querySelector(
+      `template[data-component-template="${view}"]`
+    ) as HTMLTemplateElement | null;
   }
 
   createRenderNodeInstance(
