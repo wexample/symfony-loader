@@ -56,7 +56,7 @@ class ComponentsExtension extends AbstractExtension
                 'component_frontend',
                 [
                     $this,
-                    'componentInitLayout',
+                    'componentFrontend',
                 ],
                 $initOptions
             ),
@@ -183,6 +183,24 @@ class ComponentsExtension extends AbstractExtension
                 $name,
                 $options
             )->renderTag();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function componentFrontend(
+        Environment $twig,
+        RenderPass $renderPass,
+        string $name,
+        array $options = []
+    ): string {
+        $options['frontend'] = true;
+        return $this->componentInitLayout(
+            $twig,
+            $renderPass,
+            $name,
+            $options
+        );
     }
 
     public function componentRenderTagAttributes(

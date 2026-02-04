@@ -81,6 +81,9 @@ export default class ComponentsService extends AbstractRenderNodeService {
     renderData = renderData || parentRenderNode.renderData;
 
     for (const renderDataComponent of renderData.components) {
+      if (renderDataComponent.options?.frontend === true) {
+        continue;
+      }
       // Share request options.
       renderDataComponent.requestOptions = renderData.requestOptions;
 
