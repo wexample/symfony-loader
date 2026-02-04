@@ -8,6 +8,8 @@ type ToastOptions = {
   timeout?: number;
   sticky?: boolean;
   allowHtml?: boolean;
+  position?: 'tl' | 'tr' | 'bl' | 'br';
+  stackId?: string;
 };
 
 export default class ToastService extends AppService {
@@ -41,6 +43,8 @@ export default class ToastService extends AppService {
         allowHtml: options.allowHtml,
         timeout,
         sticky: options.sticky,
+        position: options.position,
+        stackId: options.stackId,
         maxToasts: this.maxToasts
       }
     }));
