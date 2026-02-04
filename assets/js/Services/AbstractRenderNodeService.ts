@@ -2,6 +2,7 @@ import AppService from '../Class/AppService';
 import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import RenderNode from '../Class/RenderNode';
 import ServicesRegistryInterface from '../Interfaces/ServicesRegistryInterface';
+import { stringToKebab } from '@wexample/js-helpers/Helper/String';
 
 export class RenderNodeServiceEvents {
   public static CREATE_RENDER_NODE: string = 'create-render-node';
@@ -63,6 +64,73 @@ export default abstract class AbstractRenderNodeService extends AppService {
     }
 
     return instance;
+  }
+
+  async createComponentFromTemplate(
+    view: string,
+    options: any,
+    parentRenderNode: RenderNode,
+    mountTarget?: HTMLElement
+  ): Promise<null | { instance: RenderNode, el: HTMLElement }> {
+    const template = document.querySelector(
+      `template[data-component-template="${view}"]`
+    ) as HTMLTemplateElement;
+
+    if (!template) {
+      this.app.services.prompt.systemError(
+        `Component template not found for "${view}"`
+      );
+      return null;
+    }
+
+    const fragment = template.content.cloneNode(true) as DocumentFragment;
+    const rootEl = fragment.firstElementChild as HTMLElement;
+    if (!rootEl) {
+      this.app.services.prompt.systemError(
+        `Component template "${view}" is empty`
+      );
+      return null;
+    }
+
+    const uniqueId = `component-${stringToKebab(view)}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const cssClassName = stringToKebab(uniqueId);
+    rootEl.setAttribute('data-component-instance', cssClassName);
+
+    (mountTarget || parentRenderNode.el).appendChild(rootEl);
+
+    const renderData: RenderDataInterface = {
+      components: [],
+      cssClassName,
+      contextType: 'component',
+      id: uniqueId,
+      translations: {},
+      translationDomains: {},
+      view,
+      vars: {},
+      usages: parentRenderNode.usages || {},
+      assets: {
+        css: [],
+        js: []
+      },
+      initMode: 'template',
+      options: options || {},
+      requestOptions: parentRenderNode.renderData?.requestOptions || {}
+    } as RenderDataInterface;
+
+    const instance = await this.createRenderNode(
+      parentRenderNode.renderRequestId,
+      view,
+      renderData,
+      parentRenderNode
+    );
+    if (!instance) {
+      return null;
+    }
+
+    return {
+      instance,
+      el: rootEl
+    };
   }
 
   createRenderNodeInstance(

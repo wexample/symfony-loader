@@ -13,6 +13,7 @@ export default abstract class Component extends RenderNode {
   public static INIT_MODE_PARENT: string = 'parent';
 
   public static INIT_MODE_PREVIOUS: string = 'previous';
+  public static INIT_MODE_TEMPLATE: string = 'template';
 
   public async init() {
     await super.init();
@@ -41,6 +42,17 @@ export default abstract class Component extends RenderNode {
     switch (this.initMode) {
       case Component.INIT_MODE_CLASS:
         el = elPlaceholder;
+        removePlaceHolder = false;
+        break;
+      case Component.INIT_MODE_TEMPLATE:
+        el = this.parentRenderNode?.el?.querySelector(
+          `[data-component-instance="${this.cssClassName}"]`
+        ) as HTMLElement;
+        if (!el) {
+          el = document.querySelector(
+            `[data-component-instance="${this.cssClassName}"]`
+          ) as HTMLElement;
+        }
         removePlaceHolder = false;
         break;
       case Component.INIT_MODE_PARENT:

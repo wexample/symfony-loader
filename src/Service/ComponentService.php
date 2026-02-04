@@ -27,6 +27,9 @@ class ComponentService extends AbstractRenderNodeService
     // Component is loaded from template, just after target tag.
     public const INIT_MODE_PREVIOUS = VariableHelper::PREVIOUS;
 
+    // Component is loaded from a frontend template clone.
+    public const INIT_MODE_TEMPLATE = 'template';
+
     public const COMPONENT_NAME_VUE = 'components/vue';
 
     public const COMPONENT_NAME_MODAL = 'components/modal';
