@@ -3,6 +3,7 @@ import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import RenderNode from '../Class/RenderNode';
 import ServicesRegistryInterface from '../Interfaces/ServicesRegistryInterface';
 import { stringToKebab } from '@wexample/js-helpers/Helper/String';
+import { buildUniqueId } from '@wexample/js-helpers/Helper/Id';
 
 export class RenderNodeServiceEvents {
   public static CREATE_RENDER_NODE: string = 'create-render-node';
@@ -78,16 +79,12 @@ export default abstract class AbstractRenderNodeService extends AppService {
       return null;
     }
 
-    const fragment = template.content.cloneNode(true) as DocumentFragment;
-    const rootEl = fragment.firstElementChild as HTMLElement;
+    const rootEl = this.findTemplateRoot(view, template);
     if (!rootEl) {
-      this.app.services.prompt.systemError(
-        `Component template "${view}" is empty`
-      );
       return null;
     }
 
-    const uniqueId = `component-${stringToKebab(view)}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const uniqueId = buildUniqueId(`component-${stringToKebab(view)}`);
     const cssClassName = stringToKebab(uniqueId);
     rootEl.setAttribute('data-component-instance', cssClassName);
 
@@ -132,6 +129,22 @@ export default abstract class AbstractRenderNodeService extends AppService {
     return document.querySelector(
       `template[data-component-template="${view}"]`
     ) as HTMLTemplateElement | null;
+  }
+
+  private findTemplateRoot(
+    view: string,
+    template: HTMLTemplateElement
+  ): HTMLElement | null {
+    const fragment = template.content.cloneNode(true) as DocumentFragment;
+    const rootEl = fragment.firstElementChild as HTMLElement;
+    if (!rootEl) {
+      this.app.services.prompt.systemError(
+        `Component template "${view}" is empty`
+      );
+      return null;
+    }
+
+    return rootEl;
   }
 
   private findComponentTemplate(view: string): HTMLTemplateElement | null {
