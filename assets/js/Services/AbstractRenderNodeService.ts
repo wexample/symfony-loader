@@ -4,6 +4,7 @@ import RenderNode from '../Class/RenderNode';
 import ServicesRegistryInterface from '../Interfaces/ServicesRegistryInterface';
 import { stringToKebab } from '@wexample/js-helpers/Helper/String';
 import { buildUniqueId } from '@wexample/js-helpers/Helper/Id';
+import RenderDataFactory from '../Utils/RenderDataFactory';
 
 export class RenderNodeServiceEvents {
   public static CREATE_RENDER_NODE: string = 'create-render-node';
@@ -90,24 +91,14 @@ export default abstract class AbstractRenderNodeService extends AppService {
 
     (mountTarget || parentRenderNode.el).appendChild(rootEl);
 
-    const renderData: RenderDataInterface = {
-      components: [],
-      cssClassName,
-      contextType: 'component',
-      id: uniqueId,
-      translations: {},
-      translationDomains: {},
+    const renderData: RenderDataInterface = RenderDataFactory.buildComponent({
       view,
-      vars: {},
-      usages: parentRenderNode.usages || {},
-      assets: {
-        css: [],
-        js: []
-      },
+      id: uniqueId,
+      cssClassName,
       initMode: 'template',
       options: options || {},
-      requestOptions: parentRenderNode.renderData?.requestOptions || {}
-    } as RenderDataInterface;
+      parentRenderNode
+    });
 
     const instance = await this.createRenderNode(
       parentRenderNode.renderRequestId,
