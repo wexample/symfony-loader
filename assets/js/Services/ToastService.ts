@@ -12,21 +12,12 @@ type ToastOptions = {
 
 export default class ToastService extends AppService {
   public static serviceName: string = 'toast';
-  private containerEl?: HTMLElement;
-  private toasts: Map<string, HTMLElement> = new Map();
   private maxToasts: number = 6;
 
   registerHooks() {
     return {
       app: {
         hookInit: () => {
-          this.containerEl = document.getElementById('toast-container') as HTMLElement;
-          if (!this.containerEl) {
-            this.containerEl = document.createElement('div');
-            this.containerEl.id = 'toast-container';
-            this.containerEl.className = 'toast-container';
-            document.body.appendChild(this.containerEl);
-          }
         }
       }
     };
@@ -41,55 +32,32 @@ export default class ToastService extends AppService {
     const type = options.type || 'default';
     const timeout = options.timeout ?? 4000;
 
-    if (!this.containerEl) {
-      return toastId;
-    }
-
-    const toastEl = document.createElement('div');
-    toastEl.className = `toast toast--${type}`;
-    toastEl.setAttribute('data-toast-id', toastId);
-
-    if (options.title) {
-      const titleEl = document.createElement('div');
-      titleEl.className = 'toast--title';
-      titleEl.textContent = options.title;
-      toastEl.appendChild(titleEl);
-    }
-
-    const messageEl = document.createElement('div');
-    messageEl.className = 'toast--message';
-    if (options.allowHtml && options.message) {
-      messageEl.innerHTML = options.message;
-    } else {
-      messageEl.textContent = options.message || '';
-    }
-    toastEl.appendChild(messageEl);
-
-    this.containerEl.appendChild(toastEl);
-    this.toasts.set(toastId, toastEl);
-
-    this.trimToasts();
-
-    if (!options.sticky) {
-      setTimeout(() => this.dismiss(toastId), timeout);
-    }
+    document.dispatchEvent(new CustomEvent('toast:show', {
+      detail: {
+        id: toastId,
+        type,
+        title: options.title,
+        message: options.message,
+        allowHtml: options.allowHtml,
+        timeout,
+        sticky: options.sticky,
+        maxToasts: this.maxToasts
+      }
+    }));
 
     return toastId;
   }
 
   dismiss(toastId: string) {
-    const toastEl = this.toasts.get(toastId);
-    if (!toastEl) {
-      return;
-    }
-
-    toastEl.remove();
-    this.toasts.delete(toastId);
+    document.dispatchEvent(new CustomEvent('toast:dismiss', {
+      detail: {
+        id: toastId
+      }
+    }));
   }
 
   clear() {
-    this.toasts.forEach((el) => el.remove());
-    this.toasts.clear();
+    document.dispatchEvent(new CustomEvent('toast:clear'));
   }
 
   info(message: string, options: ToastOptions = {}) {
@@ -109,13 +77,5 @@ export default class ToastService extends AppService {
   }
 
   private trimToasts() {
-    if (!this.containerEl) {
-      return;
-    }
-
-    while (this.toasts.size > this.maxToasts) {
-      const [id] = this.toasts.keys();
-      this.dismiss(id);
-    }
   }
 }
