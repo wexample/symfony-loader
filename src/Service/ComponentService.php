@@ -79,7 +79,8 @@ class ComponentService extends AbstractRenderNodeService
                 $component->render(
                     $twig,
                     [
-                        'render_pass' => $renderPass
+                        'render_pass' => $renderPass,
+                        'component' => $component
                     ]
                 );
 

@@ -7,11 +7,11 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Wexample\PhpHtml\Helper\DomHelper;
+use Wexample\SymfonyHelpers\Class\Traits\WithBodyClassTrait;
+use Wexample\SymfonyHelpers\Helper\VariableHelper;
 use Wexample\SymfonyLoader\Helper\RenderingHelper;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
-use Wexample\SymfonyHelpers\Class\Traits\WithBodyClassTrait;
 use Wexample\SymfonyTemplate\Helper\TemplateHelper;
-use Wexample\SymfonyHelpers\Helper\VariableHelper;
 
 class ComponentRenderNode extends AbstractRenderNode
 {
@@ -44,7 +44,7 @@ class ComponentRenderNode extends AbstractRenderNode
 
     public function renderCssClasses(): string
     {
-        return 'com-class-loaded' . (! empty($this->cssClassName) ? ' ' . $this->cssClassName : '');
+        return 'com-class-loaded' . (!empty($this->cssClassName) ? ' ' . $this->cssClassName : '');
     }
 
     public function renderTag(): string
@@ -57,7 +57,7 @@ class ComponentRenderNode extends AbstractRenderNode
                 // ID are not used as "id" html attribute,
                 // as component may be embedded into a vue,
                 // so replicated multiple times.
-                VariableHelper::CLASS_VAR => 'com-init' . (! empty($cssClassName) ? ' ' . $cssClassName : ''),
+                VariableHelper::CLASS_VAR => 'com-init' . (!empty($cssClassName) ? ' ' . $cssClassName : ''),
             ]
         );
     }
@@ -90,5 +90,13 @@ class ComponentRenderNode extends AbstractRenderNode
     public function getTemplatePath(): string
     {
         return $this->getView() . TemplateHelper::TEMPLATE_FILE_EXTENSION;
+    }
+
+    public function setOptionValue(
+        string $key,
+        mixed $value
+    ): void
+    {
+        $this->options[$key] = $value;
     }
 }
