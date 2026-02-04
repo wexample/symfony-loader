@@ -30,38 +30,6 @@ class LayoutService extends AbstractRenderNodeService
         RenderPass $renderPass,
     ): void {
         $this->layoutInit($renderPass);
-
-        if ($renderPass->getLayoutBase() === RenderPass::BASE_MODAL) {
-            // Prepare modal component.
-            $this->componentService->componentInitLayout(
-                $twig,
-                $renderPass,
-                ComponentService::buildCoreComponentName(ComponentService::COMPONENT_NAME_MODAL),
-                [
-                    'adaptiveResponsePageManager' => true,
-                ]
-            );
-        } elseif ($renderPass->getLayoutBase() === RenderPass::BASE_PANEL) {
-            // Prepare panel component.
-            $this->componentService->componentInitLayout(
-                $twig,
-                $renderPass,
-                ComponentService::buildCoreComponentName(ComponentService::COMPONENT_NAME_PANEL),
-                [
-                    'adaptiveResponsePageManager' => true,
-                ]
-            );
-        } elseif ($renderPass->getLayoutBase() === RenderPass::BASE_OVERLAY) {
-            // Prepare panel component.
-            $this->componentService->componentInitLayout(
-                $twig,
-                $renderPass,
-                ComponentService::buildCoreComponentName(ComponentService::COMPONENT_NAME_OVERLAY),
-                [
-                    'adaptiveResponsePageManager' => true,
-                ]
-            );
-        }
     }
 
     /**
