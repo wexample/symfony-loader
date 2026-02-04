@@ -53,6 +53,14 @@ class ComponentsExtension extends AbstractExtension
                 $initOptions
             ),
             new TwigFunction(
+                'component_frontend',
+                [
+                    $this,
+                    'componentInitLayout',
+                ],
+                $initOptions
+            ),
+            new TwigFunction(
                 'component_init_previous',
                 [
                     $this,
@@ -151,6 +159,25 @@ class ComponentsExtension extends AbstractExtension
         return $this
             ->componentService
             ->componentInitParent(
+                $twig,
+                $renderPass,
+                $name,
+                $options
+            )->renderTag();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function componentInitLayout(
+        Environment $twig,
+        RenderPass $renderPass,
+        string $name,
+        array $options = []
+    ): string {
+        return $this
+            ->componentService
+            ->componentInitLayout(
                 $twig,
                 $renderPass,
                 $name,
