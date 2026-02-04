@@ -195,12 +195,21 @@ class ComponentsExtension extends AbstractExtension
         array $options = []
     ): string {
         $options['frontend'] = true;
-        return $this->componentInitLayout(
+        $previousContext = $renderPass->getCurrentContextRenderNode();
+        $renderPass->setCurrentContextRenderNode($renderPass->getLayoutRenderNode());
+
+        $tag = $this->componentInitLayout(
             $twig,
             $renderPass,
             $name,
             $options
         );
+
+        if ($previousContext) {
+            $renderPass->setCurrentContextRenderNode($previousContext);
+        }
+
+        return $tag;
     }
 
     public function componentRenderTagAttributes(
