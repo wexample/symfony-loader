@@ -198,18 +198,22 @@ class ComponentsExtension extends AbstractExtension
         $previousContext = $renderPass->getCurrentContextRenderNode();
         $renderPass->setCurrentContextRenderNode($renderPass->getLayoutRenderNode());
 
-        $tag = $this->componentInitLayout(
+        $component = $this->componentService->componentInitLayout(
             $twig,
             $renderPass,
             $name,
             $options
         );
 
+        $body = $component->getBody() ?: '';
+        $template = '<template data-component-template="' . $component->getView() . '">' . $body . '</template>';
+        $component->setBody($template);
+
         if ($previousContext) {
             $renderPass->setCurrentContextRenderNode($previousContext);
         }
 
-        return $tag;
+        return '';
     }
 
     public function componentRenderTagAttributes(
