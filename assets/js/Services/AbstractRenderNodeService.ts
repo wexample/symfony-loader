@@ -93,6 +93,9 @@ export default abstract class AbstractRenderNodeService extends AppService {
       return null;
     }
 
+    await instance.mountOnce();
+    await instance.renderNodeReady();
+
     return {
       instance,
       el: templateInstance.rootEl

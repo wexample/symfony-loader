@@ -27,16 +27,19 @@ export default abstract class Component extends RenderNode {
 
   attachHtmlElements() {
     let el: HTMLElement;
-
-    let elPlaceholder = this.parentRenderNode.el.querySelector(
-      `.${this.cssClassName}`
-    ) as HTMLElement;
+    let elPlaceholder: HTMLElement | null = null;
     let removePlaceHolder = true;
 
-    if (!elPlaceholder) {
-      throw new Error(
-        `Component placeholder missing for "${this.view}" using ".${this.cssClassName}".`
-      );
+    if (this.initMode !== Component.INIT_MODE_TEMPLATE) {
+      elPlaceholder = this.parentRenderNode.el.querySelector(
+        `.${this.cssClassName}`
+      ) as HTMLElement;
+
+      if (!elPlaceholder) {
+        throw new Error(
+          `Component placeholder missing for "${this.view}" using ".${this.cssClassName}".`
+        );
+      }
     }
 
     switch (this.initMode) {
