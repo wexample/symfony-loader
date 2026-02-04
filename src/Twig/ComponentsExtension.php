@@ -220,12 +220,37 @@ class ComponentsExtension extends AbstractExtension
         array $context,
         array $defaults = []
     ): string {
-        $class = trim(($defaults[VariableHelper::CLASS_VAR] ?? '').' '.($context[VariableHelper::CLASS_VAR] ?? ''));
+        $defaultAttributes = $defaults;
+        if (isset($defaultAttributes['attr']) && is_array($defaultAttributes['attr'])) {
+            $defaultAttributes = array_merge(
+                $defaultAttributes,
+                $defaultAttributes['attr']
+            );
+            unset($defaultAttributes['attr']);
+        }
+
+        $contextAttributes = $context['attr'] ?? $context;
+        if (!is_array($contextAttributes)) {
+            $contextAttributes = [];
+        }
+
+        // Avoid passing full Twig context by mistake.
+        if (!isset($context['attr']) && (isset($context['options']) || isset($context['render_pass']) || isset($context['app']))) {
+            $contextAttributes = [];
+        }
+
+        // Keep only scalar values to prevent "Array to string conversion".
+        $contextAttributes = array_filter(
+            $contextAttributes,
+            static fn($value) => is_scalar($value) || null === $value
+        );
+
+        $class = trim(($defaultAttributes[VariableHelper::CLASS_VAR] ?? '').' '.($contextAttributes[VariableHelper::CLASS_VAR] ?? ''));
 
         $attributes = array_merge([
-            VariableHelper::ID => $context[VariableHelper::ID] ?? null,
+            VariableHelper::ID => $contextAttributes[VariableHelper::ID] ?? null,
             VariableHelper::CLASS_VAR => '' === $class ? null : $class,
-        ], $context['attr'] ?? []);
+        ], $defaultAttributes, $contextAttributes);
 
 
         return DomHelper::buildTagAttributes(

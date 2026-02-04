@@ -89,6 +89,10 @@ class ComponentRenderNode extends AbstractRenderNode
 
     public function getTemplatePath(): string
     {
+        if (($this->options['frontend'] ?? false) === true) {
+            return $this->getView() . '.front' . TemplateHelper::TEMPLATE_FILE_EXTENSION;
+        }
+
         return $this->getView() . TemplateHelper::TEMPLATE_FILE_EXTENSION;
     }
 
