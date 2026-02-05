@@ -7,25 +7,6 @@ export default class OverlayService extends AppService {
   private previousFocusedEl: HTMLElement | null = null;
   private registered = new Set<any>();
 
-  private onDocumentKeydown = (event: KeyboardEvent) => {
-    if (event.key !== 'Escape') {
-      return;
-    }
-
-    const overlay = this.getActiveOverlay();
-    if (!overlay || !overlay.overlayIsOpen?.()) {
-      return;
-    }
-
-    event.preventDefault();
-
-    if (overlay.overlayOnEscape) {
-      overlay.overlayOnEscape(event);
-    } else if (overlay.overlayClose) {
-      overlay.overlayClose();
-    }
-  };
-
   private onDocumentMouseDown = (event: MouseEvent) => {
     const overlay = this.getActiveOverlay();
     if (!overlay || !overlay.overlayIsOpen?.()) {
@@ -53,7 +34,6 @@ export default class OverlayService extends AppService {
     return {
       app: {
         hookInit: () => {
-          document.addEventListener('keydown', this.onDocumentKeydown);
           document.addEventListener('mousedown', this.onDocumentMouseDown);
         }
       }

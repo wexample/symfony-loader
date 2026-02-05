@@ -12,6 +12,7 @@ import DebugService from '../Services/DebugService';
 import LocaleService from '../Services/LocaleService';
 import EntityService from '../Services/EntityService';
 import OverlayService from '../Services/OverlayService';
+import KeyboardService from '../Services/KeyboardService';
 
 export default interface ServicesRegistryInterface {
   adaptive?: AdaptiveService;
@@ -19,6 +20,7 @@ export default interface ServicesRegistryInterface {
   components?: ComponentsService;
   debug?: DebugService;
   entity?: EntityService;
+  keyboard?: KeyboardService;
   events?: EventsService;
   layouts?: LayoutsService;
   locale?: LocaleService;

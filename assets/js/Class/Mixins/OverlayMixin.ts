@@ -1,4 +1,5 @@
 import AbstractMixin from '@wexample/js-helpers/Helper/AbstractMixin';
+import FocusableComponentMixin from './FocusableComponentMixin';
 
 export default class OverlayMixin extends AbstractMixin {
   static apply(instance: any) {
@@ -105,6 +106,20 @@ export default class OverlayMixin extends AbstractMixin {
           }
         };
       }
+
+      if (!target.focusableShouldHandleEscape) {
+        target.focusableShouldHandleEscape = () => {
+          const activeOverlay = target.app.services.overlay.getActiveOverlay?.();
+
+          if (activeOverlay !== target) {
+            return false;
+          }
+
+          return target.overlayIsOpen();
+        };
+      }
+
+      FocusableComponentMixin.apply(target);
     }, '__overlayMixinApplied');
   }
 }
