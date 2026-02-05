@@ -2,13 +2,7 @@ parameters:
     loader.debug: false
     loader.environment: '%env(APP_ENV)%'
     loader.enable_aggregation: false
-    loader.layout_bases:
-      modal:
-        page_manager_component: '@@WexampleSymfonyLoaderBundle/components/modal'
-      panel:
-        page_manager_component: '@@WexampleSymfonyLoaderBundle/components/panel'
-      overlay:
-        page_manager_component: '@@WexampleSymfonyLoaderBundle/components/overlay'
+    loader.layout_bases: {}
     
     # Loader colors
     loader.colors: {}
