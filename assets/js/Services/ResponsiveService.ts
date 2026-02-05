@@ -54,10 +54,6 @@ export default class ResponsiveService extends AppService {
 
         responsiveDetect() {
           const supported = this.responsiveBreakpointSupported();
-          if (!Object.values(supported).length) {
-            this.el.style.display = 'block';
-            return;
-          }
 
           return Object.entries(supported).reduce(
             (prev, current) => {
@@ -73,7 +69,7 @@ export default class ResponsiveService extends AppService {
 
           Object.entries(this.app.layout.vars.displayBreakpoints).forEach(
             (entry) => {
-              if (width > entry[1]) {
+              if (width >= entry[1]) {
                 supported[entry[0]] = entry[1];
               }
             }
