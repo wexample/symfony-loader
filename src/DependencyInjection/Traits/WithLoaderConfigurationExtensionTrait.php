@@ -45,4 +45,28 @@ trait WithLoaderConfigurationExtensionTrait
 
         return $layoutBases;
     }
+
+    protected function mergeLoaderLayoutBasesParameter(
+        ContainerBuilder $container,
+        array $layoutBases
+    ): void {
+        if (empty($layoutBases)) {
+            return;
+        }
+
+        $current = (array) ($container->hasParameter('loader.layout_bases')
+            ? $container->getParameter('loader.layout_bases')
+            : []);
+
+        $layoutBases = $this->normalizeLoaderLayoutBases($layoutBases);
+
+        foreach ($layoutBases as $name => $config) {
+            $current[$name] = array_merge(
+                $current[$name] ?? [],
+                (array) $config
+            );
+        }
+
+        $container->setParameter('loader.layout_bases', $current);
+    }
 }
