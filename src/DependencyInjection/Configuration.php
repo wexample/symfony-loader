@@ -23,6 +23,17 @@ class Configuration implements ConfigurationInterface
             ->defaultValue([])
             ->scalarPrototype()->end()
             ->end()
+            ->arrayNode('layout_bases')
+            ->useAttributeAsKey('name')
+            ->arrayPrototype()
+            ->children()
+            ->scalarNode('page_manager_component')
+            ->defaultNull()
+            ->end()
+            ->end()
+            ->end()
+            ->defaultValue([])
+            ->end()
             ->end();
 
         return $treeBuilder;

@@ -39,6 +39,17 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
             $container->setParameter('loader.usages.color_scheme', $colorSchemeConfig);
         }
 
+        $layoutBases = $container->hasParameter('loader.layout_bases')
+            ? (array) $container->getParameter('loader.layout_bases')
+            : [];
+        foreach (($config['layout_bases'] ?? []) as $name => $layoutConfig) {
+            $layoutBases[$name] = array_merge(
+                $layoutBases[$name] ?? [],
+                (array) $layoutConfig
+            );
+        }
+        $container->setParameter('loader.layout_bases', $layoutBases);
+
         $bundles = $container->getParameter('kernel.bundles');
         $paths = [];
 
