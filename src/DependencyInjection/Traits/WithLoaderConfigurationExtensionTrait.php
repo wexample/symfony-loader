@@ -38,8 +38,12 @@ trait WithLoaderConfigurationExtensionTrait
             }
 
             $component = $config['page_manager_component'] ?? null;
-            if (is_string($component) && $component !== '' && !str_starts_with($component, '@@')) {
-                $layoutBases[$base]['page_manager_component'] = '@@' . ltrim($component, '@');
+            if (is_string($component) && $component !== '') {
+                if (str_starts_with($component, '@@')) {
+                    $layoutBases[$base]['page_manager_component'] = substr($component, 1);
+                } elseif (!str_starts_with($component, '@')) {
+                    $layoutBases[$base]['page_manager_component'] = '@' . ltrim($component, '@');
+                }
             }
         }
 
