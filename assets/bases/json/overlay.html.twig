@@ -1,5 +1,12 @@
 {%- extends '@WexampleSymfonyLoaderBundle/bases/json/default.html.twig' -%}
 
+{%- block layout_config -%}
+    {{ parent() }}
+    {{ component_frontend(render_pass, '@WexampleSymfonyLoaderBundle/components/overlay', {
+        adaptiveResponsePageManager: true
+    }) }}
+{%- endblock -%}
+
 {%- block layout_composer_json -%}
     {%- set content -%}
         {{ parent() }}

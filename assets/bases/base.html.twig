@@ -1,19 +1,5 @@
 {%- block layout_base -%}
     {%- block layout_config -%}
         {{- layout_initial_init(render_pass) -}}
-        {# Frontend components bootstrap #}
-        {%- if render_pass.getLayoutBase() == constant('Wexample\\SymfonyLoader\\Rendering\\RenderPass::BASE_MODAL') -%}
-            {{ component_frontend(render_pass, '@WexampleSymfonyLoaderBundle/components/modal', {
-                adaptiveResponsePageManager: true
-            }) }}
-        {%- elseif render_pass.getLayoutBase() == constant('Wexample\\SymfonyLoader\\Rendering\\RenderPass::BASE_PANEL') -%}
-            {{ component_frontend(render_pass, '@WexampleSymfonyLoaderBundle/components/panel', {
-                adaptiveResponsePageManager: true
-            }) }}
-        {%- elseif render_pass.getLayoutBase() == constant('Wexample\\SymfonyLoader\\Rendering\\RenderPass::BASE_OVERLAY') -%}
-            {{ component_frontend(render_pass, '@WexampleSymfonyLoaderBundle/components/overlay', {
-                adaptiveResponsePageManager: true
-            }) }}
-        {%- endif -%}
     {%- endblock -%}
 {%- endblock -%}
