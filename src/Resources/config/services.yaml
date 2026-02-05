@@ -4,11 +4,11 @@ parameters:
     loader.enable_aggregation: false
     loader.layout_bases:
       modal:
-        page_manager_component: 'WexampleSymfonyLoaderBundle/components/modal'
+        page_manager_component: '@@WexampleSymfonyLoaderBundle/components/modal'
       panel:
-        page_manager_component: 'WexampleSymfonyLoaderBundle/components/panel'
+        page_manager_component: '@@WexampleSymfonyLoaderBundle/components/panel'
       overlay:
-        page_manager_component: 'WexampleSymfonyLoaderBundle/components/overlay'
+        page_manager_component: '@@WexampleSymfonyLoaderBundle/components/overlay'
     
     # Loader colors
     loader.colors: {}
