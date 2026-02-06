@@ -267,10 +267,44 @@ export default abstract class RenderNode extends AppChild {
     return this.elHeight;
   }
 
+  protected getElListeners(): { [key: string]: string | string[] } {
+    return {};
+  }
+
   protected async activateListeners(): Promise<void> {
+    const listeners = this.getElListeners();
+    for (const [key, events] of Object.entries(listeners)) {
+      const eventList = Array.isArray(events) ? events : [events];
+      for (const event of eventList) {
+        const eventName = stringToKebab(event).replace(
+          /(^|-)([a-z])/g,
+          (_, __, c) => c.toUpperCase()
+        );
+        const keyName = stringToKebab(key).replace(
+          /(^|-)([a-z])/g,
+          (_, __, c) => c.toUpperCase()
+        );
+        const method = (this as any)[`on${eventName}${keyName}ElListener`];
+        if (typeof method !== 'function') {
+          throw new Error(
+            `Missing handler for "${event}" on element "${key}" in "${this.view}". Expected on${eventName}${keyName}ElListener().`
+          );
+        }
+        const proxy = method.bind(this);
+        this.elListenerProxies[key] = this.elListenerProxies[key] || {};
+        this.elListenerProxies[key][event] = proxy;
+        this.onEl(key, event, proxy);
+      }
+    }
   }
 
   protected async deactivateListeners(): Promise<void> {
+    for (const [key, events] of Object.entries(this.elListenerProxies)) {
+      for (const [event, proxy] of Object.entries(events)) {
+        this.offEl(key, event, proxy);
+      }
+    }
+    this.elListenerProxies = {};
   }
 
   protected async mounted(): Promise<void> {
