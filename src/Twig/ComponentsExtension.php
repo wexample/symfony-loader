@@ -97,13 +97,15 @@ class ComponentsExtension extends AbstractExtension
         Environment $twig,
         RenderPass $renderPass,
         string $path,
-        array $options = []
+        array $options = [],
+        array $templateVars = []
     ): string {
         $component = $this->componentService->componentInitPrevious(
             $twig,
             $renderPass,
             $path,
-            $options
+            $options,
+            $templateVars
         );
 
         return $component->getBody().$component->renderTag();
@@ -116,13 +118,15 @@ class ComponentsExtension extends AbstractExtension
         Environment $twig,
         RenderPass $renderPass,
         string $name,
-        array $options = []
+        array $options = [],
+        array $templateVars = []
     ): string {
         return $this->componentService->componentInitPrevious(
             $twig,
             $renderPass,
             $name,
-            $options
+            $options,
+            $templateVars
         )->renderTag();
     }
 
@@ -135,7 +139,8 @@ class ComponentsExtension extends AbstractExtension
         Environment $twig,
         RenderPass $renderPass,
         string $name,
-        array $options = []
+        array $options = [],
+        array $templateVars = []
     ): string {
         return $this
             ->componentService
@@ -143,7 +148,8 @@ class ComponentsExtension extends AbstractExtension
                 $twig,
                 $renderPass,
                 $name,
-                $options
+                $options,
+                $templateVars
             )->renderCssClasses();
     }
 
@@ -154,7 +160,8 @@ class ComponentsExtension extends AbstractExtension
         Environment $twig,
         RenderPass $renderPass,
         string $name,
-        array $options = []
+        array $options = [],
+        array $templateVars = []
     ): string {
         return $this
             ->componentService
@@ -162,7 +169,8 @@ class ComponentsExtension extends AbstractExtension
                 $twig,
                 $renderPass,
                 $name,
-                $options
+                $options,
+                $templateVars
             )->renderTag();
     }
 
@@ -173,7 +181,8 @@ class ComponentsExtension extends AbstractExtension
         Environment $twig,
         RenderPass $renderPass,
         string $name,
-        array $options = []
+        array $options = [],
+        array $templateVars = []
     ): string {
         return $this
             ->componentService
@@ -181,7 +190,8 @@ class ComponentsExtension extends AbstractExtension
                 $twig,
                 $renderPass,
                 $name,
-                $options
+                $options,
+                $templateVars
             )->renderTag();
     }
 

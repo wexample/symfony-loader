@@ -23,13 +23,16 @@ class FormService extends ComponentService
         string $path,
         array $options = []
     ): ComponentRenderNode {
-        $options['form'] = $formView;
+        $templateVars = [
+            'form' => $formView,
+        ];
 
         return $this->componentInitPrevious(
             $twig,
             $renderPass,
             $path,
-            $options
+            $options,
+            $templateVars
         );
     }
 }

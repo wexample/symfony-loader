@@ -41,7 +41,7 @@ class FormExtension extends AbstractExtension
     public function formLoad(
         Environment $twig,
         RenderPass $renderPass,
-        FormView $formView,
+        \Symfony\Component\Form\FormView $formView,
         string $path,
         array $options = []
     ): string
