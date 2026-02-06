@@ -46,14 +46,12 @@ class FormExtension extends AbstractExtension
         array $options = []
     ): string
     {
-        $component = $this->formService->formLoad(
+        return $this->formService->formLoad(
             $twig,
             $renderPass,
             $formView,
             $path,
             $options
         );
-
-        return $component->getBody() . $component->renderTag();
     }
 }
