@@ -231,6 +231,12 @@ class ComponentsExtension extends AbstractExtension
         array $defaults = []
     ): string {
         $attributes = $defaults['attr'] ?? $defaults;
+
+        // Allow passing options directly (e.g. { el: 'foo' }).
+        if (isset($defaults['el']) && is_string($defaults['el']) && $defaults['el'] !== '') {
+            $attributes['data-el'] = $defaults['el'];
+        }
+
         $class = trim($attributes[VariableHelper::CLASS_VAR] ?? '');
 
         $attributes = array_merge([

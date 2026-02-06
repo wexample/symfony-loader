@@ -129,6 +129,42 @@ export default abstract class RenderNode extends AppChild {
   attachHtmlElements() {
   }
 
+  protected attachHtmlElement(key: string, selector: string): void {
+    const el = this.el.querySelector(selector) as HTMLElement | null;
+    if (!el) {
+      throw new Error(
+        `Missing element "${key}" using selector "${selector}" in "${this.view}".`
+      );
+    }
+    this.elements[key] = el;
+  }
+
+  protected onEl(
+    key: string,
+    event: string,
+    handler: EventListenerOrEventListenerObject
+  ): void {
+    const el = this.elements[key];
+    if (!el) {
+      throw new Error(
+        `Missing element "${key}" for event "${event}" in "${this.view}".`
+      );
+    }
+    el.addEventListener(event, handler);
+  }
+
+  protected offEl(
+    key: string,
+    event: string,
+    handler: EventListenerOrEventListenerObject
+  ): void {
+    const el = this.elements[key];
+    if (!el) {
+      return;
+    }
+    el.removeEventListener(event, handler);
+  }
+
   async mountOnce() {
     // When render nodes are attached to the tree,
     // the whole layout try to mount the newly created render nodes,
