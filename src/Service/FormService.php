@@ -3,10 +3,11 @@
 namespace Wexample\SymfonyLoader\Service;
 
 use Exception;
-use Twig\Environment;
 use Symfony\Component\Form\FormView;
+use Twig\Environment;
 use Wexample\SymfonyLoader\Rendering\RenderNode\ComponentRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
+use Wexample\SymfonyTranslations\Translation\Translator;
 
 class FormService extends ComponentService
 {
@@ -22,17 +23,36 @@ class FormService extends ComponentService
         FormView $formView,
         string $path,
         array $options = []
-    ): ComponentRenderNode {
+    ): ComponentRenderNode
+    {
         $templateVars = [
             'form' => $formView,
         ];
 
-        return $this->componentInitPrevious(
+        $component = $this->registerComponent(
             $twig,
             $renderPass,
             $path,
+            ComponentService::INIT_MODE_PREVIOUS,
             $options,
+            $templateVars,
+            false
+        );
+
+        $this->translator->setDomain(
+            Translator::DOMAIN_TYPE_FORM,
+            $formView->vars['translation_domain']
+        );
+
+        $this->componentRenderBody(
+            $renderPass,
+            $twig,
+            $component,
             $templateVars
         );
+
+        $this->translator->revertDomain(Translator::DOMAIN_TYPE_FORM);
+
+        return $component;
     }
 }
