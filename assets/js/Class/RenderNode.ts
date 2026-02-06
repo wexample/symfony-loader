@@ -2,7 +2,7 @@ import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import AppChild from './AppChild';
 import App from './App';
 import Component from './Component';
-import { stringToKebab } from '@wexample/js-helpers/Helper/String';
+import { stringToKebab, stringToPascalCase } from '@wexample/js-helpers/Helper/String';
 import Page from './Page';
 import { RenderNodeServiceEvents } from "../Services/AbstractRenderNodeService";
 
@@ -277,14 +277,8 @@ export default abstract class RenderNode extends AppChild {
     for (const [key, events] of Object.entries(listeners)) {
       const eventList = Array.isArray(events) ? events : [events];
       for (const event of eventList) {
-        const eventName = stringToKebab(event).replace(
-          /(^|-)([a-z])/g,
-          (_, __, c) => c.toUpperCase()
-        );
-        const keyName = stringToKebab(key).replace(
-          /(^|-)([a-z])/g,
-          (_, __, c) => c.toUpperCase()
-        );
+        const eventName = stringToPascalCase(event);
+        const keyName = stringToPascalCase(key);
         const method = (this as any)[`on${eventName}${keyName}ElListener`];
         if (typeof method !== 'function') {
           throw new Error(
