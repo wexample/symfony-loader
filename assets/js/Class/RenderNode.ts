@@ -26,6 +26,7 @@ export default abstract class RenderNode extends AppChild {
   public view: string;
   public destroyed: boolean = false;
   public vars: { [key: string]: any } = {};
+  private elListenerProxies: { [key: string]: { [event: string]: EventListener } } = {};
 
   constructor(
     public renderRequestId: string,
