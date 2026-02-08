@@ -130,6 +130,15 @@ export default abstract class RenderNode extends AppChild {
   attachHtmlElements() {
   }
 
+  protected attachElListenersElements(): void {
+    const listeners = this.getElListeners();
+    for (const key of Object.keys(listeners)) {
+      if (!this.elements[key]) {
+        this.attachHtmlElement(key, `[data-el="${key}"]`);
+      }
+    }
+  }
+
   protected attachHtmlElement(key: string, selector: string): void {
     const el = this.el.querySelector(selector) as HTMLElement | null;
     if (!el) {
@@ -274,6 +283,7 @@ export default abstract class RenderNode extends AppChild {
 
   protected async activateListeners(): Promise<void> {
     const listeners = this.getElListeners();
+    this.attachElListenersElements();
     for (const [key, events] of Object.entries(listeners)) {
       const eventList = Array.isArray(events) ? events : [events];
       for (const event of eventList) {
