@@ -16,6 +16,10 @@ export default class ElementListenersMixin extends AbstractMixin {
         target.getElListeners = () => ({});
       }
 
+      if (!target.getAttachedHtmlElementsMap) {
+        target.getAttachedHtmlElementsMap = () => ({});
+      }
+
       if (!target.attachHtmlElement) {
         target.attachHtmlElement = (key: string, selector: string) => {
           const root = target.el || document;
@@ -26,6 +30,15 @@ export default class ElementListenersMixin extends AbstractMixin {
             );
           }
           target.elements[key] = el;
+        };
+      }
+
+      if (!target.attachHtmlElementsMap) {
+        // Shortcut: map element keys to selectors and auto-attach.
+        target.attachHtmlElementsMap = (map: { [key: string]: string }) => {
+          for (const [key, selector] of Object.entries(map)) {
+            target.attachHtmlElement(key, selector);
+          }
         };
       }
 
@@ -52,12 +65,17 @@ export default class ElementListenersMixin extends AbstractMixin {
       }
 
       if (!target.attachElListenersElements) {
-        target.attachElListenersElements = () => {
-          const listeners = target.getElListeners();
-          for (const key of Object.keys(listeners)) {
-            if (!target.elements[key]) {
-              target.attachHtmlElement(key, `[data-el="${key}"]`);
-            }
+      target.attachElListenersElements = () => {
+        const attachedElements = target.getAttachedHtmlElementsMap();
+        if (attachedElements && typeof attachedElements === 'object') {
+          target.attachHtmlElementsMap(attachedElements);
+        }
+
+        const listeners = target.getElListeners();
+        for (const key of Object.keys(listeners)) {
+          if (!target.elements[key]) {
+            target.attachHtmlElement(key, `[data-el="${key}"]`);
+          }
           }
         };
       }

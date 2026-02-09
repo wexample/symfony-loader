@@ -132,6 +132,14 @@ export default abstract class RenderNode extends AppChild {
   attachHtmlElements() {
   }
 
+  // Shortcut: map element keys to selectors and auto-attach.
+  // Example: this.attachHtmlElementsMap({ searchInput: '[data-el="searchInput"]' });
+  protected attachHtmlElementsMap(map: { [key: string]: string }): void {
+    for (const [key, selector] of Object.entries(map)) {
+      this.attachHtmlElement(key, selector);
+    }
+  }
+
   protected attachHtmlElement(key: string, selector: string): void {
     const el = this.el.querySelector(selector) as HTMLElement | null;
     if (!el) {
