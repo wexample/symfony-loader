@@ -17,6 +17,7 @@ import AsyncConstructor from './AsyncConstructor';
 import ServicesRegistryInterface from '../Interfaces/ServicesRegistryInterface';
 import AssetsCollectionInterface from "../Interfaces/AssetsCollectionInterface";
 import { arrayUnique } from "@wexample/js-helpers/Helper/Array";
+import ElementListenersMixin from "../Class/Mixins/ElementListenersMixin";
 
 interface AppRegistryInterface {
   bundles: {
@@ -40,6 +41,8 @@ export default class extends AsyncConstructor {
     super();
 
     window[globalName] = this;
+
+    ElementListenersMixin.apply(this);
 
     // Allow callback as object definition.
     if (typeof readyCallback === 'object') {
@@ -79,6 +82,10 @@ export default class extends AsyncConstructor {
 
       // Execute ready callbacks.
       await this.readyComplete();
+
+      if ((this as any).activateElListeners) {
+        (this as any).activateElListeners();
+      }
 
       // Activate every new render node.
       await this.layout.setNewTreeRenderNodeReady();

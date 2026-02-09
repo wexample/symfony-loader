@@ -2,9 +2,10 @@ import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import AppChild from './AppChild';
 import App from './App';
 import Component from './Component';
-import { stringToKebab, stringToPascalCase } from '@wexample/js-helpers/Helper/String';
+import { stringToKebab } from '@wexample/js-helpers/Helper/String';
 import Page from './Page';
 import { RenderNodeServiceEvents } from "../Services/AbstractRenderNodeService";
+import ElementListenersMixin from './Mixins/ElementListenersMixin';
 
 export default abstract class RenderNode extends AppChild {
   public callerPage: Page;
@@ -39,6 +40,7 @@ export default abstract class RenderNode extends AppChild {
 
   public async init() {
     this.app.services.mixins.applyMethods(this, 'renderNode');
+    ElementListenersMixin.apply(this);
 
     this.app.services.events.trigger(RenderNodeServiceEvents.CREATE_RENDER_NODE, {
       component: this,
@@ -128,15 +130,6 @@ export default abstract class RenderNode extends AppChild {
   }
 
   attachHtmlElements() {
-  }
-
-  protected attachElListenersElements(): void {
-    const listeners = this.getElListeners();
-    for (const key of Object.keys(listeners)) {
-      if (!this.elements[key]) {
-        this.attachHtmlElement(key, `[data-el="${key}"]`);
-      }
-    }
   }
 
   protected attachHtmlElement(key: string, selector: string): void {
@@ -282,34 +275,15 @@ export default abstract class RenderNode extends AppChild {
   }
 
   protected async activateListeners(): Promise<void> {
-    const listeners = this.getElListeners();
-    this.attachElListenersElements();
-    for (const [key, events] of Object.entries(listeners)) {
-      const eventList = Array.isArray(events) ? events : [events];
-      for (const event of eventList) {
-        const eventName = stringToPascalCase(event);
-        const keyName = stringToPascalCase(key);
-        const method = (this as any)[`on${eventName}${keyName}ElListener`];
-        if (typeof method !== 'function') {
-          throw new Error(
-            `Missing handler for "${event}" on element "${key}" in "${this.view}". Expected on${eventName}${keyName}ElListener().`
-          );
-        }
-        const proxy = method.bind(this);
-        this.elListenerProxies[key] = this.elListenerProxies[key] || {};
-        this.elListenerProxies[key][event] = proxy;
-        this.onEl(key, event, proxy);
-      }
+    if ((this as any).activateElListeners) {
+      (this as any).activateElListeners();
     }
   }
 
   protected async deactivateListeners(): Promise<void> {
-    for (const [key, events] of Object.entries(this.elListenerProxies)) {
-      for (const [event, proxy] of Object.entries(events)) {
-        this.offEl(key, event, proxy);
-      }
+    if ((this as any).deactivateElListeners) {
+      (this as any).deactivateElListeners();
     }
-    this.elListenerProxies = {};
   }
 
   protected async mounted(): Promise<void> {
