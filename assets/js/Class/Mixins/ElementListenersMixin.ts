@@ -16,6 +16,41 @@ export default class ElementListenersMixin extends AbstractMixin {
         target.getElListeners = () => ({});
       }
 
+      if (!target.attachHtmlElement) {
+        target.attachHtmlElement = (key: string, selector: string) => {
+          const root = target.el || document;
+          const el = root.querySelector(selector);
+          if (!el) {
+            throw new Error(
+              `Missing element "${key}" using selector "${selector}" in "${target.view || 'app'}".`
+            );
+          }
+          target.elements[key] = el;
+        };
+      }
+
+      if (!target.onEl) {
+        target.onEl = (key: string, event: string, handler: EventListenerOrEventListenerObject) => {
+          const el = target.elements[key];
+          if (!el) {
+            throw new Error(
+              `Missing element "${key}" for event "${event}" in "${target.view || 'app'}".`
+            );
+          }
+          el.addEventListener(event, handler);
+        };
+      }
+
+      if (!target.offEl) {
+        target.offEl = (key: string, event: string, handler: EventListenerOrEventListenerObject) => {
+          const el = target.elements[key];
+          if (!el) {
+            return;
+          }
+          el.removeEventListener(event, handler);
+        };
+      }
+
       if (!target.attachElListenersElements) {
         target.attachElListenersElements = () => {
           const listeners = target.getElListeners();
