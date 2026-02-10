@@ -73,9 +73,14 @@ export default class ConfirmService extends AppService {
           onResolve: async (value: string) => {
             resolve(value);
             if (instance) {
-              await instance.exit();
+              if (options.toast) {
+                await instance.exit();
+              } else if (instance.overlayClose) {
+                await instance.overlayClose();
+              } else {
+                await instance.exit();
+              }
             }
-            this.removeOverlay(mountTarget, options);
           },
         },
         this.app.layout,
@@ -90,6 +95,10 @@ export default class ConfirmService extends AppService {
       }
 
       instance = component.instance;
+
+      if (!options.toast && instance?.overlayOpen) {
+        instance.overlayOpen();
+      }
     });
   }
 
@@ -99,18 +108,6 @@ export default class ConfirmService extends AppService {
       return stack || document.body;
     }
 
-    const overlay = document.createElement('div');
-    overlay.className = 'confirm-overlay';
-    document.body.appendChild(overlay);
-    return overlay;
-  }
-
-  private removeOverlay(target: HTMLElement, options: ConfirmOptions) {
-    if (options.toast) {
-      return;
-    }
-    if (target && target.classList.contains('confirm-overlay')) {
-      target.remove();
-    }
+    return document.body;
   }
 }
