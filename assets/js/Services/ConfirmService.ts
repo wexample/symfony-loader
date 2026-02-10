@@ -6,6 +6,7 @@ type ConfirmAction = {
   value: string;
   label: string;
   role?: 'primary' | 'secondary' | 'destructive';
+  keepOpen?: boolean;
 };
 
 type ConfirmPreset =
@@ -26,6 +27,7 @@ type ConfirmOptions = {
 
 export default class ConfirmService extends AppService {
   public static serviceName: string = 'confirm';
+  private instances: Set<any> = new Set();
 
   private presets: Record<ConfirmPreset, ConfirmAction[]> = {
     yes_no: [
@@ -70,16 +72,17 @@ export default class ConfirmService extends AppService {
           message: options.message,
           actions,
           variant: options.toast ? 'toast' : 'overlay',
-          onResolve: async (value: string) => {
-            resolve(value);
+          onResolve: async (action: ConfirmAction | string) => {
+            const resolvedAction: ConfirmAction =
+              typeof action === 'string'
+                ? { key: '', value: action, label: action }
+                : action;
+            resolve(resolvedAction.value);
             if (instance) {
-              if (options.toast) {
-                await instance.exit();
-              } else if (instance.overlayClose) {
-                await instance.overlayClose();
-              } else {
-                await instance.exit();
+              if (resolvedAction.keepOpen) {
+                return;
               }
+              await this.closeInstance(instance, options.toast);
             }
           },
         },
@@ -94,11 +97,48 @@ export default class ConfirmService extends AppService {
       }
 
       instance = component.instance;
+      this.trackInstance(instance);
 
       if (!options.toast && instance?.overlayOpen) {
         instance.overlayOpen();
       }
     });
+  }
+
+  public async closeAll(): Promise<void> {
+    const instances = Array.from(this.instances);
+    await Promise.all(
+      instances.map((instance) => this.closeInstance(instance, false))
+    );
+    this.instances.clear();
+  }
+
+  private async closeInstance(instance: any, toast: boolean): Promise<void> {
+    if (toast) {
+      await instance.exit();
+      return;
+    }
+
+    if (instance.overlayClose) {
+      await instance.overlayClose();
+      return;
+    }
+
+    await instance.exit();
+  }
+
+  private trackInstance(instance: any): void {
+    if (this.instances.has(instance)) {
+      return;
+    }
+    this.instances.add(instance);
+    const originalExit = instance.exit?.bind(instance);
+    if (originalExit) {
+      instance.exit = async (...args: any[]) => {
+        this.instances.delete(instance);
+        return originalExit(...args);
+      };
+    }
   }
 
   private getMountTarget(options: ConfirmOptions): HTMLElement {
