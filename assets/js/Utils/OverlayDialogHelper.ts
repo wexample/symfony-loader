@@ -1,5 +1,6 @@
 type OverlayDialogOptions = {
-  setHidden?: boolean;
+  setHiddenOnOpen?: boolean;
+  setHiddenOnClose?: boolean;
   exitOnClose?: boolean;
   onOpen?: () => void | Promise<void>;
   onClose?: () => void | Promise<void>;
@@ -10,14 +11,15 @@ export const applyOverlayDialogLifecycle = (
   options: OverlayDialogOptions = {}
 ): void => {
   const {
-    setHidden = true,
+    setHiddenOnOpen = true,
+    setHiddenOnClose = true,
     exitOnClose = true,
     onOpen,
     onClose,
   } = options;
 
   target.overlayOnOpen = async () => {
-    if (setHidden) {
+    if (setHiddenOnOpen) {
       target.el?.removeAttribute('hidden');
     }
     if (onOpen) {
@@ -26,7 +28,7 @@ export const applyOverlayDialogLifecycle = (
   };
 
   target.overlayOnClose = async () => {
-    if (setHidden) {
+    if (setHiddenOnClose) {
       target.el?.setAttribute('hidden', 'hidden');
     }
     if (onClose) {
