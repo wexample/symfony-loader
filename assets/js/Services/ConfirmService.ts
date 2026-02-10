@@ -89,7 +89,6 @@ export default class ConfirmService extends AppService {
 
       const component = await Promise.resolve(created);
       if (!component) {
-        this.removeOverlay(mountTarget, options);
         resolve('cancel');
         return;
       }
