@@ -108,14 +108,19 @@ export default class OverlayService extends AppService {
       return;
     }
 
-    if (this.overlayStack.length === 0) {
+    if (!this.overlayStack.length) {
       this.overlayEl.setAttribute('hidden', 'hidden');
       this.overlayEl.classList.remove('is-active');
       return;
     }
 
-    this.overlayEl.removeAttribute('hidden');
-    this.overlayEl.classList.add('is-active');
+    if (this.overlayStack.some((overlay) => overlay.overlayUseBackdrop !== false)) {
+      this.overlayEl.removeAttribute('hidden');
+      this.overlayEl.classList.add('is-active');
+    } else {
+      this.overlayEl.setAttribute('hidden', 'hidden');
+      this.overlayEl.classList.remove('is-active');
+    }
 
     const activeIndex = this.overlayStack.length - 1;
     const overlayZ = this.baseZIndex + activeIndex * 2;

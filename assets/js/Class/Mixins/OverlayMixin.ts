@@ -7,6 +7,12 @@ export default class OverlayMixin extends AbstractMixin {
       if (target.overlayEnabled === undefined) {
         target.overlayEnabled = true;
       }
+      if (target.overlayUseBackdrop === undefined) {
+        target.overlayUseBackdrop = true;
+      }
+      if (target.overlayUseStack === undefined) {
+        target.overlayUseStack = true;
+      }
 
       const originalActivate = target.activateListeners
         ? target.activateListeners.bind(target)
@@ -20,7 +26,7 @@ export default class OverlayMixin extends AbstractMixin {
           await originalActivate(...args);
         }
 
-        if (target.overlayEnabled) {
+        if (target.overlayEnabled && target.overlayUseStack) {
           target.app.services.overlay.register(target);
         }
       };
@@ -30,7 +36,7 @@ export default class OverlayMixin extends AbstractMixin {
           await originalDeactivate(...args);
         }
 
-        if (target.overlayEnabled) {
+        if (target.overlayEnabled && target.overlayUseStack) {
           target.app.services.overlay.unregister(target);
         }
       };
@@ -80,7 +86,9 @@ export default class OverlayMixin extends AbstractMixin {
           }
 
           target.el.classList.add('is-open');
-          target.app.services.overlay.setActive(target);
+          if (target.overlayUseStack) {
+            target.app.services.overlay.setActive(target);
+          }
           target.overlayOnOpen(event);
         };
       }
@@ -93,7 +101,9 @@ export default class OverlayMixin extends AbstractMixin {
 
           target.el.classList.remove('is-open');
           target.overlayOnClose(event);
-          target.app.services.overlay.clearActive(target);
+          if (target.overlayUseStack) {
+            target.app.services.overlay.clearActive(target);
+          }
         };
       }
 
@@ -109,6 +119,10 @@ export default class OverlayMixin extends AbstractMixin {
 
       if (!target.focusableShouldHandleEscape) {
         target.focusableShouldHandleEscape = () => {
+          if (!target.overlayUseStack) {
+            return target.overlayIsOpen();
+          }
+
           const activeOverlay = target.app.services.overlay.getActiveOverlay?.();
 
           if (activeOverlay !== target) {
