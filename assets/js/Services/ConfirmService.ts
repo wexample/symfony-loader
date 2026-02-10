@@ -115,6 +115,10 @@ export default class ConfirmService extends AppService {
 
   private async closeInstance(instance: any, toast: boolean): Promise<void> {
     if (toast) {
+      if (instance.closeWithAnimation) {
+        await instance.closeWithAnimation();
+        return;
+      }
       await instance.exit();
       return;
     }

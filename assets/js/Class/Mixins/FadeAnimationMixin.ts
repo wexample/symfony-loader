@@ -13,6 +13,14 @@ export default class FadeAnimationMixin extends AbstractMixin {
         };
       }
 
+      if (!target.closeWithAnimation) {
+        target.closeWithAnimation = async (...args: any[]) => {
+          if (target.exit) {
+            return target.exit(...args);
+          }
+        };
+      }
+
       if (!target.fadeOpen) {
         target.fadeOpen = () => {
           const el: HTMLElement | null = target.fadeAnimationGetElement?.() || target.el;

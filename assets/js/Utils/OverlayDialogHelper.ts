@@ -44,7 +44,7 @@ export const applyOverlayDialogLifecycle = (
   };
 
   if (animateClose) {
-    target.overlayClose = async (event?: Event) => {
+    target.closeWithAnimation = async (event?: Event) => {
       if (!target.overlayIsOpen?.()) {
         return;
       }
@@ -59,6 +59,12 @@ export const applyOverlayDialogLifecycle = (
 
       target.app.services.overlay.clearActive(target);
       await target.exit();
+    };
+
+    target.overlayClose = async (event?: Event) => {
+      if (target.closeWithAnimation) {
+        return target.closeWithAnimation(event);
+      }
     };
   }
 };
