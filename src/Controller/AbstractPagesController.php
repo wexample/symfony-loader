@@ -4,18 +4,17 @@ namespace Wexample\SymfonyLoader\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Wexample\Helpers\Helper\ClassHelper;
-use Wexample\SymfonyLoader\Rendering\RenderPass;
-use Wexample\SymfonyLoader\Service\AdaptiveRendererService;
-use Wexample\SymfonyLoader\Service\PageService;
-use Wexample\SymfonyLoader\Service\RenderPassBagService;
 use Wexample\SymfonyHelpers\Attribute\SimpleMethodResolver;
 use Wexample\SymfonyHelpers\Class\AbstractBundle;
 use Wexample\SymfonyHelpers\Controller\Traits\HasSimpleRoutesControllerTrait;
 use Wexample\SymfonyHelpers\Helper\BundleHelper;
 use Wexample\SymfonyHelpers\Helper\FileHelper;
-use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 use Wexample\SymfonyHelpers\Traits\BundleClassTrait;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Service\AdaptiveRendererService;
+use Wexample\SymfonyLoader\Service\PageService;
+use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 
 abstract class AbstractPagesController extends AbstractLoaderController
 {
@@ -23,16 +22,17 @@ abstract class AbstractPagesController extends AbstractLoaderController
 
     public const NAMESPACE_CONTROLLER = 'App\\Controller\\';
 
-    public const NAMESPACE_PAGES = self::NAMESPACE_CONTROLLER.'Pages\\';
+    public const NAMESPACE_PAGES = self::NAMESPACE_CONTROLLER . 'Pages\\';
 
-    public const RESOURCES_DIR_PAGE = VariableHelper::PLURAL_PAGE.FileHelper::FOLDER_SEPARATOR;
+    public const RESOURCES_DIR_PAGE = VariableHelper::PLURAL_PAGE . FileHelper::FOLDER_SEPARATOR;
 
     public const BUNDLE_TEMPLATE_SEPARATOR = '::';
 
     public function __construct(
         AdaptiveRendererService $adaptiveRendererService,
         protected PageService $pageService,
-    ) {
+    )
+    {
         parent::__construct(
             $adaptiveRendererService,
         );
@@ -41,24 +41,26 @@ abstract class AbstractPagesController extends AbstractLoaderController
     protected function buildTemplatePath(
         string $view,
         AbstractBundle|string|null $bundle = null
-    ): string {
+    ): string
+    {
         $base = '';
 
         if (str_contains($view, self::BUNDLE_TEMPLATE_SEPARATOR)) {
             $exp = explode(self::BUNDLE_TEMPLATE_SEPARATOR, $view);
-            $base = $exp[0].FileHelper::FOLDER_SEPARATOR.BundleHelper::BUNDLE_PATH_TEMPLATES.$base;
+            $base = $exp[0] . FileHelper::FOLDER_SEPARATOR . BundleHelper::BUNDLE_PATH_TEMPLATES . $base;
             $view = $exp[1];
         }
 
         return BundleHelper::ALIAS_PREFIX
             . static::getTemplateLocationPrefix(bundle: $bundle) . '/'
-            .$base.$view.TemplateHelper::TEMPLATE_FILE_EXTENSION;
+            . $base . $view . TemplateHelper::TEMPLATE_FILE_EXTENSION;
     }
 
     protected function buildControllerTemplatePath(
         string $pageName,
         string $bundle = null
-    ): string {
+    ): string
+    {
         $bundle = $bundle ?: $this->getDefaultPageBundleClass();
 
         $parts = TemplateHelper::explodeControllerNamespaceSubParts(static::class, $bundle);
@@ -72,7 +74,7 @@ abstract class AbstractPagesController extends AbstractLoaderController
         if (ClassHelper::classUsesTrait($this, BundleClassTrait::class)) {
             return $this::getControllerBundle();
         }
-        
+
         return null;
     }
 
@@ -82,7 +84,8 @@ abstract class AbstractPagesController extends AbstractLoaderController
         Response $response = null,
         AbstractBundle|string $bundle = null,
         RenderPass $renderPass = null
-    ): Response {
+    ): Response
+    {
         return $this->adaptiveRender(
             $this->buildControllerTemplatePath($pageName, $bundle),
             $parameters,
