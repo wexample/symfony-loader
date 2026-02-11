@@ -201,6 +201,7 @@ export default abstract class RenderNode extends AppChild {
     }
 
     await this.mounted();
+    await this.afterVisible();
   }
 
   async unmount() {
@@ -300,6 +301,9 @@ export default abstract class RenderNode extends AppChild {
       'renderNode',
       [this]
     );
+  }
+
+  protected async afterVisible(): Promise<void> {
   }
 
   protected async unmounted(): Promise<void> {
