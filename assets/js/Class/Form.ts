@@ -7,10 +7,6 @@ export default class Form extends Component {
   protected async activateListeners(): Promise<void> {
     await super.activateListeners();
 
-    if (!this.options?.ajax) {
-      return;
-    }
-
     this.onSubmitProxy = this.onSubmit.bind(this);
     this.el.addEventListener('submit', this.onSubmitProxy);
   }
@@ -33,12 +29,6 @@ export default class Form extends Component {
   }
 
   private async onSubmit(event: SubmitEvent) {
-    if (!this.options?.ajax) {
-      return;
-    }
-
-    event.preventDefault();
-
     const form = event.currentTarget as HTMLFormElement;
     const formData = new FormData(form);
     const submitter = (event as any).submitter as
@@ -49,6 +39,15 @@ export default class Form extends Component {
     if (submitter?.name) {
       formData.append(submitter.name, 'true');
     }
+
+    if (!this.options?.ajax) {
+      if (this.onBeforeSubmit(event, form, formData, submitter) === false) {
+        event.preventDefault();
+      }
+      return;
+    }
+
+    event.preventDefault();
 
     if (!this.onBeforeSubmit(event, form, formData, submitter)) {
       return;
