@@ -201,7 +201,17 @@ export default abstract class RenderNode extends AppChild {
     }
 
     await this.mounted();
-    await this.afterVisible();
+    void this.afterVisible();
+  }
+
+  public async notifyVisible(): Promise<void> {
+    void waitForElementVisible(this.el, 500).then(() => this.afterVisible());
+  }
+
+  public async notifyTreeVisible(): Promise<void> {
+    await this.forEachTreeRenderNode(async (renderNode: RenderNode) => {
+      await renderNode.notifyVisible();
+    });
   }
 
   async unmount() {
@@ -373,3 +383,4 @@ export default abstract class RenderNode extends AppChild {
 
   public abstract getRenderNodeType(): string;
 }
+import { waitForElementVisible } from '@wexample/js-helpers/Helper/ElementSize';

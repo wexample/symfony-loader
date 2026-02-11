@@ -22,7 +22,7 @@ export default class FadeAnimationMixin extends AbstractMixin {
       }
 
       if (!target.fadeOpen) {
-        target.fadeOpen = () => {
+        target.fadeOpen = async () => {
           const el: HTMLElement | null = target.fadeAnimationGetElement?.() || target.el;
           if (!el) {
             return;
@@ -31,13 +31,15 @@ export default class FadeAnimationMixin extends AbstractMixin {
           el.classList.remove('is-opening');
           void el.offsetWidth;
           el.classList.add('is-opening');
-          el.addEventListener(
-            'animationend',
-            () => {
-              el.classList.remove('is-opening');
-            },
-            { once: true }
-          );
+          await new Promise<void>((resolve) => {
+            const timeout = window.setTimeout(resolve, 220);
+            const onEnd = () => {
+              clearTimeout(timeout);
+              resolve();
+            };
+            el.addEventListener('animationend', onEnd, { once: true });
+          });
+          el.classList.remove('is-opening');
         };
       }
 
