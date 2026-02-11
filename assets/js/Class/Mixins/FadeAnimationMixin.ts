@@ -1,4 +1,5 @@
 import AbstractMixin from '@wexample/js-helpers/Helper/AbstractMixin';
+import { waitForAnimationEnd } from '@wexample/js-helpers/Helper/Animation';
 
 export default class FadeAnimationMixin extends AbstractMixin {
   static apply(instance: any) {
@@ -31,14 +32,7 @@ export default class FadeAnimationMixin extends AbstractMixin {
           el.classList.remove('is-opening');
           void el.offsetWidth;
           el.classList.add('is-opening');
-          await new Promise<void>((resolve) => {
-            const timeout = window.setTimeout(resolve, 220);
-            const onEnd = () => {
-              clearTimeout(timeout);
-              resolve();
-            };
-            el.addEventListener('animationend', onEnd, { once: true });
-          });
+          await waitForAnimationEnd(el, 220);
           el.classList.remove('is-opening');
         };
       }
@@ -55,14 +49,7 @@ export default class FadeAnimationMixin extends AbstractMixin {
         const el: HTMLElement | null = target.fadeAnimationGetElement?.() || target.el;
         if (el) {
           el.classList.add('is-closing');
-          await new Promise<void>((resolve) => {
-            const timeout = window.setTimeout(resolve, 220);
-            const onEnd = () => {
-              clearTimeout(timeout);
-              resolve();
-            };
-            el.addEventListener('animationend', onEnd, { once: true });
-          });
+          await waitForAnimationEnd(el, 220);
         }
 
         if (originalExit) {
