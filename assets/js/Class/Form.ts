@@ -1,5 +1,4 @@
 import Component from './Component';
-import ToastService from '../Services/ToastService';
 import OverlayService from '../Services/OverlayService';
 import AdaptiveService from '../Services/AdaptiveService';
 import PromptsService from '../Services/PromptsService';
@@ -115,33 +114,7 @@ export default class Form extends Component {
     }
   }
 
-  private handleSuccessAction(action: any) {
-    if (!action || !action.type) {
-      return;
-    }
-
-    // TODO Smell bad..
-    if (action.type === 'overlay_close') {
-      const overlayService = this.app.getServiceOrFail(OverlayService) as OverlayService;
-      const overlay = overlayService.getActiveOverlay?.();
-      if (overlay?.overlayClose) {
-        overlay.overlayClose();
-      }
-      return;
-    }
-
-    // TODO Smell bad..
-    if (action.type === 'toast') {
-      const toastService = this.app.getServiceOrFail(ToastService) as ToastService;
-      toastService.show({
-        type: action.level || 'info',
-        title: action.title,
-        message: action.message,
-        timeout: action.timeout || 2500,
-      });
-      return;
-    }
-  }
+  protected handleSuccessAction(action: any) {}
 
   private applyFormErrors(
     form: HTMLFormElement,
