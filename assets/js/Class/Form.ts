@@ -23,6 +23,15 @@ export default class Form extends Component {
     }
   }
 
+  protected onBeforeSubmit(
+    _event: SubmitEvent,
+    _form: HTMLFormElement,
+    _formData: FormData,
+    _submitter: HTMLInputElement | HTMLButtonElement | null
+  ): boolean {
+    return true;
+  }
+
   private async onSubmit(event: SubmitEvent) {
     if (!this.options?.ajax) {
       return;
@@ -39,6 +48,10 @@ export default class Form extends Component {
 
     if (submitter?.name) {
       formData.append(submitter.name, 'true');
+    }
+
+    if (!this.onBeforeSubmit(event, form, formData, submitter)) {
+      return;
     }
 
     const action =
