@@ -1,4 +1,5 @@
 import Component from './Component';
+import ToastService from '../Services/ToastService';
 
 export default class Form extends Component {
   private onSubmitProxy: EventListener;
@@ -75,11 +76,42 @@ export default class Form extends Component {
       return;
     }
 
+    if (data.action) {
+      this.handleSuccessAction(data.action);
+    }
+
     if (data.form?.errors) {
       const catalog = data.translations
         ? { ...this.app.layout.translations, ...data.translations }
         : undefined;
       this.applyFormErrors(form, data.form.errors, catalog);
+    }
+  }
+
+  private handleSuccessAction(action: any) {
+    if (!action || !action.type) {
+      return;
+    }
+
+    // TODO Smell bad..
+    if (action.type === 'overlay_close') {
+      const overlay = this.app.services.overlay?.getActiveOverlay?.();
+      if (overlay?.overlayClose) {
+        overlay.overlayClose();
+      }
+      return;
+    }
+
+    // TODO Smell bad..
+    if (action.type === 'toast') {
+      const toastService = this.app.getServiceOrFail(ToastService) as ToastService;
+      toastService.show({
+        type: action.level || 'info',
+        title: action.title,
+        message: action.message,
+        timeout: action.timeout || 2500,
+      });
+      return;
     }
   }
 
