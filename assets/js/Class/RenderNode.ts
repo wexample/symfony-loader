@@ -3,6 +3,7 @@ import AppChild from './AppChild';
 import App from './App';
 import Component from './Component';
 import { stringToKebab } from '@wexample/js-helpers/Helper/String';
+import { waitForElementSize } from '@wexample/js-helpers/Helper/ElementSize';
 import Page from './Page';
 import { RenderNodeServiceEvents } from "../Services/AbstractRenderNodeService";
 import ElementListenersMixin from './Mixins/ElementListenersMixin';
@@ -205,7 +206,12 @@ export default abstract class RenderNode extends AppChild {
   }
 
   public async notifyVisible(): Promise<void> {
-    void waitForElementVisible(this.el, 500).then(() => this.afterVisible());
+    void waitForElementSize(
+      this.el,
+      1,
+      500,
+      (target) => target.getClientRects().length > 0
+    ).then(() => this.afterVisible());
   }
 
   public async notifyTreeVisible(): Promise<void> {
@@ -383,4 +389,3 @@ export default abstract class RenderNode extends AppChild {
 
   public abstract getRenderNodeType(): string;
 }
-import { waitForElementVisible } from '@wexample/js-helpers/Helper/ElementSize';
