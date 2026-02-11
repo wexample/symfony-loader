@@ -99,7 +99,12 @@ class ComponentService extends AbstractRenderNodeService
                 $component->setBody(null);
             }
 
-            return DomHelper::buildTag(DomHelper::TAG_SPAN);
+            return DomHelper::buildTag(
+                tagName: DomHelper::TAG_SPAN,
+                attributes: [
+                    'style' => 'display:none'
+                ]
+            );
         } catch (Exception $exception) {
             throw new Exception('Error during rendering component ' . $component->getView() . ' : ' . $exception->getMessage(), $exception->getCode(), $exception);
         }
