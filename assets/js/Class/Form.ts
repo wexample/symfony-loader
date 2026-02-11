@@ -1,5 +1,9 @@
 import Component from './Component';
 import ToastService from '../Services/ToastService';
+import OverlayService from '../Services/OverlayService';
+import AdaptiveService from '../Services/AdaptiveService';
+import PromptsService from '../Services/PromptsService';
+import LocaleService from '../Services/LocaleService';
 
 export default class Form extends Component {
   private onSubmitProxy: EventListener;
@@ -40,16 +44,8 @@ export default class Form extends Component {
       formData.append(submitter.name, 'true');
     }
 
-    if (!this.options?.ajax) {
-      if (this.onBeforeSubmit(event, form, formData, submitter) === false) {
-        event.preventDefault();
-      }
-      return;
-    }
-
-    event.preventDefault();
-
-    if (!this.onBeforeSubmit(event, form, formData, submitter)) {
+    if (this.onBeforeSubmit(event, form, formData, submitter) === false) {
+      event.preventDefault();
       return;
     }
 
@@ -59,20 +55,39 @@ export default class Form extends Component {
       window.location.search +
       (window.location.hash || '');
 
-    const response = await this.app.services.adaptive.fetch(action, {
+    const overlayService = this.app.getServiceOrFail(OverlayService) as OverlayService;
+    const overlay = overlayService.getActiveOverlay?.();
+    const overlayEl =
+      overlay?.overlayGetElement?.() || overlay?.el || null;
+    const isInOverlay = !!overlayEl && overlayEl.contains(form);
+
+    if (!this.options?.ajax && !isInOverlay) {
+      return;
+    }
+
+    event.preventDefault();
+
+    await this.submitAdaptive(action, formData);
+  }
+
+  private async submitAdaptive(action: string, formData: FormData) {
+    const adaptiveService = this.app.getServiceOrFail(AdaptiveService) as AdaptiveService;
+    const response = await adaptiveService.fetch(action, {
       method: 'POST',
       body: formData,
     } as any);
 
     if (!response.ok) {
-      this.app.services.prompt?.applicationError(
+      const promptService = this.app.getServiceOrFail(PromptsService) as PromptsService;
+      promptService.applicationError(
         `Error response : [${response.status}] ${response.statusText}`
       );
       return;
     }
 
     const data = await response.json().catch((error: any) => {
-      this.app.services.prompt?.applicationError(
+      const promptService = this.app.getServiceOrFail(PromptsService) as PromptsService;
+      promptService.applicationError(
         'Failed to parse JSON response:',
         error
       );
@@ -96,7 +111,7 @@ export default class Form extends Component {
       const catalog = data.translations
         ? { ...this.app.layout.translations, ...data.translations }
         : undefined;
-      this.applyFormErrors(form, data.form.errors, catalog);
+      this.applyFormErrors(this.el as HTMLFormElement, data.form.errors, catalog);
     }
   }
 
@@ -107,7 +122,8 @@ export default class Form extends Component {
 
     // TODO Smell bad..
     if (action.type === 'overlay_close') {
-      const overlay = this.app.services.overlay?.getActiveOverlay?.();
+      const overlayService = this.app.getServiceOrFail(OverlayService) as OverlayService;
+      const overlay = overlayService.getActiveOverlay?.();
       if (overlay?.overlayClose) {
         overlay.overlayClose();
       }
@@ -200,8 +216,9 @@ export default class Form extends Component {
       return message;
     }
 
-    if (catalog && this.app.services.locale) {
-      return this.app.services.locale.trans(message, {}, catalog);
+    const localeService = this.app.getServiceOrFail(LocaleService) as LocaleService;
+    if (catalog && localeService) {
+      return localeService.trans(message, {}, catalog);
     }
 
     return message;
