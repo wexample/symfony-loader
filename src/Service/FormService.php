@@ -5,13 +5,11 @@ namespace Wexample\SymfonyLoader\Service;
 use Exception;
 use Symfony\Component\Form\FormView;
 use Twig\Environment;
-use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Rendering\ComponentManagerLocatorService;
-use Wexample\SymfonyLoader\Service\AssetsService;
-use Wexample\SymfonyLoader\Service\AssetsRegistryService;
-use Wexample\SymfonyTranslations\Translation\Translator;
-use Wexample\SymfonyTemplate\Helper\TemplateHelper;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\Usage\DefaultAssetUsageService;
+use Wexample\SymfonyTemplate\Helper\TemplateHelper;
+use Wexample\SymfonyTranslations\Translation\Translator;
 
 class FormService extends ComponentService
 {
@@ -22,7 +20,8 @@ class FormService extends ComponentService
         ComponentManagerLocatorService $componentManagerLocatorService,
         Translator $translator,
         private readonly AssetsRegistryService $assetsRegistryService
-    ) {
+    )
+    {
         parent::__construct(
             $assetsService,
             $componentManagerLocatorService,
@@ -58,6 +57,13 @@ class FormService extends ComponentService
             false
         );
 
+        // Translation.
+        // Add frontend domain.
+        $component->addTranslationDomain(
+            Translator::DOMAIN_TYPE_FORM,
+            $formView->vars['translation_domain']
+        );
+        // Activate backend domain.
         $this->translator->setDomain(
             Translator::DOMAIN_TYPE_FORM,
             $formView->vars['translation_domain']
@@ -70,6 +76,7 @@ class FormService extends ComponentService
             $templateVars
         );
 
+        // Revert backend domain.
         $this->translator->revertDomain(Translator::DOMAIN_TYPE_FORM);
 
         if ($this->hasFormSpecificJs($renderPass, $path)) {
@@ -84,7 +91,10 @@ class FormService extends ComponentService
         );
     }
 
-    private function hasFormSpecificJs(RenderPass $renderPass, string $path): bool
+    private function hasFormSpecificJs(
+        RenderPass $renderPass,
+        string $path
+    ): bool
     {
         $view = TemplateHelper::removeExtension($path);
         $jsPath = (new DefaultAssetUsageService($this->assetsRegistryService))
@@ -98,7 +108,8 @@ class FormService extends ComponentService
         RenderPass $renderPass,
         FormView $formView,
         \Wexample\SymfonyLoader\Rendering\RenderNode\ComponentRenderNode $component
-    ): string {
+    ): string
+    {
         $fallbackOptions = [
             'ajax' => (bool) ($formView->vars['ajax'] ?? false),
         ];
