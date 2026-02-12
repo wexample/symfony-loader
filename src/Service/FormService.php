@@ -43,12 +43,7 @@ class FormService extends ComponentService
         array $options = []
     ): string
     {
-        if (!array_key_exists('ajax', $options)) {
-            $options['ajax'] = (bool) ($formView->vars['ajax'] ?? false);
-        }
-        if (!array_key_exists('name', $options) && !empty($formView->vars['name'])) {
-            $options['name'] = $formView->vars['name'];
-        }
+        $options = $this->mergeFormOptions($formView, $options, ['ajax', 'name']);
 
         $templateVars = [
             'form' => $formView,
@@ -96,6 +91,16 @@ class FormService extends ComponentService
             $formView,
             $component
         );
+    }
+
+    private function mergeFormOptions(
+        FormView $formView,
+        array $options,
+        array $keys
+    ): array
+    {
+        $defaults = array_intersect_key($formView->vars, array_flip($keys));
+        return array_replace($defaults, $options);
     }
 
     private function hasFormSpecificJs(
