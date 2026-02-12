@@ -43,6 +43,13 @@ class FormService extends ComponentService
         array $options = []
     ): string
     {
+        if (!array_key_exists('ajax', $options)) {
+            $options['ajax'] = (bool) ($formView->vars['ajax'] ?? false);
+        }
+        if (!array_key_exists('name', $options) && !empty($formView->vars['name'])) {
+            $options['name'] = $formView->vars['name'];
+        }
+
         $templateVars = [
             'form' => $formView,
         ];
