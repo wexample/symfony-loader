@@ -1,17 +1,9 @@
 import Component from './Component';
-import OverlayService from '../Services/OverlayService';
 import AdaptiveService from '../Services/AdaptiveService';
 import LocaleService from '../Services/LocaleService';
 
 export default class Form extends Component {
   private onSubmitProxy: EventListener;
-
-  protected async mounted(): Promise<void> {
-    console.log('mount')
-    console.log(this.options.embedType)
-
-    return super.mounted();
-  }
 
   protected async activateListeners(): Promise<void> {
     await super.activateListeners();
@@ -60,42 +52,34 @@ export default class Form extends Component {
       window.location.search +
       (window.location.hash || '');
 
-    const overlayService = this.app.getServiceOrFail(OverlayService) as OverlayService;
-    const overlay = overlayService.getActiveOverlay?.();
-    const overlayEl =
-      overlay?.overlayGetElement?.() || overlay?.el || null;
-    const isInOverlay = !!overlayEl && overlayEl.contains(form);
+    const isEmbedded = this.options?.embedType && this.options.embedType !== 'default';
 
-    if (!this.options?.ajax && !isInOverlay) {
+    if (!this.options?.ajax && !isEmbedded) {
       return;
     }
 
     event.preventDefault();
 
-    await this.submitAdaptive(action, formData, overlay);
+    await this.submitAdaptive(action, formData, isEmbedded);
   }
 
   private async submitAdaptive(
     action: string,
     formData: FormData,
-    overlay?: any
+    isEmbedded?: boolean
   ) {
     const adaptiveService = this.app.getServiceOrFail(AdaptiveService) as AdaptiveService;
-    if (overlay) {
+    if (isEmbedded) {
       await adaptiveService.post(action, {
         method: 'POST',
         body: formData,
       } as any);
 
-      console.log('trigger')
       await this.trigger('embed:close', {
         source: this,
         embedType: this.options.embedType,
       });
 
-      if (overlay.overlayClose) {
-        overlay.overlayClose();
-      }
       return;
     }
 
