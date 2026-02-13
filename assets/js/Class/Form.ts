@@ -73,6 +73,7 @@ export default class Form extends Component {
       await adaptiveService.post(action, {
         method: 'POST',
         body: formData,
+        instant: true
       } as any);
 
       await this.trigger('embed:close', {

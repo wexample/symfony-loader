@@ -13,6 +13,18 @@ export default class OverlayMixin extends AbstractMixin {
       if (target.overlayUseStack === undefined) {
         target.overlayUseStack = true;
       }
+      if (target.overlaySetHiddenOnOpen === undefined) {
+        target.overlaySetHiddenOnOpen = true;
+      }
+      if (target.overlaySetHiddenOnClose === undefined) {
+        target.overlaySetHiddenOnClose = true;
+      }
+      if (target.overlayAnimateClose === undefined) {
+        target.overlayAnimateClose = false;
+      }
+      if (target.overlayExitOnClose === undefined) {
+        target.overlayExitOnClose = true;
+      }
 
       const originalActivate = target.activateListeners
         ? target.activateListeners.bind(target)
@@ -60,11 +72,11 @@ export default class OverlayMixin extends AbstractMixin {
       }
 
       if (!target.overlayOnOpen) {
-        target.overlayOnOpen = () => {};
+        target.overlayOnOpen = async (_instant: boolean = false) => {};
       }
 
       if (!target.overlayOnClose) {
-        target.overlayOnClose = () => {};
+        target.overlayOnClose = async (_instant: boolean = false) => {};
       }
 
       if (!target.overlayOnEscape) {
@@ -80,29 +92,48 @@ export default class OverlayMixin extends AbstractMixin {
       }
 
       if (!target.overlayOpen) {
-        target.overlayOpen = (event?: Event) => {
+        target.overlayOpen = (eventOrInstant?: Event | boolean) => {
           if (target.overlayIsOpen()) {
             return;
           }
 
+          const instant = eventOrInstant === true;
           target.el.classList.add('is-open');
+          if (target.overlaySetHiddenOnOpen) {
+            target.el.removeAttribute('hidden');
+          }
           if (target.overlayUseStack) {
             target.app.services.overlay.setActive(target);
           }
-          target.overlayOnOpen(event);
+          target.overlayOnOpen(instant);
         };
       }
 
       if (!target.overlayClose) {
-        target.overlayClose = (event?: Event) => {
+        target.overlayClose = async (eventOrInstant?: Event | boolean) => {
           if (!target.overlayIsOpen()) {
             return;
           }
 
+          const instant = eventOrInstant === true;
+          if (!instant && target.overlayAnimateClose && target.closeWithAnimation) {
+            await target.overlayOnClose(false);
+            if (target.overlayUseStack) {
+              target.app.services.overlay.clearActive(target);
+            }
+            return target.closeWithAnimation();
+          }
+
           target.el.classList.remove('is-open');
-          target.overlayOnClose(event);
+          await target.overlayOnClose(instant);
           if (target.overlayUseStack) {
             target.app.services.overlay.clearActive(target);
+          }
+          if (target.overlaySetHiddenOnClose) {
+            target.el.setAttribute('hidden', 'hidden');
+          }
+          if (target.overlayExitOnClose) {
+            await target.exit();
           }
         };
       }

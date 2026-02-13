@@ -117,10 +117,6 @@ export default class ModalComponent extends PageManagerComponent {
     this.page.focus();
 
     (this as unknown as WithOverlayComponent).overlayShow();
-
-    if (options.instant) {
-      this.setInstantTransition(false);
-    }
   }
 
   close(options: { instant?: boolean } = {}): Promise<void> {
@@ -147,10 +143,6 @@ export default class ModalComponent extends PageManagerComponent {
         await this.exit();
 
         this.callerPage.focus();
-
-        if (options.instant) {
-          this.setInstantTransition(false);
-        }
 
         resolve();
       }, 400);
