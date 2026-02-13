@@ -72,11 +72,11 @@ export default class OverlayMixin extends AbstractMixin {
       }
 
       if (!target.overlayOnOpen) {
-        target.overlayOnOpen = async (_options: { instant?: boolean } = {}) => {};
+        target.overlayOnOpen = async (_instant: boolean = false) => {};
       }
 
       if (!target.overlayOnClose) {
-        target.overlayOnClose = async (_options: { instant?: boolean } = {}) => {};
+        target.overlayOnClose = async (_instant: boolean = false) => {};
       }
 
       if (!target.overlayOnEscape) {
@@ -92,12 +92,11 @@ export default class OverlayMixin extends AbstractMixin {
       }
 
       if (!target.overlayOpen) {
-        target.overlayOpen = (options: { instant?: boolean } = {}) => {
+        target.overlayOpen = (instant: boolean = false) => {
           if (target.overlayIsOpen()) {
             return;
           }
 
-          const instant = options.instant === true;
           target.el.classList.add('is-open');
           if (target.overlaySetHiddenOnOpen) {
             target.el.removeAttribute('hidden');
@@ -105,19 +104,18 @@ export default class OverlayMixin extends AbstractMixin {
           if (target.overlayUseStack) {
             target.app.services.overlay.setActive(target);
           }
-          target.overlayOnOpen({ instant });
+          target.overlayOnOpen(instant);
         };
       }
 
       if (!target.overlayClose) {
-        target.overlayClose = async (options: { instant?: boolean } = {}) => {
+        target.overlayClose = async (instant: boolean = false) => {
           if (!target.overlayIsOpen()) {
             return;
           }
 
-          const instant = options.instant === true;
           if (!instant && target.overlayAnimateClose && target.closeWithAnimation) {
-            await target.overlayOnClose({ instant: false });
+            await target.overlayOnClose(false);
             if (target.overlayUseStack) {
               target.app.services.overlay.clearActive(target);
             }
@@ -125,7 +123,7 @@ export default class OverlayMixin extends AbstractMixin {
           }
 
           target.el.classList.remove('is-open');
-          await target.overlayOnClose({ instant });
+          await target.overlayOnClose(instant);
           if (target.overlayUseStack) {
             target.app.services.overlay.clearActive(target);
           }
