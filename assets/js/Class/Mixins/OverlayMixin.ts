@@ -72,11 +72,11 @@ export default class OverlayMixin extends AbstractMixin {
       }
 
       if (!target.overlayOnOpen) {
-        target.overlayOnOpen = async (_instant: boolean = false) => {};
+        target.overlayOnOpen = async (_options: { instant?: boolean } = {}) => {};
       }
 
       if (!target.overlayOnClose) {
-        target.overlayOnClose = async (_instant: boolean = false) => {};
+        target.overlayOnClose = async (_options: { instant?: boolean } = {}) => {};
       }
 
       if (!target.overlayOnEscape) {
@@ -92,12 +92,12 @@ export default class OverlayMixin extends AbstractMixin {
       }
 
       if (!target.overlayOpen) {
-        target.overlayOpen = (eventOrInstant?: Event | boolean) => {
+        target.overlayOpen = (options: { instant?: boolean } = {}) => {
           if (target.overlayIsOpen()) {
             return;
           }
 
-          const instant = eventOrInstant === true;
+          const instant = options.instant === true;
           target.el.classList.add('is-open');
           if (target.overlaySetHiddenOnOpen) {
             target.el.removeAttribute('hidden');
@@ -105,19 +105,19 @@ export default class OverlayMixin extends AbstractMixin {
           if (target.overlayUseStack) {
             target.app.services.overlay.setActive(target);
           }
-          target.overlayOnOpen(instant);
+          target.overlayOnOpen({ instant });
         };
       }
 
       if (!target.overlayClose) {
-        target.overlayClose = async (eventOrInstant?: Event | boolean) => {
+        target.overlayClose = async (options: { instant?: boolean } = {}) => {
           if (!target.overlayIsOpen()) {
             return;
           }
 
-          const instant = eventOrInstant === true;
+          const instant = options.instant === true;
           if (!instant && target.overlayAnimateClose && target.closeWithAnimation) {
-            await target.overlayOnClose(false);
+            await target.overlayOnClose({ instant: false });
             if (target.overlayUseStack) {
               target.app.services.overlay.clearActive(target);
             }
@@ -125,7 +125,7 @@ export default class OverlayMixin extends AbstractMixin {
           }
 
           target.el.classList.remove('is-open');
-          await target.overlayOnClose(instant);
+          await target.overlayOnClose({ instant });
           if (target.overlayUseStack) {
             target.app.services.overlay.clearActive(target);
           }
@@ -139,11 +139,11 @@ export default class OverlayMixin extends AbstractMixin {
       }
 
       if (!target.overlayToggle) {
-        target.overlayToggle = (event?: Event) => {
+        target.overlayToggle = () => {
           if (target.overlayIsOpen()) {
-            target.overlayClose(event);
+            target.overlayClose();
           } else {
-            target.overlayOpen(event);
+            target.overlayOpen();
           }
         };
       }
