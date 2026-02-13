@@ -6,6 +6,7 @@ export default abstract class PageManagerComponent extends Component {
   public page: Page;
   public layoutBody: string;
   public onEmbedCloseProxy: EventListener;
+  protected isInstantTransition: boolean = false;
 
   mergeRenderData(renderData: ComponentInterface) {
     super.mergeRenderData(renderData);
@@ -56,14 +57,36 @@ export default abstract class PageManagerComponent extends Component {
       return;
     }
 
+    const instant = !!event.detail?.instant;
+    if (instant) {
+      this.setInstantTransition(true);
+    }
+
     await this.close();
+
+    if (instant) {
+      this.setInstantTransition(false);
+    }
   }
 
-  public async open(): Promise<void> {
+  public async open(_options: { instant?: boolean } = {}): Promise<void> {
     // To override if needed.
   }
 
-  public async close(): Promise<void> {
+  public async close(_options: { instant?: boolean } = {}): Promise<void> {
     // To override if needed.
+  }
+
+  protected setInstantTransition(instant: boolean) {
+    this.isInstantTransition = instant;
+    if (!this.el) {
+      return;
+    }
+
+    if (instant) {
+      this.el.classList.add('is-instant');
+    } else {
+      this.el.classList.remove('is-instant');
+    }
   }
 }

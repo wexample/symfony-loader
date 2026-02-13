@@ -78,6 +78,7 @@ export default class Form extends Component {
       await this.trigger('embed:close', {
         source: this,
         embedType: this.options.embedType,
+        instant: true,
       });
 
       return;

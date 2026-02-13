@@ -101,22 +101,34 @@ export default class ModalComponent extends PageManagerComponent {
     this.el.classList.add(VARIABLES.CLOSED);
   }
 
-  async open(): Promise<void> {
+  async open(options: { instant?: boolean } = {}): Promise<void> {
     if (this.opened) {
       return;
     }
 
     this.opened = true;
 
+    if (options.instant) {
+      this.setInstantTransition(true);
+    }
+
     this.showEl();
 
     this.page.focus();
 
     (this as unknown as WithOverlayComponent).overlayShow();
+
+    if (options.instant) {
+      this.setInstantTransition(false);
+    }
   }
 
-  close(): Promise<void> {
+  close(options: { instant?: boolean } = {}): Promise<void> {
     this.closing = true;
+
+    if (options.instant) {
+      this.setInstantTransition(true);
+    }
 
     this.hideEl();
 
@@ -135,6 +147,10 @@ export default class ModalComponent extends PageManagerComponent {
         await this.exit();
 
         this.callerPage.focus();
+
+        if (options.instant) {
+          this.setInstantTransition(false);
+        }
 
         resolve();
       }, 400);
