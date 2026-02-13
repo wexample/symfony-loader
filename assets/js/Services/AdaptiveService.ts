@@ -23,6 +23,31 @@ export default class AdaptiveService extends AppService {
     });
   }
 
+  async requestData(
+    path: string,
+    requestOptions: RequestOptionsInterface = {}
+  ): Promise<RenderDataInterface> {
+    const response = await this.fetch(path, requestOptions);
+
+    if (!response.ok) {
+      this.app.services.prompt.applicationError(
+        `Error response : [${response.status}] ${response.statusText}`
+      );
+    }
+
+    try {
+      const data = await response.json();
+      data.ok = true;
+      return data;
+    } catch (error) {
+      this.app.services.prompt.applicationError(
+        'Failed to parse JSON response:',
+        error
+      );
+      return { ok: false } as RenderDataInterface;
+    }
+  }
+
   get(
     path: string,
     requestOptions: RequestOptionsInterface = {}
@@ -32,46 +57,51 @@ export default class AdaptiveService extends AppService {
 
     Object.freeze(requestOptions);
 
-    return this.fetch(path, requestOptions)
-      .then((response: Response) => {
-        if (!response.ok) {
-          this.app.services.prompt.applicationError(
-            `Error response : [${response.status}] ${response.statusText}`
-          )
-        }
+    return this.requestData(path, requestOptions).then(
+      async (renderData: RenderDataInterface) => {
+        return this.handleRenderData(renderData, requestOptions);
+      }
+    );
+  }
 
-        // Attempt to parse the JSON response
-        return response.json().then(data => {
-          data.ok = true;
+  post(
+    path: string,
+    requestOptions: RequestOptionsInterface = {}
+  ): Promise<any> {
+    requestOptions.method = requestOptions.method || 'POST';
+    requestOptions.callerPage =
+      requestOptions.callerPage || this.app.layout.pageFocused;
 
-          // If the response is valid JSON, return the parsed data.
-          return data;
-        }).catch(error => {
-          // If an error occurs while parsing JSON, log the error and return an empty object.
-          this.app.services.prompt.applicationError("Failed to parse JSON response:", error);
+    Object.freeze(requestOptions);
 
-          return {ok: false};
-        });
-      })
-      .then(async (renderData: RenderDataInterface) => {
-        if (renderData.ok === false) {
-          return renderData;
-        }
+    return this.requestData(path, requestOptions).then(
+      async (renderData: RenderDataInterface) => {
+        return this.handleRenderData(renderData, requestOptions);
+      }
+    );
+  }
 
-        renderData.requestOptions = requestOptions;
+  async handleRenderData(
+    renderData: RenderDataInterface,
+    requestOptions: RequestOptionsInterface = {}
+  ): Promise<RenderDataInterface> {
+    if (renderData.ok === false) {
+      return renderData;
+    }
 
-        // Preparing render data is executed in render node creation,
-        // but at this point layout already exists,
-        // so we run it manually.
-        await this.app.services.layouts.prepareRenderData(renderData);
+    renderData.requestOptions = requestOptions;
 
-        // Wait render data loading to continue.
-        return this.app.loadLayoutRenderData(renderData).then(async () => {
-          // Activate every new render node.
-          await this.app.layout.setNewTreeRenderNodeReady();
+    // Preparing render data is executed in render node creation,
+    // but at this point layout already exists,
+    // so we run it manually.
+    await this.app.services.layouts.prepareRenderData(renderData);
 
-          return renderData;
-        });
-      });
+    // Wait render data loading to continue.
+    return this.app.loadLayoutRenderData(renderData).then(async () => {
+      // Activate every new render node.
+      await this.app.layout.setNewTreeRenderNodeReady();
+
+      return renderData;
+    });
   }
 }
