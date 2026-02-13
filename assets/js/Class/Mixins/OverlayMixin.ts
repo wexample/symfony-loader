@@ -92,11 +92,14 @@ export default class OverlayMixin extends AbstractMixin {
       }
 
       if (!target.overlayOpen) {
-        target.overlayOpen = (instant: boolean = false) => {
+        target.overlayOpen = async (instant: boolean = false) => {
           if (target.overlayIsOpen()) {
             return;
           }
 
+          if (instant) {
+            target.el.classList.add('is-instant');
+          }
           target.el.classList.add('is-open');
           if (target.overlaySetHiddenOnOpen) {
             target.el.removeAttribute('hidden');
@@ -104,7 +107,10 @@ export default class OverlayMixin extends AbstractMixin {
           if (target.overlayUseStack) {
             target.app.services.overlay.setActive(target);
           }
-          target.overlayOnOpen(instant);
+          await target.overlayOnOpen(instant);
+          if (instant) {
+            target.el.classList.remove('is-instant');
+          }
         };
       }
 
@@ -114,6 +120,9 @@ export default class OverlayMixin extends AbstractMixin {
             return;
           }
 
+          if (instant) {
+            target.el.classList.add('is-instant');
+          }
           if (!instant && target.overlayAnimateClose && target.closeWithAnimation) {
             await target.overlayOnClose(false);
             if (target.overlayUseStack) {
@@ -132,6 +141,9 @@ export default class OverlayMixin extends AbstractMixin {
           }
           if (target.overlayExitOnClose) {
             await target.exit();
+          }
+          if (instant) {
+            target.el.classList.remove('is-instant');
           }
         };
       }
