@@ -66,34 +66,33 @@ export default class Form extends Component {
 
     event.preventDefault();
 
-    await this.submitAdaptive(action, formData);
+    await this.submitAdaptive(action, formData, overlay);
   }
 
-  private async submitAdaptive(action: string, formData: FormData) {
+  private async submitAdaptive(
+    action: string,
+    formData: FormData,
+    overlay?: any
+  ) {
     const adaptiveService = this.app.getServiceOrFail(AdaptiveService) as AdaptiveService;
-    const response = await adaptiveService.fetch(action, {
+    if (overlay) {
+      await adaptiveService.post(action, {
+        method: 'POST',
+        body: formData,
+      } as any);
+
+      if (overlay.overlayClose) {
+        overlay.overlayClose();
+      }
+      return;
+    }
+
+    const data: any = await adaptiveService.requestData(action, {
       method: 'POST',
       body: formData,
     } as any);
 
-    if (!response.ok) {
-      const promptService = this.app.getServiceOrFail(PromptsService) as PromptsService;
-      promptService.applicationError(
-        `Error response : [${response.status}] ${response.statusText}`
-      );
-      return;
-    }
-
-    const data = await response.json().catch((error: any) => {
-      const promptService = this.app.getServiceOrFail(PromptsService) as PromptsService;
-      promptService.applicationError(
-        'Failed to parse JSON response:',
-        error
-      );
-      return null;
-    });
-
-    if (!data) {
+    if (!data || data.ok === false) {
       return;
     }
 

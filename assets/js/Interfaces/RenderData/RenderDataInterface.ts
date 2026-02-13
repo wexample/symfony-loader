@@ -10,6 +10,9 @@ export default interface RenderDataInterface {
   id: string;
   ok: false;
   options: any;
+  redirect?: { url?: string };
+  action?: any;
+  form?: { errors?: any };
   renderRequestId?: string;
   requestOptions?: RequestOptionsInterface;
   translations: {};
