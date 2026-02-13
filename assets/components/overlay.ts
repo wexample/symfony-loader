@@ -103,7 +103,7 @@ export default class ModalComponent extends PageManagerComponent {
     this.el.classList.add(VARIABLES.CLOSED);
   }
 
-  open() {
+  public async open() {
     if (this.opened) {
       return;
     }
@@ -117,7 +117,7 @@ export default class ModalComponent extends PageManagerComponent {
     (this as unknown as WithOverlayComponent).overlayShow();
   }
 
-  close() {
+  public async close(): Promise<void> {
     this.closing = true;
 
     this.hideEl();
@@ -138,7 +138,7 @@ export default class ModalComponent extends PageManagerComponent {
 
         this.callerPage.focus();
 
-        resolve(this);
+        resolve();
       }, 400);
     });
   }

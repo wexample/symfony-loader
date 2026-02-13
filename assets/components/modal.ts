@@ -101,7 +101,7 @@ export default class ModalComponent extends PageManagerComponent {
     this.el.classList.add(VARIABLES.CLOSED);
   }
 
-  open() {
+  async open(): Promise<void> {
     if (this.opened) {
       return;
     }
@@ -115,7 +115,7 @@ export default class ModalComponent extends PageManagerComponent {
     (this as unknown as WithOverlayComponent).overlayShow();
   }
 
-  close() {
+  close(): Promise<void> {
     this.closing = true;
 
     this.hideEl();
@@ -124,7 +124,7 @@ export default class ModalComponent extends PageManagerComponent {
 
     (this as unknown as WithOverlayComponent).overlayClosing();
 
-    return new Promise(async (resolve) => {
+    return new Promise<void>(async (resolve) => {
       // Sync with CSS animation.
       await setTimeout(async () => {
         (this as unknown as WithOverlayComponent).overlayClosed();
@@ -136,7 +136,7 @@ export default class ModalComponent extends PageManagerComponent {
 
         this.callerPage.focus();
 
-        resolve(this);
+        resolve();
       }, 400);
     });
   }
