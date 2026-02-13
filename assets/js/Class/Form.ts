@@ -1,11 +1,17 @@
 import Component from './Component';
 import OverlayService from '../Services/OverlayService';
 import AdaptiveService from '../Services/AdaptiveService';
-import PromptsService from '../Services/PromptsService';
 import LocaleService from '../Services/LocaleService';
 
 export default class Form extends Component {
   private onSubmitProxy: EventListener;
+
+  protected async mounted(): Promise<void> {
+    console.log('mount')
+    console.log(this.options.embedType)
+
+    return super.mounted();
+  }
 
   protected async activateListeners(): Promise<void> {
     await super.activateListeners();
@@ -81,6 +87,12 @@ export default class Form extends Component {
         body: formData,
       } as any);
 
+      console.log('trigger')
+      await this.trigger('embed:close', {
+        source: this,
+        embedType: this.options.embedType,
+      });
+
       if (overlay.overlayClose) {
         overlay.overlayClose();
       }
@@ -107,13 +119,14 @@ export default class Form extends Component {
 
     if (data.form?.errors) {
       const catalog = data.translations
-        ? { ...this.app.layout.translations, ...data.translations }
+        ? {...this.app.layout.translations, ...data.translations}
         : undefined;
       this.applyFormErrors(this.el as HTMLFormElement, data.form.errors, catalog);
     }
   }
 
-  protected handleSuccessAction(action: any) {}
+  protected handleSuccessAction(action: any) {
+  }
 
   private applyFormErrors(
     form: HTMLFormElement,

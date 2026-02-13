@@ -5,6 +5,7 @@ import ComponentInterface from "../Interfaces/RenderData/ComponentInterface";
 export default abstract class PageManagerComponent extends Component {
   public page: Page;
   public layoutBody: string;
+  public onEmbedCloseProxy: EventListener;
 
   mergeRenderData(renderData: ComponentInterface) {
     super.mergeRenderData(renderData);
@@ -32,5 +33,37 @@ export default abstract class PageManagerComponent extends Component {
 
   public setPage(page: Page) {
     this.page = page;
+  }
+
+  protected async activateListeners(): Promise<void> {
+    await super.activateListeners();
+
+    this.onEmbedCloseProxy = this.onEmbedClose.bind(this) as EventListener;
+    this.el.addEventListener('embed:close', this.onEmbedCloseProxy);
+  }
+
+  protected async deactivateListeners(): Promise<void> {
+    await super.deactivateListeners();
+
+    if (this.onEmbedCloseProxy) {
+      this.el.removeEventListener('embed:close', this.onEmbedCloseProxy);
+    }
+  }
+
+  protected async onEmbedClose(event: CustomEvent) {
+    const source = event.detail?.source;
+    if (!source || !source.el || !this.el.contains(source.el)) {
+      return;
+    }
+
+    await this.close();
+  }
+
+  public async open(): Promise<void> {
+    // To override if needed.
+  }
+
+  public async close(): Promise<void> {
+    // To override if needed.
   }
 }

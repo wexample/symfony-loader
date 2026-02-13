@@ -338,6 +338,16 @@ export default abstract class RenderNode extends AppChild {
     await this.readyComplete();
   }
 
+  public async trigger(eventName: string, args = {}): Promise<void> {
+    args['renderNode'] = this;
+
+    await this.app.services.events.trigger(
+      eventName,
+      args,
+      this.el
+    );
+  }
+
   childMounted(renderNode: RenderNode) {
     // When mounting child render node,
     // it size may change or turn accessible,
