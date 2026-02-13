@@ -44,6 +44,7 @@ class FormService extends ComponentService
     ): string
     {
         $options = $this->mergeFormOptions($formView, $options, ['ajax', 'name']);
+        $options['embedType'] = $renderPass->getLayoutBase();
 
         $templateVars = [
             'form' => $formView,
