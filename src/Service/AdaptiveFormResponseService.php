@@ -14,6 +14,7 @@ class AdaptiveFormResponseService
     private ?string $view = null;
     private array $parameters = [];
     private ?Response $redirect = null;
+    private ?bool $formHasErrors = null;
 
     public function __construct(
         private readonly AdaptiveRendererService $adaptiveRendererService,
@@ -60,6 +61,7 @@ class AdaptiveFormResponseService
         string $parameterName = 'form'
     ): self {
         $this->parameters[$parameterName] = $form->createView();
+        $this->formHasErrors = $form->getErrors(true, true)->count() > 0;
 
         return $this;
     }
@@ -107,10 +109,24 @@ class AdaptiveFormResponseService
             throw new RuntimeException('AdaptiveFormResponseService requires a view to render.');
         }
 
-        return $this->adaptiveRendererService->adaptiveRender(
+        $response = $this->adaptiveRendererService->adaptiveRender(
             $this->view,
             $this->parameters
         );
+        if ($response instanceof JsonResponse && $this->formHasErrors !== null) {
+            $data = json_decode((string) $response->getContent(), true) ?: [];
+            $data['form_meta'] = [
+                'has_errors' => $this->formHasErrors,
+            ];
+
+            return new JsonResponse(
+                $data,
+                $response->getStatusCode(),
+                $response->headers->all()
+            );
+        }
+
+        return $response;
     }
 
     private function renderRedirect(Response $response): Response

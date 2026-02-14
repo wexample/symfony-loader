@@ -70,17 +70,35 @@ export default class Form extends Component {
   ) {
     const adaptiveService = this.app.getServiceOrFail(AdaptiveService) as AdaptiveService;
     if (isEmbedded) {
-      await adaptiveService.post(action, {
+      const data: any = await adaptiveService.requestData(action, {
         method: 'POST',
         body: formData,
         instant: true
       } as any);
+
+      if (!data || data.ok === false) {
+        return;
+      }
+
+      if (data.redirect?.url) {
+        window.location.href = data.redirect.url;
+        return;
+      }
+
+      const hasErrors = data.form_meta?.has_errors;
 
       await this.trigger('embed:close', {
         source: this,
         embedType: this.options.embedType,
         instant: true,
       });
+
+      if (hasErrors !== false) {
+        await adaptiveService.handleRenderData(data, {
+          callerPage: this.app.layout.pageFocused,
+          instant: true,
+        });
+      }
 
       return;
     }
@@ -109,6 +127,12 @@ export default class Form extends Component {
         : undefined;
       this.applyFormErrors(this.el as HTMLFormElement, data.form.errors, catalog);
     }
+
+    await this.trigger('embed:close', {
+      source: this,
+      embedType: this.options.embedType,
+      instant: true,
+    });
   }
 
   protected handleSuccessAction(action: any) {

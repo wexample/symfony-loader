@@ -13,6 +13,7 @@ export default interface RenderDataInterface {
   redirect?: { url?: string };
   action?: any;
   form?: { errors?: any };
+  form_meta?: { has_errors?: boolean };
   renderRequestId?: string;
   requestOptions?: RequestOptionsInterface;
   translations: {};
