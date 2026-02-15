@@ -88,18 +88,27 @@ export default class Form extends Component {
 
       const hasErrors = data.form_meta?.has_errors;
 
-      await this.trigger('embed:close', {
-        source: this,
-        embedType: this.options.embedType,
-        instant: true,
-      });
+      if (data.action?.type === 'no_action') {
+        await this.trigger('embed:close', {
+          source: this,
+          embedType: this.options.embedType,
+          instant: true,
+        });
+        return;
+      }
 
-      if (hasErrors !== false) {
+      if (hasErrors === true) {
         await adaptiveService.handleRenderData(data, {
           callerPage: this.app.layout.pageFocused,
           instant: true,
         } as RequestOptionsInterface);
+        return;
       }
+
+      await adaptiveService.handleRenderData(data, {
+        callerPage: this.app.layout.pageFocused,
+        instant: true,
+      } as RequestOptionsInterface);
 
       return;
     }
