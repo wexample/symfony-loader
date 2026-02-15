@@ -1,6 +1,7 @@
 import Component from './Component';
 import AdaptiveService from '../Services/AdaptiveService';
 import LocaleService from '../Services/LocaleService';
+import RequestOptionsInterface from "../Interfaces/RequestOptions/RequestOptionsInterface";
 
 export default class Form extends Component {
   private onSubmitProxy: EventListener;
@@ -97,7 +98,7 @@ export default class Form extends Component {
         await adaptiveService.handleRenderData(data, {
           callerPage: this.app.layout.pageFocused,
           instant: true,
-        });
+        } as RequestOptionsInterface);
       }
 
       return;
