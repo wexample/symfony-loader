@@ -89,6 +89,11 @@ export default class Form extends Component {
         if (renderData.ok === false) {
           return;
         }
+        await this.trigger('embed:close', {
+          source: this,
+          embedType: this.options.embedType,
+          instant: true,
+        });
         await adaptiveService.handleRenderData(renderData, {
           callerPage: this.app.layout.pageFocused,
           instant: true,
@@ -119,16 +124,6 @@ export default class Form extends Component {
           embedType: this.options.embedType,
           instant: true,
         });
-        return;
-      }
-
-      if (data.render) {
-        await adaptiveService.handleRenderData(data.render, {
-      if (payload.render) {
-        await adaptiveService.handleRenderData(payload.render, {
-          callerPage: this.app.layout.pageFocused,
-          instant: true,
-        } as RequestOptionsInterface);
         return;
       }
 
