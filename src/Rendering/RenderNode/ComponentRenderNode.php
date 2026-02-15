@@ -62,13 +62,15 @@ class ComponentRenderNode extends AbstractRenderNode
         );
     }
 
-    public function toRenderData(): array
+    public function toRenderData(): \Wexample\SymfonyLoader\Rendering\RenderData
     {
-        return parent::toRenderData()
-            + [
-                'initMode' => $this->initMode,
-                'options' => $this->options,
-            ];
+        $renderData = parent::toRenderData();
+        $renderData->merge([
+            'initMode' => $this->initMode,
+            'options' => $this->options,
+        ]);
+
+        return $renderData;
     }
 
     /**

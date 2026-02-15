@@ -4,10 +4,8 @@ namespace Wexample\SymfonyLoader\Rendering\RenderNode;
 
 class FormRenderNode extends ComponentRenderNode
 {
-    public function toRenderData(): array
+    public function toRenderData(): \Wexample\SymfonyLoader\Rendering\RenderData
     {
-        return [
-// TODO
-            ];
+        return parent::toRenderData();
     }
 }

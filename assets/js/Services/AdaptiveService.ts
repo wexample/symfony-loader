@@ -38,7 +38,9 @@ export default class AdaptiveService extends AppService {
 
     try {
       const data = await response.json();
-      data.ok = true;
+      if (typeof data.ok !== 'boolean') {
+        data.ok = true;
+      }
       return data;
     } catch (error) {
       this.app.services.prompt.applicationError(

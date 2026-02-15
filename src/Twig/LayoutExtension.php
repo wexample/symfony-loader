@@ -54,8 +54,12 @@ class LayoutExtension extends AbstractExtension
 
     public function layoutRenderInitialData(RenderPass $renderPass): array
     {
-        return $renderPass
+        $renderData = $renderPass
             ->getLayoutRenderNode()
             ->toRenderData();
+
+        return $renderData instanceof \Wexample\SymfonyLoader\Rendering\RenderData
+            ? $renderData->toArray()
+            : $renderData;
     }
 }

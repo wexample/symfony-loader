@@ -114,9 +114,12 @@ class AdaptiveRendererService
                     trim($renderPassResponse->getContent())
                 );
 
-                $finalResponse = new JsonResponse(
-                    $renderPass->getLayoutRenderNode()->toRenderData()
-                );
+                $renderData = $renderPass->getLayoutRenderNode()->toRenderData();
+                $renderArray = $renderData instanceof \Wexample\SymfonyLoader\Rendering\RenderData
+                    ? $renderData->toArray()
+                    : $renderData;
+
+                $finalResponse = new JsonResponse($renderArray);
                 $finalResponse->setStatusCode(
                     $renderPassResponse->getStatusCode()
                 );

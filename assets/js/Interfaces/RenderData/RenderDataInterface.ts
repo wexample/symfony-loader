@@ -9,7 +9,7 @@ export default interface RenderDataInterface extends AdaptiveResponseInterface {
   contextType: string;
   cssClassName: string;
   id: string;
-  ok: false;
+  ok: boolean;
   options: any;
   redirect?: { url?: string };
   action?: any;

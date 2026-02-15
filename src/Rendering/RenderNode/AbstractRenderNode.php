@@ -5,6 +5,7 @@ namespace Wexample\SymfonyLoader\Rendering\RenderNode;
 use Wexample\PhpHtml\Helper\DomHelper;
 use Wexample\SymfonyLoader\Helper\RenderingHelper;
 use Wexample\SymfonyLoader\Rendering\Asset;
+use Wexample\SymfonyLoader\Rendering\RenderData;
 use Wexample\SymfonyLoader\Rendering\RenderDataGenerator;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Rendering\Traits\WithView;
@@ -134,7 +135,7 @@ abstract class AbstractRenderNode extends RenderDataGenerator
         return $this->vars;
     }
 
-    public function toRenderData(): array
+    public function toRenderData(): RenderData
     {
         $data = [
             'components' => $this->arrayToRenderData($this->components),
@@ -155,7 +156,7 @@ abstract class AbstractRenderNode extends RenderDataGenerator
             ];
         }
 
-        return $data;
+        return RenderData::fromArray($data);
     }
 
     public function setDefaultView(string $view): void

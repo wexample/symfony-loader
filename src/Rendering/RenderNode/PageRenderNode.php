@@ -13,11 +13,15 @@ class PageRenderNode extends AbstractRenderNode
         return RenderingHelper::CONTEXT_PAGE;
     }
 
-    public function toRenderData(): array
+    public function toRenderData(): \Wexample\SymfonyLoader\Rendering\RenderData
     {
-        return parent::toRenderData()
-            + $this->serializeVariables([
+        $renderData = parent::toRenderData();
+        $renderData->merge(
+            $this->serializeVariables([
                 'isInitialPage',
-            ]);
+            ])
+        );
+
+        return $renderData;
     }
 }

@@ -1,8 +1,10 @@
 import Component from './Component';
 import AdaptiveService from '../Services/AdaptiveService';
 import LocaleService from '../Services/LocaleService';
+import AdaptiveResponseInterface from '../Interfaces/AdaptiveResponseInterface';
 import FormResponsePayloadInterface from '../Interfaces/FormResponsePayloadInterface';
 import RequestOptionsInterface from "../Interfaces/RequestOptions/RequestOptionsInterface";
+import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 
 export default class Form extends Component {
   private onSubmitProxy: EventListener;
@@ -76,24 +78,42 @@ export default class Form extends Component {
         method: 'POST',
         body: formData,
         instant: true
-      } as any)) as FormResponsePayloadInterface;
+      } as any)) as AdaptiveResponseInterface;
 
-      if (!data || data.ok === false) {
-        if (data?.form?.errors) {
-          const catalog = data.translations
-            ? {...this.app.layout.translations, ...data.translations}
+      if (!data) {
+        return;
+      }
+
+      if (data.responseType === 'render') {
+        const renderData = data as RenderDataInterface;
+        if (renderData.ok === false) {
+          return;
+        }
+        await adaptiveService.handleRenderData(renderData, {
+          callerPage: this.app.layout.pageFocused,
+          instant: true,
+        } as RequestOptionsInterface);
+        return;
+      }
+
+      const payload = data as FormResponsePayloadInterface;
+
+      if (payload.action?.type === 'redirect' && payload.action?.url) {
+        window.location.href = payload.action.url;
+        return;
+      }
+
+      if (payload.ok === false) {
+        if (payload?.form?.errors) {
+          const catalog = payload.translations
+            ? {...this.app.layout.translations, ...payload.translations}
             : undefined;
-          this.applyFormErrors(this.el as HTMLFormElement, data.form.errors, catalog);
+          this.applyFormErrors(this.el as HTMLFormElement, payload.form.errors, catalog);
         }
         return;
       }
 
-      if (data.action?.type === 'redirect' && data.action?.url) {
-        window.location.href = data.action.url;
-        return;
-      }
-
-      if (data.action?.type === 'no_action') {
+      if (payload.action?.type === 'no_action') {
         await this.trigger('embed:close', {
           source: this,
           embedType: this.options.embedType,
@@ -104,6 +124,8 @@ export default class Form extends Component {
 
       if (data.render) {
         await adaptiveService.handleRenderData(data.render, {
+      if (payload.render) {
+        await adaptiveService.handleRenderData(payload.render, {
           callerPage: this.app.layout.pageFocused,
           instant: true,
         } as RequestOptionsInterface);
