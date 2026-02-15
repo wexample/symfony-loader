@@ -27,7 +27,7 @@ abstract class AdaptiveResponse
     {
         return [
             'ok' => $this->ok,
-            'response_type' => $this->responseType,
+            'responseType' => $this->responseType,
         ];
     }
 }
