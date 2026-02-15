@@ -102,8 +102,6 @@ export default class Form extends Component {
         return;
       }
 
-      if (hasErrors === true) {
-        await adaptiveService.handleRenderData(data, {
       if (data.render) {
         await adaptiveService.handleRenderData(data.render, {
           callerPage: this.app.layout.pageFocused,
