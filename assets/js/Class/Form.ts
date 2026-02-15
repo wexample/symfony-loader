@@ -103,35 +103,21 @@ export default class Form extends Component {
 
       const payload = data as FormResponsePayloadInterface;
 
-      if (payload.action?.type === 'redirect' && payload.action?.url) {
-        window.location.href = payload.action.url;
+      if (this.handleRedirect(payload.action)) {
         return;
       }
 
       if (payload.ok === false) {
-        if (payload?.form?.errors) {
-          const catalog = payload.translations
-            ? {...this.app.layout.translations, ...payload.translations}
-            : undefined;
-          this.applyFormErrors(this.el as HTMLFormElement, payload.form.errors, catalog);
-        }
+        this.applyPayloadErrors(payload);
         return;
       }
 
       if (payload.action?.type === 'no_action') {
-        await this.trigger('embed:close', {
-          source: this,
-          embedType: this.options.embedType,
-          instant: true,
-        });
+        await this.closeEmbed();
         return;
       }
 
-      await this.trigger('embed:close', {
-        source: this,
-        embedType: this.options.embedType,
-        instant: true,
-      });
+      await this.closeEmbed();
 
       return;
     }
@@ -142,17 +128,11 @@ export default class Form extends Component {
     } as any)) as FormResponsePayloadInterface;
 
     if (!data || data.ok === false) {
-      if (data?.form?.errors) {
-        const catalog = data.translations
-          ? {...this.app.layout.translations, ...data.translations}
-          : undefined;
-        this.applyFormErrors(this.el as HTMLFormElement, data.form.errors, catalog);
-      }
+      this.applyPayloadErrors(data);
       return;
     }
 
-    if (data.action?.type === 'redirect' && data.action?.url) {
-      window.location.href = data.action.url;
+    if (this.handleRedirect(data.action)) {
       return;
     }
 
@@ -160,6 +140,13 @@ export default class Form extends Component {
       this.handleSuccessAction(data.action);
     }
 
+    await this.closeEmbed();
+  }
+
+  protected handleSuccessAction(action: any) {
+  }
+
+  private async closeEmbed(): Promise<void> {
     await this.trigger('embed:close', {
       source: this,
       embedType: this.options.embedType,
@@ -167,7 +154,24 @@ export default class Form extends Component {
     });
   }
 
-  protected handleSuccessAction(action: any) {
+  private handleRedirect(action: any): boolean {
+    if (action?.type === 'redirect' && action?.url) {
+      window.location.href = action.url;
+      return true;
+    }
+
+    return false;
+  }
+
+  private applyPayloadErrors(payload?: FormResponsePayloadInterface | null): void {
+    if (!payload?.form?.errors) {
+      return;
+    }
+
+    const catalog = payload.translations
+      ? {...this.app.layout.translations, ...payload.translations}
+      : undefined;
+    this.applyFormErrors(this.el as HTMLFormElement, payload.form.errors, catalog);
   }
 
   private applyFormErrors(
