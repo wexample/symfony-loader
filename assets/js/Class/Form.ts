@@ -1,6 +1,7 @@
 import Component from './Component';
 import AdaptiveService from '../Services/AdaptiveService';
 import LocaleService from '../Services/LocaleService';
+import FormResponsePayloadInterface from '../Interfaces/FormResponsePayloadInterface';
 import RequestOptionsInterface from "../Interfaces/RequestOptions/RequestOptionsInterface";
 
 export default class Form extends Component {
@@ -71,22 +72,26 @@ export default class Form extends Component {
   ) {
     const adaptiveService = this.app.getServiceOrFail(AdaptiveService) as AdaptiveService;
     if (isEmbedded) {
-      const data: any = await adaptiveService.requestData(action, {
+      const data = (await adaptiveService.requestData(action, {
         method: 'POST',
         body: formData,
         instant: true
-      } as any);
+      } as any)) as FormResponsePayloadInterface;
 
       if (!data || data.ok === false) {
+        if (data?.form?.errors) {
+          const catalog = data.translations
+            ? {...this.app.layout.translations, ...data.translations}
+            : undefined;
+          this.applyFormErrors(this.el as HTMLFormElement, data.form.errors, catalog);
+        }
         return;
       }
 
-      if (data.redirect?.url) {
-        window.location.href = data.redirect.url;
+      if (data.action?.type === 'redirect' && data.action?.url) {
+        window.location.href = data.action.url;
         return;
       }
-
-      const hasErrors = data.form_meta?.has_errors;
 
       if (data.action?.type === 'no_action') {
         await this.trigger('embed:close', {
@@ -99,43 +104,45 @@ export default class Form extends Component {
 
       if (hasErrors === true) {
         await adaptiveService.handleRenderData(data, {
+      if (data.render) {
+        await adaptiveService.handleRenderData(data.render, {
           callerPage: this.app.layout.pageFocused,
           instant: true,
         } as RequestOptionsInterface);
         return;
       }
 
-      await adaptiveService.handleRenderData(data, {
-        callerPage: this.app.layout.pageFocused,
+      await this.trigger('embed:close', {
+        source: this,
+        embedType: this.options.embedType,
         instant: true,
-      } as RequestOptionsInterface);
+      });
 
       return;
     }
 
-    const data: any = await adaptiveService.requestData(action, {
+    const data = (await adaptiveService.requestData(action, {
       method: 'POST',
       body: formData,
-    } as any);
+    } as any)) as FormResponsePayloadInterface;
 
     if (!data || data.ok === false) {
+      if (data?.form?.errors) {
+        const catalog = data.translations
+          ? {...this.app.layout.translations, ...data.translations}
+          : undefined;
+        this.applyFormErrors(this.el as HTMLFormElement, data.form.errors, catalog);
+      }
       return;
     }
 
-    if (data.redirect?.url) {
-      window.location.href = data.redirect.url;
+    if (data.action?.type === 'redirect' && data.action?.url) {
+      window.location.href = data.action.url;
       return;
     }
 
     if (data.action) {
       this.handleSuccessAction(data.action);
-    }
-
-    if (data.form?.errors) {
-      const catalog = data.translations
-        ? {...this.app.layout.translations, ...data.translations}
-        : undefined;
-      this.applyFormErrors(this.el as HTMLFormElement, data.form.errors, catalog);
     }
 
     await this.trigger('embed:close', {

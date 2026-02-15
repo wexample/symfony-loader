@@ -1,4 +1,5 @@
 import AppService from '../Class/AppService';
+import AdaptiveResponseInterface from '../Interfaces/AdaptiveResponseInterface';
 import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import RequestOptionsInterface from '../Interfaces/RequestOptions/RequestOptionsInterface';
 import ComponentsService from './ComponentsService';
@@ -26,7 +27,7 @@ export default class AdaptiveService extends AppService {
   async requestData(
     path: string,
     requestOptions: RequestOptionsInterface = {}
-  ): Promise<RenderDataInterface> {
+  ): Promise<AdaptiveResponseInterface> {
     const response = await this.fetch(path, requestOptions);
 
     if (!response.ok) {
@@ -44,7 +45,7 @@ export default class AdaptiveService extends AppService {
         'Failed to parse JSON response:',
         error
       );
-      return { ok: false } as RenderDataInterface;
+      return { ok: false } as AdaptiveResponseInterface;
     }
   }
 
@@ -58,8 +59,8 @@ export default class AdaptiveService extends AppService {
     Object.freeze(requestOptions);
 
     return this.requestData(path, requestOptions).then(
-      async (renderData: RenderDataInterface) => {
-        return this.handleRenderData(renderData, requestOptions);
+      async (renderData: AdaptiveResponseInterface) => {
+        return this.handleRenderData(renderData as RenderDataInterface, requestOptions);
       }
     );
   }
@@ -75,8 +76,8 @@ export default class AdaptiveService extends AppService {
     Object.freeze(requestOptions);
 
     return this.requestData(path, requestOptions).then(
-      async (renderData: RenderDataInterface) => {
-        return this.handleRenderData(renderData, requestOptions);
+      async (renderData: AdaptiveResponseInterface) => {
+        return this.handleRenderData(renderData as RenderDataInterface, requestOptions);
       }
     );
   }
