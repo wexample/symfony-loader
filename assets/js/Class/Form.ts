@@ -74,51 +74,7 @@ export default class Form extends Component {
   ) {
     const adaptiveService = this.app.getServiceOrFail(AdaptiveService) as AdaptiveService;
     if (isEmbedded) {
-      const data = (await adaptiveService.requestData(action, {
-        method: 'POST',
-        body: formData,
-        instant: true
-      } as any)) as AdaptiveResponseInterface;
-
-      if (!data) {
-        return;
-      }
-
-      if (data.responseType === 'render') {
-        const renderData = data as RenderDataInterface;
-        if (renderData.ok === false) {
-          return;
-        }
-        await this.trigger('embed:close', {
-          source: this,
-          embedType: this.options.embedType,
-          instant: true,
-        });
-        await adaptiveService.handleRenderData(renderData, {
-          callerPage: this.app.layout.pageFocused,
-          instant: true,
-        } as RequestOptionsInterface);
-        return;
-      }
-
-      const payload = data as FormResponsePayloadInterface;
-
-      if (this.handleRedirect(payload.action)) {
-        return;
-      }
-
-      if (payload.ok === false) {
-        this.applyPayloadErrors(payload);
-        return;
-      }
-
-      if (payload.action?.type === 'no_action') {
-        await this.closeEmbed();
-        return;
-      }
-
-      await this.closeEmbed();
-
+      await this.handleEmbeddedSubmit(adaptiveService, action, formData);
       return;
     }
 
@@ -144,6 +100,53 @@ export default class Form extends Component {
   }
 
   protected handleSuccessAction(action: any) {
+  }
+
+  private async handleEmbeddedSubmit(
+    adaptiveService: AdaptiveService,
+    action: string,
+    formData: FormData
+  ): Promise<void> {
+    const data = (await adaptiveService.requestData(action, {
+      method: 'POST',
+      body: formData,
+      instant: true
+    } as any)) as AdaptiveResponseInterface;
+
+    if (!data) {
+      return;
+    }
+
+    if (data.responseType === 'render') {
+      const renderData = data as RenderDataInterface;
+      if (renderData.ok === false) {
+        return;
+      }
+      await this.closeEmbed();
+      await adaptiveService.handleRenderData(renderData, {
+        callerPage: this.app.layout.pageFocused,
+        instant: true,
+      } as RequestOptionsInterface);
+      return;
+    }
+
+    const payload = data as FormResponsePayloadInterface;
+
+    if (this.handleRedirect(payload.action)) {
+      return;
+    }
+
+    if (payload.ok === false) {
+      this.applyPayloadErrors(payload);
+      return;
+    }
+
+    if (payload.action?.type === 'no_action') {
+      await this.closeEmbed();
+      return;
+    }
+
+    await this.closeEmbed();
   }
 
   private async closeEmbed(): Promise<void> {
