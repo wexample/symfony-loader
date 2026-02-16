@@ -5,6 +5,11 @@ import AdaptiveResponseInterface from '../Interfaces/AdaptiveResponseInterface';
 import FormResponsePayloadInterface from '../Interfaces/FormResponsePayloadInterface';
 import RequestOptionsInterface from "../Interfaces/RequestOptions/RequestOptionsInterface";
 import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
+import {
+  ACTION_DEFAULT,
+  ACTION_EMBED_REDIRECT,
+  ACTION_REDIRECT,
+} from '../Constants/FormActions';
 
 export default class Form extends Component {
   private onSubmitProxy: EventListener;
@@ -151,7 +156,7 @@ export default class Form extends Component {
   }
 
   protected shouldCloseEmbed(payload: FormResponsePayloadInterface): boolean {
-    return payload?.action?.type === 'default';
+    return payload?.action?.type === ACTION_DEFAULT;
   }
 
   private async closeEmbed(): Promise<void> {
@@ -166,7 +171,7 @@ export default class Form extends Component {
     action: any,
     adaptiveService: AdaptiveService
   ): Promise<boolean> {
-    if (action?.type !== 'embed_redirect' || !action?.url) {
+    if (action?.type !== ACTION_EMBED_REDIRECT || !action?.url) {
       return false;
     }
 
@@ -179,7 +184,7 @@ export default class Form extends Component {
   }
 
   private handleRedirect(action: any): boolean {
-    if (action?.type === 'redirect' && action?.url) {
+    if (action?.type === ACTION_REDIRECT && action?.url) {
       window.location.href = action.url;
       return true;
     }
