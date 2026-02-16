@@ -13,6 +13,8 @@ import {
 
 export default class Form extends Component {
   private onSubmitProxy: EventListener;
+  private isSubmitting = false;
+  private lastSubmitter: HTMLInputElement | HTMLButtonElement | null = null;
 
   protected async activateListeners(): Promise<void> {
     await super.activateListeners();
@@ -55,6 +57,11 @@ export default class Form extends Component {
       return;
     }
 
+    if (this.isSubmitting) {
+      event.preventDefault();
+      return;
+    }
+
     const action =
       form.getAttribute('action') ||
       window.location.pathname +
@@ -64,12 +71,18 @@ export default class Form extends Component {
     const isEmbedded = this.options?.embedType && this.options.embedType !== 'default';
 
     if (!this.options?.ajax && !isEmbedded) {
+      this.beginSubmit(form, submitter);
       return;
     }
 
     event.preventDefault();
 
-    await this.submitAdaptive(action, formData, isEmbedded);
+    this.beginSubmit(form, submitter);
+    try {
+      await this.submitAdaptive(action, formData, isEmbedded);
+    } finally {
+      this.endSubmit();
+    }
   }
 
   private async submitAdaptive(
@@ -157,6 +170,32 @@ export default class Form extends Component {
 
   protected shouldCloseEmbed(payload: FormResponsePayloadInterface): boolean {
     return payload?.action?.type === ACTION_DEFAULT;
+  }
+
+  protected beginSubmit(
+    form: HTMLFormElement,
+    submitter: HTMLInputElement | HTMLButtonElement | null
+  ): void {
+    this.isSubmitting = true;
+    this.setSubmitDisabled(submitter, true);
+  }
+
+  protected endSubmit(): void {
+    this.isSubmitting = false;
+    this.setSubmitDisabled(this.lastSubmitter, false);
+    this.lastSubmitter = null;
+  }
+
+  protected setSubmitDisabled(
+    submitter: HTMLInputElement | HTMLButtonElement | null,
+    disabled: boolean
+  ): void {
+    if (!submitter) {
+      return;
+    }
+
+    this.lastSubmitter = submitter;
+    submitter.disabled = disabled;
   }
 
   private async closeEmbed(): Promise<void> {
