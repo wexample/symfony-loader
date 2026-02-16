@@ -178,6 +178,7 @@ export default class Form extends Component {
     submitter: HTMLInputElement | HTMLButtonElement | null
   ): void {
     this.isSubmitting = true;
+    this.loadingEnded = false;
     this.setSubmitDisabled(submitter, true);
     this.trigger('loading:start', { source: this });
   }
@@ -186,7 +187,7 @@ export default class Form extends Component {
     this.isSubmitting = false;
     this.setSubmitDisabled(this.lastSubmitter, false);
     this.lastSubmitter = null;
-    this.trigger('loading:end', { source: this });
+    this.triggerLoadingEnd();
   }
 
   protected setSubmitDisabled(
@@ -209,6 +210,15 @@ export default class Form extends Component {
     });
   }
 
+  private triggerLoadingEnd(): void {
+    if (this.loadingEnded) {
+      return;
+    }
+
+    this.loadingEnded = true;
+    this.trigger('loading:end', { source: this });
+  }
+
   private async handleEmbeddedRedirect(
     action: any,
     adaptiveService: AdaptiveService
@@ -217,7 +227,7 @@ export default class Form extends Component {
       return false;
     }
 
-    this.endSubmit();
+    this.triggerLoadingEnd();
     await adaptiveService.get(action.url, {
       callerPage: this.app.layout.pageFocused,
       instant: true,
