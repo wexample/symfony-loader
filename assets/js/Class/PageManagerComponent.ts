@@ -89,10 +89,8 @@ export default abstract class PageManagerComponent extends Component {
       return;
     }
 
-    const bar = this.el.querySelector('.modal-loading-bar') as HTMLElement | null;
-    if (bar) {
-      bar.style.width = '30%';
-    }
+    this.el.classList.remove('is-loaded');
+    this.el.classList.add('is-loading');
   }
 
   protected onFormLoadingEnd(event: CustomEvent) {
@@ -101,10 +99,12 @@ export default abstract class PageManagerComponent extends Component {
       return;
     }
 
-    const bar = this.el.querySelector('.modal-loading-bar') as HTMLElement | null;
-    if (bar) {
-      bar.style.width = '100%';
-    }
+    this.el.classList.remove('is-loading');
+    this.el.classList.add('is-loaded');
+
+    window.setTimeout(() => {
+      this.el.classList.remove('is-loaded');
+    }, 320);
   }
 
   public async open(_options: { instant?: boolean } = {}): Promise<void> {
