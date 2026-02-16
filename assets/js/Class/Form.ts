@@ -151,7 +151,7 @@ export default class Form extends Component {
   }
 
   protected shouldCloseEmbed(payload: FormResponsePayloadInterface): boolean {
-    return payload?.action?.type === 'no_action';
+    return payload?.action?.type === 'default';
   }
 
   private async closeEmbed(): Promise<void> {
