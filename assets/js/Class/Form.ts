@@ -166,7 +166,7 @@ export default class Form extends Component {
     action: any,
     adaptiveService: AdaptiveService
   ): Promise<boolean> {
-    if (action?.type !== 'redirect_embedded' || !action?.url) {
+    if (action?.type !== 'embed_redirect' || !action?.url) {
       return false;
     }
 
