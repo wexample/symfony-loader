@@ -32,7 +32,7 @@ export default class FadeAnimationMixin extends AbstractMixin {
           el.classList.remove('is-opening');
           void el.offsetWidth;
           el.classList.add('is-opening');
-          await waitForAnimationEnd(el, 220);
+          await waitForAnimationEnd(el);
           el.classList.remove('is-opening');
         };
       }
@@ -49,7 +49,7 @@ export default class FadeAnimationMixin extends AbstractMixin {
         const el: HTMLElement | null = target.fadeAnimationGetElement?.() || target.el;
         if (el) {
           el.classList.add('is-closing');
-          await waitForAnimationEnd(el, 220);
+          await waitForAnimationEnd(el);
         }
 
         if (originalExit) {

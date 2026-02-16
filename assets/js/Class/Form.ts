@@ -164,7 +164,7 @@ export default class Form extends Component {
     }
 
     if (this.shouldCloseEmbed(payload)) {
-      await this.closeEmbed();
+      await this.closeEmbed(false);
     }
   }
 
@@ -200,11 +200,11 @@ export default class Form extends Component {
     submitter.disabled = disabled;
   }
 
-  private async closeEmbed(): Promise<void> {
+  private async closeEmbed(instant: boolean = true): Promise<void> {
     await this.trigger('embed:close', {
       source: this,
       embedType: this.options.embedType,
-      instant: true,
+      instant: instant,
     });
   }
 

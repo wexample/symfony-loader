@@ -20,7 +20,7 @@ export default class OverlayMixin extends AbstractMixin {
         target.overlaySetHiddenOnClose = true;
       }
       if (target.overlayAnimateClose === undefined) {
-        target.overlayAnimateClose = false;
+        target.overlayAnimateClose = true;
       }
       if (target.overlayExitOnClose === undefined) {
         target.overlayExitOnClose = true;
@@ -125,10 +125,11 @@ export default class OverlayMixin extends AbstractMixin {
           }
           if (!instant && target.overlayAnimateClose && target.closeWithAnimation) {
             await target.overlayOnClose(false);
+            await target.closeWithAnimation();
             if (target.overlayUseStack) {
               target.app.services.overlay.clearActive(target);
             }
-            return target.closeWithAnimation();
+            return;
           }
 
           target.el.classList.remove('is-open');
