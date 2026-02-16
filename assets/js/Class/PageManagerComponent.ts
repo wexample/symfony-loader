@@ -6,6 +6,8 @@ export default abstract class PageManagerComponent extends Component {
   public page: Page;
   public layoutBody: string;
   public onEmbedCloseProxy: EventListener;
+  public onFormLoadingStartProxy: EventListener;
+  public onFormLoadingEndProxy: EventListener;
   protected isInstantTransition: boolean = false;
 
   mergeRenderData(renderData: ComponentInterface) {
@@ -41,6 +43,11 @@ export default abstract class PageManagerComponent extends Component {
 
     this.onEmbedCloseProxy = this.onEmbedClose.bind(this) as EventListener;
     this.el.addEventListener('embed:close', this.onEmbedCloseProxy);
+
+    this.onFormLoadingStartProxy = this.onFormLoadingStart.bind(this) as EventListener;
+    this.onFormLoadingEndProxy = this.onFormLoadingEnd.bind(this) as EventListener;
+    this.el.addEventListener('loading:start', this.onFormLoadingStartProxy);
+    this.el.addEventListener('loading:end', this.onFormLoadingEndProxy);
   }
 
   protected async deactivateListeners(): Promise<void> {
@@ -48,6 +55,13 @@ export default abstract class PageManagerComponent extends Component {
 
     if (this.onEmbedCloseProxy) {
       this.el.removeEventListener('embed:close', this.onEmbedCloseProxy);
+    }
+
+    if (this.onFormLoadingStartProxy) {
+      this.el.removeEventListener('loading:start', this.onFormLoadingStartProxy);
+    }
+    if (this.onFormLoadingEndProxy) {
+      this.el.removeEventListener('loading:end', this.onFormLoadingEndProxy);
     }
   }
 
@@ -66,6 +80,30 @@ export default abstract class PageManagerComponent extends Component {
 
     if (instant) {
       this.setInstantTransition(false);
+    }
+  }
+
+  protected onFormLoadingStart(event: CustomEvent) {
+    const source = event.detail?.source;
+    if (!source || !source.el || !this.el.contains(source.el)) {
+      return;
+    }
+
+    const bar = this.el.querySelector('.modal-loading-bar') as HTMLElement | null;
+    if (bar) {
+      bar.style.width = '30%';
+    }
+  }
+
+  protected onFormLoadingEnd(event: CustomEvent) {
+    const source = event.detail?.source;
+    if (!source || !source.el || !this.el.contains(source.el)) {
+      return;
+    }
+
+    const bar = this.el.querySelector('.modal-loading-bar') as HTMLElement | null;
+    if (bar) {
+      bar.style.width = '100%';
     }
   }
 

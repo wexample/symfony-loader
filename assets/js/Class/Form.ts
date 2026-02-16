@@ -178,12 +178,14 @@ export default class Form extends Component {
   ): void {
     this.isSubmitting = true;
     this.setSubmitDisabled(submitter, true);
+    this.trigger('loading:start', { source: this });
   }
 
   protected endSubmit(): void {
     this.isSubmitting = false;
     this.setSubmitDisabled(this.lastSubmitter, false);
     this.lastSubmitter = null;
+    this.trigger('loading:end', { source: this });
   }
 
   protected setSubmitDisabled(
