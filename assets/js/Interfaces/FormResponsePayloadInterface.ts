@@ -19,8 +19,8 @@ export interface FormActionInterface {
 
 export default interface FormResponsePayloadInterface extends AdaptiveResponseInterface {
   ok: boolean;
-  form?: FormInfoInterface;
+  form: FormInfoInterface;
   translations?: Record<string, string>;
-  action?: FormActionInterface;
+  action: FormActionInterface;
   render?: RenderDataInterface | null;
 }
