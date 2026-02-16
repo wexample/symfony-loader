@@ -5,11 +5,13 @@ namespace Wexample\SymfonyLoader\EventSubscriber;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Wexample\SymfonyLoader\Helper\AdaptiveRequestHelper;
+use Wexample\SymfonyLoader\Service\AdaptiveResponseService;
 
 class AdaptiveResponseRequestSubscriber implements EventSubscriberInterface
 {
-    public function __construct()
+    public function __construct(
+        private readonly AdaptiveResponseService $adaptiveResponseService
+    )
     {
     }
 
@@ -24,6 +26,6 @@ class AdaptiveResponseRequestSubscriber implements EventSubscriberInterface
     {
         $request = $event->getRequest();
 
-        AdaptiveRequestHelper::initializeRequestAttributes($request);
+        $this->adaptiveResponseService->initializeRequestAttributes($request);
     }
 }
