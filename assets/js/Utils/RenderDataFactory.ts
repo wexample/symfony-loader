@@ -27,6 +27,7 @@ export default class RenderDataFactory {
       contextType: 'component',
       id,
       ok: false,
+      responseType: 'render',
       translations: {},
       translationDomains: {},
       view,
