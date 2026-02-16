@@ -11,7 +11,6 @@ export default interface RenderDataInterface extends AdaptiveResponseInterface {
   id: string;
   ok: boolean;
   options: any;
-  redirect?: { url?: string };
   action?: any;
   form?: { errors?: any };
   renderRequestId?: string;
