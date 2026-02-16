@@ -175,11 +175,11 @@ export default class Form extends Component {
       return false;
     }
 
-    await this.closeEmbed();
     await adaptiveService.get(action.url, {
       callerPage: this.app.layout.pageFocused,
       instant: true,
     } as RequestOptionsInterface);
+    await this.closeEmbed();
     return true;
   }
 
