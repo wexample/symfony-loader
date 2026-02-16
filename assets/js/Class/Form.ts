@@ -15,6 +15,7 @@ export default class Form extends Component {
   private onSubmitProxy: EventListener;
   private isSubmitting = false;
   private lastSubmitter: HTMLInputElement | HTMLButtonElement | null = null;
+  private loadingEnded = false;
 
   protected async activateListeners(): Promise<void> {
     await super.activateListeners();
@@ -216,11 +217,12 @@ export default class Form extends Component {
       return false;
     }
 
+    this.endSubmit();
     await adaptiveService.get(action.url, {
       callerPage: this.app.layout.pageFocused,
       instant: true,
     } as RequestOptionsInterface);
-    await this.closeEmbed();
+    await this.closeEmbed(true);
     return true;
   }
 
