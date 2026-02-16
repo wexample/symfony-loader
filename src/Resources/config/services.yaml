@@ -87,7 +87,7 @@ services:
         arguments: [!tagged_locator { tag: 'symfony_loader.component_manager' }]
 
     Wexample\SymfonyLoader\:
-        resource: '../../{Command,Controller,Service,Twig}'
+        resource: '../../{Command,Controller,EventSubscriber,Service,Twig}'
         exclude:
             - '../../Twig/Node'
             - '../../Twig/TokenParser'
