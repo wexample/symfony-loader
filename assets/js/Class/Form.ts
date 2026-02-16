@@ -141,16 +141,13 @@ export default class Form extends Component {
       return;
     }
 
-      if (payload.action?.type === 'no_action') {
-        await this.closeEmbed();
-        return;
-      }
-
-      if (payload.action?.type === 'keep_open') {
-        return;
-      }
-
+    if (this.shouldCloseEmbed(payload)) {
       await this.closeEmbed();
+    }
+  }
+
+  protected shouldCloseEmbed(payload: FormResponsePayloadInterface): boolean {
+    return payload?.action?.type === 'no_action';
   }
 
   private async closeEmbed(): Promise<void> {
