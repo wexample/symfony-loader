@@ -136,6 +136,10 @@ export default class Form extends Component {
       return;
     }
 
+    if (await this.handleEmbeddedRedirect(payload.action, adaptiveService)) {
+      return;
+    }
+
     if (payload.ok === false) {
       this.applyPayloadErrors(payload);
       return;
@@ -156,6 +160,22 @@ export default class Form extends Component {
       embedType: this.options.embedType,
       instant: true,
     });
+  }
+
+  private async handleEmbeddedRedirect(
+    action: any,
+    adaptiveService: AdaptiveService
+  ): Promise<boolean> {
+    if (action?.type !== 'redirect_embedded' || !action?.url) {
+      return false;
+    }
+
+    await this.closeEmbed();
+    await adaptiveService.get(action.url, {
+      callerPage: this.app.layout.pageFocused,
+      instant: true,
+    } as RequestOptionsInterface);
+    return true;
   }
 
   private handleRedirect(action: any): boolean {
