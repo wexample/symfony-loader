@@ -65,10 +65,10 @@ class AdaptiveRendererService
             )
         );
         $renderPass->setOutputType(
-            $this->adaptiveResponseService->detectOutputType()
+            $this->adaptiveResponseService->getOutputType()
         );
         $renderPass->setLayoutBase(
-            $this->adaptiveResponseService->detectLayoutBase($renderPass)
+            $this->adaptiveResponseService->getLayoutBase()
         );
 
         if ($configurator) {
