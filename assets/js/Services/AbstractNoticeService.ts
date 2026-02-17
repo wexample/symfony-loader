@@ -15,6 +15,11 @@ type NoticeOptions = {
 };
 
 export default class AbstractNoticeService extends AppService {
+  // Implemented by concrete services (Toast/Banner).
+  show(_options: NoticeOptions | string): any {
+    throw new Error('AbstractNoticeService.show must be implemented by subclasses.');
+  }
+
   protected normalizeOptions(options: NoticeOptions | string, prefix: string): NoticeOptions {
     if (typeof options === 'string') {
       options = { message: options };
