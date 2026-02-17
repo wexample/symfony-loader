@@ -8,6 +8,7 @@ type BannerOptions = {
   allowHtml?: boolean;
   actions?: Record<string, () => void>;
   class?: string;
+  floating?: boolean;
 };
 
 export default class BannerService extends AbstractNoticeService {
@@ -32,7 +33,8 @@ export default class BannerService extends AbstractNoticeService {
         message: normalized.message,
         allowHtml: normalized.allowHtml,
         actions: normalized.actions,
-        class: normalized.class
+        class: normalized.class,
+        floating: normalized.floating !== false
       },
       this.app.layout,
       this.app.layout.el || document.body
