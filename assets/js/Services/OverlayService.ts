@@ -4,25 +4,33 @@ import ComponentsService from './ComponentsService';
 export default class OverlayService extends AppService {
   public static serviceName: string = 'overlay';
 
+  public static OVERLAY_TARGET_MAIN: string = 'main';
+  public static OVERLAY_TARGET_GLOBAL: string = 'global';
+
   private activeOverlay: any = null;
   private previousFocusedEl: HTMLElement | null = null;
   private registered = new Set<any>();
   private overlayStack: any[] = [];
-  private overlayEl: HTMLElement | null = null;
+  private overlayElGlobal: HTMLElement | null = null;
+  private overlayElMain: HTMLElement | null = null;
   private baseZIndex: number = 1000;
 
   public async showStandalone(options: {
     className?: string;
     contentHtml?: string;
     timeout?: number;
+    overlayTarget?: string;
   } = {}): Promise<{ instance: any; close: () => Promise<void> } | null> {
     const service = this.app.getServiceOrFail(ComponentsService) as ComponentsService;
-    const componentOptions: { className?: string; layoutBody?: string } = {};
+    const componentOptions: { className?: string; layoutBody?: string; overlayBackdropTarget?: string } = {};
     if (options.className) {
       componentOptions.className = options.className;
     }
     if (options.contentHtml !== undefined) {
       componentOptions.layoutBody = options.contentHtml;
+    }
+    if (options.overlayTarget) {
+      componentOptions.overlayBackdropTarget = options.overlayTarget;
     }
 
     const created = await service.createComponentFromTemplate(
@@ -81,10 +89,13 @@ export default class OverlayService extends AppService {
     return {
       app: {
         hookInit: () => {
-          this.overlayEl = document.getElementById('overlay-layer');
-          if (!this.overlayEl) {
+          this.overlayElGlobal = document.getElementById('overlay-layer');
+          this.overlayElMain = document.getElementById('overlay-layer-main');
+
+          if (!this.overlayElGlobal) {
             throw new Error('Missing overlay container "#overlay-layer".');
           }
+
           document.addEventListener('mousedown', this.onDocumentMouseDown);
         }
       }
@@ -147,30 +158,72 @@ export default class OverlayService extends AppService {
     return this.activeOverlay;
   }
 
+  private getOverlayElByTarget(target: string): HTMLElement | null {
+    if (target === OverlayService.OVERLAY_TARGET_GLOBAL) {
+      return this.overlayElGlobal || this.overlayElMain;
+    }
+
+    return this.overlayElMain || this.overlayElGlobal;
+  }
+
+  private getBackdropOverlay(): any | null {
+    for (let index = this.overlayStack.length - 1; index >= 0; index--) {
+      const overlay = this.overlayStack[index];
+      if (overlay.overlayUseBackdrop !== false) {
+        return overlay;
+      }
+    }
+
+    return null;
+  }
+
+  private hideOverlayEl(overlayEl: HTMLElement | null): void {
+    if (!overlayEl) {
+      return;
+    }
+    overlayEl.setAttribute('hidden', 'hidden');
+    overlayEl.classList.remove('is-active');
+  }
+
   private updateOverlayState(): void {
-    if (!this.overlayEl) {
+    if (!this.overlayElGlobal && !this.overlayElMain) {
       return;
     }
 
     if (!this.overlayStack.length) {
-      this.overlayEl.setAttribute('hidden', 'hidden');
-      this.overlayEl.classList.remove('is-active');
+      this.hideOverlayEl(this.overlayElGlobal);
+      this.hideOverlayEl(this.overlayElMain);
       return;
     }
 
-    if (this.overlayStack.some((overlay) => overlay.overlayUseBackdrop !== false)) {
-      this.overlayEl.removeAttribute('hidden');
-      this.overlayEl.classList.add('is-active');
-    } else {
-      this.overlayEl.setAttribute('hidden', 'hidden');
-      this.overlayEl.classList.remove('is-active');
+    const backdropOverlay = this.getBackdropOverlay();
+    if (!backdropOverlay) {
+      this.hideOverlayEl(this.overlayElGlobal);
+      this.hideOverlayEl(this.overlayElMain);
+      return;
+    }
+
+    const target =
+      backdropOverlay.overlayBackdropTarget || OverlayService.OVERLAY_TARGET_MAIN;
+    const targetOverlayEl = this.getOverlayElByTarget(target);
+    const otherOverlayEl =
+      target === OverlayService.OVERLAY_TARGET_GLOBAL
+        ? this.getOverlayElByTarget(OverlayService.OVERLAY_TARGET_MAIN)
+        : this.getOverlayElByTarget(OverlayService.OVERLAY_TARGET_GLOBAL);
+
+    this.hideOverlayEl(otherOverlayEl);
+    if (targetOverlayEl) {
+      targetOverlayEl.removeAttribute('hidden');
+      targetOverlayEl.classList.add('is-active');
     }
 
     const activeIndex = this.overlayStack.length - 1;
     const overlayZ = this.baseZIndex + activeIndex * 2;
     const activeOverlay = this.activeOverlay;
 
-    this.overlayEl.style.zIndex = `${overlayZ}`;
+    if (targetOverlayEl) {
+      targetOverlayEl.style.zIndex = `${overlayZ}`;
+    }
 
     if (activeOverlay?.overlayGetElement) {
       const targetEl = activeOverlay.overlayGetElement();
