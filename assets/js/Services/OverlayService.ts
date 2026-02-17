@@ -17,12 +17,17 @@ export default class OverlayService extends AppService {
     timeout?: number;
   } = {}): Promise<{ instance: any; close: () => Promise<void> } | null> {
     const service = this.app.getServiceOrFail(ComponentsService) as ComponentsService;
+    const componentOptions: { className?: string; layoutBody?: string } = {};
+    if (options.className) {
+      componentOptions.className = options.className;
+    }
+    if (options.contentHtml !== undefined) {
+      componentOptions.layoutBody = options.contentHtml;
+    }
+
     const created = await service.createComponentFromTemplate(
       '@WexampleSymfonyDesignSystemBundle/components/overlay',
-      {
-        className: options.className,
-        layoutBody: options.contentHtml || '',
-      },
+      componentOptions,
       this.app.layout
     );
 

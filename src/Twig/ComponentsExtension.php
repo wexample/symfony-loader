@@ -208,10 +208,12 @@ class ComponentsExtension extends AbstractExtension
         $previousContext = $renderPass->getCurrentContextRenderNode();
         $renderPass->setCurrentContextRenderNode($renderPass->getLayoutRenderNode());
 
-        $component = $this->componentService->componentInitLayout(
+        // Frontend templates are cloned in JS; avoid appending the init placeholder tag.
+        $component = $this->componentService->registerComponent(
             $twig,
             $renderPass,
             $name,
+            ComponentService::INIT_MODE_TEMPLATE,
             $options
         );
 
