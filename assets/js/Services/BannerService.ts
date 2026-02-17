@@ -9,6 +9,7 @@ type BannerOptions = {
   actions?: Record<string, () => void>;
   class?: string;
   floating?: boolean;
+  target?: string | HTMLElement;
 };
 
 export default class BannerService extends AbstractNoticeService {
@@ -25,6 +26,7 @@ export default class BannerService extends AbstractNoticeService {
     }
 
     const service = this.app.getServiceOrFail(ComponentsService) as ComponentsService;
+    const mountTarget = this.resolveMountTarget(normalized.target);
     const created = service.createComponentFromTemplate(
       '@WexampleSymfonyDesignSystemBundle/components/banner',
       {
@@ -37,7 +39,7 @@ export default class BannerService extends AbstractNoticeService {
         floating: normalized.floating !== false
       },
       this.app.layout,
-      this.app.layout.el || document.body
+      mountTarget
     );
 
     const component = await Promise.resolve(created);
@@ -70,5 +72,25 @@ export default class BannerService extends AbstractNoticeService {
     if (instance.exit) {
       await instance.exit();
     }
+  }
+
+  private resolveMountTarget(target?: string | HTMLElement): HTMLElement {
+    if (target) {
+      if (typeof target === 'string') {
+        const el = document.querySelector(target) as HTMLElement | null;
+        if (el) {
+          return el;
+        }
+      } else {
+        return target;
+      }
+    }
+
+    const layoutTarget = document.querySelector('[data-banner-target]') as HTMLElement | null;
+    if (layoutTarget) {
+      return layoutTarget;
+    }
+
+    return this.app.layout.el || document.body;
   }
 }
