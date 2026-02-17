@@ -10,8 +10,6 @@ type BannerOptions = {
   class?: string;
   floating?: boolean;
   target?: string | HTMLElement;
-  timeout?: number;
-  sticky?: boolean;
 };
 
 export default class BannerService extends AbstractNoticeService {
@@ -38,9 +36,7 @@ export default class BannerService extends AbstractNoticeService {
         allowHtml: normalized.allowHtml,
         actions: normalized.actions,
         class: normalized.class,
-        floating: normalized.floating !== false,
-        timeout: normalized.timeout,
-        sticky: normalized.sticky
+        floating: normalized.floating !== false
       },
       this.app.layout,
       mountTarget
