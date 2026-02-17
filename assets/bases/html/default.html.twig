@@ -114,7 +114,20 @@
         <div id="components-templates"></div>
         {# Vues #}
         <div id="vue-templates">{{ vue_render_templates() | raw }}</div>
-        <div class="page-overlay-full" id="overlay-layer" hidden="hidden"></div>
+        {%- block layout_overlay_layers -%}
+            {{- block('layout_overlay_layer_global') -}}
+            {{- block('layout_overlay_layer_main') -}}
+        {%- endblock -%}
+        {%- block layout_overlay_layer_global -%}
+            {% include '@WexampleSymfonyLoaderBundle/partials/overlay_layer.html.twig' with {
+                overlay_id: 'overlay-layer'
+            } %}
+        {%- endblock -%}
+        {%- block layout_overlay_layer_main -%}
+            {% include '@WexampleSymfonyLoaderBundle/partials/overlay_layer.html.twig' with {
+                overlay_id: 'overlay-layer-main'
+            } %}
+        {%- endblock -%}
     </div>
     </body>
     </html>

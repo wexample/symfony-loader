@@ -243,8 +243,6 @@ export default class OverlayService extends AppService {
       targetOverlayEl.style.zIndex = `${overlayZ}`;
     }
 
-    this.applyActiveOverlayScope(activeOverlay, target, targetOverlayEl);
-
     if (activeOverlay?.overlayGetElement) {
       const targetEl = activeOverlay.overlayGetElement();
       if (targetEl) {
@@ -253,34 +251,5 @@ export default class OverlayService extends AppService {
     } else if (activeOverlay?.el) {
       activeOverlay.el.style.zIndex = `${overlayZ + 1}`;
     }
-  }
-
-  private applyActiveOverlayScope(
-    activeOverlay: any,
-    target: string,
-    targetOverlayEl: HTMLElement | null
-  ): void {
-    const overlayEl = activeOverlay?.overlayGetElement?.() || activeOverlay?.el;
-    if (!overlayEl) {
-      return;
-    }
-
-    if (target !== OverlayService.OVERLAY_TARGET_MAIN || !targetOverlayEl) {
-      overlayEl.style.left = '';
-      overlayEl.style.top = '';
-      overlayEl.style.width = '';
-      overlayEl.style.height = '';
-      overlayEl.style.right = '';
-      overlayEl.style.bottom = '';
-      return;
-    }
-
-    const rect = targetOverlayEl.getBoundingClientRect();
-    overlayEl.style.left = `${rect.left}px`;
-    overlayEl.style.top = `${rect.top}px`;
-    overlayEl.style.width = `${rect.width}px`;
-    overlayEl.style.height = `${rect.height}px`;
-    overlayEl.style.right = 'auto';
-    overlayEl.style.bottom = 'auto';
   }
 }
