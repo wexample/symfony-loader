@@ -65,13 +65,7 @@ export default class BannerService extends AbstractNoticeService {
     }
     const instance = this.instance;
     this.instance = null;
-    if (instance.closeWithAnimation) {
-      await instance.closeWithAnimation();
-      return;
-    }
-    if (instance.exit) {
-      await instance.exit();
-    }
+    await instance.exit();
   }
 
   private resolveMountTarget(target?: string | HTMLElement): HTMLElement {

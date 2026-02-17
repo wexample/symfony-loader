@@ -26,11 +26,7 @@ export default class OverlayService extends AppService {
       return;
     }
 
-    if (overlay.overlayOnClickOutside) {
-      overlay.overlayOnClickOutside(event);
-    } else if (overlay.overlayClose) {
-      overlay.overlayClose();
-    }
+    (overlay as any).overlayOnClickOutside(event);
   };
 
   registerHooks() {

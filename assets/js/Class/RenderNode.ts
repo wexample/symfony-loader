@@ -300,15 +300,11 @@ export default abstract class RenderNode extends AppChild {
   }
 
   protected async activateListeners(): Promise<void> {
-    if ((this as any).activateElListeners) {
-      (this as any).activateElListeners();
-    }
+    (this as any).activateElListeners();
   }
 
   protected async deactivateListeners(): Promise<void> {
-    if ((this as any).deactivateElListeners) {
-      (this as any).deactivateElListeners();
-    }
+    (this as any).deactivateElListeners();
   }
 
   protected async mounted(): Promise<void> {

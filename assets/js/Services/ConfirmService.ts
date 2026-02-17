@@ -115,20 +115,11 @@ export default class ConfirmService extends AppService {
 
   private async closeInstance(instance: any, toast: boolean): Promise<void> {
     if (toast) {
-      if (instance.closeWithAnimation) {
-        await instance.closeWithAnimation();
-        return;
-      }
-      await instance.exit();
+      await (instance as any).closeWithAnimation();
       return;
     }
 
-    if (instance.overlayClose) {
-      await instance.overlayClose();
-      return;
-    }
-
-    await instance.exit();
+    await (instance as any).overlayClose();
   }
 
   private trackInstance(instance: any): void {

@@ -78,9 +78,7 @@ export default class extends AsyncConstructor {
       await this.loadLayoutRenderData(this.layout.renderData);
 
       // Activate layout listeners.
-      if ((this as any).activateElListeners) {
-        (this as any).activateElListeners();
-      }
+      (this as any).activateElListeners();
 
       // Display page content.
       this.layout.el.classList.remove('layout-loading');

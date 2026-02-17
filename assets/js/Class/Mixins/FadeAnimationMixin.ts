@@ -3,6 +3,7 @@ import { waitForAnimationEnd } from '@wexample/js-helpers/Helper/Animation';
 
 export default class FadeAnimationMixin extends AbstractMixin {
   public closeWithAnimation?: () => Promise<void>;
+  public fadeOpen?: () => Promise<void>;
 
   static apply(instance: any) {
     this.applyOnce(instance, (target: any) => {
