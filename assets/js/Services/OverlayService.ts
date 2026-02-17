@@ -29,9 +29,7 @@ export default class OverlayService extends AppService {
     if (options.contentHtml !== undefined) {
       componentOptions.layoutBody = options.contentHtml;
     }
-    if (options.overlayTarget) {
-      componentOptions.overlayBackdropTarget = options.overlayTarget;
-    }
+    componentOptions.overlayBackdropTarget = options.overlayTarget || OverlayService.OVERLAY_TARGET_MAIN;
 
     const created = await service.createComponentFromTemplate(
       '@WexampleSymfonyDesignSystemBundle/components/overlay',
@@ -79,6 +77,14 @@ export default class OverlayService extends AppService {
 
     const overlayEl = overlay.overlayGetElement?.() || overlay.el;
     if (overlayEl && overlayEl.contains(target)) {
+      return;
+    }
+
+    const overlayTarget = this.getOverlayTarget(overlay);
+    if (
+      overlayTarget === OverlayService.OVERLAY_TARGET_MAIN
+      && !this.isTargetInsideOverlayTarget(target, overlayTarget)
+    ) {
       return;
     }
 
@@ -158,12 +164,25 @@ export default class OverlayService extends AppService {
     return this.activeOverlay;
   }
 
+  private getOverlayTarget(overlay: any): string {
+    return overlay?.overlayBackdropTarget || OverlayService.OVERLAY_TARGET_GLOBAL;
+  }
+
   private getOverlayElByTarget(target: string): HTMLElement | null {
     if (target === OverlayService.OVERLAY_TARGET_GLOBAL) {
       return this.overlayElGlobal || this.overlayElMain;
     }
 
     return this.overlayElMain || this.overlayElGlobal;
+  }
+
+  private isTargetInsideOverlayTarget(target: Node, overlayTarget: string): boolean {
+    const scopeEl = this.getOverlayElByTarget(overlayTarget);
+    if (!scopeEl) {
+      return true;
+    }
+
+    return scopeEl.contains(target);
   }
 
   private getBackdropOverlay(): any | null {
@@ -203,8 +222,7 @@ export default class OverlayService extends AppService {
       return;
     }
 
-    const target =
-      backdropOverlay.overlayBackdropTarget || OverlayService.OVERLAY_TARGET_MAIN;
+    const target = this.getOverlayTarget(backdropOverlay);
     const targetOverlayEl = this.getOverlayElByTarget(target);
     const otherOverlayEl =
       target === OverlayService.OVERLAY_TARGET_GLOBAL
@@ -225,6 +243,8 @@ export default class OverlayService extends AppService {
       targetOverlayEl.style.zIndex = `${overlayZ}`;
     }
 
+    this.applyActiveOverlayScope(activeOverlay, target, targetOverlayEl);
+
     if (activeOverlay?.overlayGetElement) {
       const targetEl = activeOverlay.overlayGetElement();
       if (targetEl) {
@@ -233,5 +253,34 @@ export default class OverlayService extends AppService {
     } else if (activeOverlay?.el) {
       activeOverlay.el.style.zIndex = `${overlayZ + 1}`;
     }
+  }
+
+  private applyActiveOverlayScope(
+    activeOverlay: any,
+    target: string,
+    targetOverlayEl: HTMLElement | null
+  ): void {
+    const overlayEl = activeOverlay?.overlayGetElement?.() || activeOverlay?.el;
+    if (!overlayEl) {
+      return;
+    }
+
+    if (target !== OverlayService.OVERLAY_TARGET_MAIN || !targetOverlayEl) {
+      overlayEl.style.left = '';
+      overlayEl.style.top = '';
+      overlayEl.style.width = '';
+      overlayEl.style.height = '';
+      overlayEl.style.right = '';
+      overlayEl.style.bottom = '';
+      return;
+    }
+
+    const rect = targetOverlayEl.getBoundingClientRect();
+    overlayEl.style.left = `${rect.left}px`;
+    overlayEl.style.top = `${rect.top}px`;
+    overlayEl.style.width = `${rect.width}px`;
+    overlayEl.style.height = `${rect.height}px`;
+    overlayEl.style.right = 'auto';
+    overlayEl.style.bottom = 'auto';
   }
 }
