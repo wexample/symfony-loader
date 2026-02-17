@@ -10,6 +10,7 @@ type ToastOptions = {
   allowHtml?: boolean;
   position?: 'tl' | 'tr' | 'bl' | 'br';
   stackId?: string;
+  actions?: Record<string, () => void>;
 };
 
 export default class ToastService extends AppService {
@@ -41,6 +42,7 @@ export default class ToastService extends AppService {
         title: options.title,
         message: options.message,
         allowHtml: options.allowHtml,
+        actions: options.actions,
         timeout,
         sticky: options.sticky,
         position: options.position,

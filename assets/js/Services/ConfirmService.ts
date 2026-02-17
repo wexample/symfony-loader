@@ -16,8 +16,8 @@ type ConfirmPreset =
   | 'continue_cancel';
 
 type ConfirmOptions = {
-  title: string;
-  message?: string;
+  title?: string;
+  message: string;
   preset?: ConfirmPreset;
   actions?: ConfirmAction[];
   stackId?: string;
