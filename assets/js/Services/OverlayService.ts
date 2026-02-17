@@ -1,4 +1,5 @@
 import AppService from '../Class/AppService';
+import ComponentsService from './ComponentsService';
 
 export default class OverlayService extends AppService {
   public static serviceName: string = 'overlay';
@@ -9,6 +10,48 @@ export default class OverlayService extends AppService {
   private overlayStack: any[] = [];
   private overlayEl: HTMLElement | null = null;
   private baseZIndex: number = 1000;
+
+  public async showStandalone(options: {
+    className?: string;
+    contentHtml?: string;
+    timeout?: number;
+  } = {}): Promise<{ instance: any; close: () => Promise<void> } | null> {
+    const service = this.app.getServiceOrFail(ComponentsService) as ComponentsService;
+    const created = await service.createComponentFromTemplate(
+      '@WexampleSymfonyDesignSystemBundle/components/overlay',
+      {
+        className: options.className,
+        layoutBody: options.contentHtml || '',
+      },
+      this.app.layout
+    );
+
+    if (!created) {
+      return null;
+    }
+
+    const instance: any = created.instance;
+    if (instance.open) {
+      await instance.open();
+    }
+
+    const close = async () => {
+      if (instance.close) {
+        await instance.close();
+      }
+    };
+
+    if (options.timeout) {
+      window.setTimeout(() => {
+        void close();
+      }, options.timeout);
+    }
+
+    return {
+      instance,
+      close,
+    };
+  }
 
   private onDocumentMouseDown = (event: MouseEvent) => {
     const overlay = this.getActiveOverlay();
