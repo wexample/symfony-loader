@@ -2,3 +2,6 @@ name: Symfony Design System
 frontend:
   confirm:
     title: Confirmation
+  embed:
+    confirm:
+      form_leave: Are you sure you want to leave this form ?

@@ -16,12 +16,18 @@ export default class Form extends Component {
   private isSubmitting = false;
   private lastSubmitter: HTMLInputElement | HTMLButtonElement | null = null;
   private loadingEnded = false;
+  private isDirty = false;
+  private onDirtyProxy?: EventListener;
 
   protected async activateListeners(): Promise<void> {
     await super.activateListeners();
 
     this.onSubmitProxy = this.onSubmit.bind(this);
     this.el.addEventListener('submit', this.onSubmitProxy);
+
+    this.onDirtyProxy = this.onDirty.bind(this);
+    this.el.addEventListener('change', this.onDirtyProxy);
+    this.el.addEventListener('input', this.onDirtyProxy);
   }
 
   protected async deactivateListeners(): Promise<void> {
@@ -29,6 +35,11 @@ export default class Form extends Component {
 
     if (this.onSubmitProxy) {
       this.el.removeEventListener('submit', this.onSubmitProxy);
+    }
+
+    if (this.onDirtyProxy) {
+      this.el.removeEventListener('change', this.onDirtyProxy);
+      this.el.removeEventListener('input', this.onDirtyProxy);
     }
   }
 
@@ -217,6 +228,15 @@ export default class Form extends Component {
 
     this.loadingEnded = true;
     this.trigger('loading:end', { source: this });
+  }
+
+  private onDirty(): void {
+    if (this.isDirty) {
+      return;
+    }
+
+    this.isDirty = true;
+    this.trigger('form:dirty', { source: this, dirty: true });
   }
 
   private async handleEmbeddedRedirect(
