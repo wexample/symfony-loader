@@ -1,4 +1,4 @@
-import AppService from '../Class/AppService';
+import AbstractNoticeService from './AbstractNoticeService';
 import ComponentsService from './ComponentsService';
 
 type BannerOptions = {
@@ -10,17 +10,14 @@ type BannerOptions = {
   class?: string;
 };
 
-export default class BannerService extends AppService {
+export default class BannerService extends AbstractNoticeService {
   public static serviceName: string = 'banner';
   private instance: any | null = null;
 
   async show(options: BannerOptions | string): Promise<string> {
-    if (typeof options === 'string') {
-      options = { message: options };
-    }
-
-    const bannerId = options.id || `banner-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-    const type = options.type || 'default';
+    const normalized = this.normalizeOptions(options, 'banner') as BannerOptions;
+    const bannerId = normalized.id!;
+    const type = normalized.type || 'default';
 
     if (this.instance) {
       await this.closeInstance();
@@ -32,10 +29,10 @@ export default class BannerService extends AppService {
       {
         id: bannerId,
         type,
-        message: options.message,
-        allowHtml: options.allowHtml,
-        actions: options.actions,
-        class: options.class
+        message: normalized.message,
+        allowHtml: normalized.allowHtml,
+        actions: normalized.actions,
+        class: normalized.class
       },
       this.app.layout,
       this.app.layout.el || document.body
@@ -56,22 +53,6 @@ export default class BannerService extends AppService {
 
   async clear() {
     await this.closeInstance();
-  }
-
-  info(message: string, options: BannerOptions = {}) {
-    return this.show({ ...options, type: 'info', message });
-  }
-
-  success(message: string, options: BannerOptions = {}) {
-    return this.show({ ...options, type: 'success', message });
-  }
-
-  warning(message: string, options: BannerOptions = {}) {
-    return this.show({ ...options, type: 'warning', message });
-  }
-
-  error(message: string, options: BannerOptions = {}) {
-    return this.show({ ...options, type: 'error', message });
   }
 
   private async closeInstance(): Promise<void> {
