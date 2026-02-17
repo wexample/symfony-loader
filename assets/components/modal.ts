@@ -120,6 +120,10 @@ export default class ModalComponent extends PageManagerComponent {
   }
 
   close(options: { instant?: boolean } = {}): Promise<void> {
+    if (this.isCloseBlocked()) {
+      return Promise.resolve();
+    }
+
     this.closing = true;
 
     if (options.instant) {
@@ -174,5 +178,9 @@ export default class ModalComponent extends PageManagerComponent {
     ) {
       await this.close();
     }
+  }
+
+  private isCloseBlocked(): boolean {
+    return !!this.el && this.el.classList.contains('is-loading');
   }
 }
