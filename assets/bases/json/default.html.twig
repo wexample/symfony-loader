@@ -1,5 +1,12 @@
 {%- extends '@WexampleSymfonyLoaderBundle/bases/base.html.twig' -%}
 
+{%- block layout_config -%}
+    {{ parent() }}
+    {{ trans_js(render_pass, 'WexampleSymfonyLoaderBundle.common.system::*') }}
+    {{ trans_js(render_pass, '@layout::frontend.*') }}
+    {{ trans_js(render_pass, '@page::frontend.*') }}
+{% endblock %}
+
 {%- block layout_base -%}
     {{- parent() -}}
     <div class="layout-{{ render_pass.layoutBase }}">
