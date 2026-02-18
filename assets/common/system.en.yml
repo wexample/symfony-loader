@@ -1,4 +1,3 @@
-name: Symfony Design System
 frontend:
   confirm:
     title: Confirmation
