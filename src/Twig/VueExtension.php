@@ -90,7 +90,8 @@ class VueExtension extends AbstractExtension
         string $path,
         ?array $props = [],
         string $tagName = VueService::TAG_TEMPLATE,
-        ?array $twigContext = []
+        ?array $twigContext = [],
+        ?array $options = []
     ): string {
         return $this->vueService->vueRender(
             twig: $env,
@@ -98,7 +99,8 @@ class VueExtension extends AbstractExtension
             view: $path,
             props: $props,
             twigContext: $twigContext,
-            tagName: $tagName
+            tagName: $tagName,
+            options: $options
         );
     }
 
@@ -119,6 +121,8 @@ class VueExtension extends AbstractExtension
         string $path,
         ?array $props = [],
         string $tagName = VueService::TAG_TEMPLATE,
+        ?array $twigContext = [],
+        ?array $options = [],
     ): void {
         // Same behavior but no output tag.
         $this->vueInclude(
@@ -126,7 +130,9 @@ class VueExtension extends AbstractExtension
             $renderPass,
             $path,
             $props,
-            tagName: $tagName
+            tagName: $tagName,
+            twigContext: $twigContext,
+            options: $options,
         );
     }
 
@@ -140,6 +146,7 @@ class VueExtension extends AbstractExtension
         ?array $props = [],
         string $tagName = VueService::TAG_TEMPLATE,
         ?array $twigContext = [],
+        ?array $options = [],
     ): string {
         return $this->vueService->vueRender(
             $env,
@@ -147,7 +154,8 @@ class VueExtension extends AbstractExtension
             $path,
             $props,
             $twigContext,
-            $tagName
+            $tagName,
+            $options
         );
     }
 
