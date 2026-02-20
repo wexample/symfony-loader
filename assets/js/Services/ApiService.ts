@@ -1,4 +1,5 @@
 import AppService from '../Class/AppService';
+import AbstractApiEntitiesClient from "@wexample/js-api/Common/AbstractApiEntitiesClient";
 
 export default class ApiService extends AppService {
   public static serviceName: string = 'api';
@@ -14,6 +15,18 @@ export default class ApiService extends AppService {
         },
       },
     };
+  }
+
+  registerMethods() {
+    const service = this;
+
+    return {
+      renderNode: {
+        getApiClient: () => {
+          return (this.app.getService(ApiService) as ApiService).getClient() as AbstractApiEntitiesClient;
+        }
+      }
+    }
   }
 
   getClient() {
