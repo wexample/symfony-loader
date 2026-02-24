@@ -96,11 +96,15 @@ export default class VueService extends AppService {
       props,
     );
 
-    vueApp.mixin(this.globalMixin as any);
-
     objectDeepAssign(
       vueApp.config,
       this.globalConfig);
+
+    const globalMixin = this.globalMixin as any;
+    const globalMethods = globalMixin.methods || {};
+    for (const [name, method] of Object.entries(globalMethods)) {
+      (vueApp.config.globalProperties as any)[name] = method;
+    }
 
     if (this.store) {
       vueApp.use(this.store);

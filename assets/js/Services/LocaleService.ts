@@ -62,9 +62,7 @@ export default class LocaleService extends AppService {
         methods: {
           trans(key: string = '', args: {} = {}, catalog?: object) {
             const component = this as any;
-            const rootComponent =
-              component.$props?.rootComponent ||
-              component.$root?.$props?.rootComponent;
+            const rootComponent = component.$root?.rootComponent;
 
             if (rootComponent && rootComponent !== component) {
               return rootComponent.trans(key, args, catalog);
@@ -76,7 +74,7 @@ export default class LocaleService extends AppService {
             );
             const keyResolved = service.resolveAlias(
               key,
-              component.$props?.translationDomains || {},
+              component.translationDomains || {},
               component.$props?.viewPath
             );
 
