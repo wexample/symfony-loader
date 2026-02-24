@@ -1,4 +1,5 @@
 import AbstractMixin from '@wexample/js-helpers/Helper/AbstractMixin';
+import KeyboardService from '../../Services/KeyboardService';
 
 export default class FocusableComponentMixin extends AbstractMixin {
   static apply(instance: any) {
@@ -8,7 +9,7 @@ export default class FocusableComponentMixin extends AbstractMixin {
       }
 
       if (target.focusableEscapeKey === undefined) {
-        target.focusableEscapeKey = 'Escape';
+        target.focusableEscapeKey = KeyboardService.KEY_ESCAPE;
       }
 
       if (target.focusableEscapePriority === undefined) {

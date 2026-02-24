@@ -16,6 +16,13 @@ interface KeyboardListener {
 
 export default class KeyboardService extends AppService {
   public static serviceName: string = 'keyboard';
+  public static readonly KEY_ESCAPE: string = 'Escape';
+  public static readonly KEY_ENTER: string = 'Enter';
+  public static readonly KEY_TAB: string = 'Tab';
+  public static readonly KEY_ARROW_UP: string = 'ArrowUp';
+  public static readonly KEY_ARROW_DOWN: string = 'ArrowDown';
+  public static readonly KEY_HOME: string = 'Home';
+  public static readonly KEY_END: string = 'End';
 
   private listenersByKey: Map<string, KeyboardListener[]> = new Map();
   private registrationOrder: number = 0;
