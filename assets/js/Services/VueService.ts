@@ -96,6 +96,8 @@ export default class VueService extends AppService {
       props,
     );
 
+    vueApp.mixin(this.globalMixin as any);
+
     objectDeepAssign(
       vueApp.config,
       this.globalConfig);

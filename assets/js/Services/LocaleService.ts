@@ -61,11 +61,23 @@ export default class LocaleService extends AppService {
       vue: {
         methods: {
           trans(key: string = '', args: {} = {}, catalog?: object) {
-            const mergedCatalog = service.mergeCatalog(catalog, this.translations);
+            const component = this as any;
+            const rootComponent =
+              component.$props?.rootComponent ||
+              component.$root?.$props?.rootComponent;
+
+            if (rootComponent && rootComponent !== component) {
+              return rootComponent.trans(key, args, catalog);
+            }
+
+            const mergedCatalog = service.mergeCatalog(
+              catalog,
+              component.$props?.translations || {}
+            );
             const keyResolved = service.resolveAlias(
               key,
-              this.rootComponent.translationDomains,
-              (this as any).viewPath
+              component.$props?.translationDomains || {},
+              component.$props?.viewPath
             );
 
             return service.trans(
