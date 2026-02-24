@@ -18,15 +18,26 @@ export default class VueService extends AppService {
   public store: any = null;
 
   protected globalMixin: object = {
-    props: {},
+    props: {
+      app: {
+        default: null,
+      },
+    },
 
     methods: {},
 
     async updated() {
-      await this.rootComponent.forEachTreeRenderNode((renderNode) => {
-        if (this === this.$root) {
-          renderNode.updateMounting();
-        }
+      if (this !== this.$root) {
+        return;
+      }
+
+      const rootComponent = this.rootComponent ?? this.$root?.rootComponent;
+      if (!rootComponent || typeof rootComponent.forEachTreeRenderNode !== 'function') {
+        return;
+      }
+
+      await rootComponent.forEachTreeRenderNode((renderNode) => {
+        renderNode.updateMounting();
       });
     },
   };
@@ -47,6 +58,7 @@ export default class VueService extends AppService {
     );
     this.globalConfig['globalProperties'] = this.globalConfig['globalProperties'] ? this.globalConfig['globalProperties']: {};
     this.globalConfig['globalProperties']['app'] = app;
+    (this.globalMixin as any).props.app.default = () => app;
 
     this.elTemplates = document.getElementById('vue-templates');
   }
@@ -99,6 +111,8 @@ export default class VueService extends AppService {
     objectDeepAssign(
       vueApp.config,
       this.globalConfig);
+
+    vueApp.mixin(this.globalMixin as any);
 
     const globalMixin = this.globalMixin as any;
     objectDeepAssign(
