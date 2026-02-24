@@ -101,10 +101,10 @@ export default class VueService extends AppService {
       this.globalConfig);
 
     const globalMixin = this.globalMixin as any;
-    const globalMethods = globalMixin.methods || {};
-    for (const [name, method] of Object.entries(globalMethods)) {
-      (vueApp.config.globalProperties as any)[name] = method;
-    }
+    objectDeepAssign(
+      vueApp.config.globalProperties as any,
+      globalMixin.methods || {}
+    );
 
     if (this.store) {
       vueApp.use(this.store);
