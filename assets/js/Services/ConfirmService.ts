@@ -1,6 +1,13 @@
 import AppService from '../Class/AppService';
 import ComponentsService from './ComponentsService';
 
+export const CONFIRM_RESPONSE_YES = 'yes';
+export const CONFIRM_RESPONSE_NO = 'no';
+export const CONFIRM_RESPONSE_OK = 'ok';
+export const CONFIRM_RESPONSE_CANCEL = 'cancel';
+export const CONFIRM_RESPONSE_YES_ALL = 'yes_all';
+export const CONFIRM_RESPONSE_CONTINUE = 'continue';
+
 type ConfirmAction = {
   key: string;
   value: string;
@@ -31,21 +38,21 @@ export default class ConfirmService extends AppService {
 
   private presets: Record<ConfirmPreset, ConfirmAction[]> = {
     yes_no: [
-      { key: 'y', value: 'yes', label: 'Yes', role: 'primary' },
-      { key: 'n', value: 'no', label: 'No', role: 'secondary' },
+      { key: 'y', value: CONFIRM_RESPONSE_YES, label: 'Yes', role: 'primary' },
+      { key: 'n', value: CONFIRM_RESPONSE_NO, label: 'No', role: 'secondary' },
     ],
     ok_cancel: [
-      { key: 'y', value: 'ok', label: 'Ok', role: 'primary' },
-      { key: 'n', value: 'cancel', label: 'Cancel', role: 'secondary' },
+      { key: 'y', value: CONFIRM_RESPONSE_OK, label: 'Ok', role: 'primary' },
+      { key: 'n', value: CONFIRM_RESPONSE_CANCEL, label: 'Cancel', role: 'secondary' },
     ],
     yes_no_all: [
-      { key: 'y', value: 'yes', label: 'Yes', role: 'primary' },
-      { key: 'Y', value: 'yes_all', label: 'Yes for all', role: 'secondary' },
-      { key: 'n', value: 'no', label: 'No', role: 'secondary' },
+      { key: 'y', value: CONFIRM_RESPONSE_YES, label: 'Yes', role: 'primary' },
+      { key: 'Y', value: CONFIRM_RESPONSE_YES_ALL, label: 'Yes for all', role: 'secondary' },
+      { key: 'n', value: CONFIRM_RESPONSE_NO, label: 'No', role: 'secondary' },
     ],
     continue_cancel: [
-      { key: 'y', value: 'continue', label: 'Continue', role: 'primary' },
-      { key: 'n', value: 'cancel', label: 'Cancel', role: 'secondary' },
+      { key: 'y', value: CONFIRM_RESPONSE_CONTINUE, label: 'Continue', role: 'primary' },
+      { key: 'n', value: CONFIRM_RESPONSE_CANCEL, label: 'Cancel', role: 'secondary' },
     ],
   };
 
@@ -92,7 +99,7 @@ export default class ConfirmService extends AppService {
 
       const component = await Promise.resolve(created);
       if (!component) {
-        resolve('cancel');
+        resolve(CONFIRM_RESPONSE_CANCEL);
         return;
       }
 
