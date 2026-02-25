@@ -57,7 +57,7 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
             $normalizedAlias = str_starts_with($frontAlias, '@')
                 ? $frontAlias
                 : '@'.$frontAlias;
-            $normalizedPath = rtrim((string) $frontPath, '/\\').FileHelper::FOLDER_SEPARATOR;
+            $normalizedPath = FileHelper::normalizeDirectoryPath((string) $frontPath);
 
             $paths[VariableHelper::APP][$normalizedAlias] = $normalizedPath;
             $translationPaths[] = $normalizedPath;
@@ -72,7 +72,7 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
 
                 $realPaths = [];
                 foreach ($bundleFronts as $alias => $frontPath) {
-                    $relativePath = realpath($frontPath).FileHelper::FOLDER_SEPARATOR;
+                    $relativePath = FileHelper::normalizeDirectoryPath((string) realpath($frontPath));
 
                     if (is_string($alias)) {
                         $realPaths[$alias] = $relativePath;
