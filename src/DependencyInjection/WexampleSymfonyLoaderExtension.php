@@ -60,7 +60,7 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
             $normalizedPath = rtrim((string) $frontPath, '/\\').FileHelper::FOLDER_SEPARATOR;
 
             $paths[VariableHelper::APP][$normalizedAlias] = $normalizedPath;
-            $translationPaths[$normalizedAlias] = $normalizedPath;
+            $translationPaths[] = $normalizedPath;
         }
 
         foreach ($bundles as $class) {
