@@ -53,12 +53,14 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
         $bundles = $container->getParameter('kernel.bundles');
         $paths = [];
 
-        foreach ($config['front_paths'] ?? [] as $frontPath) {
-            // Ignore invalid paths.
-            if ($realpath = realpath($frontPath)) {
-                $paths[VariableHelper::APP][] =
-                $translationPaths[] = $realpath.FileHelper::FOLDER_SEPARATOR;
-            }
+        foreach ($config['front_paths'] ?? [] as $frontAlias => $frontPath) {
+            $normalizedAlias = str_starts_with($frontAlias, '@')
+                ? $frontAlias
+                : '@'.$frontAlias;
+            $normalizedPath = rtrim((string) $frontPath, '/\\').FileHelper::FOLDER_SEPARATOR;
+
+            $paths[VariableHelper::APP][$normalizedAlias] = $normalizedPath;
+            $translationPaths[$normalizedAlias] = $normalizedPath;
         }
 
         foreach ($bundles as $class) {
