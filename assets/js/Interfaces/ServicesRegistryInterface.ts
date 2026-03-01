@@ -13,6 +13,7 @@ import LocaleService from '../Services/LocaleService';
 import EntityService from '../Services/EntityService';
 import OverlayService from '../Services/OverlayService';
 import KeyboardService from '../Services/KeyboardService';
+import LiveUpdatesService from '../Services/LiveUpdatesService';
 
 export default interface ServicesRegistryInterface {
   adaptive?: AdaptiveService;
@@ -24,6 +25,7 @@ export default interface ServicesRegistryInterface {
   events?: EventsService;
   layouts?: LayoutsService;
   locale?: LocaleService;
+  liveUpdates?: LiveUpdatesService;
   mixins?: MixinsService;
   overlay?: OverlayService;
   pages?: PagesService;
