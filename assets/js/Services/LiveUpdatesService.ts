@@ -385,7 +385,7 @@ export default class LiveUpdatesService extends AppService {
     this.emitStatus(connection);
   }
 
-  private emitStatus(connection?: LiveUpdatesConnection): void {
+  private emitStatus(connection?: LiveUpdatesConnectionInternal): void {
     this.emit(LiveUpdatesServiceEvents.STATUS_CHANGED, {
       status: this.getStatus(),
       connection: connection ? this.toPublicConnection(connection) : undefined,

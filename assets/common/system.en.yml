@@ -4,3 +4,8 @@ frontend:
   embed:
     confirm:
       form_leave: Are you sure you want to leave this form?
+  banner:
+    live_update_reconnecting:
+      message: Live connection lost. Reconnecting...
+    live_update_reconnected:
+      message: Connection restored.

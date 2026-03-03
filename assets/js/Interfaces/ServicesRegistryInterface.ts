@@ -14,6 +14,7 @@ import EntityService from '../Services/EntityService';
 import OverlayService from '../Services/OverlayService';
 import KeyboardService from '../Services/KeyboardService';
 import LiveUpdatesService from '../Services/LiveUpdatesService';
+import LiveUpdatesNoticeService from '../Services/LiveUpdatesNoticeService';
 
 export default interface ServicesRegistryInterface {
   adaptive?: AdaptiveService;
@@ -26,6 +27,7 @@ export default interface ServicesRegistryInterface {
   layouts?: LayoutsService;
   locale?: LocaleService;
   liveUpdates?: LiveUpdatesService;
+  liveUpdatesNotice?: LiveUpdatesNoticeService;
   mixins?: MixinsService;
   overlay?: OverlayService;
   pages?: PagesService;
