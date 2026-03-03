@@ -2,10 +2,9 @@ import AppService from '../Class/AppService';
 import EventsService from './EventsService';
 import MercureLiveUpdatesDriver, { type MercureDriverConfig } from './MercureLiveUpdatesDriver';
 import {
-  reconnectBackoffCreateController,
-  type ReconnectBackoffController,
   type ReconnectBackoffOptions,
 } from '@wexample/js-helpers/Helper/Reconnect';
+import RetryBackoffScheduler from '@wexample/js-helpers/Common/RetryBackoffScheduler';
 export type { MercureDriverConfig } from './MercureLiveUpdatesDriver';
 
 export class LiveUpdatesServiceEvents {
@@ -50,8 +49,7 @@ export type LiveUpdatesConnection = {
 
 type LiveUpdatesConnectionInternal = LiveUpdatesConnection & {
   reconnecting: boolean;
-  reconnectController: ReconnectBackoffController;
-  reconnectTimeout: ReturnType<typeof setTimeout> | null;
+  reconnectScheduler: RetryBackoffScheduler;
   onOpen?: (connection: LiveUpdatesConnection, event: Event) => void;
   onError?: (connection: LiveUpdatesConnection, event: Event) => void;
   onMessage?: (connection: LiveUpdatesConnection, payload: unknown, event: MessageEvent) => void;
@@ -199,8 +197,7 @@ export default class LiveUpdatesService extends AppService {
       metadata: { ...(options.metadata || {}) },
       status: 'connecting',
       reconnecting: false,
-      reconnectController: reconnectBackoffCreateController(this.reconnectOptions),
-      reconnectTimeout: null,
+      reconnectScheduler: new RetryBackoffScheduler(this.reconnectOptions),
       onOpen: options.onOpen,
       onError: options.onError,
       onMessage: options.onMessage,
@@ -322,10 +319,10 @@ export default class LiveUpdatesService extends AppService {
 
   private bindSource(connection: LiveUpdatesConnectionInternal): void {
     connection.source.onopen = (event: Event) => {
-      const wasReconnecting = connection.reconnecting || connection.reconnectController.getAttempt() > 0;
-      this.clearReconnectTimeout(connection);
+      const wasReconnecting = connection.reconnecting || connection.reconnectScheduler.attempt > 0;
+      connection.reconnectScheduler.cancel();
       connection.reconnecting = false;
-      connection.reconnectController.reset();
+      connection.reconnectScheduler.reset();
       this.updateConnectionStatus(connection, 'open', event);
       if (wasReconnecting) {
         this.emit(LiveUpdatesServiceEvents.CONNECTION_RECONNECTED, {
@@ -409,7 +406,7 @@ export default class LiveUpdatesService extends AppService {
       nextStatus: 'closed',
     });
 
-    this.clearReconnectTimeout(connection);
+    connection.reconnectScheduler.cancel();
     this.closeSource(connection);
 
     this.untrackOwnerConnection(connection);
@@ -467,11 +464,7 @@ export default class LiveUpdatesService extends AppService {
       return;
     }
 
-    if (connection.reconnectTimeout) {
-      return;
-    }
-
-    if (!connection.reconnectController.canRetry()) {
+    if (!connection.reconnectScheduler.canRetry()) {
       this.emit(LiveUpdatesServiceEvents.CONNECTION_RECONNECT_STOPPED, {
         connection: this.toPublicConnection(connection),
         event,
@@ -479,21 +472,21 @@ export default class LiveUpdatesService extends AppService {
       return;
     }
 
+    const scheduleContext = connection.reconnectScheduler.schedule(() => {
+      this.reconnect(connection.id);
+    });
+    if (!scheduleContext) {
+      return;
+    }
+
     connection.reconnecting = true;
-    const delayMs = connection.reconnectController.nextDelay();
-    const attempt = connection.reconnectController.getAttempt();
 
     this.emit(LiveUpdatesServiceEvents.CONNECTION_RECONNECTING, {
       connection: this.toPublicConnection(connection),
-      attempt,
-      delayMs,
+      attempt: scheduleContext.attempt,
+      delayMs: scheduleContext.delayMs,
       event,
     });
-
-    connection.reconnectTimeout = setTimeout(() => {
-      connection.reconnectTimeout = null;
-      this.reconnect(connection.id);
-    }, delayMs);
   }
 
   private reconnect(connectionId: string): void {
@@ -528,14 +521,5 @@ export default class LiveUpdatesService extends AppService {
     connection.source.onerror = null;
     connection.source.onmessage = null;
     connection.source.close();
-  }
-
-  private clearReconnectTimeout(connection: LiveUpdatesConnectionInternal): void {
-    if (!connection.reconnectTimeout) {
-      return;
-    }
-
-    clearTimeout(connection.reconnectTimeout);
-    connection.reconnectTimeout = null;
   }
 }
