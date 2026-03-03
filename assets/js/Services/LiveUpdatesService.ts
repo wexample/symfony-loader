@@ -13,6 +13,9 @@ export class LiveUpdatesServiceEvents {
   public static CONNECTION_STATUS_CHANGED: string = 'live-updates:connection-status-changed';
   public static CONNECTION_MESSAGE: string = 'live-updates:connection-message';
   public static CONNECTION_CLOSED: string = 'live-updates:connection-closed';
+  public static CONNECTION_RECONNECTING: string = 'live-updates:connection-reconnecting';
+  public static CONNECTION_RECONNECTED: string = 'live-updates:connection-reconnected';
+  public static CONNECTION_RECONNECT_STOPPED: string = 'live-updates:connection-reconnect-stopped';
   public static STATUS_CHANGED: string = 'live-updates:status-changed';
 }
 
@@ -48,6 +51,7 @@ export type LiveUpdatesConnection = {
 type LiveUpdatesConnectionInternal = LiveUpdatesConnection & {
   reconnecting: boolean;
   reconnectController: ReconnectBackoffController;
+  reconnectTimeout: ReturnType<typeof setTimeout> | null;
   onOpen?: (connection: LiveUpdatesConnection, event: Event) => void;
   onError?: (connection: LiveUpdatesConnection, event: Event) => void;
   onMessage?: (connection: LiveUpdatesConnection, payload: unknown, event: MessageEvent) => void;
@@ -196,6 +200,7 @@ export default class LiveUpdatesService extends AppService {
       status: 'connecting',
       reconnecting: false,
       reconnectController: reconnectBackoffCreateController(this.reconnectOptions),
+      reconnectTimeout: null,
       onOpen: options.onOpen,
       onError: options.onError,
       onMessage: options.onMessage,
@@ -317,17 +322,23 @@ export default class LiveUpdatesService extends AppService {
 
   private bindSource(connection: LiveUpdatesConnectionInternal): void {
     connection.source.onopen = (event: Event) => {
+      const wasReconnecting = connection.reconnecting || connection.reconnectController.getAttempt() > 0;
+      this.clearReconnectTimeout(connection);
       connection.reconnecting = false;
       connection.reconnectController.reset();
       this.updateConnectionStatus(connection, 'open', event);
+      if (wasReconnecting) {
+        this.emit(LiveUpdatesServiceEvents.CONNECTION_RECONNECTED, {
+          connection: this.toPublicConnection(connection),
+          event,
+        });
+      }
       connection.onOpen?.(this.toPublicConnection(connection), event);
     };
 
     connection.source.onerror = (event: Event) => {
-      connection.reconnecting = true;
-      // Prepare next reconnection delay (actual reconnect orchestration comes next step).
-      connection.reconnectController.nextDelay();
       this.updateConnectionStatus(connection, 'error', event);
+      this.scheduleReconnect(connection, event);
       connection.onError?.(this.toPublicConnection(connection), event);
     };
 
@@ -398,10 +409,8 @@ export default class LiveUpdatesService extends AppService {
       nextStatus: 'closed',
     });
 
-    connection.source.onopen = null;
-    connection.source.onerror = null;
-    connection.source.onmessage = null;
-    connection.source.close();
+    this.clearReconnectTimeout(connection);
+    this.closeSource(connection);
 
     this.untrackOwnerConnection(connection);
     this.connections.delete(connection.id);
@@ -451,5 +460,82 @@ export default class LiveUpdatesService extends AppService {
       status: connection.status,
       close: connection.close,
     };
+  }
+
+  private scheduleReconnect(connection: LiveUpdatesConnectionInternal, event?: Event): void {
+    if (!this.connections.has(connection.id)) {
+      return;
+    }
+
+    if (connection.reconnectTimeout) {
+      return;
+    }
+
+    if (!connection.reconnectController.canRetry()) {
+      this.emit(LiveUpdatesServiceEvents.CONNECTION_RECONNECT_STOPPED, {
+        connection: this.toPublicConnection(connection),
+        event,
+      });
+      return;
+    }
+
+    connection.reconnecting = true;
+    const delayMs = connection.reconnectController.nextDelay();
+    const attempt = connection.reconnectController.getAttempt();
+
+    this.emit(LiveUpdatesServiceEvents.CONNECTION_RECONNECTING, {
+      connection: this.toPublicConnection(connection),
+      attempt,
+      delayMs,
+      event,
+    });
+
+    connection.reconnectTimeout = setTimeout(() => {
+      connection.reconnectTimeout = null;
+      this.reconnect(connection.id);
+    }, delayMs);
+  }
+
+  private reconnect(connectionId: string): void {
+    const connection = this.connections.get(connectionId);
+    if (!connection || !this.driver) {
+      return;
+    }
+
+    this.closeSource(connection);
+
+    this.updateConnectionStatus(connection, 'connecting');
+
+    try {
+      connection.source = this.driver.connect({
+        topics: [...connection.topics],
+        owner: connection.owner,
+        metadata: { ...connection.metadata },
+        onOpen: connection.onOpen,
+        onError: connection.onError,
+        onMessage: connection.onMessage,
+      });
+      this.bindSource(connection);
+      this.emitStatus(connection);
+    } catch {
+      this.updateConnectionStatus(connection, 'error');
+      this.scheduleReconnect(connection);
+    }
+  }
+
+  private closeSource(connection: LiveUpdatesConnectionInternal): void {
+    connection.source.onopen = null;
+    connection.source.onerror = null;
+    connection.source.onmessage = null;
+    connection.source.close();
+  }
+
+  private clearReconnectTimeout(connection: LiveUpdatesConnectionInternal): void {
+    if (!connection.reconnectTimeout) {
+      return;
+    }
+
+    clearTimeout(connection.reconnectTimeout);
+    connection.reconnectTimeout = null;
   }
 }
