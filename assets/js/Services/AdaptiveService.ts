@@ -31,9 +31,7 @@ export default class AdaptiveService extends AppService {
     const response = await this.fetch(path, requestOptions);
 
     if (!response.ok) {
-      this.app.services.prompt.applicationError(
-        `Error response : [${response.status}] ${response.statusText}`
-      );
+      this.app.services.prompt.error(`Error response : [${response.status}] ${response.statusText}`);
     }
 
     try {
@@ -43,10 +41,7 @@ export default class AdaptiveService extends AppService {
       }
       return data;
     } catch (error) {
-      this.app.services.prompt.applicationError(
-        'Failed to parse JSON response:',
-        error
-      );
+      this.app.services.prompt.error('Failed to parse JSON response.');
       return { ok: false } as AdaptiveResponseInterface;
     }
   }
