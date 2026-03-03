@@ -9,6 +9,7 @@ type BannerOptions = {
   actions?: Record<string, () => void>;
   class?: string;
   floating?: boolean;
+  sticky?: boolean;
   target?: string | HTMLElement;
   animate?: boolean;
   timeout?: number;
@@ -39,6 +40,7 @@ export default class BannerService extends AbstractNoticeService {
         actions: normalized.actions,
         class: normalized.class,
         floating: normalized.floating !== false,
+        sticky: normalized.sticky === true,
         animate: normalized.animate !== false,
         timeout: normalized.timeout
       },
