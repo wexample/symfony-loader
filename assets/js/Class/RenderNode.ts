@@ -7,6 +7,7 @@ import { waitForElementSize } from '@wexample/js-helpers/Helper/ElementSize';
 import Page from './Page';
 import { RenderNodeServiceEvents } from "../Services/AbstractRenderNodeService";
 import ElementListenersMixin from './Mixins/ElementListenersMixin';
+import InvariantViolationError from '../Errors/InvariantViolationError';
 
 export default abstract class RenderNode extends AppChild {
   public callerPage: Page;
@@ -144,9 +145,15 @@ export default abstract class RenderNode extends AppChild {
   protected attachHtmlElement(key: string, selector: string): void {
     const el = this.el.querySelector(selector) as HTMLElement | null;
     if (!el) {
-      throw new Error(
-        `Missing element "${key}" using selector "${selector}" in "${this.view}".`
-      );
+      throw new InvariantViolationError({
+        message: `Missing element "${key}" using selector "${selector}" in "${this.view}".`,
+        code: 'ERR_RENDER_NODE_ELEMENT_MISSING',
+        context: {
+          view: this.view,
+          key,
+          selector,
+        },
+      });
     }
     this.elements[key] = el;
   }
@@ -158,9 +165,15 @@ export default abstract class RenderNode extends AppChild {
   ): void {
     const el = this.elements[key];
     if (!el) {
-      throw new Error(
-        `Missing element "${key}" for event "${event}" in "${this.view}".`
-      );
+      throw new InvariantViolationError({
+        message: `Missing element "${key}" for event "${event}" in "${this.view}".`,
+        code: 'ERR_RENDER_NODE_EVENT_ELEMENT_MISSING',
+        context: {
+          view: this.view,
+          key,
+          event,
+        },
+      });
     }
     el.addEventListener(event, handler);
   }

@@ -2,6 +2,7 @@ import type {
   LiveUpdatesConnectOptions,
   LiveUpdatesDriverInterface,
 } from './LiveUpdatesService';
+import InvariantViolationError from '../Errors/InvariantViolationError';
 
 export type MercureDriverConfig = {
   hubUrl: string;
@@ -28,7 +29,10 @@ export default class MercureLiveUpdatesDriver implements LiveUpdatesDriverInterf
     const withCredentials = config.withCredentials ?? true;
 
     if (!config.hubUrl) {
-      throw new Error('Mercure hubUrl is required.');
+      throw new InvariantViolationError({
+        message: 'Mercure hubUrl is required.',
+        code: 'ERR_MERCURE_HUB_URL_REQUIRED',
+      });
     }
 
     const url = new URL(hubPath, config.hubUrl);
