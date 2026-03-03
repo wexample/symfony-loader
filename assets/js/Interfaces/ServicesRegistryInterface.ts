@@ -16,12 +16,14 @@ import KeyboardService from '../Services/KeyboardService';
 import LiveUpdatesService from '../Services/LiveUpdatesService';
 import ConnectionStatusService from '../Services/ConnectionStatusService';
 import ConnectionStatusNoticeService from '../Services/ConnectionStatusNoticeService';
+import ErrorService from '../Services/ErrorService';
 
 export default interface ServicesRegistryInterface {
   adaptive?: AdaptiveService;
   assets?: AssetsService;
   components?: ComponentsService;
   debug?: DebugService;
+  error?: ErrorService;
   entity?: EntityService;
   keyboard?: KeyboardService;
   events?: EventsService;
