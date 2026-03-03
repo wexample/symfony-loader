@@ -9,6 +9,7 @@ import ComponentInterface from '../Interfaces/RenderData/ComponentInterface';
 import { stringBuildIdentifier, stringToKebab } from '@wexample/js-helpers/Helper/String';
 import { objectDeepAssign } from "@wexample/js-helpers/Helper/Object";
 import PromptService from './PromptsService';
+import InvariantViolationError from '../Errors/InvariantViolationError';
 
 export default class VueService extends AppService {
   public static dependencies: typeof AppService[] = [PromptService];
@@ -224,15 +225,14 @@ export default class VueService extends AppService {
         ]);
 
         if (!vueClassDefinition.template) {
-          this.app.services.prompt.error(
-            `Unable to load vue component as template item #:id has not been found.`,
-            {
-              ':id': domId
+          throw new InvariantViolationError({
+            message: `Unable to load vue component as template item ${domId} has not been found.`,
+            code: 'ERR_VUE_TEMPLATE_MISSING',
+            context: {
+              view,
+              domId,
             },
-            {
-              fatal: true,
-            }
-          );
+          });
         }
 
         this.componentRegistered[vueName] = vueClassDefinition;

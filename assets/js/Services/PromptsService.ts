@@ -7,7 +7,6 @@ type PromptOptions = {
   title?: string;
   timeout?: number;
   sticky?: boolean;
-  fatal?: boolean;
   showApplicationMessage?: boolean;
 };
 
@@ -80,9 +79,6 @@ export default class PromptService extends AppService {
       this.showApplicationMessage(formattedMessage);
     }
 
-    if (options.fatal) {
-      throw new Error(formattedMessage);
-    }
   }
 
   private showApplicationMessage(message: string): void {

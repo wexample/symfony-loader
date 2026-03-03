@@ -50,14 +50,19 @@ export default class ErrorService extends AppService {
   capture(error: unknown, options: CaptureErrorOptions = {}): ErrorPayload {
     this.markErrorAsHandled(error);
 
+    const errorAsRecord = this.getErrorRecord(error);
+    const severity = options.severity || this.getErrorSeverity(errorAsRecord) || 'error';
+    const context = {
+      ...(this.getErrorContext(errorAsRecord) || {}),
+      ...(options.context || {}),
+    };
+
     const payload: ErrorPayload = {
       message: this.toMessage(error),
       error,
-      severity: options.severity || 'error',
+      severity,
       title: options.title,
-      context: {
-        ...(options.context || {}),
-      },
+      context,
     };
 
     this.log(payload);
@@ -162,6 +167,47 @@ export default class ErrorService extends AppService {
     } catch {
       return 'Unknown error';
     }
+  }
+
+  private getErrorRecord(error: unknown): Record<string, unknown> | null {
+    if (!error || typeof error !== 'object') {
+      return null;
+    }
+
+    return error as Record<string, unknown>;
+  }
+
+  private getErrorSeverity(error: Record<string, unknown> | null): ErrorSeverity | undefined {
+    if (!error) {
+      return undefined;
+    }
+
+    const severity = error.severity;
+    if (severity === 'info' || severity === 'warning' || severity === 'error' || severity === 'fatal') {
+      return severity;
+    }
+
+    return undefined;
+  }
+
+  private getErrorContext(error: Record<string, unknown> | null): ErrorContext | undefined {
+    if (!error) {
+      return undefined;
+    }
+
+    const context = error.context;
+    if (!context || typeof context !== 'object') {
+      return {
+        ...(typeof error.kind === 'string' ? { kind: error.kind } : {}),
+        ...(typeof error.code === 'string' ? { code: error.code } : {}),
+      };
+    }
+
+    return {
+      ...(context as Record<string, unknown>),
+      ...(typeof error.kind === 'string' ? { kind: error.kind } : {}),
+      ...(typeof error.code === 'string' ? { code: error.code } : {}),
+    };
   }
 
   private isErrorAlreadyHandled(error: unknown): boolean {

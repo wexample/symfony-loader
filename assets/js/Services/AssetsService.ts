@@ -13,6 +13,7 @@ import Fonts from '../Class/AssetUsage/Fonts';
 import ResponsiveAssetUsage from '../Class/AssetUsage/Responsive';
 import Animations from "../Class/AssetUsage/Animations";
 import PromptService from './PromptsService';
+import InvariantViolationError from '../Errors/InvariantViolationError';
 
 export type RenderNodeAssetsType = {
   assetsUpdate?: Function;
@@ -327,15 +328,16 @@ export default class AssetsService extends AppService {
       if (!elParent.contains(
         elReplacement
       )) {
-        this.app.services.prompt.error(
-          'The replacement node is not in the expected location in head marker :marker, ignoring',
-          {
-            ':marker': usageMarkerKey
+        throw new InvariantViolationError({
+          message: `The replacement node is not in the expected location in head marker ${usageMarkerKey}.`,
+          code: 'ERR_ASSET_REPLACEMENT_NODE_INVALID',
+          context: {
+            usageMarkerKey,
+            assetType: asset.type,
+            usage: asset.usage,
+            context: asset.context,
           },
-          {
-            fatal: true,
-          }
-        );
+        });
       }
 
       if (elReplacement.parentNode) {

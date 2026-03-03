@@ -12,6 +12,7 @@ import RoutingService from '../Services/RoutingService';
 import EntityService from '../Services/EntityService';
 import ErrorService from '../Services/ErrorService';
 import PromptService from '../Services/PromptsService';
+import MissingServiceError from '../Errors/MissingServiceError';
 import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import LayoutInitial from './LayoutInitial';
 import LayoutInterface from '../Interfaces/RenderData/LayoutInterface';
@@ -232,15 +233,7 @@ export default class extends AsyncConstructor {
     name = (typeof name === 'string' ? name : (name as any).serviceName) as string
 
     if (!this.services[name]) {
-      this.services.prompt.error(
-        'Trying to access undefined service :name',
-        {
-          'name': name
-        },
-        {
-          fatal: true,
-        }
-      );
+      throw new MissingServiceError(name);
     }
     return this.services[name];
   }
@@ -250,7 +243,7 @@ export default class extends AsyncConstructor {
     const service = this.services[serviceName];
 
     if (!service) {
-      throw new Error(`Service not found: ${serviceName}`);
+      throw new MissingServiceError(serviceName);
     }
 
     return service;
