@@ -1,5 +1,6 @@
 import AppService from '../Class/AppService';
 import AbstractApiEntitiesClient from "@wexample/js-api/Common/AbstractApiEntitiesClient";
+import InvariantViolationError from '../Errors/InvariantViolationError';
 
 export default class ApiService extends AppService {
   public static serviceName: string = 'api';
@@ -31,7 +32,10 @@ export default class ApiService extends AppService {
 
   getClient() {
     if (!this.client) {
-      throw new Error('API client is missing. Override App.createApiClient() to provide one.');
+      throw new InvariantViolationError({
+        message: 'API client is missing. Override App.createApiClient() to provide one.',
+        code: 'ERR_API_CLIENT_MISSING',
+      });
     }
 
     return this.client;

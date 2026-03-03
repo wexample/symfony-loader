@@ -2,6 +2,7 @@ import AppService from '../Class/AppService';
 import ConnectionStatusService from './ConnectionStatusService';
 import EventsService from './EventsService';
 import MercureLiveUpdatesDriver, { type MercureDriverConfig } from './MercureLiveUpdatesDriver';
+import InvariantViolationError from '../Errors/InvariantViolationError';
 import {
   type ReconnectBackoffOptions,
 } from '@wexample/js-helpers/Helper/Reconnect';
@@ -161,9 +162,13 @@ export default class LiveUpdatesService extends AppService {
       const jwt = this.readFirstLayoutVar(vars, config.jwtVars || []);
 
       if (!hubUrl) {
-        throw new Error(
-          `Missing Mercure hub url in layout vars. Checked: ${config.hubUrlVars.join(', ')}`
-        );
+        throw new InvariantViolationError({
+          message: `Missing Mercure hub url in layout vars. Checked: ${config.hubUrlVars.join(', ')}`,
+          code: 'ERR_LIVE_UPDATES_MERCURE_URL_MISSING',
+          context: {
+            checkedVars: [...config.hubUrlVars],
+          },
+        });
       }
 
       return {
@@ -180,7 +185,10 @@ export default class LiveUpdatesService extends AppService {
 
   connect(options: LiveUpdatesConnectOptions): LiveUpdatesConnection {
     if (!this.driver) {
-      throw new Error('Live updates driver is missing. Call setDriver() before connect().');
+      throw new InvariantViolationError({
+        message: 'Live updates driver is missing. Call setDriver() before connect().',
+        code: 'ERR_LIVE_UPDATES_DRIVER_MISSING',
+      });
     }
 
     const topics = this.normalizeTopics(options.topics);
@@ -285,7 +293,10 @@ export default class LiveUpdatesService extends AppService {
       .filter((part) => !!part);
 
     if (!normalized.length) {
-      throw new Error('Unable to build topic from empty parts.');
+      throw new InvariantViolationError({
+        message: 'Unable to build topic from empty parts.',
+        code: 'ERR_LIVE_UPDATES_TOPIC_EMPTY_PARTS',
+      });
     }
 
     return normalized.join('/');
@@ -298,7 +309,10 @@ export default class LiveUpdatesService extends AppService {
       .filter((topic) => !!topic);
 
     if (!filtered.length) {
-      throw new Error('At least one topic is required for live updates.');
+      throw new InvariantViolationError({
+        message: 'At least one topic is required for live updates.',
+        code: 'ERR_LIVE_UPDATES_TOPIC_REQUIRED',
+      });
     }
 
     return filtered;

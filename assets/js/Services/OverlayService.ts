@@ -1,5 +1,6 @@
 import AppService from '../Class/AppService';
 import ComponentsService from './ComponentsService';
+import InvariantViolationError from '../Errors/InvariantViolationError';
 
 export default class OverlayService extends AppService {
   public static serviceName: string = 'overlay';
@@ -99,7 +100,10 @@ export default class OverlayService extends AppService {
           this.overlayElMain = document.getElementById('overlay-layer-main');
 
           if (!this.overlayElGlobal) {
-            throw new Error('Missing overlay container "#overlay-layer".');
+            throw new InvariantViolationError({
+              message: 'Missing overlay container "#overlay-layer".',
+              code: 'ERR_OVERLAY_CONTAINER_MISSING',
+            });
           }
 
           document.addEventListener('mousedown', this.onDocumentMouseDown);

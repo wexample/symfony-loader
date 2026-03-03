@@ -1,4 +1,5 @@
 import AppService from '../Class/AppService';
+import InvariantViolationError from '../Errors/InvariantViolationError';
 
 type NoticeOptions = {
   id?: string;
@@ -17,7 +18,13 @@ type NoticeOptions = {
 export default class AbstractNoticeService extends AppService {
   // Implemented by concrete services (Toast/Banner).
   show(_options: NoticeOptions | string): any {
-    throw new Error('AbstractNoticeService.show must be implemented by subclasses.');
+    throw new InvariantViolationError({
+      message: 'AbstractNoticeService.show must be implemented by subclasses.',
+      code: 'ERR_ABSTRACT_NOTICE_SHOW_NOT_IMPLEMENTED',
+      context: {
+        className: this.constructor.name,
+      },
+    });
   }
 
   protected normalizeOptions(options: NoticeOptions | string, prefix: string): NoticeOptions {
