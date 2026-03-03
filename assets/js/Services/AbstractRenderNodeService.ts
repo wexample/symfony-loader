@@ -1,4 +1,5 @@
 import AppService from '../Class/AppService';
+import PromptService from './PromptsService';
 import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import RenderNode from '../Class/RenderNode';
 import ServicesRegistryInterface from '../Interfaces/ServicesRegistryInterface';
@@ -10,6 +11,7 @@ export class RenderNodeServiceEvents {
 }
 
 export default abstract class AbstractRenderNodeService extends AppService {
+  public static dependencies: typeof AppService[] = [PromptService];
   public services: ServicesRegistryInterface;
 
   /**
@@ -111,7 +113,7 @@ export default abstract class AbstractRenderNodeService extends AppService {
     try {
       return new classDefinition(renderRequestId, this.app, parentRenderNode);
     } catch {
-      this.app.services.prompt.systemError(
+      this.app.services.prompt.error(
         `Unable to find component with name "${classDefinition ? classDefinition.toString() : view}"`
       );
     }

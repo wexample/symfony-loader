@@ -73,13 +73,12 @@ export default abstract class Component extends RenderNode {
     }
 
     if (!el) {
-      this.app.services.prompt.systemError(
+      this.app.services.prompt.error(
         'Unable to find element ":name" using ":init_mode" init mode',
         {
           ':name': this.view,
           ':init_mode': this.initMode
-        },
-        this
+        }
       );
     }
 

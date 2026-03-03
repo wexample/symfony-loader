@@ -361,7 +361,7 @@ export default abstract class RenderNode extends AppChild {
     initial: boolean = false
   ) {
     if (!initial && this.app.layout.vars['usagesConfig'][usageName]['list'][usageValue]['allow_switch'] == false) {
-      this.app.services.prompt.systemError(
+      this.app.services.prompt.warning(
         'Switching is not allowed for usage ":usage" and value ":value"',
         {
           ':usage': usageName,

@@ -3,9 +3,10 @@ import AdaptiveResponseInterface from '../Interfaces/AdaptiveResponseInterface';
 import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import RequestOptionsInterface from '../Interfaces/RequestOptions/RequestOptionsInterface';
 import ComponentsService from './ComponentsService';
+import PromptService from './PromptsService';
 
 export default class AdaptiveService extends AppService {
-  public static dependencies: typeof AppService[] = [ComponentsService];
+  public static dependencies: typeof AppService[] = [ComponentsService, PromptService];
   public static serviceName: string = 'adaptive';
 
   fetch(

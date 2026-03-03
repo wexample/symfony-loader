@@ -12,6 +12,7 @@ import Margins from '../Class/AssetUsage/Margins';
 import Fonts from '../Class/AssetUsage/Fonts';
 import ResponsiveAssetUsage from '../Class/AssetUsage/Responsive';
 import Animations from "../Class/AssetUsage/Animations";
+import PromptService from './PromptsService';
 
 export type RenderNodeAssetsType = {
   assetsUpdate?: Function;
@@ -29,6 +30,7 @@ export class AssetsServiceType {
 }
 
 export default class AssetsService extends AppService {
+  public static dependencies: typeof AppService[] = [PromptService];
   public usages: { [key: string]: AssetUsage } = {};
 
   public jsAssetsPending: { [key: string]: AssetInterface } = {};
@@ -325,11 +327,15 @@ export default class AssetsService extends AppService {
       if (!elParent.contains(
         elReplacement
       )) {
-        this.app.services.prompt.systemError(
+        this.app.services.prompt.error(
           'The replacement node is not in the expected location in head marker :marker, ignoring',
           {
             ':marker': usageMarkerKey
-          }, undefined, true);
+          },
+          {
+            fatal: true,
+          }
+        );
       }
 
       if (elReplacement.parentNode) {

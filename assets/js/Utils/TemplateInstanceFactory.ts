@@ -20,7 +20,7 @@ export default class TemplateInstanceFactory {
   ): TemplateInstanceResult | null {
     const template = this.findTemplate(view);
     if (!template) {
-      app.services.prompt.systemError(
+      app.services.prompt.error(
         `Component template not found for "${view}"`
       );
       return null;
@@ -66,7 +66,7 @@ export default class TemplateInstanceFactory {
     const fragment = template.content.cloneNode(true) as DocumentFragment;
     const rootEl = fragment.firstElementChild as HTMLElement;
     if (!rootEl) {
-      app.services.prompt.systemError(
+      app.services.prompt.error(
         `Component template "${view}" is empty`
       );
       return null;

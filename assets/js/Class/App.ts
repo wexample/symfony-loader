@@ -11,6 +11,7 @@ import { RenderNodeResponsiveType } from '../Services/ResponsiveService';
 import RoutingService from '../Services/RoutingService';
 import EntityService from '../Services/EntityService';
 import ErrorService from '../Services/ErrorService';
+import PromptService from '../Services/PromptsService';
 import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import LayoutInitial from './LayoutInitial';
 import LayoutInterface from '../Interfaces/RenderData/LayoutInterface';
@@ -135,6 +136,7 @@ export default class extends AsyncConstructor {
       MixinsService,
       OverlayService,
       PagesService,
+      PromptService,
       RoutingService,
       EntityService,
       ErrorService,
@@ -230,11 +232,14 @@ export default class extends AsyncConstructor {
     name = (typeof name === 'string' ? name : (name as any).serviceName) as string
 
     if (!this.services[name]) {
-      this.services.prompt.systemError(
+      this.services.prompt.error(
         'Trying to access undefined service :name',
         {
           'name': name
-        }, undefined, true
+        },
+        {
+          fatal: true,
+        }
       );
     }
     return this.services[name];
