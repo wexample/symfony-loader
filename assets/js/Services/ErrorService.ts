@@ -25,6 +25,7 @@ export type ErrorPayload = {
   severity: ErrorSeverity;
   title?: string;
   context: ErrorContext;
+  logPayload: Record<string, unknown>;
 };
 
 export class ErrorServiceEvents {
@@ -52,17 +53,24 @@ export default class ErrorService extends AppService {
 
     const errorAsRecord = this.getErrorRecord(error);
     const severity = options.severity || this.getErrorSeverity(errorAsRecord) || 'error';
+    const message = this.toMessage(error);
     const context = {
       ...(this.getErrorContext(errorAsRecord) || {}),
       ...(options.context || {}),
     };
 
     const payload: ErrorPayload = {
-      message: this.toMessage(error),
+      message,
       error,
       severity,
       title: options.title,
       context,
+      logPayload: this.toLogPayload(error, {
+        message,
+        severity,
+        title: options.title,
+        context,
+      }),
     };
 
     this.log(payload);
@@ -220,6 +228,45 @@ export default class ErrorService extends AppService {
       ...(context as Record<string, unknown>),
       ...(typeof error.kind === 'string' ? { kind: error.kind } : {}),
       ...(typeof error.code === 'string' ? { code: error.code } : {}),
+    };
+  }
+
+  private toLogPayload(
+    error: unknown,
+    normalized: {
+      message: string;
+      severity: ErrorSeverity;
+      title?: string;
+      context: ErrorContext;
+    }
+  ): Record<string, unknown> {
+    const errorWithLogPayload = (
+      error &&
+      typeof error === 'object' &&
+      typeof (error as { toLogPayload?: unknown }).toLogPayload === 'function'
+    )
+      ? error as { toLogPayload: () => unknown }
+      : null;
+
+    if (errorWithLogPayload) {
+      const customPayload = errorWithLogPayload.toLogPayload();
+      if (customPayload && typeof customPayload === 'object') {
+        return customPayload as Record<string, unknown>;
+      }
+    }
+
+    const errorAsRecord = this.getErrorRecord(error);
+
+    return {
+      message: normalized.message,
+      severity: normalized.severity,
+      title: normalized.title,
+      context: normalized.context,
+      ...(error instanceof Error ? {
+        name: error.name,
+        stack: error.stack,
+      } : {}),
+      ...(errorAsRecord ? errorAsRecord : {}),
     };
   }
 
