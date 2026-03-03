@@ -1,6 +1,11 @@
 import AppService from '../Class/AppService';
 import EventsService from './EventsService';
 import MercureLiveUpdatesDriver, { type MercureDriverConfig } from './MercureLiveUpdatesDriver';
+import {
+  reconnectBackoffCreateController,
+  type ReconnectBackoffController,
+  type ReconnectBackoffOptions,
+} from '@wexample/js-helpers/Helper/Reconnect';
 export type { MercureDriverConfig } from './MercureLiveUpdatesDriver';
 
 export class LiveUpdatesServiceEvents {
@@ -41,6 +46,8 @@ export type LiveUpdatesConnection = {
 };
 
 type LiveUpdatesConnectionInternal = LiveUpdatesConnection & {
+  reconnecting: boolean;
+  reconnectController: ReconnectBackoffController;
   onOpen?: (connection: LiveUpdatesConnection, event: Event) => void;
   onError?: (connection: LiveUpdatesConnection, event: Event) => void;
   onMessage?: (connection: LiveUpdatesConnection, payload: unknown, event: MessageEvent) => void;
@@ -66,6 +73,12 @@ export default class LiveUpdatesService extends AppService {
 
   private readonly connections: Map<string, LiveUpdatesConnectionInternal> = new Map();
   private readonly ownerConnections: WeakMap<object, Set<string>> = new WeakMap();
+  private reconnectOptions: ReconnectBackoffOptions = {
+    initialDelayMs: 1000,
+    maxDelayMs: 30000,
+    factor: 2,
+    jitterRatio: 0.2,
+  };
   private connectionIndex: number = 0;
   private driver: LiveUpdatesDriverInterface | null = null;
 
@@ -127,6 +140,13 @@ export default class LiveUpdatesService extends AppService {
     this.driver = driver;
   }
 
+  setReconnectOptions(options: ReconnectBackoffOptions): void {
+    this.reconnectOptions = {
+      ...this.reconnectOptions,
+      ...options,
+    };
+  }
+
   useMercureDriver(config: MercureDriverConfig | (() => MercureDriverConfig)): void {
     this.setDriver(new MercureLiveUpdatesDriver(config));
   }
@@ -174,6 +194,8 @@ export default class LiveUpdatesService extends AppService {
       owner: options.owner,
       metadata: { ...(options.metadata || {}) },
       status: 'connecting',
+      reconnecting: false,
+      reconnectController: reconnectBackoffCreateController(this.reconnectOptions),
       onOpen: options.onOpen,
       onError: options.onError,
       onMessage: options.onMessage,
@@ -295,11 +317,16 @@ export default class LiveUpdatesService extends AppService {
 
   private bindSource(connection: LiveUpdatesConnectionInternal): void {
     connection.source.onopen = (event: Event) => {
+      connection.reconnecting = false;
+      connection.reconnectController.reset();
       this.updateConnectionStatus(connection, 'open', event);
       connection.onOpen?.(this.toPublicConnection(connection), event);
     };
 
     connection.source.onerror = (event: Event) => {
+      connection.reconnecting = true;
+      // Prepare next reconnection delay (actual reconnect orchestration comes next step).
+      connection.reconnectController.nextDelay();
       this.updateConnectionStatus(connection, 'error', event);
       connection.onError?.(this.toPublicConnection(connection), event);
     };
