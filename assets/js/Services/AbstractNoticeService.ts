@@ -1,5 +1,6 @@
 import AppService from '../Class/AppService';
 import InvariantViolationError from '../Errors/InvariantViolationError';
+import LocaleService from './LocaleService';
 
 type NoticeOptions = {
   id?: string;
@@ -31,8 +32,10 @@ export default class AbstractNoticeService extends AppService {
     if (typeof options === 'string') {
       options = { message: options };
     }
+
     return {
       ...options,
+      message: (this.app.getService(LocaleService) as LocaleService).trans(options.message),
       id: options.id || `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       type: options.type || 'default'
     };

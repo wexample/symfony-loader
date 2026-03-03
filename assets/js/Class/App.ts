@@ -257,4 +257,8 @@ export default class extends AsyncConstructor {
       this.addLib(data[0], data[1]);
     });
   }
+
+  onTriggerError(_payload: unknown): void {
+    // To override in concrete apps.
+  }
 }

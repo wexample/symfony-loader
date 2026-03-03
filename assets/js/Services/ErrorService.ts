@@ -72,6 +72,7 @@ export default class ErrorService extends AppService {
     }
 
     this.emit(payload);
+    this.app.onTriggerError(payload);
 
     return payload;
   }
