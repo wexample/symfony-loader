@@ -4,7 +4,6 @@ import EventsService from '../Services/EventsService';
 import LayoutsService from '../Services/LayoutsService';
 import MixinsService from '../Services/MixinsService';
 import PagesService from '../Services/PagesService';
-import PromptService from '../Services/PromptsService';
 import RoutingService from '../Services/RoutingService';
 import ComponentsService from '../Services/ComponentsService';
 import VueService from '../Services/VueService';
@@ -35,7 +34,6 @@ export default interface ServicesRegistryInterface {
   mixins?: MixinsService;
   overlay?: OverlayService;
   pages?: PagesService;
-  prompt?: PromptService;
   routing?: RoutingService;
   vue?: VueService;
 }

@@ -1,6 +1,7 @@
 import ComponentInterface from '../Interfaces/RenderData/ComponentInterface';
 import RenderNode from './RenderNode';
 import { domFindPreviousNode } from '@wexample/js-helpers/Helper/Dom';
+import InvariantViolationError from '../Errors/InvariantViolationError';
 
 export default abstract class Component extends RenderNode {
   protected initMode: string;
@@ -36,9 +37,14 @@ export default abstract class Component extends RenderNode {
       ) as HTMLElement;
 
       if (!elPlaceholder) {
-        throw new Error(
-          `Component placeholder missing for "${this.view}" using ".${this.cssClassName}".`
-        );
+        throw new InvariantViolationError({
+          message: `Component placeholder missing for "${this.view}" using ".${this.cssClassName}".`,
+          code: 'ERR_COMPONENT_PLACEHOLDER_MISSING',
+          context: {
+            view: this.view,
+            cssClassName: this.cssClassName,
+          },
+        });
       }
     }
 
@@ -73,13 +79,15 @@ export default abstract class Component extends RenderNode {
     }
 
     if (!el) {
-      this.app.services.prompt.error(
-        'Unable to find element ":name" using ":init_mode" init mode',
-        {
-          ':name': this.view,
-          ':init_mode': this.initMode
-        }
-      );
+      throw new InvariantViolationError({
+        message: `Unable to find element "${this.view}" using "${this.initMode}" init mode.`,
+        code: 'ERR_COMPONENT_ELEMENT_NOT_FOUND',
+        context: {
+          view: this.view,
+          initMode: this.initMode,
+          cssClassName: this.cssClassName,
+        },
+      });
     }
 
     this.el = el;

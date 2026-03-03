@@ -1,5 +1,6 @@
 import AbstractMixin from '@wexample/js-helpers/Helper/AbstractMixin';
 import { stringToPascalCase } from '@wexample/js-helpers/Helper/String';
+import InvariantViolationError from '../../Errors/InvariantViolationError';
 
 export default class ElementListenersMixin extends AbstractMixin {
   static apply(instance: any) {
@@ -25,9 +26,15 @@ export default class ElementListenersMixin extends AbstractMixin {
           const root = target.el || document;
           const el = root.querySelector(selector);
           if (!el) {
-            throw new Error(
-              `Missing element "${key}" using selector "${selector}" in "${target.view || 'app'}".`
-            );
+            throw new InvariantViolationError({
+              message: `Missing element "${key}" using selector "${selector}" in "${target.view || 'app'}".`,
+              code: 'ERR_ELEMENT_LISTENER_TARGET_MISSING',
+              context: {
+                view: target.view || 'app',
+                key,
+                selector,
+              },
+            });
           }
           target.elements[key] = el;
         };
@@ -46,9 +53,15 @@ export default class ElementListenersMixin extends AbstractMixin {
         target.onEl = (key: string, event: string, handler: EventListenerOrEventListenerObject) => {
           const el = target.elements[key];
           if (!el) {
-            throw new Error(
-              `Missing element "${key}" for event "${event}" in "${target.view || 'app'}".`
-            );
+            throw new InvariantViolationError({
+              message: `Missing element "${key}" for event "${event}" in "${target.view || 'app'}".`,
+              code: 'ERR_ELEMENT_LISTENER_EVENT_TARGET_MISSING',
+              context: {
+                view: target.view || 'app',
+                key,
+                event,
+              },
+            });
           }
           el.addEventListener(event, handler);
         };
@@ -92,9 +105,16 @@ export default class ElementListenersMixin extends AbstractMixin {
               const keyName = stringToPascalCase(key);
               const method = target[`on${eventName}${keyName}ElListener`];
               if (typeof method !== 'function') {
-                throw new Error(
-                  `Missing handler for "${event}" on element "${key}" in "${target.view || 'app'}". Expected on${eventName}${keyName}ElListener().`
-                );
+                throw new InvariantViolationError({
+                  message: `Missing handler for "${event}" on element "${key}" in "${target.view || 'app'}". Expected on${eventName}${keyName}ElListener().`,
+                  code: 'ERR_ELEMENT_LISTENER_HANDLER_MISSING',
+                  context: {
+                    view: target.view || 'app',
+                    key,
+                    event,
+                    expectedMethod: `on${eventName}${keyName}ElListener`,
+                  },
+                });
               }
               const proxy = method.bind(target);
               target.elListenerProxies[key] = target.elListenerProxies[key] || {};

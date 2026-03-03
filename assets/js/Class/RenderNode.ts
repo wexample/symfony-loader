@@ -8,6 +8,7 @@ import Page from './Page';
 import { RenderNodeServiceEvents } from "../Services/AbstractRenderNodeService";
 import ElementListenersMixin from './Mixins/ElementListenersMixin';
 import InvariantViolationError from '../Errors/InvariantViolationError';
+import ErrorService from '../Services/ErrorService';
 
 export default abstract class RenderNode extends AppChild {
   public callerPage: Page;
@@ -374,12 +375,19 @@ export default abstract class RenderNode extends AppChild {
     initial: boolean = false
   ) {
     if (!initial && this.app.layout.vars['usagesConfig'][usageName]['list'][usageValue]['allow_switch'] == false) {
-      this.app.services.prompt.warning(
-        'Switching is not allowed for usage ":usage" and value ":value"',
+      (this.app.getServiceOrFail(ErrorService) as ErrorService).capture(
+        `Switching is not allowed for usage "${usageName}" and value "${usageValue}".`,
         {
-          ':usage': usageName,
-          ':value': usageValue,
-        });
+          severity: 'warning',
+          context: {
+            source: 'render-node.set-usage',
+            details: {
+              usageName,
+              usageValue,
+            },
+          },
+        }
+      );
       return;
     }
 

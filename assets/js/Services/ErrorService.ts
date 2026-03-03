@@ -76,6 +76,18 @@ export default class ErrorService extends AppService {
     return payload;
   }
 
+  info(message: string, context: ErrorContext = {}): ErrorPayload {
+    return this.capture(message, { severity: 'info', context });
+  }
+
+  warning(message: string, context: ErrorContext = {}): ErrorPayload {
+    return this.capture(message, { severity: 'warning', context });
+  }
+
+  error(message: string, context: ErrorContext = {}): ErrorPayload {
+    return this.capture(message, { severity: 'error', context });
+  }
+
   private registerGlobalHandlers(): void {
     if (typeof window === 'undefined') {
       return;

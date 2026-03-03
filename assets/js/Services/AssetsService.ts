@@ -12,7 +12,7 @@ import Margins from '../Class/AssetUsage/Margins';
 import Fonts from '../Class/AssetUsage/Fonts';
 import ResponsiveAssetUsage from '../Class/AssetUsage/Responsive';
 import Animations from "../Class/AssetUsage/Animations";
-import PromptService from './PromptsService';
+import ErrorService from './ErrorService';
 import InvariantViolationError from '../Errors/InvariantViolationError';
 
 export type RenderNodeAssetsType = {
@@ -31,7 +31,7 @@ export class AssetsServiceType {
 }
 
 export default class AssetsService extends AppService {
-  public static dependencies: typeof AppService[] = [PromptService];
+  public static dependencies: typeof AppService[] = [ErrorService];
   public usages: { [key: string]: AssetUsage } = {};
 
   public jsAssetsPending: { [key: string]: AssetInterface } = {};

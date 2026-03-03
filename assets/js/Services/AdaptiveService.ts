@@ -3,10 +3,10 @@ import AdaptiveResponseInterface from '../Interfaces/AdaptiveResponseInterface';
 import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import RequestOptionsInterface from '../Interfaces/RequestOptions/RequestOptionsInterface';
 import ComponentsService from './ComponentsService';
-import PromptService from './PromptsService';
+import ErrorService from './ErrorService';
 
 export default class AdaptiveService extends AppService {
-  public static dependencies: typeof AppService[] = [ComponentsService, PromptService];
+  public static dependencies: typeof AppService[] = [ComponentsService, ErrorService];
   public static serviceName: string = 'adaptive';
 
   fetch(
@@ -32,7 +32,17 @@ export default class AdaptiveService extends AppService {
     const response = await this.fetch(path, requestOptions);
 
     if (!response.ok) {
-      this.app.services.prompt.error(`Error response : [${response.status}] ${response.statusText}`);
+      this.app.services.error?.capture(`Error response : [${response.status}] ${response.statusText}`, {
+        severity: 'error',
+        context: {
+          source: 'adaptive.request',
+          details: {
+            path,
+            status: response.status,
+            statusText: response.statusText,
+          },
+        },
+      });
     }
 
     try {
@@ -42,7 +52,16 @@ export default class AdaptiveService extends AppService {
       }
       return data;
     } catch (error) {
-      this.app.services.prompt.error('Failed to parse JSON response.');
+      this.app.services.error?.capture(error, {
+        title: 'Failed to parse JSON response.',
+        severity: 'error',
+        context: {
+          source: 'adaptive.request',
+          details: {
+            path,
+          },
+        },
+      });
       return { ok: false } as AdaptiveResponseInterface;
     }
   }

@@ -11,7 +11,6 @@ import { RenderNodeResponsiveType } from '../Services/ResponsiveService';
 import RoutingService from '../Services/RoutingService';
 import EntityService from '../Services/EntityService';
 import ErrorService from '../Services/ErrorService';
-import PromptService from '../Services/PromptsService';
 import MissingServiceError from '../Errors/MissingServiceError';
 import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import LayoutInitial from './LayoutInitial';
@@ -137,7 +136,6 @@ export default class extends AsyncConstructor {
       MixinsService,
       OverlayService,
       PagesService,
-      PromptService,
       RoutingService,
       EntityService,
       ErrorService,

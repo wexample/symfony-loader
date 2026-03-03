@@ -8,11 +8,11 @@ import App from '../Class/App';
 import ComponentInterface from '../Interfaces/RenderData/ComponentInterface';
 import { stringBuildIdentifier, stringToKebab } from '@wexample/js-helpers/Helper/String';
 import { objectDeepAssign } from "@wexample/js-helpers/Helper/Object";
-import PromptService from './PromptsService';
+import ErrorService from './ErrorService';
 import InvariantViolationError from '../Errors/InvariantViolationError';
 
 export default class VueService extends AppService {
-  public static dependencies: typeof AppService[] = [PromptService];
+  public static dependencies: typeof AppService[] = [ErrorService];
   protected componentRegistered: { [key: string]: object } = {};
   protected elTemplates: HTMLElement;
   public vueRenderDataCache: { [key: string]: ComponentInterface } = {};
@@ -193,12 +193,15 @@ export default class VueService extends AppService {
       const vueClassDefinition = this.app.getBundleClassDefinition(view) as any;
 
       if (!vueClassDefinition) {
-        this.app.services.prompt.error(
-          'Missing vue definition for ":class"',
-          {
-            ':class': view,
-          }
-        );
+        this.app.services.error?.capture('Missing vue definition for component.', {
+          severity: 'error',
+          context: {
+            source: 'vue.init-component',
+            details: {
+              view,
+            },
+          },
+        });
       } else {
         vueClassDefinition.template = document.getElementById(domId);
 

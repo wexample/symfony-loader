@@ -4,6 +4,7 @@ import RenderNode from '../Class/RenderNode';
 import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import RenderDataFactory from './RenderDataFactory';
 import App from '../Class/App';
+import ErrorService from '../Services/ErrorService';
 
 type TemplateInstanceResult = {
   renderData: RenderDataInterface;
@@ -20,8 +21,17 @@ export default class TemplateInstanceFactory {
   ): TemplateInstanceResult | null {
     const template = this.findTemplate(view);
     if (!template) {
-      app.services.prompt.error(
-        `Component template not found for "${view}"`
+      (app.getServiceOrFail(ErrorService) as ErrorService).capture(
+        `Component template not found for "${view}".`,
+        {
+          severity: 'error',
+          context: {
+            source: 'template-instance-factory.create',
+            details: {
+              view,
+            },
+          },
+        }
       );
       return null;
     }
@@ -66,8 +76,17 @@ export default class TemplateInstanceFactory {
     const fragment = template.content.cloneNode(true) as DocumentFragment;
     const rootEl = fragment.firstElementChild as HTMLElement;
     if (!rootEl) {
-      app.services.prompt.error(
-        `Component template "${view}" is empty`
+      (app.getServiceOrFail(ErrorService) as ErrorService).capture(
+        `Component template "${view}" is empty.`,
+        {
+          severity: 'error',
+          context: {
+            source: 'template-instance-factory.find-root',
+            details: {
+              view,
+            },
+          },
+        }
       );
       return null;
     }
