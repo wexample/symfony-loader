@@ -87,7 +87,6 @@ export default class BannerService extends AbstractNoticeService {
     }
 
     const layoutTarget = document.querySelector('[data-banner-target]') as HTMLElement | null;
-    console.log(layoutTarget)
     if (layoutTarget) {
       return layoutTarget;
     }
