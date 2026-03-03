@@ -5,6 +5,10 @@ frontend:
     confirm:
       form_leave: Are you sure you want to leave this form?
   banner:
+    connection_offline:
+      message: Internet connection is unavailable.
+    connection_online:
+      message: Internet connection restored.
     live_update_reconnecting:
       message: Live connection lost. Reconnecting...
     live_update_reconnected:

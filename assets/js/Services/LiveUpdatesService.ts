@@ -1,4 +1,5 @@
 import AppService from '../Class/AppService';
+import ConnectionStatusService from './ConnectionStatusService';
 import EventsService from './EventsService';
 import MercureLiveUpdatesDriver, { type MercureDriverConfig } from './MercureLiveUpdatesDriver';
 import {
@@ -71,7 +72,7 @@ export type MercureLayoutVarsConfig = {
 
 export default class LiveUpdatesService extends AppService {
   public static serviceName: string = 'liveUpdates';
-  public static dependencies: typeof AppService[] = [EventsService];
+  public static dependencies: typeof AppService[] = [EventsService, ConnectionStatusService];
 
   private readonly connections: Map<string, LiveUpdatesConnectionInternal> = new Map();
   private readonly ownerConnections: WeakMap<object, Set<string>> = new WeakMap();
@@ -323,6 +324,7 @@ export default class LiveUpdatesService extends AppService {
       connection.reconnectScheduler.cancel();
       connection.reconnecting = false;
       connection.reconnectScheduler.reset();
+      this.markConnectionOnline(connection);
       this.updateConnectionStatus(connection, 'open', event);
       if (wasReconnecting) {
         this.emit(LiveUpdatesServiceEvents.CONNECTION_RECONNECTED, {
@@ -334,6 +336,9 @@ export default class LiveUpdatesService extends AppService {
     };
 
     connection.source.onerror = (event: Event) => {
+      this.markConnectionOffline(connection, {
+        reason: 'source-error',
+      });
       this.updateConnectionStatus(connection, 'error', event);
       this.scheduleReconnect(connection, event);
       connection.onError?.(this.toPublicConnection(connection), event);
@@ -408,6 +413,7 @@ export default class LiveUpdatesService extends AppService {
 
     connection.reconnectScheduler.cancel();
     this.closeSource(connection);
+    this.markConnectionOnline(connection);
 
     this.untrackOwnerConnection(connection);
     this.connections.delete(connection.id);
@@ -521,5 +527,24 @@ export default class LiveUpdatesService extends AppService {
     connection.source.onerror = null;
     connection.source.onmessage = null;
     connection.source.close();
+  }
+
+  private markConnectionOffline(
+    connection: LiveUpdatesConnectionInternal,
+    context: Record<string, unknown> = {}
+  ): void {
+    this.getConnectionStatusService().markSourceDisconnected(this.getConnectionStatusSource(connection), context);
+  }
+
+  private markConnectionOnline(connection: LiveUpdatesConnectionInternal): void {
+    this.getConnectionStatusService().markSourceReconnected(this.getConnectionStatusSource(connection));
+  }
+
+  private getConnectionStatusSource(connection: LiveUpdatesConnectionInternal): string {
+    return `live-updates:${connection.id}`;
+  }
+
+  private getConnectionStatusService(): ConnectionStatusService {
+    return this.app.getServiceOrFail(ConnectionStatusService) as ConnectionStatusService;
   }
 }

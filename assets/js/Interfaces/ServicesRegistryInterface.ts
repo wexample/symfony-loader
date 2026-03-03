@@ -14,7 +14,8 @@ import EntityService from '../Services/EntityService';
 import OverlayService from '../Services/OverlayService';
 import KeyboardService from '../Services/KeyboardService';
 import LiveUpdatesService from '../Services/LiveUpdatesService';
-import LiveUpdatesNoticeService from '../Services/LiveUpdatesNoticeService';
+import ConnectionStatusService from '../Services/ConnectionStatusService';
+import ConnectionStatusNoticeService from '../Services/ConnectionStatusNoticeService';
 
 export default interface ServicesRegistryInterface {
   adaptive?: AdaptiveService;
@@ -26,8 +27,9 @@ export default interface ServicesRegistryInterface {
   events?: EventsService;
   layouts?: LayoutsService;
   locale?: LocaleService;
+  connectionStatus?: ConnectionStatusService;
+  connectionStatusNotice?: ConnectionStatusNoticeService;
   liveUpdates?: LiveUpdatesService;
-  liveUpdatesNotice?: LiveUpdatesNoticeService;
   mixins?: MixinsService;
   overlay?: OverlayService;
   pages?: PagesService;
