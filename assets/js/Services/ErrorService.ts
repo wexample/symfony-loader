@@ -1,6 +1,8 @@
 import AppService from '../Class/AppService';
 import ToastService from './ToastService';
 
+const HANDLED_BY_ERROR_SERVICE_FLAG = '__handledByErrorService';
+
 export type ErrorSeverity = 'info' | 'warning' | 'error' | 'fatal';
 
 export type ErrorContext = {
@@ -46,6 +48,8 @@ export default class ErrorService extends AppService {
   }
 
   capture(error: unknown, options: CaptureErrorOptions = {}): ErrorPayload {
+    this.markErrorAsHandled(error);
+
     const payload: ErrorPayload = {
       message: this.toMessage(error),
       error,
@@ -74,6 +78,9 @@ export default class ErrorService extends AppService {
 
     if (!this.windowErrorHandler) {
       this.windowErrorHandler = (event: ErrorEvent) => {
+        if (this.isErrorAlreadyHandled(event.error)) {
+          return;
+        }
         this.capture(event.error || event.message, {
           title: 'Unhandled error',
           severity: 'error',
@@ -92,6 +99,9 @@ export default class ErrorService extends AppService {
 
     if (!this.unhandledRejectionHandler) {
       this.unhandledRejectionHandler = (event: PromiseRejectionEvent) => {
+        if (this.isErrorAlreadyHandled(event.reason)) {
+          return;
+        }
         this.capture(event.reason, {
           title: 'Unhandled rejection',
           severity: 'error',
@@ -152,5 +162,21 @@ export default class ErrorService extends AppService {
     } catch {
       return 'Unknown error';
     }
+  }
+
+  private isErrorAlreadyHandled(error: unknown): boolean {
+    if (!error || typeof error !== 'object') {
+      return false;
+    }
+
+    return !!(error as Record<string, unknown>)[HANDLED_BY_ERROR_SERVICE_FLAG];
+  }
+
+  private markErrorAsHandled(error: unknown): void {
+    if (!error || typeof error !== 'object') {
+      return;
+    }
+
+    (error as Record<string, unknown>)[HANDLED_BY_ERROR_SERVICE_FLAG] = true;
   }
 }
