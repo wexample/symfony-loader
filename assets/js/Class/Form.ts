@@ -270,16 +270,17 @@ export default class Form extends Component {
       return;
     }
 
-    const catalog = payload.translations
-      ? {...this.app.layout.translations, ...payload.translations}
-      : undefined;
-    this.applyFormErrors(this.el as HTMLFormElement, payload.form.errors, catalog);
+    this.applyFormErrors(
+      this.el as HTMLFormElement,
+      payload.form.errors,
+      payload.translations
+    );
   }
 
   private applyFormErrors(
     form: HTMLFormElement,
     errors: any,
-    catalog?: Record<string, string>
+    catalog: Record<string, string>
   ) {
     this.clearFormErrors(form);
 
@@ -343,17 +344,8 @@ export default class Form extends Component {
 
   private translateMessage(
     message: string,
-    catalog?: Record<string, string>
+    catalog: Record<string, string>
   ): string {
-    if (!message) {
-      return message;
-    }
-
-    const localeService = this.app.getServiceOrFail(LocaleService) as LocaleService;
-    if (catalog && localeService) {
-      return localeService.trans(message, {}, catalog);
-    }
-
-    return message;
+    return (this.app.getServiceOrFail(LocaleService) as LocaleService).trans(message, {}, catalog);
   }
 }
