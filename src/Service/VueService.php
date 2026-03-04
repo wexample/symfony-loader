@@ -53,11 +53,17 @@ class VueService
 
         $vueDomId = DomHelper::buildStringIdentifier($view);
 
+        $translationDomain = $this->translator->setDomainFromTemplatePath(
+            Translator::DOMAIN_TYPE_VUE,
+            $view
+        );
+
         $wrapperOptions = $options ?? [];
         $componentOptions = [
             'domId' => $vueDomId,
             'name' => $view,
-            'props' => $props
+            'props' => $props,
+            'translationDomain' => $translationDomain
         ];
 
         $outputBody = '';
@@ -106,10 +112,7 @@ class VueService
 
             $rootComponent->addTranslationDomain(
                 Translator::DOMAIN_TYPE_VUE,
-                $this->translator->setDomainFromTemplatePath(
-                    Translator::DOMAIN_TYPE_VUE,
-                    $view
-                ),
+                $translationDomain,
                 $view
             );
 
