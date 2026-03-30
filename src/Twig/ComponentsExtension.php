@@ -53,6 +53,14 @@ class ComponentsExtension extends AbstractExtension
                 $initOptions
             ),
             new TwigFunction(
+                'component_frontend',
+                [
+                    $this,
+                    'componentFrontend',
+                ],
+                $initOptions
+            ),
+            new TwigFunction(
                 'component_init_previous',
                 [
                     $this,
@@ -89,13 +97,15 @@ class ComponentsExtension extends AbstractExtension
         Environment $twig,
         RenderPass $renderPass,
         string $path,
-        array $options = []
+        array $options = [],
+        array $templateVars = []
     ): string {
         $component = $this->componentService->componentInitPrevious(
             $twig,
             $renderPass,
             $path,
-            $options
+            $options,
+            $templateVars
         );
 
         return $component->getBody().$component->renderTag();
@@ -108,13 +118,15 @@ class ComponentsExtension extends AbstractExtension
         Environment $twig,
         RenderPass $renderPass,
         string $name,
-        array $options = []
+        array $options = [],
+        array $templateVars = []
     ): string {
         return $this->componentService->componentInitPrevious(
             $twig,
             $renderPass,
             $name,
-            $options
+            $options,
+            $templateVars
         )->renderTag();
     }
 
@@ -127,7 +139,8 @@ class ComponentsExtension extends AbstractExtension
         Environment $twig,
         RenderPass $renderPass,
         string $name,
-        array $options = []
+        array $options = [],
+        array $templateVars = []
     ): string {
         return $this
             ->componentService
@@ -135,7 +148,8 @@ class ComponentsExtension extends AbstractExtension
                 $twig,
                 $renderPass,
                 $name,
-                $options
+                $options,
+                $templateVars
             )->renderCssClasses();
     }
 
@@ -146,7 +160,8 @@ class ComponentsExtension extends AbstractExtension
         Environment $twig,
         RenderPass $renderPass,
         string $name,
-        array $options = []
+        array $options = [],
+        array $templateVars = []
     ): string {
         return $this
             ->componentService
@@ -154,20 +169,82 @@ class ComponentsExtension extends AbstractExtension
                 $twig,
                 $renderPass,
                 $name,
-                $options
+                $options,
+                $templateVars
             )->renderTag();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function componentInitLayout(
+        Environment $twig,
+        RenderPass $renderPass,
+        string $name,
+        array $options = [],
+        array $templateVars = []
+    ): string {
+        return $this
+            ->componentService
+            ->componentInitLayout(
+                $twig,
+                $renderPass,
+                $name,
+                $options,
+                $templateVars
+            )->renderTag();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function componentFrontend(
+        Environment $twig,
+        RenderPass $renderPass,
+        string $name,
+        array $options = []
+    ): string {
+        $options['frontend'] = true;
+        $previousContext = $renderPass->getCurrentContextRenderNode();
+        $renderPass->setCurrentContextRenderNode($renderPass->getLayoutRenderNode());
+
+        // Frontend templates are cloned in JS; avoid appending the init placeholder tag.
+        $component = $this->componentService->registerComponent(
+            $twig,
+            $renderPass,
+            $name,
+            ComponentService::INIT_MODE_TEMPLATE,
+            $options
+        );
+
+        $body = $component->getBody() ?: '';
+        $template = '<template data-component-template="' . $component->getView() . '">' . $body . '</template>';
+        $component->setBody($template);
+
+        if ($previousContext) {
+            $renderPass->setCurrentContextRenderNode($previousContext);
+        }
+
+        return '';
     }
 
     public function componentRenderTagAttributes(
         array $context,
         array $defaults = []
     ): string {
-        $class = trim(($defaults[VariableHelper::CLASS_VAR] ?? '').' '.($context[VariableHelper::CLASS_VAR] ?? ''));
+        $attributes = $defaults['attr'] ?? $defaults;
+
+        // Allow passing options directly (e.g. { el: 'foo' }).
+        if (isset($defaults['el']) && is_string($defaults['el']) && $defaults['el'] !== '') {
+            $attributes['data-el'] = $defaults['el'];
+        }
+
+        $class = trim($attributes[VariableHelper::CLASS_VAR] ?? '');
 
         $attributes = array_merge([
-            VariableHelper::ID => $context[VariableHelper::ID] ?? null,
+            VariableHelper::ID => $attributes[VariableHelper::ID] ?? null,
             VariableHelper::CLASS_VAR => '' === $class ? null : $class,
-        ], $context['attr'] ?? []);
+        ], $attributes);
 
 
         return DomHelper::buildTagAttributes(

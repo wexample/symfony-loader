@@ -3,8 +3,12 @@ import AppChild from './AppChild';
 import App from './App';
 import Component from './Component';
 import { stringToKebab } from '@wexample/js-helpers/Helper/String';
+import { waitForElementSize } from '@wexample/js-helpers/Helper/ElementSize';
 import Page from './Page';
 import { RenderNodeServiceEvents } from "../Services/AbstractRenderNodeService";
+import ElementListenersMixin from './Mixins/ElementListenersMixin';
+import InvariantViolationError from '../Errors/InvariantViolationError';
+import ErrorService from '../Services/ErrorService';
 
 export default abstract class RenderNode extends AppChild {
   public callerPage: Page;
@@ -26,6 +30,7 @@ export default abstract class RenderNode extends AppChild {
   public view: string;
   public destroyed: boolean = false;
   public vars: { [key: string]: any } = {};
+  private elListenerProxies: { [key: string]: { [event: string]: EventListener } } = {};
 
   constructor(
     public renderRequestId: string,
@@ -38,6 +43,7 @@ export default abstract class RenderNode extends AppChild {
 
   public async init() {
     this.app.services.mixins.applyMethods(this, 'renderNode');
+    ElementListenersMixin.apply(this);
 
     this.app.services.events.trigger(RenderNodeServiceEvents.CREATE_RENDER_NODE, {
       component: this,
@@ -129,6 +135,62 @@ export default abstract class RenderNode extends AppChild {
   attachHtmlElements() {
   }
 
+  // Shortcut: map element keys to selectors and auto-attach.
+  // Example: this.attachHtmlElementsMap({ searchInput: '[data-el="searchInput"]' });
+  protected attachHtmlElementsMap(map: { [key: string]: string }): void {
+    for (const [key, selector] of Object.entries(map)) {
+      this.attachHtmlElement(key, selector);
+    }
+  }
+
+  protected attachHtmlElement(key: string, selector: string): void {
+    const el = this.el.querySelector(selector) as HTMLElement | null;
+    if (!el) {
+      throw new InvariantViolationError({
+        message: `Missing element "${key}" using selector "${selector}" in "${this.view}".`,
+        code: 'ERR_RENDER_NODE_ELEMENT_MISSING',
+        context: {
+          view: this.view,
+          key,
+          selector,
+        },
+      });
+    }
+    this.elements[key] = el;
+  }
+
+  protected onEl(
+    key: string,
+    event: string,
+    handler: EventListenerOrEventListenerObject
+  ): void {
+    const el = this.elements[key];
+    if (!el) {
+      throw new InvariantViolationError({
+        message: `Missing element "${key}" for event "${event}" in "${this.view}".`,
+        code: 'ERR_RENDER_NODE_EVENT_ELEMENT_MISSING',
+        context: {
+          view: this.view,
+          key,
+          event,
+        },
+      });
+    }
+    el.addEventListener(event, handler);
+  }
+
+  protected offEl(
+    key: string,
+    event: string,
+    handler: EventListenerOrEventListenerObject
+  ): void {
+    const el = this.elements[key];
+    if (!el) {
+      return;
+    }
+    el.removeEventListener(event, handler);
+  }
+
   async mountOnce() {
     // When render nodes are attached to the tree,
     // the whole layout try to mount the newly created render nodes,
@@ -154,6 +216,22 @@ export default abstract class RenderNode extends AppChild {
     }
 
     await this.mounted();
+    void this.afterVisible();
+  }
+
+  public async notifyVisible(): Promise<void> {
+    void waitForElementSize(
+      this.el,
+      1,
+      500,
+      (target) => target.getClientRects().length > 0
+    ).then(() => this.afterVisible());
+  }
+
+  public async notifyTreeVisible(): Promise<void> {
+    await this.forEachTreeRenderNode(async (renderNode: RenderNode) => {
+      await renderNode.notifyVisible();
+    });
   }
 
   async unmount() {
@@ -231,10 +309,16 @@ export default abstract class RenderNode extends AppChild {
     return this.elHeight;
   }
 
+  protected getElListeners(): { [key: string]: string | string[] } {
+    return {};
+  }
+
   protected async activateListeners(): Promise<void> {
+    (this as any).activateElListeners();
   }
 
   protected async deactivateListeners(): Promise<void> {
+    (this as any).deactivateElListeners();
   }
 
   protected async mounted(): Promise<void> {
@@ -243,6 +327,9 @@ export default abstract class RenderNode extends AppChild {
       'renderNode',
       [this]
     );
+  }
+
+  protected async afterVisible(): Promise<void> {
   }
 
   protected async unmounted(): Promise<void> {
@@ -259,6 +346,16 @@ export default abstract class RenderNode extends AppChild {
 
   public async renderNodeReady(): Promise<void> {
     await this.readyComplete();
+  }
+
+  public async trigger(eventName: string, args = {}): Promise<void> {
+    args['renderNode'] = this;
+
+    await this.app.services.events.trigger(
+      eventName,
+      args,
+      this.el
+    );
   }
 
   childMounted(renderNode: RenderNode) {
@@ -278,12 +375,19 @@ export default abstract class RenderNode extends AppChild {
     initial: boolean = false
   ) {
     if (!initial && this.app.layout.vars['usagesConfig'][usageName]['list'][usageValue]['allow_switch'] == false) {
-      this.app.services.prompt.systemError(
-        'Switching is not allowed for usage ":usage" and value ":value"',
+      (this.app.getServiceOrFail(ErrorService) as ErrorService).capture(
+        `Switching is not allowed for usage "${usageName}" and value "${usageValue}".`,
         {
-          ':usage': usageName,
-          ':value': usageValue,
-        });
+          severity: 'warning',
+          context: {
+            source: 'render-node.set-usage',
+            details: {
+              usageName,
+              usageValue,
+            },
+          },
+        }
+      );
       return;
     }
 

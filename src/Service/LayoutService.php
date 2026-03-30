@@ -15,6 +15,7 @@ class LayoutService extends AbstractRenderNodeService
         AssetsService $assetsService,
         protected readonly ComponentService $componentService,
         private readonly PageService $pageService,
+        private readonly array $layoutBases = [],
         protected readonly Translator $translator,
     ) {
         parent::__construct(
@@ -30,38 +31,7 @@ class LayoutService extends AbstractRenderNodeService
         RenderPass $renderPass,
     ): void {
         $this->layoutInit($renderPass);
-
-        if ($renderPass->getLayoutBase() === RenderPass::BASE_MODAL) {
-            // Prepare modal component.
-            $this->componentService->componentInitLayout(
-                $twig,
-                $renderPass,
-                ComponentService::buildCoreComponentName(ComponentService::COMPONENT_NAME_MODAL),
-                [
-                    'adaptiveResponsePageManager' => true,
-                ]
-            );
-        } elseif ($renderPass->getLayoutBase() === RenderPass::BASE_PANEL) {
-            // Prepare panel component.
-            $this->componentService->componentInitLayout(
-                $twig,
-                $renderPass,
-                ComponentService::buildCoreComponentName(ComponentService::COMPONENT_NAME_PANEL),
-                [
-                    'adaptiveResponsePageManager' => true,
-                ]
-            );
-        } elseif ($renderPass->getLayoutBase() === RenderPass::BASE_OVERLAY) {
-            // Prepare panel component.
-            $this->componentService->componentInitLayout(
-                $twig,
-                $renderPass,
-                ComponentService::buildCoreComponentName(ComponentService::COMPONENT_NAME_OVERLAY),
-                [
-                    'adaptiveResponsePageManager' => true,
-                ]
-            );
-        }
+        $this->layoutInitPageManagerComponent($twig, $renderPass);
     }
 
     /**
@@ -92,6 +62,34 @@ class LayoutService extends AbstractRenderNodeService
             $renderPass,
             $layoutRenderNode->createLayoutPageInstance(),
             $renderPass->getView(),
+        );
+    }
+
+    /**
+     * Register a layout-specific page manager component (modal/panel/overlay/...),
+     * configured through `loader.layout_bases`.
+     *
+     * @throws Exception
+     */
+    private function layoutInitPageManagerComponent(
+        Environment $twig,
+        RenderPass $renderPass,
+    ): void {
+        $layoutBase = $renderPass->getLayoutBase();
+        $layoutConfig = $this->layoutBases[$layoutBase] ?? null;
+        $view = $layoutConfig['page_manager_component'] ?? null;
+
+        if (!is_string($view) || $view === '') {
+            return;
+        }
+
+        $this->componentService->componentInitLayout(
+            $twig,
+            $renderPass,
+            $view,
+            [
+                'adaptiveResponsePageManager' => true,
+            ]
         );
     }
 }

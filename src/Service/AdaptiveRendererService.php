@@ -7,10 +7,12 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Environment;
 use Wexample\SymfonyHelpers\Helper\BundleHelper;
 use Wexample\SymfonyLoader\Controller\AbstractPagesController;
 use Wexample\SymfonyLoader\Exception\AssetsNotBuiltException;
+use Wexample\SymfonyLoader\Helper\AdaptiveRequestHelper;
 use Wexample\SymfonyLoader\Helper\RenderingHelper;
 use Wexample\SymfonyLoader\Rendering\AssetsRegistry;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AjaxLayoutRenderNode;
@@ -27,6 +29,7 @@ class AdaptiveRendererService
         private readonly KernelInterface $kernel,
         private readonly ParameterBagInterface $parameterBag,
         private readonly Environment $twig,
+        private readonly RequestStack $requestStack,
     ) {
     }
 
@@ -64,11 +67,14 @@ class AdaptiveRendererService
                 false
             )
         );
+        $request = $this->requestStack->getCurrentRequest();
+
         $renderPass->setOutputType(
-            $this->adaptiveResponseService->detectOutputType()
+            AdaptiveRequestHelper::getOutputType($request)
         );
+
         $renderPass->setLayoutBase(
-            $this->adaptiveResponseService->detectLayoutBase($renderPass)
+            AdaptiveRequestHelper::getLayoutBase($request)
         );
 
         if ($configurator) {
@@ -114,9 +120,12 @@ class AdaptiveRendererService
                     trim($renderPassResponse->getContent())
                 );
 
-                $finalResponse = new JsonResponse(
-                    $renderPass->getLayoutRenderNode()->toRenderData()
-                );
+                $renderData = $renderPass->getLayoutRenderNode()->toRenderData();
+                $renderArray = $renderData instanceof \Wexample\SymfonyLoader\Rendering\RenderData
+                    ? $renderData->toArray()
+                    : $renderData;
+
+                $finalResponse = new JsonResponse($renderArray);
                 $finalResponse->setStatusCode(
                     $renderPassResponse->getStatusCode()
                 );

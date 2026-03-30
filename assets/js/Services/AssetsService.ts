@@ -12,6 +12,8 @@ import Margins from '../Class/AssetUsage/Margins';
 import Fonts from '../Class/AssetUsage/Fonts';
 import ResponsiveAssetUsage from '../Class/AssetUsage/Responsive';
 import Animations from "../Class/AssetUsage/Animations";
+import ErrorService from './ErrorService';
+import InvariantViolationError from '../Errors/InvariantViolationError';
 
 export type RenderNodeAssetsType = {
   assetsUpdate?: Function;
@@ -29,6 +31,7 @@ export class AssetsServiceType {
 }
 
 export default class AssetsService extends AppService {
+  public static dependencies: typeof AppService[] = [ErrorService];
   public usages: { [key: string]: AssetUsage } = {};
 
   public jsAssetsPending: { [key: string]: AssetInterface } = {};
@@ -325,11 +328,16 @@ export default class AssetsService extends AppService {
       if (!elParent.contains(
         elReplacement
       )) {
-        this.app.services.prompt.systemError(
-          'The replacement node is not in the expected location in head marker :marker, ignoring',
-          {
-            ':marker': usageMarkerKey
-          }, undefined, true);
+        throw new InvariantViolationError({
+          message: `The replacement node is not in the expected location in head marker ${usageMarkerKey}.`,
+          code: 'ERR_ASSET_REPLACEMENT_NODE_INVALID',
+          context: {
+            usageMarkerKey,
+            assetType: asset.type,
+            usage: asset.usage,
+            context: asset.context,
+          },
+        });
       }
 
       if (elReplacement.parentNode) {

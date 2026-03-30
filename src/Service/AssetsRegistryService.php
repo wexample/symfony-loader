@@ -67,7 +67,7 @@ class AssetsRegistryService extends RenderDataGenerator
         }
     }
 
-    public function toRenderData(): array
+    public function toRenderData(): \Wexample\SymfonyLoader\Rendering\RenderData
     {
         $output = [];
         foreach ($this->registry as $type => $assets) {
@@ -78,7 +78,7 @@ class AssetsRegistryService extends RenderDataGenerator
             }
         }
 
-        return $output;
+        return \Wexample\SymfonyLoader\Rendering\RenderData::fromArray($output);
     }
 
     public function getRegistry(): array

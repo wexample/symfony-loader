@@ -42,7 +42,8 @@ class VueService
         string $view,
         ?array $props = [],
         ?array $twigContext = [],
-        string $tagName = self::TAG_TEMPLATE
+        string $tagName = self::TAG_TEMPLATE,
+        ?array $options = []
     ): string {
         $pathWithExtension = $view.VueExtension::TEMPLATE_FILE_EXTENSION;
 
@@ -52,10 +53,17 @@ class VueService
 
         $vueDomId = DomHelper::buildStringIdentifier($view);
 
-        $options = [
+        $translationDomain = $this->translator->setDomainFromTemplatePath(
+            Translator::DOMAIN_TYPE_VUE,
+            $view
+        );
+
+        $wrapperOptions = $options ?? [];
+        $componentOptions = [
             'domId' => $vueDomId,
             'name' => $view,
-            'props' => $props
+            'props' => $props,
+            'translationDomain' => $translationDomain
         ];
 
         $outputBody = '';
@@ -69,7 +77,7 @@ class VueService
                     $renderPass,
                     $componentName,
                     ComponentService::INIT_MODE_PARENT,
-                    $options
+                    $componentOptions
                 );
 
             $this->rootComponents[$view] = $rootComponent;
@@ -104,10 +112,7 @@ class VueService
 
             $rootComponent->addTranslationDomain(
                 Translator::DOMAIN_TYPE_VUE,
-                $this->translator->setDomainFromTemplatePath(
-                    Translator::DOMAIN_TYPE_VUE,
-                    $view
-                ),
+                $translationDomain,
                 $view
             );
 
@@ -119,7 +124,7 @@ class VueService
                 ],
                 $twig->render(
                     $pathWithExtension,
-                    $twigContext + $options + $props + ['render_pass' => $renderPass]
+                    $twigContext + $componentOptions + $props + ['render_pass' => $renderPass]
                 )
             );
 
@@ -141,10 +146,20 @@ class VueService
             $renderPass->getLayoutRenderNode()->vueTemplates = $this->renderedTemplates;
         }
 
+        $wrapperClass = trim(
+            implode(
+                ' ',
+                array_filter([
+                    $vueDomId,
+                    $wrapperOptions['class'] ?? null,
+                ])
+            )
+        );
+
         return DomHelper::buildTag(
             $vueDomId,
             [
-                'class' => $vueDomId,
+                'class' => $wrapperClass,
             ],
             $outputBody
         );

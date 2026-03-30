@@ -101,12 +101,16 @@ export default class ModalComponent extends PageManagerComponent {
     this.el.classList.add(VARIABLES.CLOSED);
   }
 
-  open() {
+  async open(options: { instant?: boolean } = {}): Promise<void> {
     if (this.opened) {
       return;
     }
 
     this.opened = true;
+
+    if (options.instant) {
+      this.setInstantTransition(true);
+    }
 
     this.showEl();
 
@@ -115,8 +119,16 @@ export default class ModalComponent extends PageManagerComponent {
     (this as unknown as WithOverlayComponent).overlayShow();
   }
 
-  close() {
+  close(options: { instant?: boolean } = {}): Promise<void> {
+    if (this.isCloseBlocked()) {
+      return Promise.resolve();
+    }
+
     this.closing = true;
+
+    if (options.instant) {
+      this.setInstantTransition(true);
+    }
 
     this.hideEl();
 
@@ -124,7 +136,7 @@ export default class ModalComponent extends PageManagerComponent {
 
     (this as unknown as WithOverlayComponent).overlayClosing();
 
-    return new Promise(async (resolve) => {
+    return new Promise<void>(async (resolve) => {
       // Sync with CSS animation.
       await setTimeout(async () => {
         (this as unknown as WithOverlayComponent).overlayClosed();
@@ -136,7 +148,7 @@ export default class ModalComponent extends PageManagerComponent {
 
         this.callerPage.focus();
 
-        resolve(this);
+        resolve();
       }, 400);
     });
   }
@@ -166,5 +178,9 @@ export default class ModalComponent extends PageManagerComponent {
     ) {
       await this.close();
     }
+  }
+
+  private isCloseBlocked(): boolean {
+    return !!this.el && this.el.classList.contains('is-loading');
   }
 }

@@ -20,7 +20,7 @@ abstract class RenderDataGenerator
         return $output;
     }
 
-    abstract public function toRenderData(): array;
+    abstract public function toRenderData(): RenderData;
 
     public function serializeVariables(array $variables): array
     {

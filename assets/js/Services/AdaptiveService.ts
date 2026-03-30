@@ -1,10 +1,12 @@
 import AppService from '../Class/AppService';
+import AdaptiveResponseInterface from '../Interfaces/AdaptiveResponseInterface';
 import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import RequestOptionsInterface from '../Interfaces/RequestOptions/RequestOptionsInterface';
 import ComponentsService from './ComponentsService';
+import ErrorService from './ErrorService';
 
 export default class AdaptiveService extends AppService {
-  public static dependencies: typeof AppService[] = [ComponentsService];
+  public static dependencies: typeof AppService[] = [ComponentsService, ErrorService];
   public static serviceName: string = 'adaptive';
 
   fetch(
@@ -23,6 +25,47 @@ export default class AdaptiveService extends AppService {
     });
   }
 
+  async requestData(
+    path: string,
+    requestOptions: RequestOptionsInterface = {}
+  ): Promise<AdaptiveResponseInterface> {
+    const response = await this.fetch(path, requestOptions);
+
+    if (!response.ok) {
+      this.app.services.error?.capture(`Error response : [${response.status}] ${response.statusText}`, {
+        severity: 'error',
+        context: {
+          source: 'adaptive.request',
+          details: {
+            path,
+            status: response.status,
+            statusText: response.statusText,
+          },
+        },
+      });
+    }
+
+    try {
+      const data = await response.json();
+      if (typeof data.ok !== 'boolean') {
+        data.ok = true;
+      }
+      return data;
+    } catch (error) {
+      this.app.services.error?.capture(error, {
+        title: 'Failed to parse JSON response.',
+        severity: 'error',
+        context: {
+          source: 'adaptive.request',
+          details: {
+            path,
+          },
+        },
+      });
+      return { ok: false } as AdaptiveResponseInterface;
+    }
+  }
+
   get(
     path: string,
     requestOptions: RequestOptionsInterface = {}
@@ -32,46 +75,51 @@ export default class AdaptiveService extends AppService {
 
     Object.freeze(requestOptions);
 
-    return this.fetch(path, requestOptions)
-      .then((response: Response) => {
-        if (!response.ok) {
-          this.app.services.prompt.applicationError(
-            `Error response : [${response.status}] ${response.statusText}`
-          )
-        }
+    return this.requestData(path, requestOptions).then(
+      async (renderData: AdaptiveResponseInterface) => {
+        return this.handleRenderData(renderData as RenderDataInterface, requestOptions);
+      }
+    );
+  }
 
-        // Attempt to parse the JSON response
-        return response.json().then(data => {
-          data.ok = true;
+  post(
+    path: string,
+    requestOptions: RequestOptionsInterface = {}
+  ): Promise<any> {
+    requestOptions.method = requestOptions.method || 'POST';
+    requestOptions.callerPage =
+      requestOptions.callerPage || this.app.layout.pageFocused;
 
-          // If the response is valid JSON, return the parsed data.
-          return data;
-        }).catch(error => {
-          // If an error occurs while parsing JSON, log the error and return an empty object.
-          this.app.services.prompt.applicationError("Failed to parse JSON response:", error);
+    Object.freeze(requestOptions);
 
-          return {ok: false};
-        });
-      })
-      .then(async (renderData: RenderDataInterface) => {
-        if (renderData.ok === false) {
-          return renderData;
-        }
+    return this.requestData(path, requestOptions).then(
+      async (renderData: AdaptiveResponseInterface) => {
+        return this.handleRenderData(renderData as RenderDataInterface, requestOptions);
+      }
+    );
+  }
 
-        renderData.requestOptions = requestOptions;
+  async handleRenderData(
+    renderData: RenderDataInterface,
+    requestOptions: RequestOptionsInterface = {}
+  ): Promise<RenderDataInterface> {
+    if (renderData.ok === false) {
+      return renderData;
+    }
 
-        // Preparing render data is executed in render node creation,
-        // but at this point layout already exists,
-        // so we run it manually.
-        await this.app.services.layouts.prepareRenderData(renderData);
+    renderData.requestOptions = requestOptions;
 
-        // Wait render data loading to continue.
-        return this.app.loadLayoutRenderData(renderData).then(async () => {
-          // Activate every new render node.
-          await this.app.layout.setNewTreeRenderNodeReady();
+    // Preparing render data is executed in render node creation,
+    // but at this point layout already exists,
+    // so we run it manually.
+    await this.app.services.layouts.prepareRenderData(renderData);
 
-          return renderData;
-        });
-      });
+    // Wait render data loading to continue.
+    return this.app.loadLayoutRenderData(renderData).then(async () => {
+      // Activate every new render node.
+      await this.app.layout.setNewTreeRenderNodeReady();
+
+      return renderData;
+    });
   }
 }

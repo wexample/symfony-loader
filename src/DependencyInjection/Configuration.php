@@ -20,8 +20,40 @@ class Configuration implements ConfigurationInterface
             ->defaultNull()
             ->end()
             ->arrayNode('front_paths')
+            ->normalizeKeys(false)
+            ->beforeNormalization()
+            ->always(static function ($value) {
+                if (!is_array($value)) {
+                    return [];
+                }
+
+                $normalized = [];
+                foreach ($value as $key => $item) {
+                    $path = $item;
+                    if (is_array($item)) {
+                        $path = $item['path'] ?? null;
+                    }
+
+                    $normalized[$key] = $path;
+                }
+
+                return $normalized;
+            })
+            ->end()
             ->defaultValue([])
-            ->scalarPrototype()->end()
+            ->useAttributeAsKey('alias')
+            ->scalarPrototype()->cannotBeEmpty()->end()
+            ->end()
+            ->arrayNode('layout_bases')
+            ->useAttributeAsKey('name')
+            ->arrayPrototype()
+            ->children()
+            ->scalarNode('page_manager_component')
+            ->defaultNull()
+            ->end()
+            ->end()
+            ->end()
+            ->defaultValue([])
             ->end()
             ->end();
 

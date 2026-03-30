@@ -2,6 +2,7 @@ parameters:
     loader.debug: false
     loader.environment: '%env(APP_ENV)%'
     loader.enable_aggregation: false
+    loader.layout_bases: {}
     
     # Loader colors
     loader.colors: {}
@@ -86,7 +87,7 @@ services:
         arguments: [!tagged_locator { tag: 'symfony_loader.component_manager' }]
 
     Wexample\SymfonyLoader\:
-        resource: '../../{Command,Controller,Service,Twig}'
+        resource: '../../{Command,Controller,EventSubscriber,Service,Twig}'
         exclude:
             - '../../Twig/Node'
             - '../../Twig/TokenParser'
@@ -95,3 +96,7 @@ services:
     Wexample\SymfonyLoader\Twig\ColorExtension:
         arguments:
             $colors: '%loader.colors%'
+
+    Wexample\SymfonyLoader\Service\LayoutService:
+        arguments:
+            $layoutBases: '%loader.layout_bases%'

@@ -3,6 +3,7 @@
 namespace Wexample\SymfonyLoader\Rendering\RenderNode;
 
 use Wexample\SymfonyLoader\Helper\RenderingHelper;
+use Wexample\SymfonyLoader\Rendering\RenderData;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Rendering\Traits\WithRenderRequestId;
 
@@ -29,15 +30,19 @@ abstract class AbstractLayoutRenderNode extends AbstractRenderNode
         return RenderingHelper::CONTEXT_LAYOUT;
     }
 
-    public function toRenderData(): array
+    public function toRenderData(): RenderData
     {
-        return parent::toRenderData()
-            + $this->serializeVariables([
+        $renderData = parent::toRenderData();
+        $renderData->merge(
+            $this->serializeVariables([
                 'env',
                 'renderRequestId',
                 'page',
             ])
-            + ['templates' => $this->getComponentsTemplates()];
+            + ['templates' => $this->getComponentsTemplates()]
+        );
+
+        return $renderData;
     }
 
     public function init(

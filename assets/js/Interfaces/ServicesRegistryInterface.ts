@@ -4,26 +4,36 @@ import EventsService from '../Services/EventsService';
 import LayoutsService from '../Services/LayoutsService';
 import MixinsService from '../Services/MixinsService';
 import PagesService from '../Services/PagesService';
-import PromptService from '../Services/PromptsService';
 import RoutingService from '../Services/RoutingService';
 import ComponentsService from '../Services/ComponentsService';
 import VueService from '../Services/VueService';
 import DebugService from '../Services/DebugService';
 import LocaleService from '../Services/LocaleService';
 import EntityService from '../Services/EntityService';
+import OverlayService from '../Services/OverlayService';
+import KeyboardService from '../Services/KeyboardService';
+import LiveUpdatesService from '../Services/LiveUpdatesService';
+import ConnectionStatusService from '../Services/ConnectionStatusService';
+import ConnectionStatusNoticeService from '../Services/ConnectionStatusNoticeService';
+import ErrorService from '../Services/ErrorService';
 
 export default interface ServicesRegistryInterface {
   adaptive?: AdaptiveService;
   assets?: AssetsService;
   components?: ComponentsService;
   debug?: DebugService;
+  error?: ErrorService;
   entity?: EntityService;
+  keyboard?: KeyboardService;
   events?: EventsService;
   layouts?: LayoutsService;
   locale?: LocaleService;
+  connectionStatus?: ConnectionStatusService;
+  connectionStatusNotice?: ConnectionStatusNoticeService;
+  liveUpdates?: LiveUpdatesService;
   mixins?: MixinsService;
+  overlay?: OverlayService;
   pages?: PagesService;
-  prompt?: PromptService;
   routing?: RoutingService;
   vue?: VueService;
 }

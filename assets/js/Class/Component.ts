@@ -1,6 +1,7 @@
 import ComponentInterface from '../Interfaces/RenderData/ComponentInterface';
 import RenderNode from './RenderNode';
 import { domFindPreviousNode } from '@wexample/js-helpers/Helper/Dom';
+import InvariantViolationError from '../Errors/InvariantViolationError';
 
 export default abstract class Component extends RenderNode {
   protected initMode: string;
@@ -13,6 +14,7 @@ export default abstract class Component extends RenderNode {
   public static INIT_MODE_PARENT: string = 'parent';
 
   public static INIT_MODE_PREVIOUS: string = 'previous';
+  public static INIT_MODE_TEMPLATE: string = 'template';
 
   public async init() {
     await super.init();
@@ -26,21 +28,40 @@ export default abstract class Component extends RenderNode {
 
   attachHtmlElements() {
     let el: HTMLElement;
-
-    let elPlaceholder = this.parentRenderNode.el.querySelector(
-      `.${this.cssClassName}`
-    ) as HTMLElement;
+    let elPlaceholder: HTMLElement | null = null;
     let removePlaceHolder = true;
 
-    if (!elPlaceholder) {
-      throw new Error(
-        `Component placeholder missing for "${this.view}" using ".${this.cssClassName}".`
-      );
+    if (this.initMode !== Component.INIT_MODE_TEMPLATE) {
+      elPlaceholder = this.parentRenderNode.el.querySelector(
+        `.${this.cssClassName}`
+      ) as HTMLElement;
+
+      if (!elPlaceholder) {
+        throw new InvariantViolationError({
+          message: `Component placeholder missing for "${this.view}" using ".${this.cssClassName}".`,
+          code: 'ERR_COMPONENT_PLACEHOLDER_MISSING',
+          context: {
+            view: this.view,
+            cssClassName: this.cssClassName,
+          },
+        });
+      }
     }
 
     switch (this.initMode) {
       case Component.INIT_MODE_CLASS:
         el = elPlaceholder;
+        removePlaceHolder = false;
+        break;
+      case Component.INIT_MODE_TEMPLATE:
+        el = this.parentRenderNode?.el?.querySelector(
+          `[data-component-instance="${this.cssClassName}"]`
+        ) as HTMLElement;
+        if (!el) {
+          el = document.querySelector(
+            `[data-component-instance="${this.cssClassName}"]`
+          ) as HTMLElement;
+        }
         removePlaceHolder = false;
         break;
       case Component.INIT_MODE_PARENT:
@@ -58,14 +79,15 @@ export default abstract class Component extends RenderNode {
     }
 
     if (!el) {
-      this.app.services.prompt.systemError(
-        'Unable to find element ":name" using ":init_mode" init mode',
-        {
-          ':name': this.view,
-          ':init_mode': this.initMode
+      throw new InvariantViolationError({
+        message: `Unable to find element "${this.view}" using "${this.initMode}" init mode.`,
+        code: 'ERR_COMPONENT_ELEMENT_NOT_FOUND',
+        context: {
+          view: this.view,
+          initMode: this.initMode,
+          cssClassName: this.cssClassName,
         },
-        this
-      );
+      });
     }
 
     this.el = el;

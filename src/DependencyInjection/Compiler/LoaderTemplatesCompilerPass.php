@@ -19,7 +19,7 @@ class LoaderTemplatesCompilerPass implements CompilerPassInterface
          * @var array          $paths
          */
         foreach ($bundlesPaths as $bundleClass => $paths) {
-            foreach ($paths as $path) {
+            foreach ($paths as $alias => $path) {
                 if ($bundleClass != VariableHelper::APP) {
                     # Add template alias like WexampleSymfonyLoaderBundle for every registered path.
                     $definition->addMethodCall(
@@ -31,12 +31,16 @@ class LoaderTemplatesCompilerPass implements CompilerPassInterface
                         ]
                     );
                 } else {
-                    // Add also to allow find all "front" folder, as in translations extension.
+                    $templateNamespace = basename($path);
+                    if (is_string($alias) && !is_numeric($alias)) {
+                        $templateNamespace = ltrim($alias, '@');
+                    }
+
                     $definition->addMethodCall(
                         'addPath',
                         [
                             $path,
-                            basename($path),
+                            $templateNamespace,
                         ]
                     );
                 }

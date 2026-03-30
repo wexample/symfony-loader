@@ -5,12 +5,12 @@ namespace Wexample\SymfonyLoader\Service;
 use Exception;
 use Twig\Environment;
 use Wexample\PhpHtml\Helper\DomHelper;
+use Wexample\SymfonyHelpers\Helper\BundleHelper;
+use Wexample\SymfonyHelpers\Helper\VariableHelper;
 use Wexample\SymfonyLoader\Rendering\ComponentManagerLocatorService;
 use Wexample\SymfonyLoader\Rendering\RenderNode\ComponentRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\WexampleSymfonyLoaderBundle;
-use Wexample\SymfonyHelpers\Helper\BundleHelper;
-use Wexample\SymfonyHelpers\Helper\VariableHelper;
 use Wexample\SymfonyTranslations\Translation\Translator;
 
 class ComponentService extends AbstractRenderNodeService
@@ -27,6 +27,9 @@ class ComponentService extends AbstractRenderNodeService
     // Component is loaded from template, just after target tag.
     public const INIT_MODE_PREVIOUS = VariableHelper::PREVIOUS;
 
+    // Component is loaded from a frontend template clone.
+    public const INIT_MODE_TEMPLATE = 'template';
+
     public const COMPONENT_NAME_VUE = 'components/vue';
 
     public const COMPONENT_NAME_MODAL = 'components/modal';
@@ -39,7 +42,8 @@ class ComponentService extends AbstractRenderNodeService
         AssetsService $assetsService,
         protected readonly ComponentManagerLocatorService $componentManagerLocatorService,
         protected readonly Translator $translator
-    ) {
+    )
+    {
         parent::__construct(
             $assetsService,
         );
@@ -47,7 +51,7 @@ class ComponentService extends AbstractRenderNodeService
 
     public static function buildCoreComponentName(string $shortName): string
     {
-        return BundleHelper::ALIAS_PREFIX.WexampleSymfonyLoaderBundle::getAlias().'/'.$shortName;
+        return BundleHelper::ALIAS_PREFIX . WexampleSymfonyLoaderBundle::getAlias() . '/' . $shortName;
     }
 
     /**
@@ -56,8 +60,10 @@ class ComponentService extends AbstractRenderNodeService
     public function componentRenderBody(
         RenderPass $renderPass,
         Environment $twig,
-        ComponentRenderNode $component
-    ): string {
+        ComponentRenderNode $component,
+        array $templateVars = []
+    ): string
+    {
         $loader = $twig->getLoader();
 
         try {
@@ -79,8 +85,9 @@ class ComponentService extends AbstractRenderNodeService
                 $component->render(
                     $twig,
                     [
-                        'render_pass' => $renderPass
-                    ]
+                        'render_pass' => $renderPass,
+                        'component' => $component
+                    ] + $templateVars
                 );
 
                 $this->translator->revertDomain(
@@ -92,9 +99,14 @@ class ComponentService extends AbstractRenderNodeService
                 $component->setBody(null);
             }
 
-            return DomHelper::buildTag(DomHelper::TAG_SPAN);
+            return DomHelper::buildTag(
+                tagName: DomHelper::TAG_SPAN,
+                attributes: [
+                    'style' => 'display:none'
+                ]
+            );
         } catch (Exception $exception) {
-            throw new Exception('Error during rendering component '.$component->getView().' : '.$exception->getMessage(), $exception->getCode(), $exception);
+            throw new Exception('Error during rendering component ' . $component->getView() . ' : ' . $exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 
@@ -107,14 +119,17 @@ class ComponentService extends AbstractRenderNodeService
         Environment $twig,
         RenderPass $renderPass,
         string $name,
-        array $options = []
-    ): ComponentRenderNode {
+        array $options = [],
+        array $templateVars = []
+    ): ComponentRenderNode
+    {
         return $this->registerComponent(
             $twig,
             $renderPass,
             $name,
             self::INIT_MODE_CLASS,
-            $options
+            $options,
+            $templateVars
         );
     }
 
@@ -125,14 +140,17 @@ class ComponentService extends AbstractRenderNodeService
         Environment $twig,
         RenderPass $renderPass,
         string $name,
-        array $options = []
-    ): ComponentRenderNode {
+        array $options = [],
+        array $templateVars = []
+    ): ComponentRenderNode
+    {
         $component = $this->registerComponent(
             $twig,
             $renderPass,
             $name,
             ComponentService::INIT_MODE_LAYOUT,
-            $options
+            $options,
+            $templateVars
         );
 
         $component->setBody(
@@ -152,14 +170,17 @@ class ComponentService extends AbstractRenderNodeService
         Environment $twig,
         RenderPass $renderPass,
         string $name,
-        array $options = []
-    ): ComponentRenderNode {
+        array $options = [],
+        array $templateVars = []
+    ): ComponentRenderNode
+    {
         return $this->registerComponent(
             $twig,
             $renderPass,
             $name,
             self::INIT_MODE_PARENT,
-            $options
+            $options,
+            $templateVars
         );
     }
 
@@ -170,14 +191,17 @@ class ComponentService extends AbstractRenderNodeService
         Environment $twig,
         RenderPass $renderPass,
         string $name,
-        array $options = []
-    ): ComponentRenderNode {
+        array $options = [],
+        array $templateVars = []
+    ): ComponentRenderNode
+    {
         return $this->registerComponent(
             $twig,
             $renderPass,
             $name,
             self::INIT_MODE_PREVIOUS,
-            $options
+            $options,
+            $templateVars
         );
     }
 
@@ -190,8 +214,10 @@ class ComponentService extends AbstractRenderNodeService
         string $name,
         string $initMode,
         array $options = [],
+        array $templateVars = [],
         bool $renderBody = true,
-    ): ComponentRenderNode {
+    ): ComponentRenderNode
+    {
         $name = $this->componentManagerLocatorService->normalizeComponentName($name);
 
         $componentManager = $this
@@ -220,7 +246,8 @@ class ComponentService extends AbstractRenderNodeService
             $this->componentRenderBody(
                 $renderPass,
                 $twig,
-                $component
+                $component,
+                $templateVars
             );
         }
 

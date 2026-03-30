@@ -5,10 +5,13 @@ import AssetsService from '../Services/AssetsService';
 import ApiService from '../Services/ApiService';
 import LayoutsService from '../Services/LayoutsService';
 import MixinsService from '../Services/MixinsService';
+import OverlayService from '../Services/OverlayService';
 import PagesService from '../Services/PagesService';
 import { RenderNodeResponsiveType } from '../Services/ResponsiveService';
 import RoutingService from '../Services/RoutingService';
 import EntityService from '../Services/EntityService';
+import ErrorService from '../Services/ErrorService';
+import MissingServiceError from '../Errors/MissingServiceError';
 import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import LayoutInitial from './LayoutInitial';
 import LayoutInterface from '../Interfaces/RenderData/LayoutInterface';
@@ -16,6 +19,7 @@ import AsyncConstructor from './AsyncConstructor';
 import ServicesRegistryInterface from '../Interfaces/ServicesRegistryInterface';
 import AssetsCollectionInterface from "../Interfaces/AssetsCollectionInterface";
 import { arrayUnique } from "@wexample/js-helpers/Helper/Array";
+import ElementListenersMixin from "../Class/Mixins/ElementListenersMixin";
 
 interface AppRegistryInterface {
   bundles: {
@@ -39,6 +43,8 @@ export default class extends AsyncConstructor {
     super();
 
     window[globalName] = this;
+
+    ElementListenersMixin.apply(this);
 
     // Allow callback as object definition.
     if (typeof readyCallback === 'object') {
@@ -72,6 +78,9 @@ export default class extends AsyncConstructor {
       this.seal();
 
       await this.loadLayoutRenderData(this.layout.renderData);
+
+      // Activate layout listeners.
+      (this as any).activateElListeners();
 
       // Display page content.
       this.layout.el.classList.remove('layout-loading');
@@ -125,9 +134,11 @@ export default class extends AsyncConstructor {
       AssetsService,
       LayoutsService,
       MixinsService,
+      OverlayService,
       PagesService,
       RoutingService,
       EntityService,
+      ErrorService,
     ];
   }
 
@@ -220,14 +231,20 @@ export default class extends AsyncConstructor {
     name = (typeof name === 'string' ? name : (name as any).serviceName) as string
 
     if (!this.services[name]) {
-      this.services.prompt.systemError(
-        'Trying to access undefined service :name',
-        {
-          'name': name
-        }, undefined, true
-      );
+      throw new MissingServiceError(name);
     }
     return this.services[name];
+  }
+
+  getServiceOrFail(name: string | object): AppService {
+    const serviceName = (typeof name === 'string' ? name : (name as any).serviceName) as string;
+    const service = this.services[serviceName];
+
+    if (!service) {
+      throw new MissingServiceError(serviceName);
+    }
+
+    return service;
   }
 
   addLib(name: string, object: any) {
@@ -239,5 +256,9 @@ export default class extends AsyncConstructor {
     Object.entries(libraries).forEach((data) => {
       this.addLib(data[0], data[1]);
     });
+  }
+
+  onTriggerError(_payload: unknown): void {
+    // To override in concrete apps.
   }
 }

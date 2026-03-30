@@ -1,18 +1,14 @@
 import MixinsAppService from '../Class/MixinsAppService';
 import Page from '../Class/Page';
-import PromptService from './PromptsService';
 import LayoutInterface from '../Interfaces/RenderData/LayoutInterface';
 import Component from '../Class/Component';
 import AbstractRenderNodeService from './AbstractRenderNodeService';
 import RenderNode from '../Class/RenderNode';
 import { domAppendInnerHtml } from '@wexample/js-helpers/Helper/Dom';
 import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
-import AppService from '../Class/AppService';
 
 export default class ComponentsService extends AbstractRenderNodeService {
   private elLayoutComponents: HTMLElement;
-
-  public static dependencies: typeof AppService[] = [PromptService];
 
   public static serviceName: string = 'components';
 
@@ -81,6 +77,9 @@ export default class ComponentsService extends AbstractRenderNodeService {
     renderData = renderData || parentRenderNode.renderData;
 
     for (const renderDataComponent of renderData.components) {
+      if (renderDataComponent.options?.frontend === true) {
+        continue;
+      }
       // Share request options.
       renderDataComponent.requestOptions = renderData.requestOptions;
 

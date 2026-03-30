@@ -1,5 +1,6 @@
 import AppService from '../Class/AppService';
 import RoutingService from './RoutingService';
+import InvariantViolationError from '../Errors/InvariantViolationError';
 
 type EntityRouteOptions = {
   entity: unknown;
@@ -16,7 +17,10 @@ export default class EntityService extends AppService {
 
   private resolveEntityName(entity: unknown): string {
     if (!entity) {
-      throw new Error('Entity is required.');
+      throw new InvariantViolationError({
+        message: 'Entity is required.',
+        code: 'ERR_ENTITY_REQUIRED',
+      });
     }
 
     if (typeof entity === 'string') {
@@ -27,7 +31,10 @@ export default class EntityService extends AppService {
       ?? (entity as { constructor?: { entityName?: string } })?.constructor?.entityName;
 
     if (!entityName) {
-      throw new Error('Entity must define a static entityName.');
+      throw new InvariantViolationError({
+        message: 'Entity must define a static entityName.',
+        code: 'ERR_ENTITY_NAME_REQUIRED',
+      });
     }
 
     return entityName;

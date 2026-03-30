@@ -8,8 +8,11 @@ import App from '../Class/App';
 import ComponentInterface from '../Interfaces/RenderData/ComponentInterface';
 import { stringBuildIdentifier, stringToKebab } from '@wexample/js-helpers/Helper/String';
 import { objectDeepAssign } from "@wexample/js-helpers/Helper/Object";
+import ErrorService from './ErrorService';
+import InvariantViolationError from '../Errors/InvariantViolationError';
 
 export default class VueService extends AppService {
+  public static dependencies: typeof AppService[] = [ErrorService];
   protected componentRegistered: { [key: string]: object } = {};
   protected elTemplates: HTMLElement;
   public vueRenderDataCache: { [key: string]: ComponentInterface } = {};
@@ -18,15 +21,26 @@ export default class VueService extends AppService {
   public store: any = null;
 
   protected globalMixin: object = {
-    props: {},
+    props: {
+      app: {
+        default: null,
+      },
+    },
 
     methods: {},
 
     async updated() {
-      await this.rootComponent.forEachTreeRenderNode((renderNode) => {
-        if (this === this.$root) {
-          renderNode.updateMounting();
-        }
+      if (this !== this.$root) {
+        return;
+      }
+
+      const rootComponent = this.rootComponent ?? this.$root?.rootComponent;
+      if (!rootComponent || typeof rootComponent.forEachTreeRenderNode !== 'function') {
+        return;
+      }
+
+      await rootComponent.forEachTreeRenderNode((renderNode) => {
+        renderNode.updateMounting();
       });
     },
   };
@@ -47,6 +61,7 @@ export default class VueService extends AppService {
     );
     this.globalConfig['globalProperties'] = this.globalConfig['globalProperties'] ? this.globalConfig['globalProperties']: {};
     this.globalConfig['globalProperties']['app'] = app;
+    (this.globalMixin as any).props.app.default = () => app;
 
     this.elTemplates = document.getElementById('vue-templates');
   }
@@ -99,6 +114,14 @@ export default class VueService extends AppService {
     objectDeepAssign(
       vueApp.config,
       this.globalConfig);
+
+    vueApp.mixin(this.globalMixin as any);
+
+    const globalMixin = this.globalMixin as any;
+    objectDeepAssign(
+      vueApp.config.globalProperties as any,
+      globalMixin.methods || {}
+    );
 
     if (this.store) {
       vueApp.use(this.store);
@@ -170,12 +193,15 @@ export default class VueService extends AppService {
       const vueClassDefinition = this.app.getBundleClassDefinition(view) as any;
 
       if (!vueClassDefinition) {
-        this.app.services.prompt.systemError(
-          'Missing vue definition for ":class"',
-          {
-            ':class': view,
-          }
-        );
+        this.app.services.error?.capture('Missing vue definition for component.', {
+          severity: 'error',
+          context: {
+            source: 'vue.init-component',
+            details: {
+              view,
+            },
+          },
+        });
       } else {
         vueClassDefinition.template = document.getElementById(domId);
 
@@ -202,14 +228,14 @@ export default class VueService extends AppService {
         ]);
 
         if (!vueClassDefinition.template) {
-          this.app.services.prompt.systemError(
-            `Unable to load vue component as template item #:id has not been found.`,
-            {
-              ':id': domId
+          throw new InvariantViolationError({
+            message: `Unable to load vue component as template item ${domId} has not been found.`,
+            code: 'ERR_VUE_TEMPLATE_MISSING',
+            context: {
+              view,
+              domId,
             },
-            undefined,
-            true
-          );
+          });
         }
 
         this.componentRegistered[vueName] = vueClassDefinition;

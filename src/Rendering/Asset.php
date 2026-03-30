@@ -97,9 +97,10 @@ class Asset extends RenderDataGenerator
             && $this->initialLayout;
     }
 
-    public function toRenderData(): array
+    public function toRenderData(): \Wexample\SymfonyLoader\Rendering\RenderData
     {
-        return $this->serializeVariables([
+        return \Wexample\SymfonyLoader\Rendering\RenderData::fromArray(
+            $this->serializeVariables([
             'active',
             'context',
             'domId',
@@ -109,7 +110,8 @@ class Asset extends RenderDataGenerator
             'usage',
             'usages',
             'view',
-        ]);
+            ])
+        );
     }
 
     public function getContext(): string

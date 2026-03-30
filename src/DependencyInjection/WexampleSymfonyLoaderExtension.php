@@ -39,15 +39,28 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
             $container->setParameter('loader.usages.color_scheme', $colorSchemeConfig);
         }
 
+        $layoutBases = $container->hasParameter('loader.layout_bases')
+            ? (array) $container->getParameter('loader.layout_bases')
+            : [];
+        foreach (($config['layout_bases'] ?? []) as $name => $layoutConfig) {
+            $layoutBases[$name] = array_merge(
+                $layoutBases[$name] ?? [],
+                (array) $layoutConfig
+            );
+        }
+        $container->setParameter('loader.layout_bases', $layoutBases);
+
         $bundles = $container->getParameter('kernel.bundles');
         $paths = [];
 
-        foreach ($config['front_paths'] ?? [] as $frontPath) {
-            // Ignore invalid paths.
-            if ($realpath = realpath($frontPath)) {
-                $paths[VariableHelper::APP][] =
-                $translationPaths[] = $realpath.FileHelper::FOLDER_SEPARATOR;
-            }
+        foreach ($config['front_paths'] ?? [] as $frontAlias => $frontPath) {
+            $normalizedAlias = str_starts_with($frontAlias, '@')
+                ? $frontAlias
+                : '@'.$frontAlias;
+            $normalizedPath = FileHelper::normalizeDirectoryPath((string) $frontPath);
+
+            $paths[VariableHelper::APP][$normalizedAlias] = $normalizedPath;
+            $translationPaths[] = $normalizedPath;
         }
 
         foreach ($bundles as $class) {
@@ -59,7 +72,7 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
 
                 $realPaths = [];
                 foreach ($bundleFronts as $alias => $frontPath) {
-                    $relativePath = realpath($frontPath).FileHelper::FOLDER_SEPARATOR;
+                    $relativePath = FileHelper::normalizeDirectoryPath((string) realpath($frontPath));
 
                     if (is_string($alias)) {
                         $realPaths[$alias] = $relativePath;

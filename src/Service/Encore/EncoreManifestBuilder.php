@@ -104,7 +104,10 @@ class EncoreManifestBuilder
     }
 
     /**
+     * @param string $group
      * @param int|string $key
+     * @param string $path
+     * @return array
      */
     private function buildFrontDescriptor(
         string $group,
@@ -112,12 +115,13 @@ class EncoreManifestBuilder
         string $path
     ): array {
         $absolutePath = $this->ensureTrailingSeparator(realpath($path) ?: $path);
+        $bundleTag = $this->buildBundleTag($group, $key);
 
         return [
             'group' => $group,
             'key' => (string) $key,
-            'alias' => is_string($key) ? (string) $key : null,
-            'bundle' => $this->buildBundleTag($key),
+            'alias' => $group === VariableHelper::APP ? $bundleTag : (string) $key,
+            'bundle' => $bundleTag,
             'type' => $group === VariableHelper::APP ? 'app' : 'bundle',
             'pathAbsolute' => $absolutePath,
             'pathRelative' => $this->buildProjectRelativePath($absolutePath),
@@ -406,10 +410,17 @@ class EncoreManifestBuilder
     /**
      * @param int|string $key
      */
-    private function buildBundleTag(int|string $key): string
+    private function buildBundleTag(
+        string $group,
+        int|string $key
+    ): string
     {
         if (!is_string($key) || is_numeric($key)) {
             return '@front';
+        }
+
+        if ($group === VariableHelper::APP) {
+            return str_starts_with($key, '@') ? $key : '@'.$key;
         }
 
         $alias = ltrim($key, '@');

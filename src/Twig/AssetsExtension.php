@@ -48,8 +48,12 @@ class AssetsExtension extends AbstractExtension
 
     public function assetsRegistry(RenderPass $renderPass): array
     {
-        return $this
+        $renderData = $this
             ->assetsRegistryService
             ->toRenderData();
+
+        return $renderData instanceof \Wexample\SymfonyLoader\Rendering\RenderData
+            ? $renderData->toArray()
+            : $renderData;
     }
 }

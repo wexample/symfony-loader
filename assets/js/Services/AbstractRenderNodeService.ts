@@ -2,6 +2,8 @@ import AppService from '../Class/AppService';
 import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import RenderNode from '../Class/RenderNode';
 import ServicesRegistryInterface from '../Interfaces/ServicesRegistryInterface';
+import TemplateInstanceFactory from '../Utils/TemplateInstanceFactory';
+import ErrorService from './ErrorService';
 
 export class RenderNodeServiceEvents {
   public static CREATE_RENDER_NODE: string = 'create-render-node';
@@ -9,6 +11,7 @@ export class RenderNodeServiceEvents {
 }
 
 export default abstract class AbstractRenderNodeService extends AppService {
+  public static dependencies: typeof AppService[] = [ErrorService];
   public services: ServicesRegistryInterface;
 
   /**
@@ -52,7 +55,8 @@ export default abstract class AbstractRenderNodeService extends AppService {
     const instance: null | RenderNode = this.createRenderNodeInstance(
       renderRequestId,
       classDefinition,
-      parentRenderNode
+      parentRenderNode,
+      view,
     );
 
     if (instance) {
@@ -64,21 +68,62 @@ export default abstract class AbstractRenderNodeService extends AppService {
     return instance;
   }
 
+  async createComponentFromTemplate(
+    view: string,
+    options: any,
+    parentRenderNode: RenderNode,
+    mountTarget?: HTMLElement
+  ): Promise<null | { instance: RenderNode, el: HTMLElement }> {
+    const templateInstance = TemplateInstanceFactory.create(
+      this.app,
+      view,
+      options,
+      parentRenderNode,
+      mountTarget
+    );
+    if (!templateInstance) {
+      return null;
+    }
+
+    const instance = await this.createRenderNode(
+      parentRenderNode.renderRequestId,
+      view,
+      templateInstance.renderData,
+      parentRenderNode
+    );
+    if (!instance) {
+      return null;
+    }
+
+    await instance.mountOnce();
+    await instance.renderNodeReady();
+
+    return {
+      instance,
+      el: templateInstance.rootEl
+    };
+  }
+
   createRenderNodeInstance(
     renderRequestId: string,
     classDefinition: any,
-    parentRenderNode: RenderNode
+    parentRenderNode: RenderNode,
+    view: string,
   ): RenderNode | null {
     try {
       return new classDefinition(renderRequestId, this.app, parentRenderNode);
-    } catch {
-      this.app.services.prompt.systemError(
-        'Unable to find component with name ":name"',
-        {
-          ":name": classDefinition ? classDefinition.toString() : classDefinition
-        }
-      );
-
+    } catch (error) {
+      this.app.services.error?.capture(error, {
+        title: 'Unable to create render node',
+        severity: 'error',
+        context: {
+          source: 'render-node.create-instance',
+          details: {
+            view,
+            classDefinition: classDefinition ? classDefinition.toString() : null,
+          },
+        },
+      });
       return null;
     }
   }

@@ -1,0 +1,9 @@
+{%- block form_wrapper -%}
+    {{ form_start(form) }}
+    {%- block form_config -%}
+        {{- trans_js(render_pass, '@form::*') -}}
+    {%- endblock -%}
+    {{ form_errors(form) }}
+    {%- block form_body -%}{%- endblock -%}
+    {{ form_end(form) }}
+{%- endblock -%}

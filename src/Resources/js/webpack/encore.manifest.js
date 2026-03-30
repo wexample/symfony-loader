@@ -3,6 +3,9 @@ import path from 'node:path';
 import { execSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { objectMergeDeep } from '@wexample/js-helpers/Helper/Object';
+import { stringToKebabCase } from '@wexample/js-helpers/Helper/String';
+import { COLORS, logTitle, logEntry, logPath } from '@wexample/js-helpers/Helper/Log';
 
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -11,14 +14,6 @@ const Encore = require('@symfony/webpack-encore');
 const webpack = require('webpack');
 const FosRouting = require('fos-router/webpack/FosRouting');
 const VirtualModules = require('webpack-virtual-modules');
-const { objectMergeDeep } = require('@wexample/js-helpers/Helper/Object');
-const { stringToKebabCase } = require('@wexample/js-helpers/Helper/String');
-const {
-  COLORS,
-  logTitle,
-  logEntry,
-  logPath,
-} = require('@wexample/js-helpers/Helper/Log');
 
 const DEFAULT_OUTPUT_PATH = 'public/build/';
 const DEFAULT_PUBLIC_PATH = '/build';

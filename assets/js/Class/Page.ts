@@ -4,6 +4,7 @@ import PageManagerComponent from './PageManagerComponent';
 import ServicesRegistryInterface from '../Interfaces/ServicesRegistryInterface';
 import { stringBuildIdentifier } from '@wexample/js-helpers/Helper/String';
 import AppService from "./AppService";
+import InvariantViolationError from '../Errors/InvariantViolationError';
 
 export default class extends RenderNode {
   public isInitialPage: boolean;
@@ -31,7 +32,14 @@ export default class extends RenderNode {
     if (el) {
       this.el = el;
     } else {
-      this.app.services.prompt.systemError('Unable to find DOM HTMLElement for page');
+      throw new InvariantViolationError({
+        message: 'Unable to find DOM HTMLElement for page.',
+        code: 'ERR_PAGE_DOM_ELEMENT_MISSING',
+        context: {
+          view: this.view,
+          isInitialPage: this.renderData.isInitialPage,
+        },
+      });
     }
 
     this.el.classList.add(`page-${stringBuildIdentifier(this.view)}`);

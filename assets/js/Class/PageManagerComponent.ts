@@ -5,6 +5,10 @@ import ComponentInterface from "../Interfaces/RenderData/ComponentInterface";
 export default abstract class PageManagerComponent extends Component {
   public page: Page;
   public layoutBody: string;
+  public onEmbedCloseProxy: EventListener;
+  public onFormLoadingStartProxy: EventListener;
+  public onFormLoadingEndProxy: EventListener;
+  protected isInstantTransition: boolean = false;
 
   mergeRenderData(renderData: ComponentInterface) {
     super.mergeRenderData(renderData);
@@ -32,5 +36,95 @@ export default abstract class PageManagerComponent extends Component {
 
   public setPage(page: Page) {
     this.page = page;
+  }
+
+  protected async activateListeners(): Promise<void> {
+    await super.activateListeners();
+
+    this.onEmbedCloseProxy = this.onEmbedClose.bind(this) as EventListener;
+    this.el.addEventListener('embed:close', this.onEmbedCloseProxy);
+
+    this.onFormLoadingStartProxy = this.onFormLoadingStart.bind(this) as EventListener;
+    this.onFormLoadingEndProxy = this.onFormLoadingEnd.bind(this) as EventListener;
+    this.el.addEventListener('loading:start', this.onFormLoadingStartProxy);
+    this.el.addEventListener('loading:end', this.onFormLoadingEndProxy);
+  }
+
+  protected async deactivateListeners(): Promise<void> {
+    await super.deactivateListeners();
+
+    if (this.onEmbedCloseProxy) {
+      this.el.removeEventListener('embed:close', this.onEmbedCloseProxy);
+    }
+
+    if (this.onFormLoadingStartProxy) {
+      this.el.removeEventListener('loading:start', this.onFormLoadingStartProxy);
+    }
+    if (this.onFormLoadingEndProxy) {
+      this.el.removeEventListener('loading:end', this.onFormLoadingEndProxy);
+    }
+  }
+
+  protected async onEmbedClose(event: CustomEvent) {
+    const source = event.detail?.source;
+    if (!source || !source.el || !this.el.contains(source.el)) {
+      return;
+    }
+
+    const instant = !!event.detail?.instant;
+    if (instant) {
+      this.setInstantTransition(true);
+    }
+
+    await this.close();
+
+    if (instant) {
+      this.setInstantTransition(false);
+    }
+  }
+
+  protected onFormLoadingStart(event: CustomEvent) {
+    const source = event.detail?.source;
+    if (!source || !source.el || !this.el.contains(source.el)) {
+      return;
+    }
+
+    this.el.classList.remove('is-loaded');
+    this.el.classList.add('is-loading');
+  }
+
+  protected onFormLoadingEnd(event: CustomEvent) {
+    const source = event.detail?.source;
+    if (!source || !source.el || !this.el.contains(source.el)) {
+      return;
+    }
+
+    this.el.classList.remove('is-loading');
+    this.el.classList.add('is-loaded');
+
+    window.setTimeout(() => {
+      this.el.classList.remove('is-loaded');
+    }, 320);
+  }
+
+  public async open(_options: { instant?: boolean } = {}): Promise<void> {
+    // To override if needed.
+  }
+
+  public async close(_options: { instant?: boolean } = {}): Promise<void> {
+    // To override if needed.
+  }
+
+  protected setInstantTransition(instant: boolean) {
+    this.isInstantTransition = instant;
+    if (!this.el) {
+      return;
+    }
+
+    if (instant) {
+      this.el.classList.add('is-instant');
+    } else {
+      this.el.classList.remove('is-instant');
+    }
   }
 }

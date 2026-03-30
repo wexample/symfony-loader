@@ -33,6 +33,7 @@ class ComponentSlotsRuntime implements RuntimeExtensionInterface
             $path,
             ComponentService::INIT_MODE_PREVIOUS,
             $options,
+            [],
             false
         );
 

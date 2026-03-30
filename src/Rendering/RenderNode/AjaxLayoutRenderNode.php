@@ -12,12 +12,16 @@ class AjaxLayoutRenderNode extends AbstractLayoutRenderNode
 
     public array $vueTemplates = [];
 
-    public function toRenderData(): array
+    public function toRenderData(): \Wexample\SymfonyLoader\Rendering\RenderData
     {
-        return parent::toRenderData()
-            + $this->serializeVariables([
+        $renderData = parent::toRenderData();
+        $renderData->merge(
+            $this->serializeVariables([
                 'body',
                 'vueTemplates',
-            ]);
+            ])
+        );
+
+        return $renderData;
     }
 }

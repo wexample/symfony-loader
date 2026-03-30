@@ -101,22 +101,34 @@ export default class PanelComponent extends PageManagerComponent {
     this.el.classList.add(VARIABLES.CLOSED);
   }
 
-  open() {
+  public async open(options: { instant?: boolean } = {}) {
     if (this.opened) {
       return;
     }
 
     this.opened = true;
 
+    if (options.instant) {
+      this.setInstantTransition(true);
+    }
+
     this.showEl();
 
     this.page.focus();
 
     (this as unknown as WithOverlayComponent).overlayShow();
+
+    if (options.instant) {
+      this.setInstantTransition(false);
+    }
   }
 
-  close() {
+  public async close(options: { instant?: boolean } = {}): Promise<void> {
     this.closing = true;
+
+    if (options.instant) {
+      this.setInstantTransition(true);
+    }
 
     this.hideEl();
 
@@ -124,7 +136,7 @@ export default class PanelComponent extends PageManagerComponent {
 
     (this as unknown as WithOverlayComponent).overlayClosing();
 
-    return new Promise(async (resolve) => {
+    return new Promise<void>(async (resolve) => {
       // Sync with CSS animation.
       await setTimeout(async () => {
         (this as unknown as WithOverlayComponent).overlayClosed();
@@ -136,7 +148,11 @@ export default class PanelComponent extends PageManagerComponent {
 
         this.callerPage.focus();
 
-        resolve(this);
+        if (options.instant) {
+          this.setInstantTransition(false);
+        }
+
+        resolve();
       }, 400);
     });
   }
