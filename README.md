@@ -1,6 +1,6 @@
 # wexample/symfony-loader
 
-Version: 0.0.18
+Version: 0.0.19
 
 A dynamic rendering system for Symfony
 
