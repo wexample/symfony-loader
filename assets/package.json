@@ -3,6 +3,8 @@
   "version": "0.1.22",
   "peerDependencies": {
     "@symfony/webpack-encore": "^5.0.0",
+    "@fortawesome/free-brands-svg-icons": "^6.5.1",
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@wexample/js-app": "0.0.8",
     "@material/button": "^14.0.0",
     "@material/ripple": "^14.0.0",
