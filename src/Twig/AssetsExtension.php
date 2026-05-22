@@ -3,10 +3,10 @@
 namespace Wexample\SymfonyLoader\Twig;
 
 use Twig\TwigFunction;
+use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\AssetsRegistryService;
 use Wexample\SymfonyLoader\Service\AssetsService;
-use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 
 class AssetsExtension extends AbstractExtension
 {

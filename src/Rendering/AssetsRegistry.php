@@ -19,8 +19,7 @@ class AssetsRegistry implements JsonSerializable
 
     public function __construct(
         string $projectDir
-    )
-    {
+    ) {
         $this->pathPublic = rtrim($projectDir, '/') . '/' . self::DIR_PUBLIC;
         $this->loadManifest();
     }
@@ -29,7 +28,7 @@ class AssetsRegistry implements JsonSerializable
     {
         $manifestPath = $this->pathPublic . self::DIR_BUILD . self::FILE_MANIFEST;
 
-        if (!is_file($manifestPath)) {
+        if (! is_file($manifestPath)) {
             return;
         }
 
@@ -41,7 +40,7 @@ class AssetsRegistry implements JsonSerializable
 
         $data = json_decode($content, true);
 
-        if (!is_array($data)) {
+        if (! is_array($data)) {
             throw new RuntimeException(sprintf('Invalid JSON manifest "%s".', $manifestPath));
         }
 
@@ -62,7 +61,7 @@ class AssetsRegistry implements JsonSerializable
     {
         $builtPath = $this->getBuiltPath($pathInManifest);
 
-        if (!$builtPath) {
+        if (! $builtPath) {
             return null;
         }
 

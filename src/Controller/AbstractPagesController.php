@@ -31,8 +31,7 @@ abstract class AbstractPagesController extends AbstractLoaderController
     public function __construct(
         AdaptiveRendererService $adaptiveRendererService,
         protected PageService $pageService,
-    )
-    {
+    ) {
         parent::__construct(
             $adaptiveRendererService,
         );
@@ -41,8 +40,7 @@ abstract class AbstractPagesController extends AbstractLoaderController
     protected function buildTemplatePath(
         string $view,
         AbstractBundle|string|null $bundle = null
-    ): string
-    {
+    ): string {
         $base = '';
 
         if (str_contains($view, self::BUNDLE_TEMPLATE_SEPARATOR)) {
@@ -59,8 +57,7 @@ abstract class AbstractPagesController extends AbstractLoaderController
     protected function buildControllerTemplatePath(
         string $pageName,
         string $bundle = null
-    ): string
-    {
+    ): string {
         $bundle = $bundle ?: $this->getDefaultPageBundleClass();
 
         $parts = TemplateHelper::explodeControllerNamespaceSubParts(static::class, $bundle);
@@ -84,8 +81,7 @@ abstract class AbstractPagesController extends AbstractLoaderController
         Response $response = null,
         AbstractBundle|string $bundle = null,
         RenderPass $renderPass = null
-    ): Response
-    {
+    ): Response {
         return $this->adaptiveRender(
             $this->buildControllerTemplatePath($pageName, $bundle),
             $parameters,

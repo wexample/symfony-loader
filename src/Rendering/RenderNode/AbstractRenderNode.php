@@ -78,8 +78,7 @@ abstract class AbstractRenderNode extends RenderDataGenerator
         string $alias,
         string $target,
         ?string $view = null
-    ):void
-    {
+    ): void {
         $viewKey = $view ?? $alias;
 
         // Keep first mapping per alias+view to avoid overwriting.
@@ -114,7 +113,7 @@ abstract class AbstractRenderNode extends RenderDataGenerator
             }
         }
 
-        return !empty($output) ? implode($output) : null;
+        return ! empty($output) ? implode($output) : null;
     }
 
     public function setVars(array $vars): void
@@ -125,8 +124,7 @@ abstract class AbstractRenderNode extends RenderDataGenerator
     public function setVar(
         string $key,
         mixed $value
-    ): void
-    {
+    ): void {
         $this->vars[$key] = $value;
     }
 
@@ -163,7 +161,7 @@ abstract class AbstractRenderNode extends RenderDataGenerator
     {
         $view = TemplateHelper::removeExtension($view);
 
-        if (!$this->getView()) {
+        if (! $this->getView()) {
             $this->setView($view);
         }
 

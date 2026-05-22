@@ -3,8 +3,8 @@
 namespace Wexample\SymfonyLoader\Twig;
 
 use Twig\TwigFunction;
-use Wexample\SymfonyLoader\Service\PageService;
 use Wexample\SymfonyHelpers\Twig\AbstractExtension;
+use Wexample\SymfonyLoader\Service\PageService;
 
 class PageExtension extends AbstractExtension
 {

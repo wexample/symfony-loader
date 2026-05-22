@@ -20,16 +20,14 @@ class ComponentRenderNode extends AbstractRenderNode
     public function __construct(
         public string $initMode,
         public array $options = []
-    )
-    {
+    ) {
 
     }
 
     public function init(
         RenderPass $renderPass,
         string $view,
-    ): void
-    {
+    ): void {
         parent::init($renderPass, $view);
 
         $renderPass
@@ -44,7 +42,7 @@ class ComponentRenderNode extends AbstractRenderNode
 
     public function renderCssClasses(): string
     {
-        return 'com-class-loaded' . (!empty($this->cssClassName) ? ' ' . $this->cssClassName : '');
+        return 'com-class-loaded' . (! empty($this->cssClassName) ? ' ' . $this->cssClassName : '');
     }
 
     public function renderTag(): string
@@ -57,7 +55,7 @@ class ComponentRenderNode extends AbstractRenderNode
                 // ID are not used as "id" html attribute,
                 // as component may be embedded into a vue,
                 // so replicated multiple times.
-                VariableHelper::CLASS_VAR => 'com-init' . (!empty($cssClassName) ? ' ' . $cssClassName : ''),
+                VariableHelper::CLASS_VAR => 'com-init' . (! empty($cssClassName) ? ' ' . $cssClassName : ''),
             ]
         );
     }
@@ -81,8 +79,7 @@ class ComponentRenderNode extends AbstractRenderNode
     public function render(
         Environment $env,
         array $parameters = []
-    ): void
-    {
+    ): void {
         $this->setBody($env->render(
             $this->getTemplatePath(),
             $this->options + $parameters
@@ -101,8 +98,7 @@ class ComponentRenderNode extends AbstractRenderNode
     public function setOptionValue(
         string $key,
         mixed $value
-    ): void
-    {
+    ): void {
         $this->options[$key] = $value;
     }
 }

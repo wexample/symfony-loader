@@ -33,7 +33,7 @@ trait WithLoaderConfigurationExtensionTrait
         array $layoutBases
     ): array {
         foreach ($layoutBases as $base => $config) {
-            if (!is_array($config)) {
+            if (! is_array($config)) {
                 continue;
             }
 
@@ -41,7 +41,7 @@ trait WithLoaderConfigurationExtensionTrait
             if (is_string($component) && $component !== '') {
                 if (str_starts_with($component, '@@')) {
                     $layoutBases[$base]['page_manager_component'] = substr($component, 1);
-                } elseif (!str_starts_with($component, '@')) {
+                } elseif (! str_starts_with($component, '@')) {
                     $layoutBases[$base]['page_manager_component'] = '@' . ltrim($component, '@');
                 }
             }

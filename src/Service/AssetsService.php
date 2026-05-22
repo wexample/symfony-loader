@@ -4,11 +4,11 @@ namespace Wexample\SymfonyLoader\Service;
 
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Wexample\SymfonyLoader\Exception\AssetsNotBuiltException;
 use Wexample\SymfonyLoader\Rendering\Asset;
 use Wexample\SymfonyLoader\Rendering\AssetTag;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AbstractRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
-use Wexample\SymfonyLoader\Exception\AssetsNotBuiltException;
 use Wexample\SymfonyLoader\Service\Usage\AbstractAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\AnimationsAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\ColorSchemeAssetUsageService;
@@ -42,9 +42,9 @@ class AssetsService
         MarginsAssetUsageService $marginsAssetUsageService,
         ResponsiveAssetUsageService $responsiveAssetUsageService,
         FontsAssetUsageService $fontsAssetUsageService,
-        readonly protected KernelInterface $kernel,
-        readonly protected AssetsAggregationService $assetsAggregationService,
-        readonly protected AssetsRegistryService $assetsRegistryService,
+        protected readonly KernelInterface $kernel,
+        protected readonly AssetsAggregationService $assetsAggregationService,
+        protected readonly AssetsRegistryService $assetsRegistryService,
     ) {
         foreach ([
                      // Order is important, it defines the order the assets
@@ -96,12 +96,12 @@ class AssetsService
                 $usageFoundForType = false;
 
                 foreach ($views as $view) {
-                    if (!$usageFoundForType && $usage->addAssetsForRenderNodeAndType(
-                            $renderPass,
-                            $renderNode,
-                            $ext,
-                            $view
-                        )) {
+                    if (! $usageFoundForType && $usage->addAssetsForRenderNodeAndType(
+                        $renderPass,
+                        $renderNode,
+                        $ext,
+                        $view
+                    )) {
                         $usageFoundForType = true;
                     }
                 }

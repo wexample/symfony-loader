@@ -22,8 +22,7 @@ class PageService extends AbstractRenderNodeService
         AssetsService $assetsService,
         protected Translator $translator,
         protected RouterInterface $router
-    )
-    {
+    ) {
         parent::__construct(
             $assetsService,
         );
@@ -33,8 +32,7 @@ class PageService extends AbstractRenderNodeService
         RenderPass $renderPass,
         PageRenderNode $page,
         string $view
-    ): void
-    {
+    ): void {
         $this->initRenderNode(
             $page,
             $renderPass,
@@ -85,12 +83,12 @@ class PageService extends AbstractRenderNodeService
                 ? RouteHelper::getRouteAttributeName($controllerRouteAttribute)
                 : null;
 
-            if (!$controllerRouteName) {
+            if (! $controllerRouteName) {
                 $controllerNamespaceParts = TemplateHelper::explodeControllerNamespaceSubParts(
                     $classPath,
                     $bundle
                 );
-                if (!empty($controllerNamespaceParts) && $controllerNamespaceParts[0] === 'Pages') {
+                if (! empty($controllerNamespaceParts) && $controllerNamespaceParts[0] === 'Pages') {
                     $controllerNamespaceParts = array_slice($controllerNamespaceParts, 1);
                 }
 
@@ -116,8 +114,7 @@ class PageService extends AbstractRenderNodeService
     public function buildTranslationPathFromClassPath(
         string $classPath,
         string $templateLocationPrefix = null
-    ): string
-    {
+    ): string {
         $controllerFullPath = ClassHelper::getClassPath($classPath);
         $methodName = ClassHelper::getMethodNameFromClassPath($classPath);
 
@@ -138,9 +135,9 @@ class PageService extends AbstractRenderNodeService
             $explodeController[] = $methodName;
 
             return $templateLocationPrefix . '.' . TemplateHelper::joinNormalizedParts(
-                    $explodeController,
-                    '.'
-                );
+                $explodeController,
+                '.'
+            );
         }
         // Remove useless namespace part.
         $controllerRelativePath = TextHelper::removePrefix(
@@ -158,8 +155,8 @@ class PageService extends AbstractRenderNodeService
         $explodeController[] = $methodName;
 
         return $templateLocationPrefix . '.' . TemplateHelper::joinNormalizedParts(
-                $explodeController,
-                '.'
-            );
+            $explodeController,
+            '.'
+        );
     }
 }

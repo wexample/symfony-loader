@@ -11,9 +11,9 @@ use ReflectionClass;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyHelpers\Api\Dto\EntityDto;
 use Wexample\SymfonyHelpers\Entity\Interfaces\AbstractEntityInterface;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
 
 class JsService
 {
@@ -51,7 +51,8 @@ class JsService
         $renderPass
             ->getCurrentContextRenderNode()
             ->setVar(
-                $name, $this->serializeValue($value)
+                $name,
+                $this->serializeValue($value)
             );
     }
 

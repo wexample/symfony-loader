@@ -4,10 +4,10 @@ namespace Wexample\SymfonyLoader\Rendering;
 
 use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Wexample\SymfonyLoader\Rendering\ComponentManager\AbstractComponentManager;
-use Wexample\SymfonyLoader\Helper\LoaderHelper;
-use Wexample\SymfonyHelpers\Helper\BundleHelper;
 use Wexample\Helpers\Helper\TextHelper;
+use Wexample\SymfonyHelpers\Helper\BundleHelper;
+use Wexample\SymfonyLoader\Helper\LoaderHelper;
+use Wexample\SymfonyLoader\Rendering\ComponentManager\AbstractComponentManager;
 
 readonly class ComponentManagerLocatorService
 {

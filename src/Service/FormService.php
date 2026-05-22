@@ -20,8 +20,7 @@ class FormService extends ComponentService
         ComponentManagerLocatorService $componentManagerLocatorService,
         Translator $translator,
         private readonly AssetsRegistryService $assetsRegistryService
-    )
-    {
+    ) {
         parent::__construct(
             $assetsService,
             $componentManagerLocatorService,
@@ -41,8 +40,7 @@ class FormService extends ComponentService
         FormView $formView,
         string $path,
         array $options = []
-    ): string
-    {
+    ): string {
         $options = $this->mergeFormOptions($formView, $options, ['ajax', 'name']);
         $options['embedType'] = $renderPass->getLayoutBase();
 
@@ -98,17 +96,16 @@ class FormService extends ComponentService
         FormView $formView,
         array $options,
         array $keys
-    ): array
-    {
+    ): array {
         $defaults = array_intersect_key($formView->vars, array_flip($keys));
+
         return array_replace($defaults, $options);
     }
 
     private function hasFormSpecificJs(
         RenderPass $renderPass,
         string $path
-    ): bool
-    {
+    ): bool {
         $view = TemplateHelper::removeExtension($path);
         $jsPath = (new DefaultAssetUsageService($this->assetsRegistryService))
             ->buildPublicAssetPathFromView($view, 'js');
@@ -121,12 +118,11 @@ class FormService extends ComponentService
         RenderPass $renderPass,
         FormView $formView,
         \Wexample\SymfonyLoader\Rendering\RenderNode\ComponentRenderNode $component
-    ): string
-    {
+    ): string {
         $fallbackOptions = [
             'ajax' => (bool) ($formView->vars['ajax'] ?? false),
         ];
-        if (!empty($formView->vars['name'])) {
+        if (! empty($formView->vars['name'])) {
             $fallbackOptions['name'] = $formView->vars['name'];
         }
 

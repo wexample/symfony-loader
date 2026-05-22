@@ -11,12 +11,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Wexample\SymfonyLoader\Service\Encore\EncoreManifestBuilder;
-use Wexample\SymfonyLoader\Service\Encore\TsconfigPathsSynchronizer;
-use Wexample\SymfonyLoader\Traits\SymfonyLoaderBundleClassTrait;
 use Wexample\SymfonyHelpers\Command\AbstractBundleCommand;
 use Wexample\SymfonyHelpers\Helper\JsonHelper;
 use Wexample\SymfonyHelpers\Service\BundleService;
+use Wexample\SymfonyLoader\Service\Encore\EncoreManifestBuilder;
+use Wexample\SymfonyLoader\Service\Encore\TsconfigPathsSynchronizer;
+use Wexample\SymfonyLoader\Traits\SymfonyLoaderBundleClassTrait;
 
 class GenerateEncoreManifestCommand extends AbstractBundleCommand
 {
@@ -105,7 +105,7 @@ class GenerateEncoreManifestCommand extends AbstractBundleCommand
                     ? JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
                     : 0;
 
-                if (!JsonHelper::write(
+                if (! JsonHelper::write(
                     $targetPath,
                     $manifest,
                     $flags
@@ -186,7 +186,7 @@ class GenerateEncoreManifestCommand extends AbstractBundleCommand
 
     private function getConfiguredTsconfigPath(): ?string
     {
-        if (!$this->parameterBag->has('wexample_symfony_loader.tsconfig_path')) {
+        if (! $this->parameterBag->has('wexample_symfony_loader.tsconfig_path')) {
             return null;
         }
 

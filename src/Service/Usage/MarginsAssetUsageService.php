@@ -6,6 +6,6 @@ final class MarginsAssetUsageService extends AbstractAssetUsageService
 {
     public static function getName(): string
     {
-       return 'margins';
+        return 'margins';
     }
 }

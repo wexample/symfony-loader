@@ -20,11 +20,11 @@ class VueService
     public const string TAG_TEMPLATE = 'template';
 
     public function __construct(
-        readonly protected AdaptiveResponseService $adaptiveResponseService,
-        readonly protected AssetsService $assetsService,
-        readonly protected ComponentService $componentsService,
-        readonly protected Translator $translator,
-        readonly protected JsService $jsService
+        protected readonly AdaptiveResponseService $adaptiveResponseService,
+        protected readonly AssetsService $assetsService,
+        protected readonly ComponentService $componentsService,
+        protected readonly Translator $translator,
+        protected readonly JsService $jsService
     ) {
     }
 
@@ -47,7 +47,7 @@ class VueService
     ): string {
         $pathWithExtension = $view.VueExtension::TEMPLATE_FILE_EXTENSION;
 
-        if (!$twig->getLoader()->exists($pathWithExtension)) {
+        if (! $twig->getLoader()->exists($pathWithExtension)) {
             throw new Exception('Unable to find template: '.$pathWithExtension);
         }
 
@@ -63,13 +63,13 @@ class VueService
             'domId' => $vueDomId,
             'name' => $view,
             'props' => $props,
-            'translationDomain' => $translationDomain
+            'translationDomain' => $translationDomain,
         ];
 
         $outputBody = '';
         $componentName = ComponentService::buildCoreComponentName(ComponentService::COMPONENT_NAME_VUE);
 
-        if (!$this->isRenderPassInVueContext($renderPass)) {
+        if (! $this->isRenderPassInVueContext($renderPass)) {
             $rootComponent = $this
                 ->componentsService
                 ->registerComponent(
@@ -105,7 +105,7 @@ class VueService
                 $view
             );
 
-        if (!isset($this->renderedTemplates[$view])) {
+        if (! isset($this->renderedTemplates[$view])) {
             $renderPass->setCurrentContextRenderNode(
                 $rootComponent
             );

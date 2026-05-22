@@ -22,7 +22,7 @@ class TsconfigPathsSynchronizer
 
         $manifest = JsonHelper::read($manifestPath, true);
 
-        if (!is_array($manifest) || !isset($manifest['aliases'])) {
+        if (! is_array($manifest) || ! isset($manifest['aliases'])) {
             throw new \RuntimeException(sprintf('Unable to read aliases from manifest %s.', $manifestPath));
         }
 

@@ -93,7 +93,7 @@ class ComponentSlotsRuntime implements RuntimeExtensionInterface
         RenderPass $renderPass,
         string $path
     ): string {
-        if (!empty($this->slotStack)) {
+        if (! empty($this->slotStack)) {
             throw new Exception('endcomponent called while a slot is still open.');
         }
 
@@ -114,7 +114,7 @@ class ComponentSlotsRuntime implements RuntimeExtensionInterface
         $component = $entry['component'];
         $component->options['slots'] = $entry['slots'];
 
-        if (!array_key_exists('body', $component->options) && isset($entry['slots']['default'])) {
+        if (! array_key_exists('body', $component->options) && isset($entry['slots']['default'])) {
             $component->options['body'] = $entry['slots']['default'];
         }
 

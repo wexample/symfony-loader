@@ -11,8 +11,7 @@ class AdaptiveResponseRequestSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly AdaptiveResponseService $adaptiveResponseService
-    )
-    {
+    ) {
     }
 
     public static function getSubscribedEvents(): array

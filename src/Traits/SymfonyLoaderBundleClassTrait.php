@@ -2,8 +2,8 @@
 
 namespace Wexample\SymfonyLoader\Traits;
 
-use Wexample\SymfonyLoader\WexampleSymfonyLoaderBundle;
 use Wexample\SymfonyHelpers\Traits\BundleClassTrait;
+use Wexample\SymfonyLoader\WexampleSymfonyLoaderBundle;
 
 trait SymfonyLoaderBundleClassTrait
 {

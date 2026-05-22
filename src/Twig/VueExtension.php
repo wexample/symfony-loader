@@ -9,9 +9,9 @@ use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
+use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\VueService;
-use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 
 class VueExtension extends AbstractExtension
 {

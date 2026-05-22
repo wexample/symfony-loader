@@ -3,7 +3,6 @@
 namespace Wexample\SymfonyLoader\Twig;
 
 use Exception;
-use Symfony\Component\Form\FormView;
 use Twig\Environment;
 use Twig\TwigFunction;
 use Wexample\SymfonyHelpers\Twig\AbstractExtension;
@@ -14,8 +13,7 @@ class FormExtension extends AbstractExtension
 {
     public function __construct(
         private readonly FormService $formService
-    )
-    {
+    ) {
     }
 
     public function getFunctions(): array
@@ -44,8 +42,7 @@ class FormExtension extends AbstractExtension
         \Symfony\Component\Form\FormView $formView,
         string $path,
         array $options = []
-    ): string
-    {
+    ): string {
         return $this->formService->formLoad(
             $twig,
             $renderPass,

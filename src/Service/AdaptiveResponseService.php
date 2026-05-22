@@ -3,10 +3,10 @@
 namespace Wexample\SymfonyLoader\Service;
 
 use Symfony\Component\HttpFoundation\Request;
-use Wexample\SymfonyTemplate\Helper\TemplateHelper;
-use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyHelpers\Helper\FileHelper;
 use Wexample\SymfonyLoader\Helper\AdaptiveRequestHelper;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
+use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 
 class AdaptiveResponseService
 {
@@ -32,14 +32,14 @@ class AdaptiveResponseService
 
     public function initializeRequestAttributes(Request $request): void
     {
-        if (!$request->attributes->has(AdaptiveRequestHelper::REQUEST_ATTR_OUTPUT_TYPE)) {
+        if (! $request->attributes->has(AdaptiveRequestHelper::REQUEST_ATTR_OUTPUT_TYPE)) {
             $request->attributes->set(
                 AdaptiveRequestHelper::REQUEST_ATTR_OUTPUT_TYPE,
                 $this->detectOutputTypeFromRequest($request)
             );
         }
 
-        if (!$request->attributes->has(AdaptiveRequestHelper::REQUEST_ATTR_LAYOUT_BASE)) {
+        if (! $request->attributes->has(AdaptiveRequestHelper::REQUEST_ATTR_LAYOUT_BASE)) {
             $outputType = $request->attributes->get(AdaptiveRequestHelper::REQUEST_ATTR_OUTPUT_TYPE);
             $outputType = is_string($outputType) ? $outputType : RenderPass::OUTPUT_TYPE_RESPONSE_HTML;
             $request->attributes->set(

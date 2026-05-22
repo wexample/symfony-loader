@@ -2,9 +2,10 @@
 
 namespace Wexample\SymfonyLoader\Rendering;
 
-use Wexample\Helpers\Helper\ClassHelper;
 use function is_a;
 use function is_object;
+
+use Wexample\Helpers\Helper\ClassHelper;
 
 abstract class RenderDataGenerator
 {
@@ -35,7 +36,7 @@ abstract class RenderDataGenerator
                 $value = $this->$variable;
             }
 
-            if (!is_object($value)) {
+            if (! is_object($value)) {
                 $output[$variable] = $value;
             } elseif (is_a($value, RenderDataGenerator::class)) {
                 $output[$variable] = $value->toRenderData();

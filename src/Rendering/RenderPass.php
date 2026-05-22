@@ -2,6 +2,7 @@
 
 namespace Wexample\SymfonyLoader\Rendering;
 
+use Wexample\SymfonyHelpers\Helper\VariableHelper;
 use Wexample\SymfonyLoader\Helper\LoaderHelper;
 use Wexample\SymfonyLoader\Helper\RenderingHelper;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AbstractLayoutRenderNode;
@@ -11,7 +12,6 @@ use Wexample\SymfonyLoader\Rendering\RenderNode\InitialLayoutRenderNode;
 use Wexample\SymfonyLoader\Rendering\Traits\WithRenderRequestId;
 use Wexample\SymfonyLoader\Rendering\Traits\WithView;
 use Wexample\SymfonyLoader\Service\Usage\ResponsiveAssetUsageService;
-use Wexample\SymfonyHelpers\Helper\VariableHelper;
 
 class RenderPass
 {
@@ -76,8 +76,7 @@ class RenderPass
     public function __construct(
         string $view,
         protected AssetsRegistry $assetsRegistry
-    )
-    {
+    ) {
         $this->setView($view);
         $this->createRenderRequestId();
     }

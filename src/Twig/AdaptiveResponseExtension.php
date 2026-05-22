@@ -3,9 +3,9 @@
 namespace Wexample\SymfonyLoader\Twig;
 
 use Twig\TwigFunction;
+use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\AdaptiveResponseService;
-use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 
 class AdaptiveResponseExtension extends AbstractExtension
 {

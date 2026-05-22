@@ -20,6 +20,7 @@ abstract class AdaptiveResponse
     public function setOk(bool $ok): self
     {
         $this->ok = $ok;
+
         return $this;
     }
 

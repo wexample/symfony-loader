@@ -3,9 +3,9 @@
 namespace Wexample\SymfonyLoader\Twig;
 
 use Twig\TwigFunction;
+use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\JsService;
-use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 
 class VarExtension extends AbstractExtension
 {

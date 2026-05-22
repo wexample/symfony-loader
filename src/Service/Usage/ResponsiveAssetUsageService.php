@@ -2,10 +2,10 @@
 
 namespace Wexample\SymfonyLoader\Service\Usage;
 
+use Wexample\SymfonyHelpers\Helper\FileHelper;
 use Wexample\SymfonyLoader\Rendering\Asset;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AbstractRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
-use Wexample\SymfonyHelpers\Helper\FileHelper;
 
 final class ResponsiveAssetUsageService extends AbstractAssetUsageService
 {
@@ -56,9 +56,10 @@ final class ResponsiveAssetUsageService extends AbstractAssetUsageService
         if ($asset->type === Asset::EXTENSION_CSS) {
             if (isset($asset->usages[$this->getName()])) {
                 // Responsive CSS are loaded in page when JS is disabled.
-                return !$renderPass->isUseJs();
+                return ! $renderPass->isUseJs();
             }
         }
+
         return true;
     }
 }

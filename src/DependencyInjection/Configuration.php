@@ -23,7 +23,7 @@ class Configuration implements ConfigurationInterface
             ->normalizeKeys(false)
             ->beforeNormalization()
             ->always(static function ($value) {
-                if (!is_array($value)) {
+                if (! is_array($value)) {
                     return [];
                 }
 

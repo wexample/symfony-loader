@@ -4,10 +4,10 @@ namespace Wexample\SymfonyLoader\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Wexample\Helpers\Helper\ClassHelper;
-use Wexample\SymfonyHelpers\Interface\LoaderBundleInterface;
 use Wexample\SymfonyHelpers\DependencyInjection\AbstractWexampleSymfonyExtension;
 use Wexample\SymfonyHelpers\Helper\FileHelper;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
+use Wexample\SymfonyHelpers\Interface\LoaderBundleInterface;
 
 class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
 {
@@ -31,7 +31,7 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
             $config['tsconfig_path'] ?? null
         );
 
-        if (!empty($config['default_color_scheme'])) {
+        if (! empty($config['default_color_scheme'])) {
             $colorSchemeConfig = $container->hasParameter('loader.usages.color_scheme')
                 ? (array) $container->getParameter('loader.usages.color_scheme')
                 : [];

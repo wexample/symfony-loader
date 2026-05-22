@@ -79,7 +79,7 @@ class LayoutService extends AbstractRenderNodeService
         $layoutConfig = $this->layoutBases[$layoutBase] ?? null;
         $view = $layoutConfig['page_manager_component'] ?? null;
 
-        if (!is_string($view) || $view === '') {
+        if (! is_string($view) || $view === '') {
             return;
         }
 

@@ -5,9 +5,9 @@ namespace Wexample\SymfonyLoader\Service;
 use Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Environment;
 use Wexample\SymfonyHelpers\Helper\BundleHelper;
 use Wexample\SymfonyLoader\Controller\AbstractPagesController;
@@ -79,6 +79,7 @@ class AdaptiveRendererService
 
         if ($configurator) {
             $configured = $configurator($renderPass);
+
             return $configured instanceof RenderPass ? $configured : $renderPass;
         }
 
@@ -179,7 +180,7 @@ class AdaptiveRendererService
     ): Response {
         $view = $renderPass->getView();
 
-        if (!$view) {
+        if (! $view) {
             throw new Exception('View must be defined before adaptive rendering');
         }
 
@@ -217,7 +218,7 @@ class AdaptiveRendererService
             return $response;
         }
 
-        if (!$content || !str_contains($content, RenderingHelper::PLACEHOLDER_PRELOAD_TAG)) {
+        if (! $content || ! str_contains($content, RenderingHelper::PLACEHOLDER_PRELOAD_TAG)) {
             return $response;
         }
 

@@ -6,12 +6,12 @@ use Exception;
 use Twig\Environment;
 use Twig\TwigFunction;
 use Wexample\PhpHtml\Helper\DomHelper;
+use Wexample\SymfonyHelpers\Helper\VariableHelper;
+use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\ComponentService;
 use Wexample\SymfonyLoader\Twig\TokenParser\ComponentTokenParser;
 use Wexample\SymfonyLoader\Twig\TokenParser\SlotTokenParser;
-use Wexample\SymfonyHelpers\Helper\VariableHelper;
-use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 
 class ComponentsExtension extends AbstractExtension
 {

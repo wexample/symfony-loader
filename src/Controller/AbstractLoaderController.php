@@ -2,7 +2,6 @@
 
 namespace Wexample\SymfonyLoader\Controller;
 
-
 use Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Wexample\SymfonyHelpers\Class\AbstractBundle;
@@ -16,8 +15,7 @@ abstract class AbstractLoaderController extends AbstractController
 {
     public function __construct(
         protected readonly AdaptiveRendererService $adaptiveRendererService,
-    )
-    {
+    ) {
     }
 
     /**
@@ -29,8 +27,7 @@ abstract class AbstractLoaderController extends AbstractController
         array $parameters = [],
         Response $response = null,
         RenderPass $renderPass = null
-    ): Response
-    {
+    ): Response {
         return $this->adaptiveRendererService->adaptiveRender(
             $view,
             $parameters,
@@ -44,8 +41,7 @@ abstract class AbstractLoaderController extends AbstractController
 
     protected function configureRenderPass(
         RenderPass $renderPass
-    ): RenderPass
-    {
+    ): RenderPass {
         return $renderPass;
     }
 
@@ -54,16 +50,15 @@ abstract class AbstractLoaderController extends AbstractController
      */
     public static function getTemplateLocationPrefix(
         AbstractBundle|string $bundle = null
-    ): string
-    {
+    ): string {
         $bundle = $bundle ?: static::getControllerBundle();
+
         return ($bundle ? $bundle::getAlias() : LoaderHelper::TWIG_NAMESPACE_FRONT);
     }
 
     public static function getTemplateFrontDir(
         AbstractBundle|string $bundle = null
-    ): string
-    {
+    ): string {
         return ($bundle ? LoaderHelper::TWIG_NAMESPACE_ASSETS : LoaderHelper::TWIG_NAMESPACE_FRONT);
     }
 
@@ -76,8 +71,7 @@ abstract class AbstractLoaderController extends AbstractController
      */
     public static function getControllerTemplateDir(
         string $bundle = null
-    ): string
-    {
+    ): string {
         return TemplateHelper::joinNormalizedParts(
             [
                 self::getTemplateLocationPrefix(),

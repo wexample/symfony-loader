@@ -177,11 +177,11 @@ class EncoreManifestBuilder
                 $parts = explode('/', $relative);
                 $firstSegment = $parts[0] ?? '';
 
-                if (!in_array($firstSegment, self::JS_MAIN_ALLOWED_DIRECTORIES, true)) {
+                if (! in_array($firstSegment, self::JS_MAIN_ALLOWED_DIRECTORIES, true)) {
                     return false;
                 }
 
-                return !$this->isClassFile($filename);
+                return ! $this->isClassFile($filename);
             }
         );
 
@@ -206,7 +206,7 @@ class EncoreManifestBuilder
             $subDirectory,
             self::JS_EXTENSIONS,
             function (string $relative, string $filename) use ($excludeClasses): bool {
-                return !$excludeClasses || !$this->isClassFile($filename);
+                return ! $excludeClasses || ! $this->isClassFile($filename);
             }
         );
 
@@ -315,7 +315,7 @@ class EncoreManifestBuilder
     ): array {
         $directory = $this->buildTargetDirectory($descriptor['pathAbsolute'], $subDirectory);
 
-        if (!is_dir($directory)) {
+        if (! is_dir($directory)) {
             return [];
         }
 
@@ -327,12 +327,12 @@ class EncoreManifestBuilder
         $iterator = new RecursiveIteratorIterator($directoryIterator);
 
         foreach ($iterator as $item) {
-            if (!$item->isFile()) {
+            if (! $item->isFile()) {
                 continue;
             }
 
             $extension = strtolower($item->getExtension());
-            if (!in_array($extension, $extensions, true)) {
+            if (! in_array($extension, $extensions, true)) {
                 continue;
             }
 
@@ -345,7 +345,7 @@ class EncoreManifestBuilder
                 ltrim(substr($item->getPathname(), strlen($descriptor['pathAbsolute'])), DIRECTORY_SEPARATOR)
             );
 
-            if ($filter && !$filter($relativeFront, $filename)) {
+            if ($filter && ! $filter($relativeFront, $filename)) {
                 continue;
             }
 
@@ -413,9 +413,8 @@ class EncoreManifestBuilder
     private function buildBundleTag(
         string $group,
         int|string $key
-    ): string
-    {
-        if (!is_string($key) || is_numeric($key)) {
+    ): string {
+        if (! is_string($key) || is_numeric($key)) {
             return '@front';
         }
 
@@ -436,7 +435,7 @@ class EncoreManifestBuilder
         }
 
         foreach ($assets['js'] as $category => $entries) {
-            if (!isset($target['js'][$category])) {
+            if (! isset($target['js'][$category])) {
                 $target['js'][$category] = [];
             }
 
@@ -465,7 +464,7 @@ class EncoreManifestBuilder
 
     private function ensureTrailingSeparatorIfDirectory(string $path): string
     {
-        if (is_dir($path) && !str_ends_with($path, DIRECTORY_SEPARATOR)) {
+        if (is_dir($path) && ! str_ends_with($path, DIRECTORY_SEPARATOR)) {
             return $path.DIRECTORY_SEPARATOR;
         }
 
@@ -481,7 +480,7 @@ class EncoreManifestBuilder
         $cache = [];
         $vendorPath = $this->projectDirWithSeparator.'vendor'.DIRECTORY_SEPARATOR;
 
-        if (!is_dir($vendorPath)) {
+        if (! is_dir($vendorPath)) {
             return $this->vendorSymlinkCache = $cache;
         }
 
@@ -492,12 +491,12 @@ class EncoreManifestBuilder
         $iterator = new RecursiveIteratorIterator($directoryIterator);
 
         foreach ($iterator as $item) {
-            if (!$item->isLink()) {
+            if (! $item->isLink()) {
                 continue;
             }
 
             $target = realpath($item->getPathname());
-            if (!$target) {
+            if (! $target) {
                 continue;
             }
 
@@ -514,7 +513,7 @@ class EncoreManifestBuilder
 
     /**
      * Get JS dev packages aliases from symfony-dev config.
-     * 
+     *
      * @return array<string, string> Alias => absolute path
      */
     private function getJsDevPackagesAliases(): array

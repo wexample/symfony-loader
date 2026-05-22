@@ -3,10 +3,10 @@
 namespace Wexample\SymfonyLoader;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Wexample\SymfonyLoader\DependencyInjection\Compiler\LoaderTemplatesCompilerPass;
-use Wexample\SymfonyHelpers\Interface\LoaderBundleInterface;
 use Wexample\SymfonyHelpers\Class\AbstractBundle;
 use Wexample\SymfonyHelpers\Helper\BundleHelper;
+use Wexample\SymfonyHelpers\Interface\LoaderBundleInterface;
+use Wexample\SymfonyLoader\DependencyInjection\Compiler\LoaderTemplatesCompilerPass;
 
 class WexampleSymfonyLoaderBundle extends AbstractBundle implements LoaderBundleInterface
 {

@@ -8,10 +8,10 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Wexample\SymfonyLoader\Service\Encore\TsconfigPathsSynchronizer;
-use Wexample\SymfonyLoader\Traits\SymfonyLoaderBundleClassTrait;
 use Wexample\SymfonyHelpers\Command\AbstractBundleCommand;
 use Wexample\SymfonyHelpers\Service\BundleService;
+use Wexample\SymfonyLoader\Service\Encore\TsconfigPathsSynchronizer;
+use Wexample\SymfonyLoader\Traits\SymfonyLoaderBundleClassTrait;
 
 class SyncTsconfigPathsCommand extends AbstractBundleCommand
 {

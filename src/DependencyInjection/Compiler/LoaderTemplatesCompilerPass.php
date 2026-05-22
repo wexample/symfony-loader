@@ -32,7 +32,7 @@ class LoaderTemplatesCompilerPass implements CompilerPassInterface
                     );
                 } else {
                     $templateNamespace = basename($path);
-                    if (is_string($alias) && !is_numeric($alias)) {
+                    if (is_string($alias) && ! is_numeric($alias)) {
                         $templateNamespace = ltrim($alias, '@');
                     }
 

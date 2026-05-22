@@ -3,9 +3,9 @@
 namespace Wexample\SymfonyLoader\Service;
 
 use Symfony\Component\HttpKernel\KernelInterface;
-use Wexample\SymfonyLoader\Rendering\AssetTag;
 use Wexample\SymfonyHelpers\Helper\ArrayHelper;
 use Wexample\SymfonyHelpers\Helper\FileHelper;
+use Wexample\SymfonyLoader\Rendering\AssetTag;
 
 class AssetsAggregationService
 {
@@ -44,7 +44,7 @@ class AssetsAggregationService
                         // Ignore placeholders.
                         if ($tag->getPath()) {
                             if ($tag->canAggregate()) {
-                                if (!$aggregationTag) {
+                                if (! $aggregationTag) {
                                     $aggregationTag = new AssetTag();
 
                                     $aggregationTag->setId(
@@ -144,11 +144,11 @@ class AssetsAggregationService
         int $counter
     ): string {
         return self::DIR_BUILD.implode(
-                '/'.$type.'/',
-                explode(
-                    '::',
-                    $templateName
-                )
-            ).'-'.$counter.'.'.FileHelper::SUFFIX_AGGREGATED.'.'.$type;
+            '/'.$type.'/',
+            explode(
+                '::',
+                $templateName
+            )
+        ).'-'.$counter.'.'.FileHelper::SUFFIX_AGGREGATED.'.'.$type;
     }
 }

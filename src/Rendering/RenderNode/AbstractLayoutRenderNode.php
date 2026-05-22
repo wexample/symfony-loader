@@ -14,9 +14,8 @@ abstract class AbstractLayoutRenderNode extends AbstractRenderNode
     protected PageRenderNode $page;
 
     public function __construct(
-        readonly protected string $env
-    )
-    {
+        protected readonly string $env
+    ) {
 
     }
 
@@ -48,8 +47,7 @@ abstract class AbstractLayoutRenderNode extends AbstractRenderNode
     public function init(
         RenderPass $renderPass,
         string $view,
-    ): void
-    {
+    ): void {
         parent::init($renderPass, $view);
 
         $this->setRenderRequestId(

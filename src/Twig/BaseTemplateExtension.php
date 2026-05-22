@@ -2,10 +2,10 @@
 
 namespace Wexample\SymfonyLoader\Twig;
 
+use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\TwigFunction;
 use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 use Wexample\SymfonyTranslations\Translation\Translator;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class BaseTemplateExtension extends AbstractExtension
 {
@@ -34,8 +34,7 @@ class BaseTemplateExtension extends AbstractExtension
                 [
                     $this,
                     'baseTemplateRenderMeta',
-                ]
-                ,
+                ],
                 [
                     'is_safe' => ['html'],
                 ]
@@ -122,7 +121,7 @@ class BaseTemplateExtension extends AbstractExtension
 
         $request = $this->requestStack->getCurrentRequest();
 
-        if (!$request) {
+        if (! $request) {
             return '';
         }
 

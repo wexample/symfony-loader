@@ -22,12 +22,14 @@ final class RenderData extends AdaptiveResponse
     public function merge(array $data): self
     {
         $this->data = $data + $this->data;
+
         return $this;
     }
 
     public function set(string $key, mixed $value): self
     {
         $this->data[$key] = $value;
+
         return $this;
     }
 
@@ -47,6 +49,7 @@ final class RenderData extends AdaptiveResponse
             foreach ($value as $key => $item) {
                 $output[$key] = $this->normalize($item);
             }
+
             return $output;
         }
 
