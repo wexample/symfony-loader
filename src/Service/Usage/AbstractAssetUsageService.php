@@ -84,6 +84,9 @@ abstract class AbstractAssetUsageService
 
         $asset = new Asset(
             $pathInManifest,
+            // Resolved public URL (hashed in prod). The client loads assets
+            // dynamically without Twig asset(), so it needs the built path.
+            $this->assetsRegistryService->getBuiltPath($pathInManifest),
             $this::getName(),
             $renderNode->getContextType()
         );

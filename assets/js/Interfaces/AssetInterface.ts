@@ -8,7 +8,10 @@ export default interface AssetInterface {
   el: HTMLElement;
   initialLayout: string;
   loaded: boolean;
+  // Logical manifest key (un-hashed); kept for identity/debug.
   path: string;
+  // Resolved public URL to request (hashed in prod). Use this to load assets.
+  publicPath: string;
   resolver: Function;
   responsive?: string;
   // Defines that asset has been fully loaded once,

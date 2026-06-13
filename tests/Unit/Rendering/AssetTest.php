@@ -11,10 +11,12 @@ class AssetTest extends TestCase
     {
         $asset = new Asset(
             'build/bundle/css/view.css',
+            '/build/bundle/css/view.css',
             'default',
             Asset::CONTEXT_LAYOUT
         );
 
         $this->assertSame('bundle/view', $asset->getView());
+        $this->assertSame('/build/bundle/css/view.css', $asset->publicPath);
     }
 }

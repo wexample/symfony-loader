@@ -298,7 +298,8 @@ export default class AssetsService extends AppService {
 
   addScript(asset: AssetInterface, assetReplacement?: AssetInterface) {
     let el = document.createElement(DOM_TAG_NAME.SCRIPT);
-    el.setAttribute(DOM_ATTRIBUTE.SRC, `/${asset.path}`);
+    // publicPath is the manifest-resolved URL (hashed in prod), already absolute.
+    el.setAttribute(DOM_ATTRIBUTE.SRC, asset.publicPath);
     asset.el = el;
 
     this.addAssetEl(asset, assetReplacement);
@@ -308,7 +309,8 @@ export default class AssetsService extends AppService {
 
   addStyle(asset: AssetInterface, assetReplacement?: AssetInterface) {
     let el = this.createStyleLinkElement();
-    el.setAttribute(DOM_ATTRIBUTE.HREF, `/${asset.path}`);
+    // publicPath is the manifest-resolved URL (hashed in prod), already absolute.
+    el.setAttribute(DOM_ATTRIBUTE.HREF, asset.publicPath);
     asset.el = el;
 
     this.addAssetEl(asset, assetReplacement);

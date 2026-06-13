@@ -12,6 +12,7 @@ class AssetTagTest extends TestCase
     {
         $asset = new Asset(
             'build/bundle/js/app.js',
+            '/build/bundle/js/app.js',
             'usage',
             Asset::CONTEXT_PAGE
         );

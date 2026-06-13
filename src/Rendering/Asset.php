@@ -41,7 +41,20 @@ class Asset extends RenderDataGenerator
 
     public string $media = 'screen';
 
+    /**
+     * Logical manifest key (e.g. build/@Bundle/js/components/modal.js).
+     * Stays un-hashed: server-side Twig `asset()` resolves it through the
+     * Encore manifest, and it is the stable identity used to dedup/aggregate.
+     */
     public string $path;
+
+    /**
+     * Resolved public URL the browser must request (the manifest VALUE, e.g.
+     * /build/@Bundle/js/components/modal.6dc78917.js in prod). The client-side
+     * loader injects assets dynamically and never goes through Twig `asset()`,
+     * so without this it would request the un-hashed `path` and 404 in prod.
+     */
+    public string $publicPath;
 
     public string $type;
 
@@ -49,12 +62,14 @@ class Asset extends RenderDataGenerator
 
     public function __construct(
         string $pathInManifest,
+        string $publicPath,
         protected string $usage,
         protected string $context
     ) {
         $info = pathinfo($pathInManifest);
         $this->type = $info['extension'];
         $this->path = $pathInManifest;
+        $this->publicPath = $publicPath;
 
         // Same as render node id
         $this->setView(
@@ -106,6 +121,7 @@ class Asset extends RenderDataGenerator
             'domId',
             'initialLayout',
             'path',
+            'publicPath',
             'type',
             'usage',
             'usages',

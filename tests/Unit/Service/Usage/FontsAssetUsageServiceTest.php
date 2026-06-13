@@ -22,7 +22,7 @@ class FontsAssetUsageServiceTest extends TestCase
         ];
         $renderPass->setUsage(FontsAssetUsageService::getName(), 'default');
 
-        $asset = new Asset('build/bundle/css/view.css', FontsAssetUsageService::getName(), Asset::CONTEXT_LAYOUT);
+        $asset = new Asset('build/bundle/css/view.css', '/build/bundle/css/view.css', FontsAssetUsageService::getName(), Asset::CONTEXT_LAYOUT);
         $asset->usages[FontsAssetUsageService::getName()] = 'default';
 
         $this->assertTrue($service->assetNeedsInitialRender($asset, $renderPass));
@@ -45,7 +45,7 @@ class FontsAssetUsageServiceTest extends TestCase
         ];
         $renderPass->setUsage(FontsAssetUsageService::getName(), 'default');
 
-        $asset = new Asset('build/bundle/css/view.css', FontsAssetUsageService::getName(), Asset::CONTEXT_LAYOUT);
+        $asset = new Asset('build/bundle/css/view.css', '/build/bundle/css/view.css', FontsAssetUsageService::getName(), Asset::CONTEXT_LAYOUT);
         $asset->usages[FontsAssetUsageService::getName()] = 'default';
         $asset->setServerSideRendered();
 
