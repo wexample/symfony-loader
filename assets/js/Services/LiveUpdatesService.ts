@@ -7,7 +7,6 @@ import {
   type ReconnectBackoffOptions,
 } from '@wexample/js-helpers/Helper/Reconnect';
 import RetryBackoffScheduler from '@wexample/js-helpers/Common/RetryBackoffScheduler';
-export type { MercureDriverConfig } from '@wexample/js-api/Common/LiveUpdates/MercureLiveUpdatesDriver';
 
 export class LiveUpdatesServiceEvents {
   public static CONNECTION_CREATED: string = 'live-updates:connection-created';
