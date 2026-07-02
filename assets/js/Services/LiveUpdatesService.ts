@@ -1,13 +1,13 @@
 import AppService from '../Class/AppService';
 import ConnectionStatusService from './ConnectionStatusService';
 import EventsService from './EventsService';
-import MercureLiveUpdatesDriver, { type MercureDriverConfig } from './MercureLiveUpdatesDriver';
+import MercureLiveUpdatesDriver, { type MercureDriverConfig } from '@wexample/js-api/Common/LiveUpdates/MercureLiveUpdatesDriver';
 import InvariantViolationError from '../Errors/InvariantViolationError';
 import {
   type ReconnectBackoffOptions,
 } from '@wexample/js-helpers/Helper/Reconnect';
 import RetryBackoffScheduler from '@wexample/js-helpers/Common/RetryBackoffScheduler';
-export type { MercureDriverConfig } from './MercureLiveUpdatesDriver';
+export type { MercureDriverConfig } from '@wexample/js-api/Common/LiveUpdates/MercureLiveUpdatesDriver';
 
 export class LiveUpdatesServiceEvents {
   public static CONNECTION_CREATED: string = 'live-updates:connection-created';
