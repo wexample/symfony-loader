@@ -39,3 +39,12 @@ coverage*.lcov
 tests/Fixtures/App/config/reference.php
 .phpunit.result.cache
 build/
+/logs/
+/log/
+/.cache/
+/cache/
+/tmp/
+/temp/
+/dist/
+/out/
+/coverage/
