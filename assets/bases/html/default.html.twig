@@ -67,6 +67,10 @@
         {{- constant('\\Wexample\\SymfonyLoader\\Helper\\RenderingHelper::PLACEHOLDER_PRELOAD_TAG') | raw -}}
         {%- block meta -%}
             <meta name="viewport" content="width=device-width, initial-scale=1">
+            {%- set initial_color_scheme = render_pass.usages['color_scheme']|default(null) -%}
+            {%- if initial_color_scheme in ['dark', 'light'] -%}
+                <meta name="color-scheme" content="{{ initial_color_scheme }}">
+            {%- endif -%}
             {{- base_template_render_meta({
                 'description': document_meta_description|default(null)
             }) -}}
@@ -76,7 +80,7 @@
             {%- endif -%}
         {%- endblock -%}
     </head>
-    <body class="{{ body_class|default('') }}">
+    <body class="{% for usage_name, usage_value in render_pass.usages %}{% if usage_value %}usage-{{ usage_name|replace({'_': '-'}) }}-{{ usage_value }} {% endif %}{% endfor %}{{ body_class|default('') }}">
     <div id="layout-initial" class="layout-loading {{ layout_class|default('') }}">
         {%- if render_pass.isUseJs() -%}
             {# Don't use display none as we need to be able to calculate elements size before display #}
