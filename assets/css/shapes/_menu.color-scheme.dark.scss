@@ -1,9 +1,0 @@
-@use '../mixins/global.color-scheme.dark' as color-scheme;
-
-.menu {
-  background: color-scheme.$color-default-background;
-
-  &, a {
-    color: color-scheme.$color-default-text;
-  }
-}
