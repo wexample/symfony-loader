@@ -39,6 +39,11 @@ abstract class AbstractLoaderController extends AbstractController
         );
     }
 
+    protected function createRenderPass(string $view, ?callable $configurator = null): RenderPass
+    {
+        return $this->adaptiveRendererService->createRenderPass($view, $configurator);
+    }
+
     protected function configureRenderPass(
         RenderPass $renderPass
     ): RenderPass {
