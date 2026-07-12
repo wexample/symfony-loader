@@ -3,7 +3,6 @@
 namespace Wexample\SymfonyLoader\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\RouterInterface;
 use Wexample\Helpers\Helper\ClassHelper;
 use Wexample\SymfonyHelpers\Attribute\SimpleMethodResolver;
 use Wexample\SymfonyHelpers\Class\AbstractBundle;
@@ -89,35 +88,6 @@ abstract class AbstractPagesController extends AbstractLoaderController
             $response,
             renderPass: $renderPass
         );
-    }
-
-    public static function findIndexRoute(RouterInterface $router, string $namespace): ?string
-    {
-        $prefix = ClassHelper::normalizeNamespacePrefix($namespace);
-        $candidate = null;
-
-        foreach ($router->getRouteCollection() as $name => $route) {
-            $defaults = $route->getDefaults();
-            $controller = ClassHelper::getClassPath($defaults['_controller'] ?? '');
-
-            if (!$controller || !str_starts_with($controller, $prefix)) {
-                continue;
-            }
-
-            if (ClassHelper::getNamespaceDepth($controller, $prefix) !== 0) {
-                continue;
-            }
-
-            if (($defaults['routeName'] ?? null) === self::DEFAULT_ROUTE_NAME_INDEX) {
-                return $name;
-            }
-
-            if ($candidate === null && str_ends_with($name, '_' . self::DEFAULT_ROUTE_NAME_INDEX)) {
-                $candidate = $name;
-            }
-        }
-
-        return $candidate;
     }
 
     #[SimpleMethodResolver]
