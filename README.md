@@ -1,6 +1,6 @@
 # symfony_loader
 
-Version: 1.0.0
+Version: 1.0.1
 
 A dynamic rendering system for Symfony
 
@@ -29,11 +29,11 @@ Visit the [Wexample Suite documentation](https://docs.wexample.com) for the comp
 ## Dependencies
 
 - php: >=8.2
-- wexample/php-html: *
-- wexample/symfony-dev: *
+- wexample/php-html: >=0.1.6
+- wexample/symfony-dev: >=4.0.0
 - wexample/symfony-helpers: >=3.0.0
-- wexample/symfony-routing: *
-- wexample/symfony-translations: *
+- wexample/symfony-routing: >=0.1.5
+- wexample/symfony-translations: >=2.0.5
 - friendsofsymfony/jsrouting-bundle: ^3.2.1
 - symfony/webpack-encore-bundle: ^2.0.1
 - fortawesome/font-awesome: ^6.7
