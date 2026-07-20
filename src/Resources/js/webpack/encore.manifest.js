@@ -167,7 +167,18 @@ function configureEncoreBase(options = {}) {
   Encore.configureWatchOptions((watchOptions) => {
     watchOptions.aggregateTimeout = watchOptions.aggregateTimeout ?? 200;
     watchOptions.poll = watchOptions.poll ?? false;
-    watchOptions.ignored = watchOptions.ignored ?? /node_modules/;
+    // Keep watching vendor/<bundle>/assets (symlinked packages hot-reload),
+    // but skip their internal trees: a single package's own composer vendor
+    // can hold ~1k directories, and watching them across every front
+    // exhausts inotify handles (EMFILE).
+    watchOptions.ignored = watchOptions.ignored ?? [
+      '**/node_modules/**',
+      '**/vendor/**/vendor/**',
+      '**/vendor/**/tests/**',
+      '**/.wex/**',
+      '**/.git/**',
+      '**/var/**',
+    ];
   });
 
   if (typeof options.configureEncore === 'function') {
@@ -400,6 +411,21 @@ function buildEncoreConfig(options = {}) {
     ".mjs": [".mts", ".mjs"],
     ".cjs": [".cts", ".cjs"],
   };
+
+  // Persistent build cache: cold builds populate node_modules/.cache/webpack,
+  // later builds only recompile what changed. Opt out with { buildCache: false }.
+  if (options.buildCache !== false) {
+    config.cache = {
+      type: 'filesystem',
+      buildDependencies: {
+        // Invalidate when the build configuration itself changes.
+        config: [
+          fileURLToPath(import.meta.url),
+          ...(fs.existsSync(DEFAULT_MANIFEST_PATH) ? [DEFAULT_MANIFEST_PATH] : []),
+        ],
+      },
+    };
+  }
 
   return config;
 }
