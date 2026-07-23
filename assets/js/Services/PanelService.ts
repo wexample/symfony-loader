@@ -9,8 +9,13 @@ export default class PanelService extends AppService {
   public static serviceName: string = 'panels';
 
   get(path: string, requestOptions: Record<string, any> = {}): Promise<any> {
-    requestOptions.layout = requestOptions.layout || 'panel';
+    requestOptions.layout = 'panel';
 
-    return this.app.services.adaptive.get(path, requestOptions);
+    const separator = path.includes('?') ? '&' : '?';
+
+    return this.app.services.adaptive.get(
+      `${path}${separator}__layout=panel`,
+      requestOptions
+    );
   }
 }
