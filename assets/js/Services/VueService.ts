@@ -1,4 +1,4 @@
-import { createApp } from "vue";
+import { createApp, Plugin } from "vue";
 import AppService from '../Class/AppService';
 import MixinsAppService from '../Class/MixinsAppService';
 import LayoutInterface from '../Interfaces/RenderData/LayoutInterface';
@@ -18,7 +18,7 @@ export default class VueService extends AppService {
   public vueRenderDataCache: { [key: string]: ComponentInterface } = {};
   public static serviceName: string = 'vue';
   public globalConfig: object = {}
-  public store: any = null;
+  public store: Plugin | null = null;
 
   protected globalMixin: object = {
     props: {
@@ -105,7 +105,7 @@ export default class VueService extends AppService {
     };
   }
 
-  createApp(rootComponent, props: any = {}) {
+  createApp(rootComponent: object, props: Record<string, unknown> = {}) {
     const vueApp = createApp(
       rootComponent,
       props,
@@ -136,7 +136,7 @@ export default class VueService extends AppService {
     return vueApp;
   }
 
-  inherit(vueComponent, rootComponent: Component) {
+  inherit(vueComponent: Record<string, any>, rootComponent: Component) {
     let componentsFinal = vueComponent.components || {};
     let extend = {components: {}};
 
@@ -163,7 +163,7 @@ export default class VueService extends AppService {
     return vueComponent;
   }
 
-  registerComponentsRecursively(vueApp, componentObj) {
+  registerComponentsRecursively(vueApp: ReturnType<typeof createApp>, componentObj: Record<string, unknown>) {
     for (const [name, value] of Object.entries(componentObj)) {
       const kebabName = stringToKebab(name);
       if (!vueApp.component(kebabName)) {

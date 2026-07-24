@@ -4,7 +4,7 @@ import InvariantViolationError from '../Errors/InvariantViolationError';
 
 export default class ApiService extends AppService {
   public static serviceName: string = 'api';
-  private client: any = null;
+  private client: AbstractApiEntitiesClient | null = null;
 
   registerHooks() {
     return {
@@ -24,7 +24,7 @@ export default class ApiService extends AppService {
     return {
       renderNode: {
         getApiClient: () => {
-          return (this.app.getService(ApiService) as ApiService).getClient() as AbstractApiEntitiesClient;
+          return (this.app.getService(ApiService) as ApiService).getClient();
         }
       }
     }
@@ -41,7 +41,7 @@ export default class ApiService extends AppService {
     return this.client;
   }
 
-  setClient(client: any): void {
+  setClient(client: AbstractApiEntitiesClient): void {
     this.client = client;
   }
 }
