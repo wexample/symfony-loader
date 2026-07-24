@@ -97,7 +97,6 @@ export default class BannerService extends AbstractNoticeService {
   private getOrCreateDefaultTarget(): HTMLElement {
     const root = document.querySelector('#layout-initial') as HTMLElement | null;
     if (root) {
-      console.log('ROOT')
       const createdTarget = document.createElement('div');
       createdTarget.setAttribute('data-banner-target', '');
       root.appendChild(createdTarget);
