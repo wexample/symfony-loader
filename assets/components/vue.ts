@@ -1,3 +1,4 @@
+// Infrastructure component: mounts a Vue app onto a render node. No UI logic — belongs in loader, not DS.
 import Component from '../js/Class/Component';
 import ComponentInterface from '../js/Interfaces/RenderData/ComponentInterface';
 import App from '../js/Class/App';
