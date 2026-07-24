@@ -81,6 +81,7 @@
         {%- endblock -%}
     </head>
     <body class="{% for usage_name, usage_value in render_pass.usages %}{% if usage_value %}usage-{{ usage_name|replace({'_': '-'}) }}-{{ usage_value }} {% endif %}{% endfor %}{{ body_class|default('') }}">
+    <a href="#main-content" class="skip-link">{{ 'WexampleSymfonyLoaderBundle.common.system::skip_to_main' | trans }}</a>
     <div id="layout-initial" class="layout-loading {{ layout_class|default('') }}">
         {%- if render_pass.isUseJs() -%}
             {# Don't use display none as we need to be able to calculate elements size before display #}
@@ -103,7 +104,7 @@
                 {%- block page -%}
                     {{ render_pass.setCurrentContextRenderNode(render_pass.layoutRenderNode.page) }}
                     {%- block page_config -%}{%- endblock -%}
-                    <main class="page">
+                    <main class="page" id="main-content">
                         {%- block page_composer_html -%}
                             {{- block('page_body') -}}
                         {%- endblock -%}

@@ -1,3 +1,5 @@
+skip_to_main: Skip to main content
+
 frontend:
   confirm:
     title: Confirmation
