@@ -69,6 +69,16 @@ class AdaptiveRendererService
         );
         $request = $this->requestStack->getCurrentRequest();
 
+        if ($request?->hasSession()) {
+            $session = $request->getSession();
+            foreach (array_keys($renderPass->usagesConfig) as $usageName) {
+                $saved = $session->get('ui_state.ui.' . $usageName);
+                if ($saved !== null) {
+                    $renderPass->setUsage($usageName, $saved);
+                }
+            }
+        }
+
         $renderPass->setOutputType(
             AdaptiveRequestHelper::getOutputType($request)
         );
