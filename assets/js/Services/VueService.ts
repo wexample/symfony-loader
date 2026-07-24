@@ -105,7 +105,7 @@ export default class VueService extends AppService {
     };
   }
 
-  createApp(rootComponent: object, props: Record<string, unknown> = {}) {
+  createApp(rootComponent: Record<string, any>, props: Record<string, unknown> = {}) {
     const vueApp = createApp(
       rootComponent,
       props,
@@ -138,7 +138,7 @@ export default class VueService extends AppService {
 
   inherit(vueComponent: Record<string, any>, rootComponent: Component) {
     let componentsFinal = vueComponent.components || {};
-    let extend = {components: {}};
+    let extend: Record<string, any> = {components: {}};
 
     if (vueComponent.extends) {
       extend = this.inherit(vueComponent.extends, rootComponent);

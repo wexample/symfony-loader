@@ -3,6 +3,7 @@ import AppChild from './AppChild';
 
 export default abstract class AppService extends AppChild {
   public app: App;
+  public static serviceName: string = '';
   public static dependencies: typeof AppService[] = [];
 
   registerHooks(): { app?: {}; page?: {}, renderNode?: {} } {

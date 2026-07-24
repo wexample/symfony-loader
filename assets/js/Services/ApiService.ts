@@ -19,8 +19,6 @@ export default class ApiService extends AppService {
   }
 
   registerMethods() {
-    const service = this;
-
     return {
       renderNode: {
         getApiClient: () => {
