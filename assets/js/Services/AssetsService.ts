@@ -151,7 +151,7 @@ export default class AssetsService extends AppService {
   }
 
   appendAsset(asset: AssetInterface, assetReplaced?: AssetInterface): Promise<AssetInterface> {
-    return new Promise(async (resolve) => {
+    return new Promise((resolve) => {
       // Avoid currently and already loaded.
       if (!asset.active) {
         // Active said that asset should be loaded,
@@ -211,7 +211,7 @@ export default class AssetsService extends AppService {
     assetsCollection: AssetsCollectionInterface,
     replacedCollection: AssetsCollectionInterface
   ) {
-    return new Promise(async (resolveAll) => {
+    return new Promise((resolveAll) => {
       // Is empty.
       if (!this.assetsInCollection(assetsCollection).length) {
         resolveAll(assetsCollection);

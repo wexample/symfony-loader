@@ -32,9 +32,16 @@ type ConfirmOptions = {
   toast?: boolean;
 };
 
+interface ConfirmInstance {
+  overlayOpen?: () => void;
+  overlayClose?: () => Promise<void>;
+  closeWithAnimation?: () => Promise<void>;
+  exit?: (...args: unknown[]) => unknown;
+}
+
 export default class ConfirmService extends AppService {
   public static serviceName: string = 'confirm';
-  private instances: Set<any> = new Set();
+  private instances: Set<ConfirmInstance> = new Set();
 
   private presets: Record<ConfirmPreset, ConfirmAction[]> = {
     yes_no: [
@@ -66,13 +73,17 @@ export default class ConfirmService extends AppService {
 
   private async showConfirm(options: ConfirmOptions): Promise<string> {
     const actions = options.actions || this.presets[options.preset || 'yes_no'];
+    const service = this.app.getServiceOrFail(ComponentsService) as ComponentsService;
+    const mountTarget = this.getMountTarget(options);
+    let instance: ConfirmInstance | null = null;
+    let resolveConfirm!: (value: string) => void;
 
-    return new Promise(async (resolve) => {
-      const service = this.app.getServiceOrFail(ComponentsService) as ComponentsService;
-      const mountTarget = this.getMountTarget(options);
-      let instance: any = null;
+    const confirmation = new Promise<string>((resolve) => {
+      resolveConfirm = resolve;
+    });
 
-      const created = service.createComponentFromTemplate(
+    const component = await Promise.resolve(
+      service.createComponentFromTemplate(
         '@WexampleSymfonyDesignSystemBundle/components/confirm',
         {
           title: options.title,
@@ -84,32 +95,30 @@ export default class ConfirmService extends AppService {
               typeof action === 'string'
                 ? { key: '', value: action, label: action }
                 : action;
-            resolve(resolvedAction.value);
-            if (instance) {
-              if (resolvedAction.keepOpen) {
-                return;
-              }
+            resolveConfirm(resolvedAction.value);
+            if (instance && !resolvedAction.keepOpen) {
               await this.closeInstance(instance, options.toast);
             }
           },
         },
         this.app.layout,
         mountTarget
-      );
+      )
+    );
 
-      const component = await Promise.resolve(created);
-      if (!component) {
-        resolve(CONFIRM_RESPONSE_CANCEL);
-        return;
-      }
+    if (!component) {
+      resolveConfirm(CONFIRM_RESPONSE_CANCEL);
+      return confirmation;
+    }
 
-      instance = component.instance;
-      this.trackInstance(instance);
+    instance = component.instance as ConfirmInstance;
+    this.trackInstance(instance);
 
-      if (!options.toast && instance?.overlayOpen) {
-        instance.overlayOpen();
-      }
-    });
+    if (!options.toast && instance?.overlayOpen) {
+      instance.overlayOpen();
+    }
+
+    return confirmation;
   }
 
   public async closeAll(): Promise<void> {
@@ -120,23 +129,23 @@ export default class ConfirmService extends AppService {
     this.instances.clear();
   }
 
-  private async closeInstance(instance: any, toast: boolean): Promise<void> {
+  private async closeInstance(instance: ConfirmInstance, toast: boolean): Promise<void> {
     if (toast) {
-      await (instance as any).closeWithAnimation();
+      await instance.closeWithAnimation?.();
       return;
     }
 
-    await (instance as any).overlayClose();
+    await instance.overlayClose?.();
   }
 
-  private trackInstance(instance: any): void {
+  private trackInstance(instance: ConfirmInstance): void {
     if (this.instances.has(instance)) {
       return;
     }
     this.instances.add(instance);
     const originalExit = instance.exit?.bind(instance);
     if (originalExit) {
-      instance.exit = async (...args: any[]) => {
+      instance.exit = async (...args: unknown[]) => {
         this.instances.delete(instance);
         return originalExit(...args);
       };
