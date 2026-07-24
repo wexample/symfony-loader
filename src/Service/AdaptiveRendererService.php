@@ -244,7 +244,6 @@ class AdaptiveRendererService
                     '@WexampleSymfonyLoaderBundle/system/fatal.html.twig',
                     [
                         'message' => $assetsException->getMessage(),
-                        'hint' => $assetsException->getHint(),
                     ]
                 );
                 $response->setContent($content);

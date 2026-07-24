@@ -33,7 +33,7 @@
     <body>
         <div class="container">
             <div>[X] {{ message }}</div>
-            {% if hint %}
+            {% if hint | default(false) %}
                 <div>{{ hint }}</div>
             {% endif %}
         </div>
