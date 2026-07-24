@@ -19,16 +19,6 @@ export default class IconService extends AppService {
     return trimmed !== '' ? `${trimmed} icon` : 'icon';
   }
 
-  private iconFa(name: string, baseClass: string, tagName: string): string {
-    const classes = `fa-${name.replace(/\//g, ' fa-')}`;
-    const inner = `<i class="fa ${classes}"></i>`;
-    return this.buildTag(tagName, baseClass, inner);
-  }
-
-  private iconMaterial(name: string, baseClass: string, tagName: string): string {
-    return this.buildTag(tagName, `${baseClass} material-icons`, name);
-  }
-
   private iconPhosphor(name: string, baseClass: string, tagName: string): string {
     const [style, icon] = name.split('/', 2);
     const classes = [baseClass];
@@ -51,15 +41,7 @@ export default class IconService extends AppService {
       return this.iconPhosphor(iconName, baseClass, tagName);
     }
 
-    if (lib === 'material') {
-      return this.iconMaterial(iconName, baseClass, tagName);
-    }
-
-    if (lib === 'fa') {
-      return this.iconFa(iconName, baseClass, tagName);
-    }
-
-    return this.buildTag(tagName, 'icon', name);
+    return this.buildTag(tagName, baseClass, iconName);
   }
 
   iconWith(options: IconOptions): string {
