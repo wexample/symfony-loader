@@ -103,11 +103,11 @@
                 {%- block page -%}
                     {{ render_pass.setCurrentContextRenderNode(render_pass.layoutRenderNode.page) }}
                     {%- block page_config -%}{%- endblock -%}
-                    <div class="page">
+                    <main class="page">
                         {%- block page_composer_html -%}
                             {{- block('page_body') -}}
                         {%- endblock -%}
-                    </div>
+                    </main>
                     {{ render_pass.revertCurrentContextRenderNode() }}
                 {%- endblock -%}
             {%- endblock -%}
