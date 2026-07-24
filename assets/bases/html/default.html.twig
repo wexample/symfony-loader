@@ -104,7 +104,7 @@
                 {%- block page -%}
                     {{ render_pass.setCurrentContextRenderNode(render_pass.layoutRenderNode.page) }}
                     {%- block page_config -%}{%- endblock -%}
-                    <main class="page" id="main-content">
+                    <main class="page">
                         {%- block page_composer_html -%}
                             {{- block('page_body') -}}
                         {%- endblock -%}
