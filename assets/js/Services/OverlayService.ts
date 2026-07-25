@@ -239,22 +239,27 @@ export default class OverlayService extends AppService {
         : this.getOverlayElByTarget(OverlayService.OVERLAY_TARGET_GLOBAL);
 
     this.hideOverlayEl(otherOverlayEl);
-    if (targetOverlayEl) {
-      targetOverlayEl.removeAttribute('hidden');
-      targetOverlayEl.classList.add('is-active');
-      // Backdrop sits below all overlays at the base z-index
-      targetOverlayEl.style.zIndex = String(this.baseZIndex);
-    }
 
     const stackLength = this.overlayStack.length;
+
+    // Use z-index gaps of 2 so the single backdrop can slot between layers.
+    // overlay[i] = baseZIndex + i*2
+    // stackLength=1: overlay[0]=baseZIndex, backdrop=baseZIndex-1 (dims page below)
+    // stackLength=2: overlay[0]=baseZIndex, overlay[1]=baseZIndex+2, backdrop=baseZIndex+1 (dims parent)
     for (let i = 0; i < stackLength; i++) {
       const overlay = this.overlayStack[i];
       const depth = stackLength - 1 - i;
       const el = overlay?.overlayGetElement?.() || overlay?.el;
       if (el) {
-        el.style.zIndex = String(this.baseZIndex + 1 + i);
+        el.style.zIndex = String(this.baseZIndex + i * 2);
         el.style.setProperty('--overlay-depth', String(depth));
       }
+    }
+
+    if (targetOverlayEl) {
+      targetOverlayEl.removeAttribute('hidden');
+      targetOverlayEl.classList.add('is-active');
+      targetOverlayEl.style.zIndex = String(this.baseZIndex + (stackLength - 1) * 2 - 1);
     }
   }
 }
