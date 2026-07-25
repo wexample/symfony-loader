@@ -19,13 +19,13 @@
         {% endif %}
         {% if overlay_show_external_link is not defined or overlay_show_external_link != false %}
             <div class="modal-external-link">
-                <a href="{{ app.request.uri }}" target="_blank" rel="noopener">
+                <a class="action-icon" href="{{ app.request.uri }}" target="_blank" rel="noopener">
                     {{ icon('ph:bold/arrow-square-out') }}
                 </a>
             </div>
         {% endif %}
         <div class="modal-close">
-            <a href="#">
+            <a class="action-icon" href="#">
                 {{ icon('ph:bold/x') }}
             </a>
         </div>
