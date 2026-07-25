@@ -83,7 +83,7 @@ export default class Form extends Component {
     const isEmbedded = this.options?.embedType && this.options.embedType !== 'default';
 
     if (!this.options?.ajax && !isEmbedded) {
-      this.beginSubmit(form, submitter);
+      this.beginSubmit(form, null);
       return;
     }
 
