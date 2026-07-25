@@ -10,29 +10,7 @@
 {%- endblock -%}
 
 {%- block page_composer_json -%}
-    <div class="modal-header">
-        {% set page_title = page_title | default('@page::page_title' | trans) %}
-        {% if page_title | default(false) %}
-            <h2 class="header-title">{{ page_title | trans }}</h2>
-        {% else %}
-            <div class="header-title"></div>
-        {% endif %}
-        {% if overlay_show_external_link is not defined or overlay_show_external_link != false %}
-            <div class="modal-external-link">
-                <a class="action-icon" href="{{ app.request.uri }}" target="_blank" rel="noopener">
-                    {{ icon('ph:bold/arrow-square-out') }}
-                </a>
-            </div>
-        {% endif %}
-        <div class="modal-close">
-            <a class="action-icon" href="#">
-                {{ icon('ph:bold/x') }}
-            </a>
-        </div>
-    </div>
-    <div class="modal-loading">
-        <div class="modal-loading-bar"></div>
-    </div>
+    {%- include '@WexampleSymfonyLoaderBundle/bases/json/_overlay-shell-header.html.twig' with { overlay_type: 'modal' } -%}
     {%- if export_navigation is defined and export_navigation -%}
         {{- block('page_navigation') -}}
     {%- endif -%}
