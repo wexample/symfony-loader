@@ -7,6 +7,9 @@ export default class OverlayMixin extends AbstractMixin {
       if (target.overlayEnabled === undefined) {
         target.overlayEnabled = true;
       }
+      if (target.overlayDepthGroup === undefined) {
+        target.overlayDepthGroup = null;
+      }
       if (target.overlayUseBackdrop === undefined) {
         target.overlayUseBackdrop = true;
       }

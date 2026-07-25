@@ -17,6 +17,13 @@
         {% else %}
             <div class="header-title"></div>
         {% endif %}
+        {% if overlay_show_external_link is not defined or overlay_show_external_link != false %}
+            <div class="modal-external-link">
+                <a href="{{ app.request.uri }}" target="_blank" rel="noopener">
+                    {{ icon('ph:bold/arrow-square-out') }}
+                </a>
+            </div>
+        {% endif %}
         <div class="modal-close">
             <a href="#">
                 {{ icon('ph:bold/x') }}

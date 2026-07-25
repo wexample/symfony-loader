@@ -248,11 +248,24 @@ export default class OverlayService extends AppService {
     // stackLength=2: overlay[0]=baseZIndex, overlay[1]=baseZIndex+2, backdrop=baseZIndex+1 (dims parent)
     for (let i = 0; i < stackLength; i++) {
       const overlay = this.overlayStack[i];
-      const depth = stackLength - 1 - i;
       const el = overlay?.overlayGetElement?.() || overlay?.el;
       if (el) {
         el.style.zIndex = String(this.baseZIndex + i * 2);
-        el.style.setProperty('--overlay-depth', String(depth));
+
+        // Depth counts only overlays of the same group above this one.
+        // Overlays without a group (confirmations, toasts…) never affect peer depth.
+        const group = overlay?.overlayDepthGroup;
+        if (group) {
+          let depth = 0;
+          for (let j = i + 1; j < stackLength; j++) {
+            if (this.overlayStack[j]?.overlayDepthGroup === group) {
+              depth++;
+            }
+          }
+          el.style.setProperty('--overlay-depth', String(depth));
+        } else {
+          el.style.removeProperty('--overlay-depth');
+        }
       }
     }
 
