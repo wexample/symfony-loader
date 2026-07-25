@@ -33,6 +33,9 @@
     <div class="modal-loading">
         <div class="modal-loading-bar"></div>
     </div>
+    {%- if export_navigation is defined and export_navigation -%}
+        {{- block('page_navigation') -}}
+    {%- endif -%}
     <div class="modal-body">
         {%- block page_composer_modal -%}
             {{ block('page_body') }}

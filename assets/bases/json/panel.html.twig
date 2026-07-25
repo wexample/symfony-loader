@@ -33,6 +33,9 @@
     <div class="panel-loading">
         <div class="panel-loading-bar"></div>
     </div>
+    {%- if export_navigation is defined and export_navigation -%}
+        {{- block('page_navigation') -}}
+    {%- endif -%}
     <div class="panel-body">
         {%- block page_composer_panel -%}
             {{ block('page_body') }}
