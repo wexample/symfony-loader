@@ -151,6 +151,11 @@ export default class OverlayService extends AppService {
       return;
     }
 
+    const closingEl = overlay?.overlayGetElement?.() || overlay?.el;
+    if (closingEl) {
+      closingEl.style.removeProperty('--overlay-depth');
+    }
+
     this.overlayStack.splice(index, 1);
     this.activeOverlay = this.overlayStack[this.overlayStack.length - 1] || null;
 
@@ -237,23 +242,19 @@ export default class OverlayService extends AppService {
     if (targetOverlayEl) {
       targetOverlayEl.removeAttribute('hidden');
       targetOverlayEl.classList.add('is-active');
+      // Backdrop sits below all overlays at the base z-index
+      targetOverlayEl.style.zIndex = String(this.baseZIndex);
     }
 
-    const activeIndex = this.overlayStack.length - 1;
-    const overlayZ = this.baseZIndex + activeIndex * 2;
-    const activeOverlay = this.activeOverlay;
-
-    if (targetOverlayEl) {
-      targetOverlayEl.style.zIndex = `${overlayZ}`;
-    }
-
-    if (activeOverlay?.overlayGetElement) {
-      const targetEl = activeOverlay.overlayGetElement();
-      if (targetEl) {
-        targetEl.style.zIndex = `${overlayZ + 1}`;
+    const stackLength = this.overlayStack.length;
+    for (let i = 0; i < stackLength; i++) {
+      const overlay = this.overlayStack[i];
+      const depth = stackLength - 1 - i;
+      const el = overlay?.overlayGetElement?.() || overlay?.el;
+      if (el) {
+        el.style.zIndex = String(this.baseZIndex + 1 + i);
+        el.style.setProperty('--overlay-depth', String(depth));
       }
-    } else if (activeOverlay?.el) {
-      activeOverlay.el.style.zIndex = `${overlayZ + 1}`;
     }
   }
 }
