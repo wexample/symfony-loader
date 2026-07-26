@@ -1,6 +1,5 @@
 .develop-toolbar {
-  all: initial;
-  display: flex;
+  display: none;
   flex-direction: column;
   position: fixed;
   bottom: 0;
@@ -17,6 +16,10 @@
 
   * {
     box-sizing: border-box;
+  }
+
+  &--open {
+    display: flex;
   }
 
   &__tabs {
