@@ -11,6 +11,8 @@ import { RenderNodeResponsiveType } from '../Services/ResponsiveService';
 import RoutingService from '../Services/RoutingService';
 import EntityService from '../Services/EntityService';
 import ErrorService from '../Services/ErrorService';
+import ComponentLazyLoaderService from '../Services/ComponentLazyLoaderService';
+import DevelopToolbarService from '../Services/DevelopToolbarService';
 import MissingServiceError from '../Errors/MissingServiceError';
 import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import LayoutInitial from './LayoutInitial';
@@ -139,6 +141,8 @@ export default class extends AsyncConstructor {
       RoutingService,
       EntityService,
       ErrorService,
+      ComponentLazyLoaderService,
+      DevelopToolbarService,
     ];
   }
 

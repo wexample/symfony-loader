@@ -69,6 +69,16 @@ class ComponentsExtension extends AbstractExtension
                 $initOptions
             ),
             new TwigFunction(
+                'component_lazy',
+                [
+                    $this,
+                    'componentLazy',
+                ],
+                [
+                    self::FUNCTION_OPTION_IS_SAFE => self::FUNCTION_OPTION_IS_SAFE_VALUE_HTML,
+                ]
+            ),
+            new TwigFunction(
                 'component_render_tag_attributes',
                 [
                     $this,
@@ -88,6 +98,27 @@ class ComponentsExtension extends AbstractExtension
             new ComponentTokenParser(),
             new SlotTokenParser(),
         ];
+    }
+
+    public function componentLazy(
+        string $path,
+        array $props = [],
+        string $trigger = 'visible'
+    ): string {
+        $attributes = [
+            VariableHelper::CLASS_VAR => 'com-lazy',
+            'data-component-lazy-path' => $path,
+        ];
+
+        if (! empty($props)) {
+            $attributes['data-component-lazy-props'] = json_encode($props, JSON_THROW_ON_ERROR);
+        }
+
+        if ($trigger !== 'visible') {
+            $attributes['data-component-lazy-trigger'] = $trigger;
+        }
+
+        return DomHelper::buildTag(DomHelper::TAG_SPAN, $attributes);
     }
 
     /**
