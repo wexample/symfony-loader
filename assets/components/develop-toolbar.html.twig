@@ -10,7 +10,8 @@
         </button>
     </div>
     <div class="develop-toolbar__panel">
-        <div class="develop-toolbar__mount"></div>
+        <div class="develop-toolbar__mount">
+            {{ vue_include(render_pass, '@WexampleSymfonyLoaderBundle/vue/debug-assets') }}
+        </div>
     </div>
 </div>
-{{ vue_require(render_pass, '@WexampleSymfonyLoaderBundle/vue/debug-assets') }}

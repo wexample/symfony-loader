@@ -23,10 +23,11 @@
   }
 
   .tabs {
+    display: flex;
+    align-items: center;
     background: #2d2d2d;
     border-bottom: 1px solid #3c3c3c;
     flex-shrink: 0;
-    align-items: center;
   }
 
   .tabs--item {
