@@ -2,6 +2,9 @@ import AppService from '../Class/AppService';
 import AssetsService from './AssetsService';
 import type Page from '../Class/Page';
 
+// HTML-only injector: loads assets and injects body, but does NOT instantiate component
+// classes or initialize sub-components. Use component(render_pass, ...) for components
+// that require JS initialization.
 export default class ComponentLazyLoaderService extends AppService {
   public static serviceName = 'componentLazyLoader';
   public static dependencies: typeof AppService[] = [AssetsService];
