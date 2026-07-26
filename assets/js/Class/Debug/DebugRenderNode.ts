@@ -67,11 +67,11 @@ export default class DebugRenderNode extends AppChild {
   }
 
   blur() {
-    this.el.classList.remove('focus');
+    this.el.classList.remove('develop-render-node--focus');
   }
 
   focus() {
-    this.el.classList.add('focus');
+    this.el.classList.add('develop-render-node--focus');
   }
 
   convertPosition(number) {
@@ -80,7 +80,7 @@ export default class DebugRenderNode extends AppChild {
 
   createEl() {
     this.el = document.createElement(DOM_TAG_NAME.DIV);
-    this.el.classList.add('debug-render-node');
+    this.el.classList.add('develop-render-node');
     this.el.style.borderColor = this.getBorderColor();
 
     this.service.elDebugHelpers.appendChild(this.el);

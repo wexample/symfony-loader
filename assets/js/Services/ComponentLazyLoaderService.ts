@@ -1,15 +1,17 @@
 import AppService from '../Class/AppService';
 import AssetsService from './AssetsService';
+import ComponentsService from './ComponentsService';
+import RenderNode from '../Class/RenderNode';
+import Component from '../Class/Component';
 import type Page from '../Class/Page';
 
-// HTML-only injector: loads assets and injects body, but does NOT instantiate component
-// classes or initialize sub-components. Use component(render_pass, ...) for components
-// that require JS initialization.
 export default class ComponentLazyLoaderService extends AppService {
   public static serviceName = 'componentLazyLoader';
   public static dependencies: typeof AppService[] = [AssetsService];
 
   private observer: IntersectionObserver | null = null;
+  // Tracks which render node owns each placeholder, set in observeRoot.
+  private placeholderParents = new WeakMap<HTMLElement, RenderNode>();
 
   registerHooks() {
     return {
@@ -22,7 +24,7 @@ export default class ComponentLazyLoaderService extends AppService {
       page: {
         async hookInitPage(page: Page) {
           if (page.el) {
-            this.observeRoot(page.el);
+            this.observeRoot(page.el, page);
           }
         },
       },
@@ -46,13 +48,16 @@ export default class ComponentLazyLoaderService extends AppService {
     );
   }
 
-  observeRoot(root: Document | Element): void {
+  observeRoot(root: Document | Element, parentRenderNode?: RenderNode): void {
     if (!this.observer) return;
 
     root
       .querySelectorAll<HTMLElement>('[data-component-lazy-path]:not([data-component-lazy-observed])')
       .forEach((el) => {
         el.setAttribute('data-component-lazy-observed', '1');
+        if (parentRenderNode) {
+          this.placeholderParents.set(el, parentRenderNode);
+        }
         this.observer!.observe(el);
       });
   }
@@ -60,7 +65,8 @@ export default class ComponentLazyLoaderService extends AppService {
   async load(
     path: string,
     props: Record<string, string> = {},
-    placeholder?: HTMLElement
+    placeholder?: HTMLElement,
+    parentRenderNode?: RenderNode,
   ): Promise<void> {
     const url = new URL('/_system/component/render', window.location.origin);
     url.searchParams.set('path', path);
@@ -75,17 +81,50 @@ export default class ComponentLazyLoaderService extends AppService {
     if (!data.ok) return;
 
     const assetsService = this.app.services.assets as AssetsService;
-
-    if (data.assets) {
-      const registered = assetsService.registerAssetsInCollection(data.assets);
-      await assetsService.appendAssets(registered, AssetsService.createEmptyAssetsCollection());
-    }
+    const allAssets = this.collectAllAssets(data);
+    const registered = assetsService.registerAssetsInCollection(allAssets);
+    await assetsService.appendAssets(registered, AssetsService.createEmptyAssetsCollection());
 
     if (placeholder && data.body) {
+      // Add cssClassName so attachHtmlElements can locate this placeholder via querySelector.
+      // Insert body before (not replacing) — placeholder stays in DOM during init,
+      // then attachHtmlElements removes it naturally as part of the mount lifecycle.
+      placeholder.classList.add(data.cssClassName);
       const tmp = document.createElement('div');
       tmp.innerHTML = data.body;
-      placeholder.replaceWith(...Array.from(tmp.childNodes));
+      placeholder.before(...Array.from(tmp.childNodes));
     }
+
+    if (data.view && parentRenderNode) {
+      const componentsService = this.app.services.components as ComponentsService;
+      const component = await componentsService.createRenderNode(
+        parentRenderNode.renderRequestId,
+        data.view,
+        data,
+        parentRenderNode,
+      );
+
+      if (component) {
+        await component.mountTree();
+        await component.setNewTreeRenderNodeReady();
+        parentRenderNode.components.push(component as Component);
+      }
+    }
+  }
+
+  private collectAllAssets(data: any): { css: any[]; js: any[] } {
+    const assets = {
+      css: [...(data.assets?.css ?? [])],
+      js: [...(data.assets?.js ?? [])],
+    };
+
+    for (const sub of data.components ?? []) {
+      const subAssets = this.collectAllAssets(sub);
+      assets.css.push(...subAssets.css);
+      assets.js.push(...subAssets.js);
+    }
+
+    return assets;
   }
 
   private async loadFromElement(el: HTMLElement): Promise<void> {
@@ -102,6 +141,9 @@ export default class ComponentLazyLoaderService extends AppService {
       }
     }
 
-    await this.load(path, props, el);
+    const parentRenderNode = this.placeholderParents.get(el)
+      ?? (this.app as any).layout;
+
+    await this.load(path, props, el, parentRenderNode);
   }
 }

@@ -1,17 +1,18 @@
-.debug-render-node {
+.develop-render-node {
   position: fixed;
   border: 1px solid;
   box-sizing: border-box;
-  pointer-events: none;
   opacity: 0.2;
   overflow: hidden;
+  transition: opacity 0.15s;
 
-  &:hover {
+  &:hover,
+  &--focus {
     overflow: initial;
     opacity: 1;
   }
 
-  .debug-info {
+  &__info {
     display: inline-block;
     color: black;
     padding: 0.1rem 0.3rem;
@@ -21,12 +22,17 @@
     white-space: nowrap;
     overflow: hidden;
     pointer-events: initial;
+    cursor: pointer;
 
-    .debug-info-line {
+    &--closed {
+      opacity: 0.5;
+    }
+
+    &__line {
       display: flex;
       margin: 0 0 0.3rem;
 
-      .line-title {
+      &-title {
         width: 2rem;
       }
 
@@ -48,13 +54,5 @@
         }
       }
     }
-
-    &.debug-info-closed {
-      opacity: 0.5;
-    }
-  }
-
-  &.focus {
-    opacity: 1;
   }
 }

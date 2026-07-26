@@ -1,9 +1,6 @@
-// Script par of a Vue component.
 import RenderNode from '../RenderNode';
 import { h } from 'vue';
-import Page from '../Page';
 import { DOM_TAG_NAME } from '@wexample/js-helpers/Helper/Dom';
-import AssetsInterface from '../../Interfaces/AssetInterface';
 
 export default {
   props: {
@@ -18,7 +15,6 @@ export default {
 
   data() {
     return {
-      backgroundColor: 'transparent',
       displayBreakpoints: this.app.layout.vars.displayBreakpoints,
       opened: false,
     };
@@ -28,7 +24,7 @@ export default {
     let elOpener = h(
       DOM_TAG_NAME.A,
       {
-        class: `debug-info debug-info-${this.opened ? 'opened' : 'closed'}`,
+        class: `develop-render-node__info develop-render-node__info--${this.opened ? 'opened' : 'closed'}`,
         style: this.styleObject(),
         href: 'javascript:void(0)',
         onClick: () => {
@@ -42,65 +38,41 @@ export default {
       return elOpener;
     }
 
-    let renderLineTitle = (title) => {
-      return h(
-        DOM_TAG_NAME.DIV,
-        {
-          class: 'line-title',
-        },
-        title
-      );
-    };
+    let renderLineTitle = (title) => h(
+      DOM_TAG_NAME.DIV,
+      { class: 'develop-render-node__info__line-title' },
+      title
+    );
 
-    let renderResponsive = (type) => {
-      return h(
-        DOM_TAG_NAME.DIV,
-        {
-          class: ['debug-info-line', 'display-breakpoints'],
-        },
-        [
-          renderLineTitle(type.toUpperCase()),
-          Object.keys(this.app.layout.vars.displayBreakpoints).map((size) => {
-            return h(
-              DOM_TAG_NAME.DIV,
-              {
-                class: {
-                  active:
-                    this.app.services.responsive.responsiveSizeCurrent === size,
-                  available: this.hasResponsiveAsset(type, size),
-                },
+    let renderResponsive = (type) => h(
+      DOM_TAG_NAME.DIV,
+      { class: 'develop-render-node__info__line' },
+      [
+        renderLineTitle(type.toUpperCase()),
+        Object.keys(this.app.layout.vars.displayBreakpoints).map((size) =>
+          h(
+            DOM_TAG_NAME.DIV,
+            {
+              class: {
+                active: this.app.services.responsive.responsiveSizeCurrent === size,
+                available: this.hasResponsiveAsset(type, size),
               },
-              size.toUpperCase()
-            );
-          }),
-        ]
-      );
-    };
-
-    let renderPage = () => {
-      if (this.renderNode instanceof Page) {
-        return h(
-          DOM_TAG_NAME.DIV,
-          {
-            class: 'debug-info-line',
-          },
-          [
-            renderLineTitle('COL.S'),
-          ]
-        );
-      }
-    };
+            },
+            size.toUpperCase()
+          )
+        ),
+      ]
+    );
 
     return h(
       DOM_TAG_NAME.DIV,
       {
-        class: 'debug-info',
+        class: 'develop-render-node__info',
         style: this.styleObject(),
       },
       [
         elOpener,
-        h(DOM_TAG_NAME.DIV, {}, this.renderDebugInfo()),
-        renderPage(),
+        h(DOM_TAG_NAME.DIV, {}, this.renderNode.view),
         renderResponsive('css'),
         renderResponsive('js'),
       ]
@@ -108,10 +80,6 @@ export default {
   },
 
   methods: {
-    renderDebugInfo() {
-      return [this.renderNode.view].join('<br>');
-    },
-
     hasResponsiveAsset(type: string, size: string): boolean {
       if (this.renderNode.assets) {
         for (let asset of this.renderNode.assets[type]) {
@@ -120,23 +88,7 @@ export default {
           }
         }
       }
-
       return false;
-    },
-
-    hasColorSchemeAsset(type: string, scheme: string) {
-      if (this.renderNode.assets) {
-        let asset: AssetsInterface;
-
-        for (asset of this.renderNode.assets[type]) {
-          // TODO Context is wrong and always true.
-          if (asset.colorScheme === scheme) {
-            return true;
-          }
-        }
-      }
-
-      return true;
     },
 
     styleObject() {
