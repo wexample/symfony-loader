@@ -163,6 +163,6 @@ class VueExtension extends AbstractExtension
         string $key,
         string $filters = null
     ): string {
-        return '{{ ' . $key . ($filters ? ' | ' . $filters : '') . ' }}';
+        return '[[ ' . $key . ($filters ? ' | ' . $filters : '') . ' ]]';
     }
 }
