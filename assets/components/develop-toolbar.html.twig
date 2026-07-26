@@ -5,13 +5,20 @@
                 <span class="tabs--item-label">{{ '@component::tab.assets' | trans }}</span>
             </span>
         </a>
+        <a class="tabs--item" href="#" data-tab="nodes">
+            <span class="tabs--item-content">
+                <span class="tabs--item-label">{{ '@component::tab.nodes' | trans }}</span>
+            </span>
+        </a>
         <button class="develop-toolbar__close" data-develop-toolbar-toggle="1" title="{{ '@component::close' | trans }}">
             {{ icon('ph:bold/x') }}
         </button>
     </div>
     <div class="develop-toolbar__panel">
-        <div class="develop-toolbar__mount">
+        <div class="develop-toolbar__mount" data-tab-panel="assets">
             {{ vue_include(render_pass, '@WexampleSymfonyLoaderBundle/vue/debug-assets') }}
+        </div>
+        <div class="develop-toolbar__mount develop-toolbar__mount--hidden" data-tab-panel="nodes">
         </div>
     </div>
 </div>

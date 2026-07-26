@@ -1,3 +1,5 @@
+@use '../css/partials/debug';
+
 .develop-toolbar {
   display: none;
   flex-direction: column;
@@ -66,5 +68,9 @@
 
   &__mount {
     height: 100%;
+
+    &--hidden {
+      display: none;
+    }
   }
 }

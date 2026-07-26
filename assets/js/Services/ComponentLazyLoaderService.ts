@@ -50,8 +50,6 @@ export default class ComponentLazyLoaderService extends AppService {
   }
 
   observeRoot(root: Document | Element, parentRenderNode?: RenderNode): void {
-    if (!this.observer) return;
-
     root
       .querySelectorAll<HTMLElement>('[data-component-lazy-path]:not([data-component-lazy-observed])')
       .forEach((el) => {
@@ -59,7 +57,20 @@ export default class ComponentLazyLoaderService extends AppService {
         if (parentRenderNode) {
           this.placeholderParents.set(el, parentRenderNode);
         }
-        this.observer!.observe(el);
+
+        const trigger = el.dataset.componentLazyTrigger;
+        if (trigger) {
+          const triggerEl = document.querySelector<HTMLElement>(trigger);
+          if (triggerEl) {
+            const handler = () => {
+              triggerEl.removeEventListener('click', handler);
+              void this.loadFromElement(el).then(() => triggerEl.click());
+            };
+            triggerEl.addEventListener('click', handler);
+          }
+        } else if (this.observer) {
+          this.observer.observe(el);
+        }
       });
   }
 
