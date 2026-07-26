@@ -80,7 +80,9 @@ export default class Form extends Component {
     const isEmbedded = this.options?.embedType && this.options.embedType !== 'default';
 
     if (!this.options?.ajax && !isEmbedded) {
-      this.beginSubmit(form, null);
+      // Native form submission: browser collects data and navigates.
+      // Do not call beginSubmit here — loading:start would fire during
+      // the submit event and disable fields before the browser reads them.
       return;
     }
 
