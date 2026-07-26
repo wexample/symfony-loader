@@ -35,6 +35,13 @@ export default class DevelopToolbarService extends AppService {
 
           (this.app.services.vue as VueService).createApp(toolbarComponent).mount(el);
 
+          document.addEventListener('click', (e) => {
+            if ((e.target as Element).closest('[data-develop-toolbar-toggle]')) {
+              e.preventDefault();
+              isOpen.value = !isOpen.value;
+            }
+          });
+
           (this.app.services.keyboard as KeyboardService).registerKeyDown(
             this,
             'D',
