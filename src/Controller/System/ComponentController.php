@@ -10,6 +10,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Twig\Environment;
 use Wexample\SymfonyLoader\Controller\AbstractLoaderController;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AjaxLayoutRenderNode;
+use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\AdaptiveRendererService;
 use Wexample\SymfonyLoader\Service\ComponentService;
 
@@ -40,6 +41,7 @@ class ComponentController extends AbstractLoaderController
         $props = $request->query->all('props');
 
         $renderPass = $this->adaptiveRendererService->createRenderPass('_system/component/render');
+        $renderPass->setOutputType(RenderPass::OUTPUT_TYPE_RESPONSE_JSON);
 
         $layoutNode = new AjaxLayoutRenderNode($this->kernel->getEnvironment());
         $renderPass->setLayoutRenderNode($layoutNode);
@@ -55,6 +57,7 @@ class ComponentController extends AbstractLoaderController
 
         $renderData = $component->toRenderData()->toArray();
         $renderData['body'] = $component->getBody();
+        $renderData['vueTemplates'] = $layoutNode->vueTemplates;
 
         return new JsonResponse($renderData);
     }

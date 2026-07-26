@@ -1,6 +1,7 @@
 import AppService from '../Class/AppService';
 import AssetsService from './AssetsService';
 import ComponentsService from './ComponentsService';
+import VueService from './VueService';
 import RenderNode from '../Class/RenderNode';
 import Component from '../Class/Component';
 import type Page from '../Class/Page';
@@ -93,6 +94,10 @@ export default class ComponentLazyLoaderService extends AppService {
       const tmp = document.createElement('div');
       tmp.innerHTML = data.body;
       placeholder.before(...Array.from(tmp.childNodes));
+    }
+
+    if (data.vueTemplates && this.app.services.vue) {
+      (this.app.services.vue as VueService).addTemplatesHtml(data.vueTemplates);
     }
 
     if (data.view && parentRenderNode) {
