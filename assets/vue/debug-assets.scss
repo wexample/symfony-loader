@@ -4,70 +4,85 @@
 $color-css: #ff8000;
 $color-js: #7100ff;
 
-.debug-assets {
+.develop-assets {
+  all: initial;
   display: flex;
+  height: 100%;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  font-family: ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.4;
 
-  .debug-explorer {
-    width: 100%;
-    max-width: 16rem;
+  * {
+    box-sizing: border-box;
   }
 
-  .debug-details {
+  &__explorer {
+    width: 16rem;
+    flex-shrink: 0;
+    border-right: 1px solid #3c3c3c;
+    overflow-y: auto;
+  }
+
+  &__details {
     flex: 1;
+    overflow: auto;
+  }
 
-    .assets-table {
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+
+    td {
+      color: #9d9d9d;
+      padding: 1px 4px;
+      white-space: nowrap;
+
+      &.asset-activation .asset-activation__dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #3c3c3c;
+      }
+
+      &.asset-type-js {
+        color: $color-js;
+      }
+
+      &.asset-type-css {
+        color: $color-css;
+      }
+
+      &.asset-path {
+        color: #d4d4d4;
+        max-width: 0;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    tr.asset-active td.asset-activation .asset-activation__dot {
+      background: global.$color-warn;
+    }
+
+    tr.asset-active.asset-loaded {
       td {
-        opacity: 0.6;
-        padding: 0 0.2rem;
-
-        &.asset-activation .tip {
-          width: 10px;
-          height: 10px;
-          border-radius: 10px;
-          background: global.$dark-gray;
-        }
-
-        &.asset-type-js {
-          color: $color-js;
-        }
-
-        &.asset-type-css {
-          color: $color-css;
-        }
-
-        &.asset-size {
-          white-space: nowrap;
-          font-size: 0.7rem;
-        }
-
-        &.asset-color-scheme,
-        &.asset-responsive,
-        &.asset-type {
-          text-align: center;
-        }
-
-        &.asset-path {
-          font-weight: normal;
-          @include table.table-cell-text-ellipsis;
-        }
+        color: #d4d4d4;
       }
 
-      tr.asset-active td {
-        &.asset-activation .tip {
-          background: global.$color-warn;
-        }
+      td.asset-activation .asset-activation__dot {
+        background: global.$color-success;
       }
 
-      tr.asset-active.asset-loaded td {
-        opacity: 1;
-
-        &.asset-activation .tip {
-          background: global.$color-success;
-        }
-
-        &.asset-path {
-          font-weight: bold;
-        }
+      td.asset-path {
+        font-weight: bold;
       }
     }
   }

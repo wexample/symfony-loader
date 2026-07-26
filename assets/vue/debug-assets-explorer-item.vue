@@ -1,9 +1,5 @@
 <script>
 import ExplorerItem from './explorer-item';
-import { faCube } from '@fortawesome/free-solid-svg-icons/faCube';
-import { faColumns } from '@fortawesome/free-solid-svg-icons/faColumns';
-import { faFile } from '@fortawesome/free-solid-svg-icons/faFile';
-import { faVuejs } from '@fortawesome/free-brands-svg-icons/faVuejs';
 
 export default {
   extends: ExplorerItem,
@@ -24,36 +20,26 @@ export default {
     },
 
     renderItemIcon() {
-      let icon;
-
       if (this.object.view === '@WexampleSymfonyLoaderBundle/components/vue') {
-        icon = faVuejs;
-      } else {
-        icon = {
-          component: faCube,
-          layout: faColumns,
-          page: faFile,
-        }[this.type];
+        return 'ph-bold ph-code';
       }
 
-      return icon.icon[4];
+      return {
+        component: 'ph-bold ph-cube',
+        layout:    'ph-bold ph-monitor',
+        page:      'ph-bold ph-file',
+      }[this.type] ?? 'ph-bold ph-square';
     },
 
     getChildren() {
-      let children = [];
+      const children = [];
 
       if (this.type === 'layout') {
-        children.push({
-          type: 'page',
-          object: this.object.page,
-        });
+        children.push({ type: 'page', object: this.object.page });
       }
 
       this.object.components.forEach((component) => {
-        children.push({
-          type: 'component',
-          object: component,
-        });
+        children.push({ type: 'component', object: component });
       });
 
       return children;

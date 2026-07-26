@@ -1,0 +1,14 @@
+{% block vue_require %}
+    {{- vue_require(render_pass, '@WexampleSymfonyLoaderBundle/vue/debug-assets') -}}
+{% endblock %}
+
+{% block component %}
+<div class="develop-toolbar">
+    <div class="develop-toolbar__tabs">
+        <button class="develop-toolbar__tab develop-toolbar__tab--active">Assets</button>
+    </div>
+    <div class="develop-toolbar__panel">
+        <develop-assets />
+    </div>
+</div>
+{% endblock %}

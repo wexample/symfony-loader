@@ -1,25 +1,39 @@
 @use '../css/mixins/global' as global;
 
-.explorer-item {
+.develop-explorer-item {
   cursor: pointer;
 
-  &.selected {
-    & > .explorer-item-label {
-      background: rgba(global.$color-info, 0.5);
+  &--selected > &__label {
+    background: rgba(global.$color-info, 0.3);
+  }
+
+  &__label {
+    display: flex;
+    align-items: center;
+    padding: 1px 4px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
     }
   }
 
-  .explorer-item-label {
-    display: flex;
-    width: 100%;
+  &__indent {
+    flex-shrink: 0;
+    width: 1rem;
+  }
 
-    .explorer-item-icon {
-      padding: 0.2rem;
-    }
+  &__icon {
+    flex-shrink: 0;
+    font-size: 12px;
+    width: 20px;
+    text-align: center;
+    opacity: 0.7;
+  }
 
-    .explorer-item-name {
-      @include global.text-ellipsis;
-      padding: 0.2rem;
-    }
+  &__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-left: 4px;
   }
 }

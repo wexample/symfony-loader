@@ -3,8 +3,8 @@
 {% endblock %}
 
 {% block component %}
-    <div class="debug-assets">
-        <div class="debug-explorer">
+    <div class="develop-assets">
+        <div class="develop-assets__explorer">
             <explorer-item
                     :increment="0"
                     :object="app.layout"
@@ -13,30 +13,25 @@
                     type="layout"
             />
         </div>
-        <div class="debug-details">
-            <table class="assets-table">
-                <tr v-for="asset in allAssets" :class="buildCssAsset(asset)">
-                    <td class="asset-activation">
-                        <div class="tip">
-                        </div>
-                    </td>
-                    <td class="asset-type" :class="`asset-type-${asset.type}`">
-                        {{ 'asset.type' | vue_key }}
-                    </td>
-                    <td class="asset-rendered">
-                        {{ icon('ph:bold/clock') }}
-                    </td>
-                    <td class="asset-responsive" v-html="asset.responsive || '·'">
-                    </td>
-                    <td class="asset-initial">
-                        <div v-if="asset.initialLayout">i</div>
-                    </td>
-                    <td class="asset-path" v-on:click="assetLog(asset)">
-                        <div class="table-td-ellipsis-wrapper">
-                            {{ 'shortenAssetPath(asset)' | vue_key() }}
-                        </div>
-                    </td>
-                </tr>
+        <div class="develop-assets__details">
+            <table class="develop-assets__table">
+                <tbody>
+                    <tr v-for="asset in allAssets" :class="buildCssAsset(asset)">
+                        <td class="asset-activation">
+                            <div class="asset-activation__dot"></div>
+                        </td>
+                        <td class="asset-type" :class="`asset-type-${asset.type}`">
+                            {{ 'asset.type' | vue_key }}
+                        </td>
+                        <td class="asset-responsive" v-html="asset.responsive || '·'"></td>
+                        <td class="asset-initial">
+                            <span v-if="asset.initialLayout" title="Initial layout">{{ icon('ph:bold/house-simple') }}</span>
+                        </td>
+                        <td class="asset-path" v-on:click="assetLog(asset)" :title="shortenAssetPath(asset)">
+                            {{ 'shortenAssetPath(asset)' | vue_key }}
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     </div>
