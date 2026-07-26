@@ -1,18 +1,15 @@
 import Component from '../js/Class/Component';
+import VueService from '../js/Services/VueService';
 
 export default class extends Component {
-  private onTabClick = (e: Event) => {
-    const tab = (e.target as Element).closest('.develop-toolbar__tab') as HTMLElement;
-    if (!tab) return;
-    this.el.querySelectorAll('.develop-toolbar__tab').forEach(t => t.classList.remove('develop-toolbar__tab--active'));
-    tab.classList.add('develop-toolbar__tab--active');
-  };
-
   protected async activateListeners(): Promise<void> {
-    this.el.querySelector('.develop-toolbar__tabs')?.addEventListener('click', this.onTabClick);
+    const mountEl = this.el.querySelector<HTMLElement>('.develop-toolbar__mount');
+    if (mountEl && this.app.services.vue) {
+      const vueService = this.app.services.vue as VueService;
+      const component = vueService.initComponent('@WexampleSymfonyLoaderBundle/vue/debug-assets', this);
+      vueService.createApp(component as Record<string, any>).mount(mountEl);
+    }
   }
 
-  protected async deactivateListeners(): Promise<void> {
-    this.el.querySelector('.develop-toolbar__tabs')?.removeEventListener('click', this.onTabClick);
-  }
+  protected async deactivateListeners(): Promise<void> {}
 }

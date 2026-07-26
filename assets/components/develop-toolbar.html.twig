@@ -1,8 +1,16 @@
 <div class="develop-toolbar">
-    <div class="develop-toolbar__tabs">
-        <button class="develop-toolbar__tab develop-toolbar__tab--active">Debug</button>
+    <div class="tabs develop-toolbar__tabs-bar">
+        <a class="tabs--item tabs--item--active" href="#" data-tab="assets">
+            <span class="tabs--item-content">
+                <span class="tabs--item-label">{{ '@component::tab.assets' | trans }}</span>
+            </span>
+        </a>
+        <button class="develop-toolbar__close" data-develop-toolbar-toggle="1" title="{{ '@component::close' | trans }}">
+            {{ icon('ph:bold/x') }}
+        </button>
     </div>
     <div class="develop-toolbar__panel">
-        <em>Develop toolbar</em>
+        <div class="develop-toolbar__mount"></div>
     </div>
 </div>
+{{ vue_require(render_pass, '@WexampleSymfonyLoaderBundle/vue/debug-assets') }}
