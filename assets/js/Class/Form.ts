@@ -13,8 +13,10 @@ import {
 
 export default class Form extends Component {
   private onSubmitProxy: EventListener;
+  private onButtonClickProxy: EventListener;
   private isSubmitting = false;
   private lastSubmitter: HTMLInputElement | HTMLButtonElement | null = null;
+  private pendingButtonSubmitter: HTMLButtonElement | null = null;
   private loadingEnded = false;
   private isDirty = false;
   private onDirtyProxy?: EventListener;
@@ -24,6 +26,9 @@ export default class Form extends Component {
 
     this.onSubmitProxy = this.onSubmit.bind(this);
     this.el.addEventListener('submit', this.onSubmitProxy);
+
+    this.onButtonClickProxy = this.onButtonClick.bind(this);
+    this.el.addEventListener('click', this.onButtonClickProxy);
 
     this.onDirtyProxy = this.onDirty.bind(this);
     this.el.addEventListener('change', this.onDirtyProxy);
@@ -35,6 +40,10 @@ export default class Form extends Component {
 
     if (this.onSubmitProxy) {
       this.el.removeEventListener('submit', this.onSubmitProxy);
+    }
+
+    if (this.onButtonClickProxy) {
+      this.el.removeEventListener('click', this.onButtonClickProxy);
     }
 
     if (this.onDirtyProxy) {
@@ -52,13 +61,20 @@ export default class Form extends Component {
     return true;
   }
 
+  private onButtonClick(event: Event): void {
+    const target = (event.target as HTMLElement).closest('button[type="button"]') as HTMLButtonElement | null;
+    if (!target?.name) return;
+
+    this.pendingButtonSubmitter = target;
+    (this.el as HTMLFormElement).requestSubmit();
+  }
+
   private async onSubmit(event: SubmitEvent) {
     const form = event.currentTarget as HTMLFormElement;
     const formData = new FormData(form);
-    const submitter = (event as any).submitter as
-      | HTMLInputElement
-      | HTMLButtonElement
-      | null;
+    const submitter = this.pendingButtonSubmitter
+      || ((event as any).submitter as HTMLInputElement | HTMLButtonElement | null);
+    this.pendingButtonSubmitter = null;
 
     if (submitter?.name) {
       formData.append(submitter.name, 'true');
