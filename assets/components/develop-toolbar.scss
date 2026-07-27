@@ -1,4 +1,5 @@
 @use '../css/partials/debug';
+@use '../css/partials/develop' as d;
 
 .sf-toolbar {
   display: none !important;
@@ -15,13 +16,13 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: #1e1e1e;
-  color: #d4d4d4;
-  font-family: ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
-  font-size: 12px;
+  background: d.$bg;
+  color: d.$text;
+  font-family: d.$font;
+  font-size: d.$size-base;
   line-height: 1.4;
   z-index: 9999;
-  border-top: 1px solid #3c3c3c;
+  border-top: 1px solid d.$border;
   height: 40vh;
   max-height: 80vh;
   min-height: 80px;
@@ -37,30 +38,30 @@
   .tabs {
     display: flex;
     align-items: center;
-    background: #2d2d2d;
-    border-bottom: 1px solid #3c3c3c;
+    background: d.$bg-alt;
+    border-bottom: 1px solid d.$border;
     flex-shrink: 0;
   }
 
   .tabs--item {
-    color: #9d9d9d;
+    color: d.$text-muted;
     font-family: inherit;
     font-size: inherit;
     padding: 3px 12px;
 
     &:hover,
     &.tabs--item--active {
-      color: #d4d4d4;
-      background: #1e1e1e;
+      color: d.$text;
+      background: d.$bg;
     }
   }
 
   &__resize-handle {
-    height: 4px;
+    height: d.$space-xs;
     cursor: ns-resize;
     background: transparent;
     flex-shrink: 0;
-    margin-bottom: -4px;
+    margin-bottom: -(d.$space-xs);
     z-index: 1;
   }
 
@@ -68,14 +69,14 @@
   &__close {
     all: initial;
     font-family: inherit;
-    color: #9d9d9d;
+    color: d.$text-muted;
     cursor: pointer;
     padding: 3px 3px;
     display: flex;
     align-items: center;
 
     &:hover {
-      color: #d4d4d4;
+      color: d.$text;
     }
   }
 
@@ -86,7 +87,7 @@
   &__panel {
     overflow: auto;
     flex: 1;
-    padding: 4px;
+    padding: d.$space-xs;
   }
 
   &__mount {
@@ -97,4 +98,3 @@
     }
   }
 }
-

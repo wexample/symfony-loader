@@ -1,0 +1,55 @@
+// ─── Tokens ──────────────────────────────────────────────────────────────────
+
+$bg:           #1e1e1e;
+$bg-alt:       #2d2d2d;
+$border:       #3c3c3c;
+$border-hover: #6a6a6a;
+$text:         #d4d4d4;
+$text-muted:   #9d9d9d;
+$text-dim:     #555;
+$accent:       #4ec9b0;
+$warning:      #ce9178;
+
+$font:      ui-monospace, 'Cascadia Code', Menlo, Consolas, monospace;
+$size-base: 12px;
+$size-sm:   11px;
+$size-xs:   10px;
+
+$space-xs: 4px;
+$space-sm: 8px;
+$space-md: 16px;
+
+// ─── Mixins ──────────────────────────────────────────────────────────────────
+
+@mixin row($gap: $space-xs) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $gap;
+}
+
+@mixin label {
+  color: $text-muted;
+  font-size: $size-xs;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+@mixin pill {
+  background: transparent;
+  border: 1px solid $border;
+  border-radius: 3px;
+  color: $text-muted;
+  font-family: inherit;
+  font-size: $size-sm;
+  padding: 3px $space-sm;
+}
+
+@mixin pill-active {
+  border-color: $accent;
+  color: $accent;
+}
+
+@mixin pill-hover {
+  border-color: $border-hover;
+  color: $text;
+}

@@ -1,29 +1,31 @@
+@use '../css/partials/develop' as d;
+
 .develop-ssr {
   border-collapse: collapse;
-  padding: 4px 0;
+  padding: d.$space-xs 0;
 
   &__label {
-    color: #9d9d9d;
-    padding: 2px 16px 2px 4px;
+    color: d.$text-muted;
+    padding: 2px d.$space-md 2px d.$space-xs;
     white-space: nowrap;
     vertical-align: top;
   }
 
   &__value {
-    color: #d4d4d4;
-    padding: 2px 4px;
+    color: d.$text;
+    padding: 2px d.$space-xs;
     word-break: break-all;
 
     &--dev {
-      color: #4ec9b0;
+      color: d.$accent;
     }
 
     &--prod {
-      color: #ce9178;
+      color: d.$warning;
     }
 
     &--muted {
-      color: #555;
+      color: d.$text-dim;
     }
   }
 }
