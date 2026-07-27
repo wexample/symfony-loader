@@ -7,7 +7,6 @@ use Wexample\SymfonyLoader\Rendering\Asset;
 use Wexample\SymfonyLoader\Rendering\AssetsRegistry;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AbstractRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
-use Wexample\SymfonyLoader\Service\AssetsAggregationService;
 use Wexample\SymfonyLoader\Service\AssetsRegistryService;
 use Wexample\SymfonyLoader\Service\AssetsService;
 use Wexample\SymfonyLoader\Service\Usage\AnimationsAssetUsageService;
@@ -154,7 +153,6 @@ class AssetsServiceTest extends AbstractSymfonyKernelTestCase
             'bundle/view',
             new AssetsRegistry($this->getFixtureProjectDir())
         );
-        $renderPass->enableAggregation = false;
         $renderPass->usagesConfig[DefaultAssetUsageService::getName()]['list'] = [];
 
         $tags = $service->buildTags($renderPass);
@@ -186,36 +184,6 @@ class AssetsServiceTest extends AbstractSymfonyKernelTestCase
 
         $this->assertNotEmpty($paths);
         $this->assertContains('build/bundle/css/view.css', $paths);
-    }
-
-    public function testBuildTagsAggregatesWhenEnabled(): void
-    {
-        $aggregation = $this->createMock(AssetsAggregationService::class);
-        $aggregation->expects($this->once())->method('buildAggregatedTags')->willReturn([]);
-
-        [$service, $assetsRegistryService] = $this->createAssetsServiceForProjectDir(
-            $this->getFixtureProjectDir(),
-            assetsAggregationService: $aggregation
-        );
-
-        $assetsRegistryService->addAsset(new Asset(
-            'build/bundle/css/view.css',
-            DefaultAssetUsageService::getName(),
-            Asset::CONTEXT_LAYOUT
-        ));
-        $assetsRegistryService->addAsset(new Asset(
-            'build/bundle/js/runtime.js',
-            DefaultAssetUsageService::getName(),
-            Asset::CONTEXT_PAGE
-        ));
-
-        $renderPass = new RenderPass(
-            'bundle/view',
-            new AssetsRegistry($this->getFixtureProjectDir())
-        );
-        $renderPass->enableAggregation = true;
-
-        $service->buildTags($renderPass);
     }
 
     public function testAssetsDetectLoadsAssetsForAllUsages(): void
@@ -319,13 +287,8 @@ class AssetsServiceTest extends AbstractSymfonyKernelTestCase
      */
     private function createAssetsServiceForProjectDir(
         string $projectDir,
-        ?AssetsAggregationService $assetsAggregationService = null,
     ): array {
         $assetsRegistryService = $this->createAssetsRegistryServiceForProjectDir($projectDir);
-
-        $assetsAggregationService ??= $this->createStub(AssetsAggregationService::class);
-
-        $kernel = $this->createStub(KernelInterface::class);
 
         return [
             new AssetsService(
@@ -335,8 +298,6 @@ class AssetsServiceTest extends AbstractSymfonyKernelTestCase
                 new MarginsAssetUsageService($assetsRegistryService),
                 new ResponsiveAssetUsageService($assetsRegistryService),
                 new FontsAssetUsageService($assetsRegistryService),
-                $kernel,
-                $assetsAggregationService,
                 $assetsRegistryService,
             ),
             $assetsRegistryService,

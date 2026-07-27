@@ -1,7 +1,6 @@
 parameters:
     loader.debug: false
     loader.environment: '%env(APP_ENV)%'
-    loader.enable_aggregation: false
     loader.layout_bases: {}
     
     # Loader colors

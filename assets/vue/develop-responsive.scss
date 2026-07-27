@@ -1,0 +1,51 @@
+.develop-responsive {
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &__breakpoints {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  &__bp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px 8px;
+    border: 1px solid #3c3c3c;
+    border-radius: 3px;
+    min-width: 48px;
+    opacity: 0.4;
+
+    &--active {
+      opacity: 1;
+      border-color: #4ec9b0;
+      color: #4ec9b0;
+    }
+  }
+
+  &__bp-name {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 11px;
+  }
+
+  &__bp-px {
+    color: #9d9d9d;
+    font-size: 10px;
+  }
+
+  &__meta {
+    display: flex;
+    gap: 8px;
+    color: #9d9d9d;
+    font-size: 11px;
+  }
+
+  &__value {
+    color: #d4d4d4;
+  }
+}

@@ -51,8 +51,6 @@ class RenderPass
 
     public array $usagesConfig = [];
 
-    public ?bool $enableAggregation = null;
-
     private bool $debug = false;
 
     private string $outputType = self::OUTPUT_TYPE_RESPONSE_HTML;

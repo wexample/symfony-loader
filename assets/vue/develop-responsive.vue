@@ -2,7 +2,6 @@
 export default {
   data() {
     return {
-      currentSize: this.app?.services?.responsive?.responsiveSizeCurrent,
       windowWidth: window.innerWidth,
     };
   },
@@ -11,25 +10,27 @@ export default {
     breakpoints() {
       return this.app?.layout?.vars?.displayBreakpoints ?? {};
     },
+
+    currentSize() {
+      let current = null;
+      for (const [name, minWidth] of Object.entries(this.breakpoints)) {
+        if (this.windowWidth >= minWidth) {
+          current = name;
+        }
+      }
+      return current;
+    },
   },
 
   mounted() {
-    this._onResponsiveChange = () => {
-      this.currentSize = this.app?.services?.responsive?.responsiveSizeCurrent;
+    this._onResize = () => {
       this.windowWidth = window.innerWidth;
     };
-
-    this.app?.services?.events?.listen(
-      'responsive-change-size',
-      this._onResponsiveChange
-    );
+    window.addEventListener('resize', this._onResize);
   },
 
   unmounted() {
-    this.app?.services?.events?.forget(
-      'responsive-change-size',
-      this._onResponsiveChange
-    );
+    window.removeEventListener('resize', this._onResize);
   },
 };
 </script>

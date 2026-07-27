@@ -31,30 +31,6 @@ class FontsAssetUsageServiceTest extends TestCase
         $this->assertFalse($service->assetNeedsInitialRender($asset, $renderPass));
     }
 
-    public function testCanAggregateAssetDependsOnSwitchableUsage(): void
-    {
-        $service = new FontsAssetUsageService($this->createStub(AssetsRegistryService::class));
-
-        $renderPass = new RenderPass('view', new AssetsRegistry(sys_get_temp_dir()));
-        $renderPass->usagesConfig = [
-            FontsAssetUsageService::getName() => [
-                'list' => [
-                    'default' => ['allow_switch' => false],
-                ],
-            ],
-        ];
-        $renderPass->setUsage(FontsAssetUsageService::getName(), 'default');
-
-        $asset = new Asset('build/bundle/css/view.css', '/build/bundle/css/view.css', FontsAssetUsageService::getName(), Asset::CONTEXT_LAYOUT);
-        $asset->usages[FontsAssetUsageService::getName()] = 'default';
-        $asset->setServerSideRendered();
-
-        $this->assertTrue($service->canAggregateAsset($renderPass, $asset));
-
-        $renderPass->usagesConfig[FontsAssetUsageService::getName()]['list']['alt'] = ['allow_switch' => true];
-        $this->assertFalse($service->canAggregateAsset($renderPass, $asset));
-    }
-
     public function testCreateAssetIfExistsThrowsWhenRealPathMissing(): void
     {
         $assetsRegistryService = $this->createStub(AssetsRegistryService::class);

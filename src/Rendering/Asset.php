@@ -44,7 +44,7 @@ class Asset extends RenderDataGenerator
     /**
      * Logical manifest key (e.g. build/@Bundle/js/components/modal.js).
      * Stays un-hashed: server-side Twig `asset()` resolves it through the
-     * Encore manifest, and it is the stable identity used to dedup/aggregate.
+     * Encore manifest, and it is the stable identity used to dedup assets.
      */
     public string $path;
 

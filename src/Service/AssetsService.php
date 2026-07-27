@@ -2,14 +2,11 @@
 
 namespace Wexample\SymfonyLoader\Service;
 
-use Psr\Cache\InvalidArgumentException;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Wexample\SymfonyLoader\Exception\AssetsNotBuiltException;
 use Wexample\SymfonyLoader\Rendering\Asset;
 use Wexample\SymfonyLoader\Rendering\AssetTag;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AbstractRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
-use Wexample\SymfonyLoader\Service\Usage\AbstractAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\AnimationsAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\ColorSchemeAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\DefaultAssetUsageService;
@@ -27,14 +24,8 @@ class AssetsService
         Asset::EXTENSION_JS => [],
     ];
 
-    /**
-     * @var array<AbstractAssetUsageService>
-     */
     private array $usages;
 
-    /**
-     * @throws InvalidArgumentException
-     */
     public function __construct(
         AnimationsAssetUsageService $animationsAssetUsageService,
         ColorSchemeAssetUsageService $colorSchemeAssetUsageService,
@@ -42,8 +33,6 @@ class AssetsService
         MarginsAssetUsageService $marginsAssetUsageService,
         ResponsiveAssetUsageService $responsiveAssetUsageService,
         FontsAssetUsageService $fontsAssetUsageService,
-        protected readonly KernelInterface $kernel,
-        protected readonly AssetsAggregationService $assetsAggregationService,
         protected readonly AssetsRegistryService $assetsRegistryService,
     ) {
         foreach ([
@@ -63,9 +52,6 @@ class AssetsService
         }
     }
 
-    /**
-     * @return AbstractAssetUsageService[]
-     */
     public static function getAssetsUsagesStatic(): array
     {
         return [
@@ -139,7 +125,7 @@ class AssetsService
             $tags[$type] = array_fill_keys(Asset::CONTEXTS, []);
 
             foreach (Asset::CONTEXTS as $context) {
-                foreach ($usages as $usageName => $usageManager) {
+                foreach (array_keys($usages) as $usageName) {
                     /** @var Asset $asset */
                     foreach ($registry[$type] as $asset) {
                         if ($asset->getUsage() == $usageName && $asset->getContext() == $context) {
@@ -150,13 +136,6 @@ class AssetsService
                                 $tag = new AssetTag($asset);
 
                                 $asset->setServerSideRendered();
-
-                                $tag->setCanAggregate(
-                                    $usageManager->canAggregateAsset(
-                                        $renderPass,
-                                        $asset
-                                    )
-                                );
 
                                 $tags[$type][$context][$usageName][] = $tag;
                             }
@@ -176,19 +155,11 @@ class AssetsService
         }
 
         $tag = new AssetTag();
-        $tag->setCanAggregate(true);
         $tag->setPath('build/runtime.js');
         $tag->setId('javascript-runtime');
         $tag->setContext('extra');
 
         $tags[Asset::EXTENSION_JS]['runtime']['extra'][] = $tag;
-
-        if ($renderPass->enableAggregation) {
-            return $this->assetsAggregationService->buildAggregatedTags(
-                $renderPass->getView(),
-                $tags,
-            );
-        }
 
         return $tags;
     }

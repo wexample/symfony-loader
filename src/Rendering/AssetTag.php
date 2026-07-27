@@ -5,7 +5,6 @@ namespace Wexample\SymfonyLoader\Rendering;
 class AssetTag
 {
     private ?Asset $asset = null;
-    private bool $canAggregate = false;
     private string $id;
     private ?string $media = null;
     private ?string $path;
@@ -15,16 +14,6 @@ class AssetTag
     public function __construct(?Asset $asset = null)
     {
         $this->setAsset($asset);
-    }
-
-    public function canAggregate(): bool
-    {
-        return $this->canAggregate;
-    }
-
-    public function setCanAggregate(bool $canAggregate): void
-    {
-        $this->canAggregate = $canAggregate;
     }
 
     public function getId(): string

@@ -57,10 +57,6 @@ class AdaptiveRendererService
             );
         }
 
-        $renderPass->enableAggregation = $this->getParameterOrDefault(
-            'loader.enable_aggregation',
-            false
-        );
         $renderPass->setDebug(
             $this->getParameterOrDefault(
                 'loader.debug',

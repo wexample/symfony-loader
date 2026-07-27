@@ -2,7 +2,6 @@ import Component from '../js/Class/Component';
 import DebugService from '../js/Services/DebugService';
 
 const HEIGHT_VAR = '--develop-toolbar-height';
-const SF_TOOLBAR_SELECTOR = '.sf-toolbar';
 
 export default class DevelopToolbar extends Component {
   private activeTab: string = 'assets';
@@ -28,7 +27,7 @@ export default class DevelopToolbar extends Component {
   }
 
   private toggleSymfonyToolbar() {
-    document.querySelector(SF_TOOLBAR_SELECTOR)?.classList.toggle('sf-toolbar--visible');
+    document.querySelector('.sf-toolbar')?.classList.toggle('sf-toolbar--visible');
   }
 
   private initResize() {
