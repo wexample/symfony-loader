@@ -1,0 +1,19 @@
+{% block component %}
+<div class="develop-responsive">
+    <div class="develop-responsive__breakpoints">
+        <div
+            v-for="(minWidth, name) in breakpoints"
+            :key="name"
+            class="develop-responsive__bp"
+            :class="name === currentSize ? 'develop-responsive__bp--active' : ''"
+        >
+            <span class="develop-responsive__bp-name">{{ 'name' | vue_key }}</span>
+            <span class="develop-responsive__bp-px">{{ 'minWidth ? minWidth + "px" : "0"' | vue_key }}</span>
+        </div>
+    </div>
+    <div class="develop-responsive__meta">
+        <span class="develop-responsive__label">Width</span>
+        <span class="develop-responsive__value">{{ 'windowWidth + "px"' | vue_key }}</span>
+    </div>
+</div>
+{% endblock %}

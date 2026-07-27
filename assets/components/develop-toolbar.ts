@@ -28,10 +28,7 @@ export default class DevelopToolbar extends Component {
   }
 
   private toggleSymfonyToolbar() {
-    const sf = document.querySelector<HTMLElement>(SF_TOOLBAR_SELECTOR);
-    if (sf) {
-      sf.style.display = sf.style.display === 'none' ? '' : 'none';
-    }
+    document.querySelector(SF_TOOLBAR_SELECTOR)?.classList.toggle('sf-toolbar--visible');
   }
 
   private initResize() {

@@ -1,5 +1,7 @@
 {% block vue_require %}
     {{- vue_require(render_pass, '@WexampleSymfonyLoaderBundle/vue/debug-assets') -}}
+    {{- vue_require(render_pass, '@WexampleSymfonyLoaderBundle/vue/develop-ssr') -}}
+    {{- vue_require(render_pass, '@WexampleSymfonyLoaderBundle/vue/develop-responsive') -}}
 {% endblock %}
 
 {% block component %}

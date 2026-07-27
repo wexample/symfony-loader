@@ -1,0 +1,22 @@
+{% block component %}
+<table class="develop-ssr">
+    <tbody>
+        <tr v-if="pageView">
+            <td class="develop-ssr__label">Page</td>
+            <td class="develop-ssr__value">{{ 'pageView' | vue_key }}</td>
+        </tr>
+        <tr v-if="layoutView">
+            <td class="develop-ssr__label">Layout</td>
+            <td class="develop-ssr__value">{{ 'layoutView' | vue_key }}</td>
+        </tr>
+        <tr v-if="env">
+            <td class="develop-ssr__label">Env</td>
+            <td class="develop-ssr__value" :class="`develop-ssr__value--${env}`">{{ 'env' | vue_key }}</td>
+        </tr>
+        <tr v-if="renderRequestId">
+            <td class="develop-ssr__label">Pass ID</td>
+            <td class="develop-ssr__value develop-ssr__value--muted">{{ 'renderRequestId' | vue_key }}</td>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}

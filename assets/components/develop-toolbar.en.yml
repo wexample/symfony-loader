@@ -3,4 +3,5 @@ symfony: Symfony profiler
 tab:
   assets: Assets
   ssr: SSR
+  responsive: Responsive
   nodes: Nodes

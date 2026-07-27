@@ -1,8 +1,16 @@
 @use '../css/partials/debug';
 
 .sf-toolbar {
-  display: none;
+  display: none !important;
+  position: fixed !important;
   bottom: var(--develop-toolbar-height, 0px) !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 9998 !important;
+
+  &--visible {
+    display: block !important;
+  }
 }
 
 .develop-toolbar {
@@ -57,10 +65,8 @@
     cursor: ns-resize;
     background: transparent;
     flex-shrink: 0;
-
-    &:hover {
-      background: #3c3c3c;
-    }
+    margin-bottom: -4px;
+    z-index: 1;
   }
 
   &__symfony-toggle,
@@ -69,7 +75,7 @@
     font-family: inherit;
     color: #9d9d9d;
     cursor: pointer;
-    padding: 3px 12px;
+    padding: 3px 3px;
     display: flex;
     align-items: center;
 
@@ -94,6 +100,58 @@
     &--hidden {
       display: none;
     }
+  }
+}
+
+.develop-responsive {
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &__breakpoints {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  &__bp {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px 8px;
+    border: 1px solid #3c3c3c;
+    border-radius: 3px;
+    min-width: 48px;
+    opacity: 0.4;
+
+    &--active {
+      opacity: 1;
+      border-color: #4ec9b0;
+      color: #4ec9b0;
+    }
+  }
+
+  &__bp-name {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 11px;
+  }
+
+  &__bp-px {
+    color: #9d9d9d;
+    font-size: 10px;
+  }
+
+  &__meta {
+    display: flex;
+    gap: 8px;
+    color: #9d9d9d;
+    font-size: 11px;
+  }
+
+  &__value {
+    color: #d4d4d4;
   }
 }
 
