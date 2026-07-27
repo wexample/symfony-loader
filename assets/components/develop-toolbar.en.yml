@@ -1,4 +1,5 @@
 close: Close
 tab:
   assets: Assets
+  ssr: SSR
   nodes: Nodes

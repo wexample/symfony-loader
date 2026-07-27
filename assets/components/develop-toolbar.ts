@@ -8,13 +8,6 @@ export default class DevelopToolbar extends Component {
   async activateListeners() {
     super.activateListeners();
 
-    this.el.querySelectorAll<HTMLElement>('[data-develop-toolbar-toggle]').forEach((el) => {
-      el.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.app.layout.el.classList.toggle('develop-toolbar--open');
-      });
-    });
-
     this.el.querySelectorAll<HTMLElement>('[data-tab]').forEach((el) => {
       el.addEventListener('click', (e) => {
         e.preventDefault();
@@ -23,7 +16,7 @@ export default class DevelopToolbar extends Component {
     });
   }
 
-  private switchTab(tab: string) {
+  private async switchTab(tab: string) {
     this.activeTab = tab;
 
     this.el.querySelectorAll('[data-tab]').forEach((el: HTMLElement) => {
@@ -35,7 +28,12 @@ export default class DevelopToolbar extends Component {
     });
 
     if (tab === 'nodes') {
-      this.initDebug();
+      await this.initDebug();
+    }
+
+    const debugService = this.app.services.debug as DebugService | undefined;
+    if (debugService?.elDebugHelpers) {
+      debugService.elDebugHelpers.style.display = tab === 'nodes' ? '' : 'none';
     }
   }
 
@@ -46,6 +44,7 @@ export default class DevelopToolbar extends Component {
     const debugService = new DebugService(this.app);
     this.app.services.debug = debugService;
     debugService.init();
+    debugService.elDebugHelpers.style.display = 'none';
 
     await this.app.layout.forEachTreeRenderNode((node) => {
       debugService.initRenderNode(node);

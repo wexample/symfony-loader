@@ -5,6 +5,11 @@
                 <span class="tabs--item-label">{{ '@component::tab.assets' | trans }}</span>
             </span>
         </a>
+        <a class="tabs--item" href="#" data-tab="ssr">
+            <span class="tabs--item-content">
+                <span class="tabs--item-label">{{ '@component::tab.ssr' | trans }}</span>
+            </span>
+        </a>
         <a class="tabs--item" href="#" data-tab="nodes">
             <span class="tabs--item-content">
                 <span class="tabs--item-label">{{ '@component::tab.nodes' | trans }}</span>
@@ -17,6 +22,57 @@
     <div class="develop-toolbar__panel">
         <div class="develop-toolbar__mount" data-tab-panel="assets">
             {{ vue_include(render_pass, '@WexampleSymfonyLoaderBundle/vue/debug-assets') }}
+        </div>
+        <div class="develop-toolbar__mount develop-toolbar__mount--hidden" data-tab-panel="ssr">
+            {%- set currentPage = render_pass.registry.page | first -%}
+            <table class="develop-ssr">
+                <tbody>
+                    {%- if currentPage -%}
+                    <tr>
+                        <td class="develop-ssr__label">Page</td>
+                        <td class="develop-ssr__value">{{ currentPage.view }}</td>
+                    </tr>
+                    {%- endif -%}
+                    <tr>
+                        <td class="develop-ssr__label">Layout</td>
+                        <td class="develop-ssr__value">{{ render_pass.layoutRenderNode.view }}</td>
+                    </tr>
+                    <tr>
+                        <td class="develop-ssr__label">Base</td>
+                        <td class="develop-ssr__value">{{ render_pass.getLayoutBase() }}</td>
+                    </tr>
+                    <tr>
+                        <td class="develop-ssr__label">Env</td>
+                        <td class="develop-ssr__value develop-ssr__value--{{ app.environment }}">{{ app.environment }}</td>
+                    </tr>
+                    <tr>
+                        <td class="develop-ssr__label">Output</td>
+                        <td class="develop-ssr__value">{{ render_pass.getOutputType() }}</td>
+                    </tr>
+                    <tr>
+                        <td class="develop-ssr__label">JS</td>
+                        <td class="develop-ssr__value">{{ render_pass.isUseJs() ? 'on' : 'off' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="develop-ssr__label">Debug</td>
+                        <td class="develop-ssr__value">{{ render_pass.isDebug() ? 'on' : 'off' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="develop-ssr__label">Aggregation</td>
+                        <td class="develop-ssr__value">
+                            {%- if render_pass.enableAggregation is not null -%}
+                                {{ render_pass.enableAggregation ? 'on' : 'off' }}
+                            {%- else -%}
+                                default
+                            {%- endif -%}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="develop-ssr__label">Pass ID</td>
+                        <td class="develop-ssr__value develop-ssr__value--muted">{{ render_pass.getRenderRequestId() }}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div class="develop-toolbar__mount develop-toolbar__mount--hidden" data-tab-panel="nodes">
         </div>
