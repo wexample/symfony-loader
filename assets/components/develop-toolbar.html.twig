@@ -1,4 +1,5 @@
 <div class="develop-toolbar">
+    <div class="develop-toolbar__resize-handle"></div>
     <div class="tabs develop-toolbar__tabs-bar">
         <a class="tabs--item tabs--item--active" href="#" data-tab="assets">
             <span class="tabs--item-content">
@@ -15,6 +16,9 @@
                 <span class="tabs--item-label">{{ '@component::tab.nodes' | trans }}</span>
             </span>
         </a>
+        <button class="develop-toolbar__symfony-toggle" data-symfony-toolbar-toggle title="{{ '@component::symfony' | trans }}">
+            {{ icon('ph:bold/function') }}
+        </button>
         <button class="develop-toolbar__close" data-develop-toolbar-toggle="1" title="{{ '@component::close' | trans }}">
             {{ icon('ph:bold/x') }}
         </button>

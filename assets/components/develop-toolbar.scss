@@ -1,5 +1,10 @@
 @use '../css/partials/debug';
 
+.sf-toolbar {
+  display: none;
+  bottom: var(--develop-toolbar-height, 0px) !important;
+}
+
 .develop-toolbar {
   display: none;
   flex-direction: column;
@@ -14,7 +19,9 @@
   line-height: 1.4;
   z-index: 9999;
   border-top: 1px solid #3c3c3c;
-  max-height: 40vh;
+  height: 40vh;
+  max-height: 80vh;
+  min-height: 80px;
 
   * {
     box-sizing: border-box;
@@ -45,12 +52,23 @@
     }
   }
 
+  &__resize-handle {
+    height: 4px;
+    cursor: ns-resize;
+    background: transparent;
+    flex-shrink: 0;
+
+    &:hover {
+      background: #3c3c3c;
+    }
+  }
+
+  &__symfony-toggle,
   &__close {
     all: initial;
     font-family: inherit;
     color: #9d9d9d;
     cursor: pointer;
-    margin-left: auto;
     padding: 3px 12px;
     display: flex;
     align-items: center;
@@ -58,6 +76,10 @@
     &:hover {
       color: #d4d4d4;
     }
+  }
+
+  &__symfony-toggle {
+    margin-left: auto;
   }
 
   &__panel {

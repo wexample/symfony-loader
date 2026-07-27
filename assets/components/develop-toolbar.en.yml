@@ -1,4 +1,5 @@
 close: Close
+symfony: Symfony profiler
 tab:
   assets: Assets
   ssr: SSR
