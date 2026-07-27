@@ -1,0 +1,48 @@
+.develop-usages {
+  padding: 4px 8px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  overflow-y: auto;
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__label {
+    color: #9d9d9d;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__values {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  &__value {
+    background: transparent;
+    border: 1px solid #3c3c3c;
+    border-radius: 3px;
+    color: #9d9d9d;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 11px;
+    padding: 3px 8px;
+
+    &--active {
+      border-color: #4ec9b0;
+      color: #4ec9b0;
+    }
+
+    &:hover:not(.develop-usages__value--active) {
+      border-color: #6a6a6a;
+      color: #d4d4d4;
+    }
+  }
+}

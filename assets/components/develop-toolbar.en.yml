@@ -4,4 +4,5 @@ tab:
   assets: Assets
   ssr: SSR
   responsive: Responsive
+  usages: Usages
   nodes: Nodes

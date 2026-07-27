@@ -16,6 +16,11 @@
                 <span class="tabs--item-label">{{ '@component::tab.responsive' | trans }}</span>
             </span>
         </a>
+        <a class="tabs--item" href="#" data-tab="usages">
+            <span class="tabs--item-content">
+                <span class="tabs--item-label">{{ '@component::tab.usages' | trans }}</span>
+            </span>
+        </a>
         <a class="tabs--item" href="#" data-tab="nodes">
             <span class="tabs--item-content">
                 <span class="tabs--item-label">{{ '@component::tab.nodes' | trans }}</span>
@@ -37,6 +42,9 @@
         </div>
         <div class="develop-toolbar__mount develop-toolbar__mount--hidden" data-tab-panel="responsive">
             {{ vue_include(render_pass, '@WexampleSymfonyLoaderBundle/vue/develop-responsive') }}
+        </div>
+        <div class="develop-toolbar__mount develop-toolbar__mount--hidden" data-tab-panel="usages">
+            {{ vue_include(render_pass, '@WexampleSymfonyLoaderBundle/vue/develop-usages') }}
         </div>
         <div class="develop-toolbar__mount develop-toolbar__mount--hidden" data-tab-panel="nodes">
         </div>

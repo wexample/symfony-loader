@@ -1,0 +1,16 @@
+{% block component %}
+<div class="develop-usages">
+    <div v-for="(config, usageName) in visibleUsages" :key="usageName" class="develop-usages__group">
+        <div class="develop-usages__label">{{ 'formatLabel(usageName)' | vue_key }}</div>
+        <div class="develop-usages__values">
+            <button
+                v-for="(valueConfig, valueName) in config.list"
+                :key="valueName"
+                class="develop-usages__value"
+                :class="isActive(usageName, valueName) ? 'develop-usages__value--active' : ''"
+                @click="switchUsage(usageName, valueName)"
+            >{{ 'valueName' | vue_key }}</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
