@@ -57,12 +57,7 @@ class AdaptiveRendererService
             );
         }
 
-        $renderPass->setDebug(
-            $this->getParameterOrDefault(
-                'loader.debug',
-                false
-            )
-        );
+        $renderPass->setDebug($this->kernel->isDebug());
         $request = $this->requestStack->getCurrentRequest();
 
         if ($request?->hasSession()) {
@@ -265,15 +260,6 @@ class AdaptiveRendererService
             $assetsIncludes,
             $content
         );
-
-        if ($renderPass->isDebug()) {
-            $content .= $this->twig->render(
-                '@WexampleSymfonyLoaderBundle/macros/debug.html.twig',
-                [
-                    'render_pass' => $renderPass,
-                ]
-            );
-        }
 
         $response->setContent($content);
 

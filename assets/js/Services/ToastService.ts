@@ -52,7 +52,8 @@ export default class ToastService extends AbstractNoticeService {
     try {
       await action();
       this.show({ type: 'success', message: messages.success });
-    } catch {
+    } catch (error) {
+      console.error(error);
       this.show({ type: 'error', message: messages.error });
     }
   }

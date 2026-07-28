@@ -113,6 +113,9 @@
             {%- endblock -%}
         {%- endblock -%}
 
+        {%- if render_pass.debug -%}
+            {{ component_lazy('@WexampleSymfonyLoaderBundle/components/develop-toolbar') }}
+        {%- endif -%}
         {# Global components template like modal #}
         <div id="components-templates"></div>
         {# Vues #}
