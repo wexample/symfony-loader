@@ -408,19 +408,6 @@ function buildEncoreConfig(options = {}) {
 
   const config = Encore.getWebpackConfig();
 
-  // Persistent build cache: cold builds populate node_modules/.cache/webpack,
-  // subsequent builds reuse the module graph (minutes down to seconds).
-  // Opt out with { buildCache: false } (e.g. CI with no cache volume).
-  if (options.buildCache !== false && !config.cache?.type) {
-    config.cache = {
-      type: 'filesystem',
-      buildDependencies: {
-        // Invalidate when the build pipeline itself changes.
-        config: [fileURLToPath(import.meta.url)],
-      },
-    };
-  }
-  
   // Add extensionAlias to resolve .js imports to .ts/.tsx files (for local dev with yarn link)
   config.resolve = config.resolve || {};
   config.resolve.extensions = Array.from(
@@ -433,13 +420,13 @@ function buildEncoreConfig(options = {}) {
     ".cjs": [".cts", ".cjs"],
   };
 
-  // Persistent build cache: cold builds populate node_modules/.cache/webpack,
-  // later builds only recompile what changed. Opt out with { buildCache: false }.
-  if (options.buildCache !== false) {
+  // Persistent build cache: enabled in production by default, disabled in dev to avoid
+  // stale bundles (e.g. fosRoutes.json updates not picked up). Override with { buildCache: true/false }.
+  const enableCache = options.buildCache ?? Encore.isProduction();
+  if (enableCache && !config.cache?.type) {
     config.cache = {
       type: 'filesystem',
       buildDependencies: {
-        // Invalidate when the build configuration itself changes.
         config: [
           fileURLToPath(import.meta.url),
           ...(fs.existsSync(DEFAULT_MANIFEST_PATH) ? [DEFAULT_MANIFEST_PATH] : []),

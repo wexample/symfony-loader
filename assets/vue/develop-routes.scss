@@ -1,0 +1,75 @@
+@use '../css/partials/develop' as d;
+
+.develop-routes {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: d.$space-sm;
+    padding: d.$space-xs d.$space-sm;
+    border-bottom: 1px solid d.$border;
+    flex-shrink: 0;
+  }
+
+  &__search {
+    background: d.$bg-alt;
+    border: 1px solid d.$border;
+    border-radius: 3px;
+    color: d.$text;
+    font-family: d.$font;
+    font-size: d.$size-sm;
+    padding: d.$space-xs d.$space-sm;
+    flex: 1;
+    outline: none;
+
+    &:focus {
+      border-color: d.$accent;
+    }
+
+    &::placeholder {
+      color: d.$text-dim;
+    }
+  }
+
+  &__count {
+    color: d.$text-muted;
+    font-size: d.$size-xs;
+    white-space: nowrap;
+  }
+
+  &__list {
+    overflow-y: auto;
+    flex: 1;
+    padding: d.$space-xs 0;
+  }
+
+  &__item {
+    display: flex;
+    align-items: baseline;
+    gap: d.$space-sm;
+    padding: d.$space-xs d.$space-sm;
+    font-family: d.$font;
+    font-size: d.$size-sm;
+
+    &:hover {
+      background: d.$bg-alt;
+    }
+  }
+
+  &__name {
+    color: d.$accent;
+    white-space: nowrap;
+  }
+
+  &__path {
+    color: d.$text-muted;
+    font-size: d.$size-xs;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
