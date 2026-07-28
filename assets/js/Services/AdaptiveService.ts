@@ -15,10 +15,12 @@ export default class AdaptiveService extends AppService {
   private getClient(): AdaptiveClient {
     if (!this.adaptiveClient) {
       this.adaptiveClient = new AdaptiveClient({
-        onError: (error) => this.app.services.error?.capture(error, {
-          severity: 'error',
-          context: { source: 'adaptive.request' },
-        }),
+        onError: (error) => {
+          this.app.services.error?.capture(error, {
+            severity: 'error',
+            context: { source: 'adaptive.request' },
+          });
+        },
       });
     }
     return this.adaptiveClient;
@@ -37,7 +39,7 @@ export default class AdaptiveService extends AppService {
         ? await client.post({ path, options: kyOptions })
         : await client.get({ path, options: kyOptions });
 
-      const data = await response.json();
+      const data = await response.json() as AdaptiveResponseInterface;
       if (typeof data.ok !== 'boolean') {
         data.ok = true;
       }
@@ -48,7 +50,7 @@ export default class AdaptiveService extends AppService {
         severity: 'error',
         context: { source: 'adaptive.request', details: { path } },
       });
-      return { ok: false } as AdaptiveResponseInterface;
+      return { ok: false, responseType: 'error' } as AdaptiveResponseInterface;
     }
   }
 

@@ -1,16 +1,9 @@
 import AppService from '../Class/AppService';
 import Routing from 'fos-router';
+// @ts-ignore — alias resolved by webpack (voir webpack.config.mjs → @fosRoutes)
+import fosRoutes from '@fosRoutes';
 
-// Load FOS routes directly on this module's Routing singleton to avoid the
-// duplicate-singleton issue caused by webpack-inject-plugin (@fosRoutes alias
-// is set in webpack.config.mjs to point to var/cache/fosRoutes.json).
-try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const fosRoutes = require('@fosRoutes');
-  Routing.setRoutingData(fosRoutes);
-} catch (e) {
-  // Silently ignore if the alias is not configured (non-webpack environments).
-}
+Routing.setRoutingData(fosRoutes);
 
 export default class RoutingService extends AppService {
   public static serviceName: string = 'routing';
@@ -31,5 +24,4 @@ export default class RoutingService extends AppService {
     // Routes are generated and imported using webpack and runtime.js file.
     return this.generate(route, params);
   }
-  
 }

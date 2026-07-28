@@ -89,9 +89,11 @@ function configureEncoreBase(options = {}) {
   }
 
   if (options.dumpFosRoutes !== false) {
-    execSync(options.fosCommand || 'php bin/console fos:js-routing:dump', {
-      stdio: 'inherit',
-    });
+    execSync(
+      options.fosCommand ||
+        'php bin/console fos:js-routing:dump --format=json --target=var/cache/fosRoutes.json',
+      {stdio: 'inherit'}
+    );
   }
 
   Encore
