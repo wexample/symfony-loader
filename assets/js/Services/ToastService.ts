@@ -45,6 +45,18 @@ export default class ToastService extends AbstractNoticeService {
     this.dispatchClear('toast');
   }
 
+  async withAction(
+    action: () => Promise<unknown>,
+    messages: { success: string; error: string }
+  ): Promise<void> {
+    try {
+      await action();
+      this.show({ type: 'success', message: messages.success });
+    } catch {
+      this.show({ type: 'error', message: messages.error });
+    }
+  }
+
   private trimToasts() {
   }
 }
