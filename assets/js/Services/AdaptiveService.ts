@@ -1,3 +1,4 @@
+import AdaptiveClient from '../Class/AdaptiveClient';
 import AppService from '../Class/AppService';
 import AdaptiveResponseInterface from '../Interfaces/AdaptiveResponseInterface';
 import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
@@ -9,43 +10,33 @@ export default class AdaptiveService extends AppService {
   public static dependencies: typeof AppService[] = [ComponentsService, ErrorService];
   public static serviceName: string = 'adaptive';
 
-  fetch(
-    path: string,
-    requestOptions: RequestOptionsInterface = {}
-  ): Promise<any> {
-    // We should not mix options this way, event this is ignored,
-    // the requestOptions may have a kind of sub config like requestOptions.fetchConfiguration
-    return fetch(path, {
-      ...{
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest',
-        },
-      },
-      ...requestOptions,
-    });
+  private adaptiveClient: AdaptiveClient | null = null;
+
+  private getClient(): AdaptiveClient {
+    if (!this.adaptiveClient) {
+      this.adaptiveClient = new AdaptiveClient({
+        onError: (error) => this.app.services.error?.capture(error, {
+          severity: 'error',
+          context: { source: 'adaptive.request' },
+        }),
+      });
+    }
+    return this.adaptiveClient;
   }
 
   async requestData(
     path: string,
     requestOptions: RequestOptionsInterface = {}
   ): Promise<AdaptiveResponseInterface> {
-    const response = await this.fetch(path, requestOptions);
-
-    if (!response.ok) {
-      this.app.services.error?.capture(`Error response : [${response.status}] ${response.statusText}`, {
-        severity: 'error',
-        context: {
-          source: 'adaptive.request',
-          details: {
-            path,
-            status: response.status,
-            statusText: response.statusText,
-          },
-        },
-      });
-    }
-
     try {
+      const method = (requestOptions.method ?? 'GET').toUpperCase();
+      const client = this.getClient();
+      const kyOptions = requestOptions.headers ? { headers: requestOptions.headers } : undefined;
+
+      const response = method === 'POST'
+        ? await client.post({ path, options: kyOptions })
+        : await client.get({ path, options: kyOptions });
+
       const data = await response.json();
       if (typeof data.ok !== 'boolean') {
         data.ok = true;
@@ -55,12 +46,7 @@ export default class AdaptiveService extends AppService {
       this.app.services.error?.capture(error, {
         title: 'Failed to parse JSON response.',
         severity: 'error',
-        context: {
-          source: 'adaptive.request',
-          details: {
-            path,
-          },
-        },
+        context: { source: 'adaptive.request', details: { path } },
       });
       return { ok: false } as AdaptiveResponseInterface;
     }
