@@ -408,17 +408,51 @@ function buildEncoreConfig(options = {}) {
 
   const config = Encore.getWebpackConfig();
 
-  // Add extensionAlias to resolve .js imports to .ts/.tsx files (for local dev with yarn link)
-  config.resolve = config.resolve || {};
-  config.resolve.extensions = Array.from(
-    new Set([...(config.resolve.extensions || []), ".ts", ".tsx", ".js"])
-  );
-  config.resolve.extensionAlias = {
-    ...(config.resolve.extensionAlias || {}),
-    ".js": [".ts", ".tsx", ".js"],
-    ".mjs": [".mts", ".mjs"],
-    ".cjs": [".cts", ".cjs"],
+  // Resolve: symlinks false + extensionAlias for .js→.ts in symlinked @wexample packages.
+  config.resolve = {
+    ...(config.resolve || {}),
+    symlinks: false,
+    extensions: Array.from(new Set([...(config.resolve?.extensions || []), '.ts', '.tsx', '.js'])),
+    extensionAlias: {
+      ...(config.resolve?.extensionAlias || {}),
+      '.js': ['.ts', '.tsx', '.js'],
+      '.mjs': ['.mts', '.mjs'],
+      '.cjs': ['.cts', '.cjs'],
+    },
+    alias: {
+      ...(config.resolve?.alias || {}),
+      // Consumed by RoutingService.ts — avoids the duplicate-singleton bug from InjectPlugin.
+      '@fosRoutes': path.resolve(process.cwd(), 'var/cache/fosRoutes.json'),
+      ...(options.alias || {}),
+    },
   };
+
+  // Remove FosRouting InjectPlugin (duplicate singleton bug). Routes are loaded via @fosRoutes alias.
+  const fosRoutingIndex = config.plugins.findIndex(
+    (p) => p.constructor && p.constructor.name === 'FosRouting'
+  );
+  if (fosRoutingIndex !== -1) {
+    config.plugins.splice(fosRoutingIndex, 1);
+  }
+
+  // ts-loader: allow processing of @wexample/* packages shipped as TypeScript source.
+  config.module.rules.forEach((rule) => {
+    if (!rule.exclude) return;
+    const uses = Array.isArray(rule.use) ? rule.use : rule.use ? [rule.use] : [];
+    const hasTsLoader = uses.some(
+      (u) =>
+        (typeof u === 'string' && u.includes('ts-loader')) ||
+        (typeof u === 'object' && u?.loader?.includes('ts-loader'))
+    );
+    if (hasTsLoader) {
+      rule.exclude = /node_modules\/(?!@wexample\/)/;
+      uses.forEach((u) => {
+        if (typeof u === 'object' && u?.loader?.includes('ts-loader')) {
+          u.options = { ...(u.options || {}), allowTsInNodeModules: true };
+        }
+      });
+    }
+  });
 
   // Persistent build cache: enabled in production by default, disabled in dev to avoid
   // stale bundles (e.g. fosRoutes.json updates not picked up). Override with { buildCache: true/false }.

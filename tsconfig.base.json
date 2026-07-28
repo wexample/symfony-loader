@@ -1,0 +1,17 @@
+{
+    "ts-node": {
+        "ignore": [
+            "/node_modules/(?!@wexample/)"
+        ]
+    },
+    "compilerOptions": {
+        "target": "ES6",
+        "declaration": false,
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "preserveSymlinks": true,
+        "baseUrl": "."
+    }
+}
