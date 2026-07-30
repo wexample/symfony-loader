@@ -77,6 +77,13 @@ class FormService extends ComponentService
             $templateVars
         );
 
+        // Export the whole form domain to the frontend catalog, so messages
+        // built server side (errors, toasts) can be translated by the JS side.
+        $component->translations = array_merge(
+            $component->translations,
+            $this->translator->transFilter('@' . Translator::DOMAIN_TYPE_FORM . '::*')
+        );
+
         // Revert backend domain.
         $this->translator->revertDomain(Translator::DOMAIN_TYPE_FORM);
 

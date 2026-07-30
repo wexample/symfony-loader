@@ -17,10 +17,18 @@ export interface FormActionInterface {
   [key: string]: any;
 }
 
+export interface FormToastInterface {
+  type?: 'default' | 'success' | 'error' | 'warning' | 'info';
+  message: string;
+  title?: string;
+  timeout?: number;
+}
+
 export default interface FormResponsePayloadInterface extends AdaptiveResponseInterface {
   ok: boolean;
   form: FormInfoInterface;
   translations?: Record<string, string>;
+  toast?: FormToastInterface;
   action: FormActionInterface;
   render?: RenderDataInterface | null;
 }

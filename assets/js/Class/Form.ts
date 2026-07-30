@@ -1,6 +1,7 @@
 import Component from './Component';
 import AdaptiveService from '../Services/AdaptiveService';
 import LocaleService from '../Services/LocaleService';
+import ToastService from '../Services/ToastService';
 import AdaptiveResponseInterface from '../Interfaces/AdaptiveResponseInterface';
 import FormResponsePayloadInterface from '../Interfaces/FormResponsePayloadInterface';
 import RequestOptionsInterface from "../Interfaces/RequestOptions/RequestOptionsInterface";
@@ -117,6 +118,8 @@ export default class Form extends Component {
       return;
     }
 
+    this.showPayloadToast(data);
+
     if (this.handleRedirect(data.action)) {
       return;
     }
@@ -160,6 +163,8 @@ export default class Form extends Component {
     }
 
     const payload = data as FormResponsePayloadInterface;
+
+    this.showPayloadToast(payload);
 
     if (this.handleRedirect(payload.action)) {
       return;
@@ -262,6 +267,17 @@ export default class Form extends Component {
     }
 
     return false;
+  }
+
+  private showPayloadToast(payload?: FormResponsePayloadInterface | null): void {
+    if (!payload?.toast || payload.ok === false) {
+      return;
+    }
+
+    (this.app.getServiceOrFail(ToastService) as ToastService).show({
+      ...payload.toast,
+      message: (this as any).trans(payload.toast.message),
+    });
   }
 
   private applyPayloadErrors(payload?: FormResponsePayloadInterface | null): void {
