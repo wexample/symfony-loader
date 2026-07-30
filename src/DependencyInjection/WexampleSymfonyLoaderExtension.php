@@ -52,6 +52,8 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
 
         $bundles = $container->getParameter('kernel.bundles');
         $paths = [];
+        $bundleEntityPaths = [];
+        $appEntityPaths = [];
 
         foreach ($config['front_paths'] ?? [] as $frontAlias => $frontPath) {
             $normalizedAlias = str_starts_with($frontAlias, '@')
@@ -61,6 +63,11 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
 
             $paths[VariableHelper::APP][$normalizedAlias] = $normalizedPath;
             $translationPaths[] = $normalizedPath;
+
+            $entityDir = $normalizedPath.'entity/';
+            if (is_dir($entityDir)) {
+                $appEntityPaths[] = $entityDir;
+            }
         }
 
         foreach ($bundles as $class) {
@@ -81,10 +88,20 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
                     }
 
                     $translationPaths['@'.$class::getAlias()] = $relativePath;
+
+                    $entityDir = $relativePath.'entity/';
+                    if (is_dir($entityDir)) {
+                        $bundleEntityPaths[] = $entityDir;
+                    }
                 }
 
                 $paths[$class] = $realPaths;
             }
+        }
+
+        // Bundle entity paths first (lower priority), app entity paths last (override)
+        foreach (array_merge($bundleEntityPaths, $appEntityPaths) as $entityPath) {
+            $translationPaths[] = $entityPath;
         }
 
         // Save new paths
