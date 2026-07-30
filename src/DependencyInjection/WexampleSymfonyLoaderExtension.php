@@ -80,11 +80,7 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
                         $realPaths[] = $relativePath;
                     }
 
-                    if (is_string($alias)) {
-                        $translationPaths['@'.$class::getAlias()] = $relativePath;
-                    } else {
-                        $translationPaths[] = $relativePath;
-                    }
+                    $translationPaths['@'.$class::getAlias()] = $relativePath;
                 }
 
                 $paths[$class] = $realPaths;

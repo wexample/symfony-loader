@@ -6,6 +6,7 @@ export default {
     'develop-responsive': '@WexampleSymfonyLoaderBundle/vue/develop-responsive',
     'develop-usages': '@WexampleSymfonyLoaderBundle/vue/develop-usages',
     'develop-routes': '@WexampleSymfonyLoaderBundle/vue/develop-routes',
+    'develop-translations': '@WexampleSymfonyLoaderBundle/vue/develop-translations',
   },
 };
 </script>
