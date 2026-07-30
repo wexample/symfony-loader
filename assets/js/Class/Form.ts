@@ -118,7 +118,7 @@ export default class Form extends Component {
       return;
     }
 
-    this.showPayloadToast(data);
+    this.showPayloadNotification(data);
 
     if (this.handleRedirect(data.action)) {
       return;
@@ -164,7 +164,7 @@ export default class Form extends Component {
 
     const payload = data as FormResponsePayloadInterface;
 
-    this.showPayloadToast(payload);
+    this.showPayloadNotification(payload);
 
     if (this.handleRedirect(payload.action)) {
       return;
@@ -269,14 +269,16 @@ export default class Form extends Component {
     return false;
   }
 
-  private showPayloadToast(payload?: FormResponsePayloadInterface | null): void {
-    if (!payload?.toast || payload.ok === false) {
+  private showPayloadNotification(
+    payload?: FormResponsePayloadInterface | null
+  ): void {
+    if (!payload?.notification || payload.ok === false) {
       return;
     }
 
     (this.app.getServiceOrFail(ToastService) as ToastService).show({
-      ...payload.toast,
-      message: (this as any).trans(payload.toast.message),
+      type: payload.notification.type,
+      message: (this as any).trans(payload.notification.message),
     });
   }
 
