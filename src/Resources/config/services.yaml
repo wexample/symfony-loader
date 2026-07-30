@@ -99,3 +99,7 @@ services:
     Wexample\SymfonyLoader\Service\LayoutService:
         arguments:
             $layoutBases: '%loader.layout_bases%'
+
+    Wexample\SymfonyLoader\Service\DevelopToolbarRegistryService:
+        arguments:
+            $tabs: !tagged_iterator wexample_symfony_loader.develop_tab

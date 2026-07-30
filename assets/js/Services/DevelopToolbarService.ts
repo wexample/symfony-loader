@@ -1,9 +1,25 @@
 import AppService from '../Class/AppService';
 import KeyboardService from './KeyboardService';
 
+export type DevelopTab = {
+  id: string;
+  label: string;
+  componentPath: string;
+};
+
 export default class DevelopToolbarService extends AppService {
   public static serviceName = 'developToolbar';
   public static dependencies: typeof AppService[] = [KeyboardService];
+
+  private static registeredTabs: DevelopTab[] = [];
+
+  static registerTab(tab: DevelopTab): void {
+    DevelopToolbarService.registeredTabs.push(tab);
+  }
+
+  static getRegisteredTabs(): DevelopTab[] {
+    return DevelopToolbarService.registeredTabs;
+  }
 
   private get toolbar(): HTMLElement | null {
     return document.querySelector('.develop-toolbar');

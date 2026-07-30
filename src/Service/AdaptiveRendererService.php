@@ -25,6 +25,7 @@ class AdaptiveRendererService
 {
     public function __construct(
         private readonly AdaptiveResponseService $adaptiveResponseService,
+        private readonly DevelopToolbarRegistryService $developToolbarRegistry,
         private readonly LayoutService $layoutService,
         private readonly KernelInterface $kernel,
         private readonly ParameterBagInterface $parameterBag,
@@ -58,6 +59,11 @@ class AdaptiveRendererService
         }
 
         $renderPass->setDebug($this->kernel->isDebug());
+
+        if ($this->kernel->isDebug()) {
+            $renderPass->developTabs = $this->developToolbarRegistry->toArray();
+        }
+
         $request = $this->requestStack->getCurrentRequest();
 
         if ($request?->hasSession()) {

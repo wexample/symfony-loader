@@ -31,6 +31,13 @@
                 <span class="tabs--item-label">{{ '@component::tab.routes' | trans }}</span>
             </span>
         </a>
+        {%- for tab in render_pass.developTabs -%}
+            <a class="tabs--item" href="#" data-tab="{{ tab.id }}">
+                <span class="tabs--item-content">
+                    <span class="tabs--item-label">{{ tab.label }}</span>
+                </span>
+            </a>
+        {%- endfor -%}
         <button class="develop-toolbar__symfony-toggle" data-symfony-toolbar-toggle title="{{ '@component::symfony' | trans }}">
             {{ icon('ph:bold/function') }}
         </button>
@@ -56,5 +63,10 @@
         <div class="develop-toolbar__mount develop-toolbar__mount--hidden" data-tab-panel="routes">
             {{ vue_include(render_pass, '@WexampleSymfonyLoaderBundle/vue/develop-routes') }}
         </div>
+        {%- for tab in render_pass.developTabs -%}
+            <div class="develop-toolbar__mount develop-toolbar__mount--hidden" data-tab-panel="{{ tab.id }}">
+                {{ component_lazy(tab.componentPath) }}
+            </div>
+        {%- endfor -%}
     </div>
 </div>
