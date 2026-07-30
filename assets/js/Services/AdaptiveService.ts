@@ -33,7 +33,13 @@ export default class AdaptiveService extends AppService {
     try {
       const method = (requestOptions.method ?? 'GET').toUpperCase();
       const client = this.getClient();
-      const kyOptions = requestOptions.headers ? { headers: requestOptions.headers } : undefined;
+      const kyOptions: Record<string, any> = {};
+      if (requestOptions.headers) {
+        kyOptions.headers = requestOptions.headers;
+      }
+      if (requestOptions.body !== undefined) {
+        kyOptions.body = requestOptions.body;
+      }
 
       const response = method === 'POST'
         ? await client.post({ path, options: kyOptions })

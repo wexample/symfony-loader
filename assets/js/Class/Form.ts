@@ -110,7 +110,7 @@ export default class Form extends Component {
     const data = (await adaptiveService.requestData(action, {
       method: 'POST',
       body: formData,
-    } as any)) as FormResponsePayloadInterface;
+    })) as FormResponsePayloadInterface;
 
     if (!data || data.ok === false) {
       this.applyPayloadErrors(data);
@@ -140,7 +140,7 @@ export default class Form extends Component {
       method: 'POST',
       body: formData,
       instant: true
-    } as any)) as AdaptiveResponseInterface;
+    })) as AdaptiveResponseInterface;
 
     if (!data) {
       return;
