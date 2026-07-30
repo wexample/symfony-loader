@@ -11,6 +11,7 @@ import {
   ACTION_EMBED_REDIRECT,
   ACTION_REDIRECT,
 } from '../Constants/FormActions';
+import { formSuccessEvent } from '../Constants/FormEvents';
 
 export default class Form extends Component {
   private onSubmitProxy: EventListener;
@@ -119,6 +120,7 @@ export default class Form extends Component {
     }
 
     this.showPayloadNotification(data);
+    await this.triggerSuccess(data);
 
     if (this.handleRedirect(data.action)) {
       return;
@@ -165,6 +167,7 @@ export default class Form extends Component {
     const payload = data as FormResponsePayloadInterface;
 
     this.showPayloadNotification(payload);
+    await this.triggerSuccess(payload);
 
     if (this.handleRedirect(payload.action)) {
       return;
@@ -267,6 +270,18 @@ export default class Form extends Component {
     }
 
     return false;
+  }
+
+  // Triggered before any embed closing, so the event still bubbles
+  // from the form element up to the document.
+  private async triggerSuccess(
+    payload?: FormResponsePayloadInterface | null
+  ): Promise<void> {
+    if (!payload?.form?.name || payload.ok === false) {
+      return;
+    }
+
+    await this.trigger(formSuccessEvent(payload.form.name), { payload });
   }
 
   private showPayloadNotification(
