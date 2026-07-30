@@ -16,7 +16,7 @@ import ErrorService from './ErrorService';
 import InvariantViolationError from '../Errors/InvariantViolationError';
 
 export type RenderNodeAssetsType = {
-  assetsUpdate?: Function;
+  assetsUpdate(usage: string): Promise<void>;
 };
 
 export class AssetsServiceType {
@@ -82,7 +82,7 @@ export default class AssetsService extends AppService {
 
           this.assetsUpdate(usageName);
         },
-      } as RenderNodeAssetsType,
+      },
     };
   }
 

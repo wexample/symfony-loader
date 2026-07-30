@@ -6,11 +6,27 @@ import { stringToKebab } from '@wexample/js-helpers/Helper/String';
 import { waitForElementSize } from '@wexample/js-helpers/Helper/ElementSize';
 import Page from './Page';
 import { RenderNodeServiceEvents } from "../Services/AbstractRenderNodeService";
-import ElementListenersMixin from './Mixins/ElementListenersMixin';
+import ElementListenersMixin, { type ElementListenersType } from './Mixins/ElementListenersMixin';
 import InvariantViolationError from '../Errors/InvariantViolationError';
 import ErrorService from '../Services/ErrorService';
+import type { RenderNodeApiType } from '../Services/ApiService';
+import type { RenderNodeAssetsType } from '../Services/AssetsService';
+import type { RenderNodeLiveUpdatesType } from '../Services/LiveUpdatesService';
+import type { RenderNodeLocaleType } from '../Services/LocaleService';
+import type { RenderNodeResponsiveType } from '../Services/ResponsiveService';
 
-export default abstract class RenderNode extends AppChild {
+// Methods grafted at runtime by MixinsService.applyMethods(this, 'renderNode'),
+// declared here so call sites keep their types.
+interface RenderNode extends
+  ElementListenersType,
+  RenderNodeApiType,
+  RenderNodeAssetsType,
+  RenderNodeLiveUpdatesType,
+  RenderNodeLocaleType,
+  RenderNodeResponsiveType {
+}
+
+abstract class RenderNode extends AppChild {
   public callerPage: Page;
   public childRenderNodes: { [key: string]: RenderNode } = {};
   public components: Component[] = [];
@@ -314,11 +330,11 @@ export default abstract class RenderNode extends AppChild {
   }
 
   protected async activateListeners(): Promise<void> {
-    (this as any).activateElListeners();
+    this.activateElListeners();
   }
 
   protected async deactivateListeners(): Promise<void> {
-    (this as any).deactivateElListeners();
+    this.deactivateElListeners();
   }
 
   protected async mounted(): Promise<void> {
@@ -416,3 +432,5 @@ export default abstract class RenderNode extends AppChild {
 
   public abstract getRenderNodeType(): string;
 }
+
+export default RenderNode;

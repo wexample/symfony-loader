@@ -41,20 +41,4 @@ export default class EventsService extends AppService {
       })
     );
   }
-
-  registerMethods() {
-    return {
-      renderNode: {
-        async trigger(eventName: string, args = {}) {
-          args['renderNode'] = this;
-
-          await this.app.services.events.trigger(
-            eventName,
-            args,
-            this.el
-          );
-        },
-      },
-    };
-  }
 }

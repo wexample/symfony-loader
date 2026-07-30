@@ -70,6 +70,17 @@ export type MercureLayoutVarsConfig = {
   additionalParams?: Record<string, string | number | boolean>;
 };
 
+export type RenderNodeLiveUpdatesType = {
+  liveUpdatesConnect(
+    options: Omit<LiveUpdatesConnectOptions, 'owner'>
+  ): LiveUpdatesConnection;
+  liveUpdatesDisconnect(
+    connection?: string | LiveUpdatesConnection
+  ): boolean | number;
+  liveUpdatesHasConnection(): boolean;
+  liveUpdatesStatus(): LiveUpdatesStatus;
+};
+
 export default class LiveUpdatesService extends AppService {
   public static serviceName: string = 'liveUpdates';
   public static dependencies: typeof AppService[] = [EventsService, ConnectionStatusService];

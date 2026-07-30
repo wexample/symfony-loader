@@ -6,7 +6,6 @@ import RenderNode from '../Class/RenderNode';
 import AssetUsage from '../Class/AssetUsage';
 import Page from "../Class/Page";
 import { objectCallPrototypeMethodIfExists } from "@wexample/js-helpers/Helper/Object";
-import PageResponsiveDisplay from "../Class/PageResponsiveDisplay";
 
 export class ResponsiveServiceEvents {
   public static RESPONSIVE_CHANGE_SIZE: string = 'responsive-change-size';
@@ -15,8 +14,12 @@ export class ResponsiveServiceEvents {
 export type RenderNodeResponsiveType = {
   responsiveSizeCurrent?: string;
   responsiveSizePrevious?: string;
-  responsiveDisplays: PageResponsiveDisplay[];
-  responsiveSet: Function;
+  responsiveSupportsBreakpoint(letter: string): boolean;
+  responsiveDetect(): string;
+  responsiveBreakpointSupported(): object;
+  responsiveSet(size: string, propagate: boolean): Promise<void>;
+  responsiveUpdateClass(): void;
+  responsiveUpdate(propagate: boolean): Promise<void>;
 };
 
 export default class ResponsiveService extends AppService {

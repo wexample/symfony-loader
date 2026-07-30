@@ -7,7 +7,6 @@ import LayoutsService from '../Services/LayoutsService';
 import MixinsService from '../Services/MixinsService';
 import OverlayService from '../Services/OverlayService';
 import PagesService from '../Services/PagesService';
-import { RenderNodeResponsiveType } from '../Services/ResponsiveService';
 import RoutingService from '../Services/RoutingService';
 import EntityService from '../Services/EntityService';
 import ErrorService from '../Services/ErrorService';
@@ -21,7 +20,7 @@ import AsyncConstructor from './AsyncConstructor';
 import ServicesRegistryInterface from '../Interfaces/ServicesRegistryInterface';
 import AssetsCollectionInterface from "../Interfaces/AssetsCollectionInterface";
 import { arrayUnique } from "@wexample/js-helpers/Helper/Array";
-import ElementListenersMixin from "../Class/Mixins/ElementListenersMixin";
+import ElementListenersMixin, { type ElementListenersType } from "../Class/Mixins/ElementListenersMixin";
 
 interface AppRegistryInterface {
   bundles: {
@@ -31,9 +30,13 @@ interface AppRegistryInterface {
   assetsRegistry: AssetsCollectionInterface;
 }
 
-export default class extends AsyncConstructor {
+// Methods grafted at runtime by ElementListenersMixin.apply(this).
+interface App extends ElementListenersType {
+}
+
+class App extends AsyncConstructor {
   public hasCoreLoaded: boolean = false;
-  public layout: LayoutInitial & RenderNodeResponsiveType = null;
+  public layout: LayoutInitial = null;
   public lib: object = {};
   public services: ServicesRegistryInterface = {};
   public registry = {} as AppRegistryInterface;
@@ -69,7 +72,7 @@ export default class extends AsyncConstructor {
         registry.layoutRenderData.renderRequestId,
         registry.layoutRenderData.view,
         registry.layoutRenderData
-      )) as (LayoutInitial & RenderNodeResponsiveType);
+      )) as LayoutInitial;
 
       // The main functionalities are ready,
       // but first data has not been loaded.
@@ -82,7 +85,7 @@ export default class extends AsyncConstructor {
       await this.loadLayoutRenderData(this.layout.renderData);
 
       // Activate layout listeners.
-      (this as any).activateElListeners();
+      this.activateElListeners();
 
       // Display page content.
       this.layout.el.classList.remove('layout-loading');
@@ -283,3 +286,5 @@ export default class extends AsyncConstructor {
     });
   }
 }
+
+export default App;

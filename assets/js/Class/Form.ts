@@ -293,7 +293,7 @@ export default class Form extends Component {
 
     (this.app.getServiceOrFail(ToastService) as ToastService).show({
       type: payload.notification.type,
-      message: (this as any).trans(payload.notification.message),
+      message: this.trans(payload.notification.message),
     });
   }
 

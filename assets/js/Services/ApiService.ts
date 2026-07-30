@@ -2,6 +2,10 @@ import AppService from '../Class/AppService';
 import AbstractApiEntitiesClient from "@wexample/js-api/Common/AbstractApiEntitiesClient";
 import InvariantViolationError from '../Errors/InvariantViolationError';
 
+export type RenderNodeApiType = {
+  getApiClient(): AbstractApiEntitiesClient;
+};
+
 export default class ApiService extends AppService {
   public static serviceName: string = 'api';
   private client: AbstractApiEntitiesClient | null = null;

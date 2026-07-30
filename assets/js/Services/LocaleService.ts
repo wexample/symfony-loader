@@ -2,7 +2,7 @@ import AppService from '../Class/AppService';
 import { stringFormat } from '@wexample/js-helpers/Helper/String';
 
 export type RenderNodeLocaleType = {
-  trans?: Function;
+  trans(key?: string, args?: object, catalog?: object): string;
 };
 
 export default class LocaleService extends AppService {

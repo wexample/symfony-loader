@@ -2,6 +2,13 @@ import AbstractMixin from '@wexample/js-helpers/Helper/AbstractMixin';
 import { stringToPascalCase } from '@wexample/js-helpers/Helper/String';
 import InvariantViolationError from '../../Errors/InvariantViolationError';
 
+export type ElementListenersType = {
+  getAttachedHtmlElementsMap(): { [key: string]: string };
+  attachElListenersElements(): void;
+  activateElListeners(): void;
+  deactivateElListeners(): void;
+};
+
 export default class ElementListenersMixin extends AbstractMixin {
   static apply(instance: any) {
     this.applyOnce(instance, (target: any) => {
