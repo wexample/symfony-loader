@@ -31,6 +31,11 @@
                 <span class="tabs--item-label">{{ '@component::tab.routes' | trans }}</span>
             </span>
         </a>
+        <a class="tabs--item" href="#" data-tab="translations">
+            <span class="tabs--item-content">
+                <span class="tabs--item-label">{{ '@component::tab.translations' | trans }}</span>
+            </span>
+        </a>
         {%- for tab in render_pass.developTabs -%}
             <a class="tabs--item" href="#" data-tab="{{ tab.id }}">
                 <span class="tabs--item-content">
@@ -62,6 +67,9 @@
         </div>
         <div class="develop-toolbar__mount develop-toolbar__mount--hidden" data-tab-panel="routes">
             {{ vue_include(render_pass, '@WexampleSymfonyLoaderBundle/vue/develop-routes') }}
+        </div>
+        <div class="develop-toolbar__mount develop-toolbar__mount--hidden" data-tab-panel="translations">
+            {{ vue_include(render_pass, '@WexampleSymfonyLoaderBundle/vue/develop-translations') }}
         </div>
         {%- for tab in render_pass.developTabs -%}
             <div class="develop-toolbar__mount develop-toolbar__mount--hidden" data-tab-panel="{{ tab.id }}">

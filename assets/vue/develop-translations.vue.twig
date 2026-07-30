@@ -1,0 +1,23 @@
+{% block component %}
+<div class="develop-translations">
+    <div class="develop-routes__header">
+        <input
+            class="develop-routes__search"
+            type="text"
+            v-model="search"
+            placeholder="Filter translations..."
+        />
+        <span class="develop-routes__count">{{ 'filteredTranslations.length' | vue_key }} / {{ 'allTranslations.length' | vue_key }}</span>
+    </div>
+    <div class="develop-routes__list">
+        <div
+            v-for="t in filteredTranslations"
+            :key="t.key"
+            class="develop-routes__item"
+        >
+            <span class="develop-routes__name">{{ 't.key' | vue_key }}</span>
+            <span class="develop-routes__path">{{ 't.value' | vue_key }}</span>
+        </div>
+    </div>
+</div>
+{% endblock %}
