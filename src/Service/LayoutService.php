@@ -58,6 +58,12 @@ class LayoutService extends AbstractRenderNodeService
             $layoutRenderNode->getView()
         );
 
+        // Register entity aliases (@entity.X) on the root node,
+        // children inherit them for client-side resolution.
+        foreach ($this->translator->getEntityAliases() as $alias => $target) {
+            $layoutRenderNode->addTranslationDomain($alias, $target);
+        }
+
         $this->pageService->pageInit(
             $renderPass,
             $layoutRenderNode->createLayoutPageInstance(),
