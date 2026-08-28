@@ -1,19 +1,3 @@
-# symfony_loader
-
-Version: 4.0.0
-
-`symfony-loader` is a Symfony bundle that replaces the standard `render()` call with `adaptiveRender()`, routing each request through a `RenderPass` that selects between a full HTML response and a JSON envelope depending on whether the request is XHR. Controllers extending `AbstractLoaderController` inherit this pipeline, which also collects and injects Webpack Encore assets — CSS variants for color scheme, responsive breakpoints, fonts, margins, and animations — at the end of every HTML response. It targets Symfony developers who need a single rendering path that handles both initial page loads and dynamic partial updates without duplicating controller logic.
-
-## Table of Contents
-
-- [Architecture](#architecture)
-- [Integration in the Suite](#integration-in-the-suite)
-- [Dependencies](#dependencies)
-- [Versioning & Compatibility Policy](#versioning--compatibility-policy)
-- [License](#license)
-- [About us](#about-us)
-- [Migration Notes](#migration-notes)
-
 ## Architecture
 
 The bundle is a dynamic rendering system layered on top of Symfony and Twig. Every HTTP response—whether a full HTML page or an AJAX JSON payload—travels through the same pipeline: request classification, render-pass construction, Twig rendering with a shared context object, asset detection, and final serialisation. The sections below describe each layer in the order a call passes through them.
@@ -121,55 +105,3 @@ src/Service/VueService.php wraps a `.vue.html.twig` template in a `<template>` e
 ### Serialisation
 
 src/Rendering/RenderData.php is the output format. It extends `AdaptiveResponse` (adds `ok` and `responseType` fields) and wraps an associative data array. `toArray()` recursively normalises nested `RenderData` instances. Every render node, asset, and the assets registry implement `toRenderData()` through `RenderDataGenerator`, which uses reflection to serialise named properties and calls `toRenderData()` on nested `RenderDataGenerator` values.
-
-## Integration in the Suite
-
-This package is part of the Wexample Suite — a collection of high-quality, modular tools designed to work seamlessly together across multiple languages and environments.
-
-### Related Packages
-
-The suite includes packages for configuration management, file handling, prompts, and more. Each package can be used independently or as part of the integrated suite.
-
-Visit the [Wexample Suite documentation](https://docs.wexample.com) for the complete package ecosystem.
-
-## Dependencies
-
-- php: >=8.2
-- wexample/php-html: >=0.1.6
-- wexample/symfony-dev: >=4.0.0
-- wexample/symfony-helpers: >=5.0.0
-- wexample/symfony-routing: >=0.1.5
-- wexample/symfony-translations: >=3.0.0
-- friendsofsymfony/jsrouting-bundle: ^3.2.1
-- symfony/webpack-encore-bundle: ^2.0.1
-- fortawesome/font-awesome: ^6.7
-
-## Versioning & Compatibility Policy
-
-Wexample packages follow **Semantic Versioning** (SemVer):
-
-- **MAJOR**: Breaking changes
-- **MINOR**: New features, backward compatible
-- **PATCH**: Bug fixes, backward compatible
-
-We maintain backward compatibility within major versions and provide clear migration guides for breaking changes.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-Free to use in both personal and commercial projects.
-
-## About us
-
-[Wexample](https://wexample.com) stands as a cornerstone of the digital ecosystem — a collective of seasoned engineers, researchers, and creators driven by a relentless pursuit of technological excellence. More than a media platform, it has grown into a vibrant community where innovation meets craftsmanship, and where every line of code reflects a commitment to clarity, durability, and shared intelligence.
-
-This packages suite embodies this spirit. Trusted by professionals and enthusiasts alike, it delivers a consistent, high-quality foundation for modern development — open, elegant, and battle-tested. Its reputation is built on years of collaboration, refinement, and rigorous attention to detail, making it a natural choice for those who demand both robustness and beauty in their tools.
-
-Wexample cultivates a culture of mastery. Each package, each contribution carries the mark of a community that values precision, ethics, and innovation — a community proud to shape the future of digital craftsmanship.
-
-## Migration Notes
-
-When upgrading between major versions, refer to the migration guides in the documentation.
-
-Breaking changes are clearly documented with upgrade paths and examples.
