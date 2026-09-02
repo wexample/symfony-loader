@@ -2,18 +2,22 @@
 
 namespace Wexample\SymfonyLoader\Tests\Fixtures\Entity;
 
+use Symfony\Component\Uid\Uuid;
 use Wexample\SymfonyHelpers\Entity\Interfaces\AbstractEntityInterface;
 
 class TestEntity implements AbstractEntityInterface
 {
-    public function __construct(private ?int $id = null)
+    private Uuid $id;
+
+    public function __construct(?Uuid $id = null)
     {
+        $this->id = $id ?? Uuid::v7();
     }
-    public function getId(): ?int
+    public function getId(): Uuid
     {
         return $this->id;
     }
-    public function setId(int $id)
+    public function setId(Uuid $id)
     {
         $this->id = $id;
     }
@@ -21,14 +25,17 @@ class TestEntity implements AbstractEntityInterface
 
 class NoDtoEntity implements AbstractEntityInterface
 {
-    public function __construct(private ?int $id = null)
+    private Uuid $id;
+
+    public function __construct(?Uuid $id = null)
     {
+        $this->id = $id ?? Uuid::v7();
     }
-    public function getId(): ?int
+    public function getId(): Uuid
     {
         return $this->id;
     }
-    public function setId(int $id)
+    public function setId(Uuid $id)
     {
         $this->id = $id;
     }
@@ -85,7 +92,7 @@ class JsServiceTest extends TestCase
 
     public function testSerializeEntityNormalizesWhenDtoExists(): void
     {
-        $entity = new \Wexample\SymfonyLoader\Tests\Fixtures\Entity\TestEntity(42);
+        $entity = new \Wexample\SymfonyLoader\Tests\Fixtures\Entity\TestEntity();
 
         $normalizer = $this->createMock(NormalizerInterface::class);
         $normalizer
@@ -108,7 +115,7 @@ class JsServiceTest extends TestCase
 
     public function testSerializeEntityReturnsNullWhenNoDto(): void
     {
-        $entity = new \Wexample\SymfonyLoader\Tests\Fixtures\Entity\NoDtoEntity(7);
+        $entity = new \Wexample\SymfonyLoader\Tests\Fixtures\Entity\NoDtoEntity();
 
         $normalizer = $this->createMock(NormalizerInterface::class);
         $normalizer->expects($this->never())->method('normalize');
@@ -120,7 +127,7 @@ class JsServiceTest extends TestCase
 
     public function testSerializeValueDelegatesToSerializeEntity(): void
     {
-        $entity = new \Wexample\SymfonyLoader\Tests\Fixtures\Entity\TestEntity(21);
+        $entity = new \Wexample\SymfonyLoader\Tests\Fixtures\Entity\TestEntity();
 
         $normalizer = $this->createMock(NormalizerInterface::class);
         $normalizer

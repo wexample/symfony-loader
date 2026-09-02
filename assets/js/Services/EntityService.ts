@@ -40,12 +40,12 @@ export default class EntityService extends AppService {
     return entityName;
   }
 
-  private resolveEntitySecureId(entity: unknown): string | undefined {
+  private resolveEntityId(entity: unknown): string | undefined {
     if (!entity || typeof entity !== 'object') {
       return undefined;
     }
 
-    return (entity as { secureId?: string })?.secureId;
+    return (entity as { id?: string })?.id;
   }
 
   entityRouteName(options: EntityRouteOptions): string {
@@ -58,9 +58,9 @@ export default class EntityService extends AppService {
   entityPath(options: EntityPathOptions): string {
     const { params = {}, entity } = options;
     const route = this.entityRouteName(options);
-    const secureId = this.resolveEntitySecureId(entity);
-    const mergedParams = secureId
-      ? { entitySecureId: secureId, ...params }
+    const id = this.resolveEntityId(entity);
+    const mergedParams = id
+      ? { entityId: id, ...params }
       : params;
 
     return this.app.services.routing.path(route, mergedParams);
