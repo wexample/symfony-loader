@@ -2,3 +2,15 @@
    difference with a full render is the layout base it says it was rendered
    with, which is what lets a page drop its navigation when it is encased. #}
 {%- extends '@WexampleSymfonyLoaderBundle/bases/json/default.html.twig' -%}
+
+{%- block page_composer_json -%}
+    {# The vertical rhythm a page counts on comes from the stack the full page
+       layout puts on its container, which an embed does not go through. The
+       framing is not repeated here: width, border and scroll stay the business
+       of the zone holding the embed. #}
+    <div class="embed-body stack--vertical">
+        {%- block page_composer_embed -%}
+            {{ block('page_body') }}
+        {%- endblock -%}
+    </div>
+{%- endblock -%}
