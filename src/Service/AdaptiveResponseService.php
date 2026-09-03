@@ -14,6 +14,7 @@ class AdaptiveResponseService
         RenderPass::BASE_MODAL,
         RenderPass::BASE_PANEL,
         RenderPass::BASE_OVERLAY,
+        RenderPass::BASE_EMBED,
         RenderPass::BASE_PAGE,
         RenderPass::BASE_DEFAULT,
     ];

@@ -47,9 +47,10 @@ export default class PagesService extends AbstractRenderNodeService {
   async createPageFromLayoutRenderData(renderData: LayoutInterface) {
     let parentNode: PageManagerComponent | null = null;
 
-    // If requestOptions.callerPage is defined, use it as parentNode
+    // A caller naming its target wins over the registry: this is what lets a
+    // page hold several managers of the same layout base.
     if (renderData.requestOptions?.destPage) {
-      parentNode = renderData.requestOptions.destPage as unknown as PageManagerComponent;
+      parentNode = renderData.requestOptions.destPage;
     }
     // Otherwise, set parent node based on page type
     else if (renderData.page && renderData.page.isInitialPage) {

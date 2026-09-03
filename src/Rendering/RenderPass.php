@@ -26,6 +26,8 @@ class RenderPass
 
     public const BASE_OVERLAY = 'overlay';
 
+    public const BASE_EMBED = 'embed';
+
     public const BASE_PAGE = VariableHelper::PAGE;
 
     public const BASES_MAIN_DIR = LoaderHelper::FOLDER_FRONT_ALIAS.'bases/';
