@@ -1,12 +1,25 @@
 import AppService from '../Class/AppService';
 import ConnectionStatusService from './ConnectionStatusService';
 import EventsService from './EventsService';
-import MercureLiveUpdatesDriver, { type MercureDriverConfig } from '@wexample/js-api/Common/LiveUpdates/MercureLiveUpdatesDriver';
+import RoutingService from './RoutingService';
+import MercureLiveUpdatesDriver, {
+  type MercureDriverConfig,
+  type MercureDriverConfigResolver,
+} from '@wexample/js-api/Common/LiveUpdates/MercureLiveUpdatesDriver';
+import LiveSubscriberInfoResolver, {
+  type LiveSubscriberInfo,
+} from '@wexample/js-api/Common/LiveUpdates/LiveSubscriberInfoResolver';
+import ApiLiveUpdatesConnection, {
+  type LiveUpdatesConnectionStatus as ApiLiveUpdatesConnectionStatus,
+} from '@wexample/js-api/Common/LiveUpdates/LiveUpdatesConnection';
+import type { LiveUpdatesDriverInterface } from '@wexample/js-api/Common/LiveUpdates/LiveUpdatesDriver';
 import InvariantViolationError from '../Errors/InvariantViolationError';
 import {
   type ReconnectBackoffOptions,
 } from '@wexample/js-helpers/Helper/Reconnect';
-import RetryBackoffScheduler from '@wexample/js-helpers/Common/RetryBackoffScheduler';
+import type { RetryBackoffScheduleContext } from '@wexample/js-helpers/Common/RetryBackoffScheduler';
+
+export type { LiveUpdatesDriverInterface };
 
 export class LiveUpdatesServiceEvents {
   public static CONNECTION_CREATED: string = 'live-updates:connection-created';
@@ -21,6 +34,17 @@ export class LiveUpdatesServiceEvents {
 
 export type LiveUpdatesConnectionStatus = 'connecting' | 'open' | 'error' | 'closed';
 
+// A retry is a connection attempt as far as this service is concerned, and a
+// give-up leaves the connection down: the finer states stay inside js-api.
+const CONNECTION_STATUS_MAP: Record<ApiLiveUpdatesConnectionStatus, LiveUpdatesConnectionStatus> = {
+  connecting: 'connecting',
+  open: 'open',
+  error: 'error',
+  reconnecting: 'connecting',
+  'reconnect-stopped': 'error',
+  closed: 'closed',
+};
+
 export type LiveUpdatesStatus = {
   total: number;
   connecting: number;
@@ -31,11 +55,19 @@ export type LiveUpdatesStatus = {
 
 export type LiveUpdatesConnectOptions = {
   topics: string | string[];
+  // A connection carrying its own driver: what subscribing to a single entity
+  // needs, its token being delivered for that entity and no other.
+  driver?: LiveUpdatesDriverInterface;
   owner?: object;
   metadata?: Record<string, unknown>;
-  onOpen?: (connection: LiveUpdatesConnection, event: Event) => void;
-  onError?: (connection: LiveUpdatesConnection, event: Event) => void;
+  onOpen?: (connection: LiveUpdatesConnection) => void;
+  onError?: (connection: LiveUpdatesConnection) => void;
   onMessage?: (connection: LiveUpdatesConnection, payload: unknown, event: MessageEvent) => void;
+};
+
+export type LiveUpdatesEntityConnectOptions = Omit<LiveUpdatesConnectOptions, 'topics' | 'driver'> & {
+  entityName: string;
+  id: string;
 };
 
 export type LiveUpdatesConnection = {
@@ -44,21 +76,17 @@ export type LiveUpdatesConnection = {
   owner?: object;
   metadata: Record<string, unknown>;
   status: LiveUpdatesConnectionStatus;
-  source: EventSource;
   close: () => void;
 };
 
 type LiveUpdatesConnectionInternal = LiveUpdatesConnection & {
-  reconnecting: boolean;
-  reconnectScheduler: RetryBackoffScheduler;
-  onOpen?: (connection: LiveUpdatesConnection, event: Event) => void;
-  onError?: (connection: LiveUpdatesConnection, event: Event) => void;
+  // Null between the record being registered and the stream being opened: opening
+  // may already call back into the status handlers.
+  apiConnection: ApiLiveUpdatesConnection | null;
+  onOpen?: (connection: LiveUpdatesConnection) => void;
+  onError?: (connection: LiveUpdatesConnection) => void;
   onMessage?: (connection: LiveUpdatesConnection, payload: unknown, event: MessageEvent) => void;
 };
-
-export interface LiveUpdatesDriverInterface {
-  connect(options: LiveUpdatesConnectOptions & { topics: string[] }): EventSource;
-}
 
 export type MercureLayoutVarsConfig = {
   hubUrlVars: string[];
@@ -74,6 +102,9 @@ export type RenderNodeLiveUpdatesType = {
   liveUpdatesConnect(
     options: Omit<LiveUpdatesConnectOptions, 'owner'>
   ): LiveUpdatesConnection;
+  liveUpdatesConnectToEntity(
+    options: Omit<LiveUpdatesEntityConnectOptions, 'owner'>
+  ): Promise<LiveUpdatesConnection>;
   liveUpdatesDisconnect(
     connection?: string | LiveUpdatesConnection
   ): boolean | number;
@@ -81,11 +112,17 @@ export type RenderNodeLiveUpdatesType = {
   liveUpdatesStatus(): LiveUpdatesStatus;
 };
 
+// The route symfony-live serves subscriber tokens on.
+const SUBSCRIBE_INFO_ROUTE = 'wexample_symfony_live_subscribe_info';
+
 export default class LiveUpdatesService extends AppService {
   public static serviceName: string = 'liveUpdates';
-  public static dependencies: typeof AppService[] = [EventsService, ConnectionStatusService];
+  public static dependencies: typeof AppService[] = [EventsService, ConnectionStatusService, RoutingService];
 
   private readonly connections: Map<string, LiveUpdatesConnectionInternal> = new Map();
+  // One resolver per entity, so two components watching the same thing share a
+  // token instead of each asking the server for one.
+  private readonly subscriberResolvers: Map<string, LiveSubscriberInfoResolver> = new Map();
   private readonly ownerConnections: WeakMap<object, Set<string>> = new WeakMap();
   private reconnectOptions: ReconnectBackoffOptions = {
     initialDelayMs: 1000,
@@ -127,6 +164,13 @@ export default class LiveUpdatesService extends AppService {
           });
         },
 
+        liveUpdatesConnectToEntity(options: Omit<LiveUpdatesEntityConnectOptions, 'owner'>) {
+          return this.app.services.liveUpdates.connectToEntity({
+            ...options,
+            owner: this,
+          });
+        },
+
         liveUpdatesDisconnect(connection?: string | LiveUpdatesConnection) {
           if (connection) {
             return this.app.services.liveUpdates.disconnect(connection);
@@ -161,7 +205,9 @@ export default class LiveUpdatesService extends AppService {
     };
   }
 
-  useMercureDriver(config: MercureDriverConfig | (() => MercureDriverConfig)): void {
+  // An async resolver is what lets a reconnection carry a token the first connection
+  // did not have — see LiveSubscriberInfoResolver in js-api.
+  useMercureDriver(config: MercureDriverConfig | MercureDriverConfigResolver): void {
     this.setDriver(new MercureLiveUpdatesDriver(config));
   }
 
@@ -194,7 +240,9 @@ export default class LiveUpdatesService extends AppService {
   }
 
   connect(options: LiveUpdatesConnectOptions): LiveUpdatesConnection {
-    if (!this.driver) {
+    const driver = options.driver ?? this.driver;
+
+    if (!driver) {
       throw new InvariantViolationError({
         message: 'Live updates driver is missing. Call setDriver() before connect().',
         code: 'ERR_LIVE_UPDATES_DRIVER_MISSING',
@@ -203,20 +251,14 @@ export default class LiveUpdatesService extends AppService {
 
     const topics = this.normalizeTopics(options.topics);
     const id = `live-updates-${++this.connectionIndex}`;
-    const source = this.driver.connect({
-      ...options,
-      topics,
-    });
 
     const connection: LiveUpdatesConnectionInternal = {
       id,
       topics,
-      source,
+      apiConnection: null,
       owner: options.owner,
       metadata: { ...(options.metadata || {}) },
       status: 'connecting',
-      reconnecting: false,
-      reconnectScheduler: new RetryBackoffScheduler(this.reconnectOptions),
       onOpen: options.onOpen,
       onError: options.onError,
       onMessage: options.onMessage,
@@ -225,14 +267,49 @@ export default class LiveUpdatesService extends AppService {
       },
     };
 
-    this.bindSource(connection);
     this.connections.set(id, connection);
     this.trackOwnerConnection(connection);
+
+    connection.apiConnection = new ApiLiveUpdatesConnection({
+      driver,
+      topics,
+      reconnect: this.reconnectOptions,
+      onMessage: (payload, event) => {
+        this.handleMessage(connection, payload, event);
+      },
+      onStatusChange: (status, previousStatus) => {
+        this.handleStatusChange(connection, status, previousStatus);
+      },
+      onReconnectScheduled: (context) => {
+        this.handleReconnectScheduled(connection, context);
+      },
+    });
 
     this.emit(LiveUpdatesServiceEvents.CONNECTION_CREATED, connection);
     this.emitStatus(connection);
 
     return this.toPublicConnection(connection);
+  }
+
+  // The caller names an entity and never a topic: the topics come back from the
+  // server, which is what keeps a subscription and its publications together.
+  async connectToEntity(options: LiveUpdatesEntityConnectOptions): Promise<LiveUpdatesConnection> {
+    const { entityName, id, ...connectOptions } = options;
+    const resolver = this.getSubscriberInfoResolver(entityName, id);
+    const info = await resolver.resolve();
+
+    return this.connect({
+      ...connectOptions,
+      topics: info.topics,
+      driver: new MercureLiveUpdatesDriver(async () => {
+        const current = await resolver.resolve();
+
+        return {
+          hubUrl: current.hubUrl,
+          jwt: current.jwt,
+        };
+      }),
+    });
   }
 
   disconnect(connection: string | LiveUpdatesConnection): boolean {
@@ -312,6 +389,42 @@ export default class LiveUpdatesService extends AppService {
     return normalized.join('/');
   }
 
+  private getSubscriberInfoResolver(entityName: string, id: string): LiveSubscriberInfoResolver {
+    const key = `${entityName}/${id}`;
+    let resolver = this.subscriberResolvers.get(key);
+
+    if (!resolver) {
+      resolver = new LiveSubscriberInfoResolver({
+        fetchInfo: () => this.fetchSubscriberInfo(entityName, id),
+      });
+
+      this.subscriberResolvers.set(key, resolver);
+    }
+
+    return resolver;
+  }
+
+  private async fetchSubscriberInfo(entityName: string, id: string): Promise<LiveSubscriberInfo> {
+    const response = await fetch(
+      this.getRoutingService().path(SUBSCRIBE_INFO_ROUTE, { entityName, id }),
+      { headers: { Accept: 'application/json' } }
+    );
+
+    if (!response.ok) {
+      throw new InvariantViolationError({
+        message: `Unable to subscribe to ${entityName} ${id}: the server answered ${response.status}.`,
+        code: 'ERR_LIVE_UPDATES_SUBSCRIBE_INFO_FAILED',
+        context: { entityName, id, status: response.status },
+      });
+    }
+
+    return response.json();
+  }
+
+  private getRoutingService(): RoutingService {
+    return this.app.getServiceOrFail(RoutingService) as RoutingService;
+  }
+
   private normalizeTopics(topics: string | string[]): string[] {
     const normalized = Array.isArray(topics) ? topics : [topics];
     const filtered = normalized
@@ -342,61 +455,70 @@ export default class LiveUpdatesService extends AppService {
     return undefined;
   }
 
-  private bindSource(connection: LiveUpdatesConnectionInternal): void {
-    connection.source.onopen = (event: Event) => {
-      const wasReconnecting = connection.reconnecting || connection.reconnectScheduler.attempt > 0;
-      connection.reconnectScheduler.cancel();
-      connection.reconnecting = false;
-      connection.reconnectScheduler.reset();
-      this.markConnectionOnline(connection);
-      this.updateConnectionStatus(connection, 'open', event);
-      if (wasReconnecting) {
-        this.emit(LiveUpdatesServiceEvents.CONNECTION_RECONNECTED, {
-          connection: this.toPublicConnection(connection),
-          event,
-        });
-      }
-      connection.onOpen?.(this.toPublicConnection(connection), event);
-    };
+  private handleMessage(
+    connection: LiveUpdatesConnectionInternal,
+    payload: unknown,
+    event: MessageEvent
+  ): void {
+    this.emit(LiveUpdatesServiceEvents.CONNECTION_MESSAGE, {
+      connection: this.toPublicConnection(connection),
+      event,
+      payload,
+    });
 
-    connection.source.onerror = (event: Event) => {
+    connection.onMessage?.(this.toPublicConnection(connection), payload, event);
+  }
+
+  private handleStatusChange(
+    connection: LiveUpdatesConnectionInternal,
+    status: ApiLiveUpdatesConnectionStatus,
+    previousStatus: ApiLiveUpdatesConnectionStatus
+  ): void {
+    if (status === 'open') {
+      this.markConnectionOnline(connection);
+    } else if (status === 'error') {
       this.markConnectionOffline(connection, {
         reason: 'source-error',
       });
-      this.updateConnectionStatus(connection, 'error', event);
-      this.scheduleReconnect(connection, event);
-      connection.onError?.(this.toPublicConnection(connection), event);
-    };
+    }
 
-    connection.source.onmessage = (event: MessageEvent) => {
-      const payload = this.parseMessageData(event.data);
+    this.updateConnectionStatus(connection, CONNECTION_STATUS_MAP[status]);
 
-      this.emit(LiveUpdatesServiceEvents.CONNECTION_MESSAGE, {
+    // A reconnection succeeding is not a state of its own: it is the stream
+    // reopening from a retry.
+    if (status === 'open' && previousStatus === 'reconnecting') {
+      this.emit(LiveUpdatesServiceEvents.CONNECTION_RECONNECTED, {
         connection: this.toPublicConnection(connection),
-        event,
-        payload,
       });
+    }
 
-      connection.onMessage?.(this.toPublicConnection(connection), payload, event);
-    };
+    if (status === 'reconnect-stopped') {
+      this.emit(LiveUpdatesServiceEvents.CONNECTION_RECONNECT_STOPPED, {
+        connection: this.toPublicConnection(connection),
+      });
+    }
+
+    if (status === 'open') {
+      connection.onOpen?.(this.toPublicConnection(connection));
+    } else if (status === 'error') {
+      connection.onError?.(this.toPublicConnection(connection));
+    }
   }
 
-  private parseMessageData(data: unknown): unknown {
-    if (typeof data !== 'string') {
-      return data;
-    }
-
-    try {
-      return JSON.parse(data);
-    } catch {
-      return data;
-    }
+  private handleReconnectScheduled(
+    connection: LiveUpdatesConnectionInternal,
+    context: RetryBackoffScheduleContext
+  ): void {
+    this.emit(LiveUpdatesServiceEvents.CONNECTION_RECONNECTING, {
+      connection: this.toPublicConnection(connection),
+      attempt: context.attempt,
+      delayMs: context.delayMs,
+    });
   }
 
   private updateConnectionStatus(
     connection: LiveUpdatesConnectionInternal,
-    nextStatus: LiveUpdatesConnectionStatus,
-    event?: Event
+    nextStatus: LiveUpdatesConnectionStatus
   ): void {
     if (connection.status === nextStatus) {
       return;
@@ -409,7 +531,6 @@ export default class LiveUpdatesService extends AppService {
       connection: this.toPublicConnection(connection),
       previousStatus,
       nextStatus,
-      event,
     });
     this.emitStatus(connection);
   }
@@ -435,8 +556,7 @@ export default class LiveUpdatesService extends AppService {
       nextStatus: 'closed',
     });
 
-    connection.reconnectScheduler.cancel();
-    this.closeSource(connection);
+    connection.apiConnection?.close();
     this.markConnectionOnline(connection);
 
     this.untrackOwnerConnection(connection);
@@ -482,75 +602,10 @@ export default class LiveUpdatesService extends AppService {
       id: connection.id,
       owner: connection.owner,
       topics: [...connection.topics],
-      source: connection.source,
       metadata: { ...connection.metadata },
       status: connection.status,
       close: connection.close,
     };
-  }
-
-  private scheduleReconnect(connection: LiveUpdatesConnectionInternal, event?: Event): void {
-    if (!this.connections.has(connection.id)) {
-      return;
-    }
-
-    if (!connection.reconnectScheduler.canRetry()) {
-      this.emit(LiveUpdatesServiceEvents.CONNECTION_RECONNECT_STOPPED, {
-        connection: this.toPublicConnection(connection),
-        event,
-      });
-      return;
-    }
-
-    const scheduleContext = connection.reconnectScheduler.schedule(() => {
-      this.reconnect(connection.id);
-    });
-    if (!scheduleContext) {
-      return;
-    }
-
-    connection.reconnecting = true;
-
-    this.emit(LiveUpdatesServiceEvents.CONNECTION_RECONNECTING, {
-      connection: this.toPublicConnection(connection),
-      attempt: scheduleContext.attempt,
-      delayMs: scheduleContext.delayMs,
-      event,
-    });
-  }
-
-  private reconnect(connectionId: string): void {
-    const connection = this.connections.get(connectionId);
-    if (!connection || !this.driver) {
-      return;
-    }
-
-    this.closeSource(connection);
-
-    this.updateConnectionStatus(connection, 'connecting');
-
-    try {
-      connection.source = this.driver.connect({
-        topics: [...connection.topics],
-        owner: connection.owner,
-        metadata: { ...connection.metadata },
-        onOpen: connection.onOpen,
-        onError: connection.onError,
-        onMessage: connection.onMessage,
-      });
-      this.bindSource(connection);
-      this.emitStatus(connection);
-    } catch {
-      this.updateConnectionStatus(connection, 'error');
-      this.scheduleReconnect(connection);
-    }
-  }
-
-  private closeSource(connection: LiveUpdatesConnectionInternal): void {
-    connection.source.onopen = null;
-    connection.source.onerror = null;
-    connection.source.onmessage = null;
-    connection.source.close();
   }
 
   private markConnectionOffline(
