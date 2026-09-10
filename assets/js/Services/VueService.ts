@@ -115,6 +115,8 @@ export default class VueService extends AppService {
       vueApp.config,
       this.globalConfig);
 
+    this.captureVueFailures(vueApp);
+
     vueApp.mixin(this.globalMixin as any);
 
     const globalMixin = this.globalMixin as any;
@@ -134,6 +136,41 @@ export default class VueService extends AppService {
     this.registerComponentsRecursively(vueApp, this.componentRegistered);
 
     return vueApp;
+  }
+
+  // Vue turns what throws inside a hook or an event handler into a console line
+  // and keeps going, so a broken component looks like a component that does
+  // nothing. Routed here, the failure comes out as the payload every other error
+  // of the app produces, naming the view it died in and the hook it died under.
+  protected captureVueFailures(vueApp: ReturnType<typeof createApp>) {
+    vueApp.config.errorHandler = (error: unknown, instance: any, hook: string) => {
+      this.app.services.error?.capture(error, {
+        context: {
+          source: 'vue.error-handler',
+          details: {
+            view: this.describeVueInstance(instance),
+            hook,
+          },
+        },
+      });
+    };
+
+    vueApp.config.warnHandler = (message: string, instance: any, trace: string) => {
+      this.app.services.error?.capture(message, {
+        severity: 'warning',
+        context: {
+          source: 'vue.warn-handler',
+          details: {
+            view: this.describeVueInstance(instance),
+            trace,
+          },
+        },
+      });
+    };
+  }
+
+  protected describeVueInstance(instance: any): string | null {
+    return instance?.viewPath ?? instance?.$options?.__name ?? null;
   }
 
   inherit(vueComponent: Record<string, any>, rootComponent: Component) {
