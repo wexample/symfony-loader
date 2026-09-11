@@ -1,178 +1,202 @@
 import AppService from '../Class/AppService';
+import LocaleService from './LocaleService';
+import RenderNode from '../Class/RenderNode';
+import DateFormatter, { type DateFormat } from '@wexample/js-date/Common/DateFormatter';
+import {
+  DATE_DISPLAY_AUTO,
+  DATE_DISPLAY_DATE,
+  DATE_DISPLAY_DATE_SHORT,
+  DATE_DISPLAY_DATE_TIME,
+  DATE_DISPLAY_DATE_TIME_FULL,
+  DATE_DISPLAY_MONTH_YEAR,
+  DATE_DISPLAY_TIME,
+  DATE_RELATIVE_REFRESH_SECONDS,
+  DateInput,
+  dateParse,
+  dateRelativeDiff
+} from '@wexample/js-date/Helper/Date';
 
-export type DateInput = Date | string | number | null | undefined;
-export type DateFormatKey =
-  | 'dateTimeFull'
-  | 'dateTime'
-  | 'dateOnly'
-  | 'dateShort'
-  | 'monthYear';
-export type RelativeTimeUnit =
-  | 'second'
-  | 'minute'
-  | 'hour'
-  | 'day'
-  | 'week'
-  | 'month'
-  | 'year';
+const TRANSLATION_DOMAIN = 'WexampleSymfonyLoaderBundle.common.system';
 
+// What the server puts on a `<time>` so the browser knows how to redraw it.
+const ATTRIBUTE_FORMAT = 'data-date-format';
+
+/**
+ * What plugs the framework-agnostic formatter into the page, and keeps it true.
+ *
+ * The rules of display live in `@wexample/js-date`; this says where the wording
+ * comes from and which locale is current, then holds the elements carrying
+ * `data-date-format` under watch. They are picked up as their render node mounts
+ * and rewritten on a single shared timer, at the cadence the unit being displayed
+ * deserves — seconds for "just now", an hour for "3 months ago".
+ */
 export default class DateService extends AppService {
   public static serviceName: string = 'date';
-  public static formats: Record<DateFormatKey, Intl.DateTimeFormatOptions> = {
-    dateTimeFull: {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    },
-    dateTime: {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-    },
-    dateOnly: {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    },
-    dateShort: {
-      month: '2-digit',
-      day: '2-digit',
-    },
-    monthYear: {
-      year: 'numeric',
-      month: '2-digit',
-    },
-  };
+  public static dependencies: typeof AppService[] = [LocaleService];
 
-  private resolveLocale(locale?: string): string {
-    return (
-      locale ||
-      (this.app?.layout?.vars?.locale as string | undefined) ||
-      navigator.language
-    );
+  private readonly watched: Set<HTMLElement> = new Set();
+  private tickTimeout: number | null = null;
+  private formatterInstance: DateFormatter | null = null;
+
+  registerHooks() {
+    return {
+      renderNode: {
+        hookMounted: (renderNode: RenderNode) => {
+          this.watchTree(renderNode.el);
+        }
+      }
+    };
   }
 
-  private toDate(value: DateInput): Date | null {
-    if (!value) {
-      return null;
+  // Built on first use, so that the locale service is up by the time it is asked.
+  private get formatter(): DateFormatter {
+    if (!this.formatterInstance) {
+      this.formatterInstance = new DateFormatter(
+        (key: string, parameters: Record<string, string | number>): string =>
+          (this.app.getServiceOrFail(LocaleService) as LocaleService)
+            .trans(`${TRANSLATION_DOMAIN}::${key}`, parameters),
+        (): string =>
+          (this.app?.layout?.vars?.locale as string | undefined) || navigator.language
+      );
     }
 
-    if (value instanceof Date) {
-      return Number.isNaN(value.getTime()) ? null : value;
-    }
-
-    if (typeof value === 'number') {
-      const stamp = value < 1e12 ? value * 1000 : value;
-      const date = new Date(stamp);
-      return Number.isNaN(date.getTime()) ? null : date;
-    }
-
-    const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? null : date;
+    return this.formatterInstance;
   }
 
   format(
     value: DateInput,
-    format: DateFormatKey = 'dateTime',
+    format: DateFormat = DATE_DISPLAY_AUTO,
     locale?: string,
-    options?: Intl.DateTimeFormatOptions
+    now?: DateInput
   ): string {
-    const date = this.toDate(value);
-    if (!date) {
-      return '';
-    }
-
-    const baseOptions = DateService.formats[format];
-    const resolvedOptions = options ? { ...baseOptions, ...options } : baseOptions;
-
-    return new Intl.DateTimeFormat(this.resolveLocale(locale), resolvedOptions).format(date);
+    return this.formatter.format(value, format, locale, now);
   }
 
-  formatDateTimeFull(value: DateInput, locale?: string): string {
-    return this.format(value, 'dateTimeFull', locale);
+  formatAbsolute(date: Date, format: DateFormat, locale?: string): string {
+    return this.formatter.formatAbsolute(date, format, locale);
+  }
+
+  formatRelative(value: DateInput, now?: DateInput): string {
+    return this.formatter.formatRelative(value, now);
+  }
+
+  formatTime(value: DateInput, locale?: string): string {
+    return this.format(value, DATE_DISPLAY_TIME, locale);
+  }
+
+  formatDate(value: DateInput, locale?: string): string {
+    return this.format(value, DATE_DISPLAY_DATE, locale);
   }
 
   formatDateTime(value: DateInput, locale?: string): string {
-    return this.format(value, 'dateTime', locale);
+    return this.format(value, DATE_DISPLAY_DATE_TIME, locale);
   }
 
-  formatDateOnly(value: DateInput, locale?: string): string {
-    return this.format(value, 'dateOnly', locale);
+  formatDateTimeFull(value: DateInput, locale?: string): string {
+    return this.format(value, DATE_DISPLAY_DATE_TIME_FULL, locale);
   }
 
   formatDateShort(value: DateInput, locale?: string): string {
-    return this.format(value, 'dateShort', locale);
+    return this.format(value, DATE_DISPLAY_DATE_SHORT, locale);
   }
 
   formatMonthYear(value: DateInput, locale?: string): string {
-    return this.format(value, 'monthYear', locale);
+    return this.format(value, DATE_DISPLAY_MONTH_YEAR, locale);
   }
 
-  formatRelative(
-    value: DateInput,
-    options: {
-      now?: DateInput;
-      unit?: RelativeTimeUnit;
-      style?: Intl.RelativeTimeFormatStyle;
-      numeric?: Intl.RelativeTimeFormatNumeric;
-    } = {}
-  ): string {
-    const date = this.toDate(value);
+  /**
+   * Takes every `<time data-date-format>` the given subtree holds under watch,
+   * the root included when it is one itself.
+   */
+  watchTree(root: HTMLElement): void {
+    if (!root) {
+      return;
+    }
+
+    if (root.hasAttribute(ATTRIBUTE_FORMAT)) {
+      this.watch(root);
+    }
+
+    root.querySelectorAll<HTMLElement>(`[${ATTRIBUTE_FORMAT}]`)
+      .forEach((el: HTMLElement) => this.watch(el));
+  }
+
+  watch(el: HTMLElement): void {
+    this.watched.add(el);
+    this.refreshElement(el);
+    this.scheduleTick();
+  }
+
+  unwatch(el: HTMLElement): void {
+    this.watched.delete(el);
+  }
+
+  private refreshElement(el: HTMLElement): void {
+    const format = el.getAttribute(ATTRIBUTE_FORMAT) as string;
+    const value = el.getAttribute('datetime');
+
+    el.textContent = this.format(value, format);
+  }
+
+  /**
+   * How long a date displayed relatively stays true — seconds for "just now",
+   * an hour for "3 months ago". Null when there is nothing to redraw.
+   */
+  refreshDelayMs(value: DateInput): number | null {
+    const date = dateParse(value);
+
     if (!date) {
-      return '';
+      return null;
     }
 
-    const now = this.toDate(options.now) || new Date();
-    const diffMs = date.getTime() - now.getTime();
-    const diffSeconds = diffMs / 1000;
+    const { unit } = dateRelativeDiff((Date.now() - date.getTime()) / 1000);
 
-    const unit = options.unit ?? this.resolveRelativeUnit(diffSeconds);
-    const divider = this.getRelativeUnitDivider(unit);
-    const valueInUnit = Math.round(diffSeconds / divider);
+    return DATE_RELATIVE_REFRESH_SECONDS[unit] * 1000;
+  }
 
-    const formatter = new Intl.RelativeTimeFormat(
-      this.resolveLocale(),
-      {
-        style: options.style ?? 'long',
-        numeric: options.numeric ?? 'auto',
+  // How long the whole set stays true: the shortest of what each element needs,
+  // so one timer serves them all without redrawing a year-old date every second.
+  private nextDelayMs(): number | null {
+    let shortest: number | null = null;
+
+    for (const el of this.watched) {
+      const delay = this.refreshDelayMs(el.getAttribute('datetime'));
+
+      if (delay !== null && (shortest === null || delay < shortest)) {
+        shortest = delay;
       }
-    );
-
-    return formatter.format(valueInUnit, unit);
-  }
-
-  private resolveRelativeUnit(diffSeconds: number): RelativeTimeUnit {
-    const absSeconds = Math.abs(diffSeconds);
-    if (absSeconds < 60) return 'second';
-    if (absSeconds < 3600) return 'minute';
-    if (absSeconds < 86400) return 'hour';
-    if (absSeconds < 604800) return 'day';
-    if (absSeconds < 2592000) return 'week';
-    if (absSeconds < 31536000) return 'month';
-    return 'year';
-  }
-
-  private getRelativeUnitDivider(unit: RelativeTimeUnit): number {
-    switch (unit) {
-      case 'minute':
-        return 60;
-      case 'hour':
-        return 3600;
-      case 'day':
-        return 86400;
-      case 'week':
-        return 604800;
-      case 'month':
-        return 2592000;
-      case 'year':
-        return 31536000;
-      default:
-        return 1;
     }
+
+    return shortest;
+  }
+
+  private scheduleTick(): void {
+    if (this.tickTimeout !== null) {
+      return;
+    }
+
+    const delay = this.nextDelayMs();
+
+    if (delay === null) {
+      return;
+    }
+
+    this.tickTimeout = window.setTimeout(() => {
+      this.tickTimeout = null;
+      this.tick();
+    }, delay);
+  }
+
+  private tick(): void {
+    for (const el of this.watched) {
+      // A render node taken off the page takes its dates with it.
+      if (el.isConnected) {
+        this.refreshElement(el);
+      } else {
+        this.watched.delete(el);
+      }
+    }
+
+    this.scheduleTick();
   }
 }

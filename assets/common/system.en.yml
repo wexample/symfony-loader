@@ -1,5 +1,39 @@
 skip_to_main: Skip to main content
 
+# Read by the PHP and the JavaScript date services alike, which is what makes a
+# date rendered by Twig and the same date redrawn by the browser agree. The
+# `_one` / `_other` split is picked on the count, not by a plural rule, so a
+# locale needing more buckets overrides the keys with its own wording.
+date:
+  relative:
+    now: Just now
+    past:
+      minute_one: 1 min ago
+      minute_other: "%count% min ago"
+      hour_one: 1 h ago
+      hour_other: "%count% h ago"
+      day_one: 1 day ago
+      day_other: "%count% days ago"
+      week_one: 1 week ago
+      week_other: "%count% weeks ago"
+      month_one: 1 month ago
+      month_other: "%count% months ago"
+      year_one: 1 year ago
+      year_other: "%count% years ago"
+    future:
+      minute_one: in 1 min
+      minute_other: "in %count% min"
+      hour_one: in 1 h
+      hour_other: "in %count% h"
+      day_one: in 1 day
+      day_other: "in %count% days"
+      week_one: in 1 week
+      week_other: "in %count% weeks"
+      month_one: in 1 month
+      month_other: "in %count% months"
+      year_one: in 1 year
+      year_other: "in %count% years"
+
 frontend:
   confirm:
     title: Confirmation

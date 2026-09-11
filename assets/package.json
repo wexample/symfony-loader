@@ -4,6 +4,7 @@
   "peerDependencies": {
     "@symfony/webpack-encore": "^5.0.0",
     "@wexample/js-app": "0.0.8",
+    "@wexample/js-date": "*",
     "glob": "^11.0.0",
     "sass": "^1.63.5",
     "sass-loader": "^16.0.3",
