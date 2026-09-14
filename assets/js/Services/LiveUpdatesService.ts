@@ -12,6 +12,7 @@ import LiveSubscriberInfoResolver, {
 import ApiLiveUpdatesConnection, {
   type LiveUpdatesConnectionStatus as ApiLiveUpdatesConnectionStatus,
 } from '@wexample/js-api/Common/LiveUpdates/LiveUpdatesConnection';
+import LiveUpdatesConnectionRegistry from '@wexample/js-api/Common/LiveUpdates/LiveUpdatesConnectionRegistry';
 import type { LiveUpdatesDriverInterface } from '@wexample/js-api/Common/LiveUpdates/LiveUpdatesDriver';
 import InvariantViolationError from '../Errors/InvariantViolationError';
 import {
@@ -120,6 +121,11 @@ export default class LiveUpdatesService extends AppService {
   public static dependencies: typeof AppService[] = [EventsService, ConnectionStatusService, RoutingService];
 
   private readonly connections: Map<string, LiveUpdatesConnectionInternal> = new Map();
+  // What a status widget reads. The registry watches the connections rather
+  // than owning them, and drops each one as it closes, so anything wanting to
+  // show what is live subscribes here instead of following this service's
+  // events one by one.
+  private readonly registry: LiveUpdatesConnectionRegistry = new LiveUpdatesConnectionRegistry();
   // One resolver per entity, so two components watching the same thing share a
   // token instead of each asking the server for one.
   private readonly subscriberResolvers: Map<string, LiveSubscriberInfoResolver> = new Map();
@@ -285,6 +291,8 @@ export default class LiveUpdatesService extends AppService {
       },
     });
 
+    this.registry.register(connection.apiConnection);
+
     this.emit(LiveUpdatesServiceEvents.CONNECTION_CREATED, connection);
     this.emitStatus(connection);
 
@@ -347,6 +355,10 @@ export default class LiveUpdatesService extends AppService {
   hasConnectionForOwner(owner: object): boolean {
     const trackedConnections = this.ownerConnections.get(owner);
     return !!trackedConnections && trackedConnections.size > 0;
+  }
+
+  getRegistry(): LiveUpdatesConnectionRegistry {
+    return this.registry;
   }
 
   getStatus(): LiveUpdatesStatus {
