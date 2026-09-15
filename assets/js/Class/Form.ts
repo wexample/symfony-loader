@@ -11,9 +11,21 @@ import {
   ACTION_EMBED_REDIRECT,
   ACTION_REDIRECT,
 } from '../Constants/FormActions';
-import { formSuccessEvent } from '../Constants/FormEvents';
+import {
+  FORM_FIELD_COLLECT,
+  FORM_FIELD_REGISTER,
+  FORM_FIELD_UNREGISTER,
+  formSuccessEvent,
+} from '../Constants/FormEvents';
+import type { FieldControllerInterface } from '@wexample/js-api/Vue/FieldControllerInterface';
+import type { FieldRegistryInterface } from '@wexample/js-api/Vue/FieldRegistryInterface';
 
-export default class Form extends Component {
+export default class Form extends Component implements FieldRegistryInterface {
+  // The fields this form answers for, by name. What lets something ask for a
+  // field without knowing the page.
+  private readonly fields: Map<string, FieldControllerInterface> = new Map();
+  private onFieldRegisterProxy?: EventListener;
+  private onFieldUnregisterProxy?: EventListener;
   private onSubmitProxy: EventListener;
   private isSubmitting = false;
   private lastSubmitter: HTMLInputElement | HTMLButtonElement | null = null;
@@ -30,6 +42,27 @@ export default class Form extends Component {
     this.onDirtyProxy = this.onDirty.bind(this);
     this.el.addEventListener('change', this.onDirtyProxy);
     this.el.addEventListener('input', this.onDirtyProxy);
+
+    this.onFieldRegisterProxy = (event: Event) => {
+      const field = (event as CustomEvent).detail?.field as FieldControllerInterface;
+
+      if (field) {
+        this.registerField(field);
+      }
+    };
+    this.onFieldUnregisterProxy = (event: Event) => {
+      const field = (event as CustomEvent).detail?.field as FieldControllerInterface;
+
+      if (field) {
+        this.unregisterField(field);
+      }
+    };
+
+    this.el.addEventListener(FORM_FIELD_REGISTER, this.onFieldRegisterProxy);
+    this.el.addEventListener(FORM_FIELD_UNREGISTER, this.onFieldUnregisterProxy);
+
+    // Whoever was ready before this form did not find it: they are asked now.
+    this.el.dispatchEvent(new CustomEvent(FORM_FIELD_COLLECT, { bubbles: true }));
   }
 
   protected async deactivateListeners(): Promise<void> {
@@ -43,6 +76,34 @@ export default class Form extends Component {
       this.el.removeEventListener('change', this.onDirtyProxy);
       this.el.removeEventListener('input', this.onDirtyProxy);
     }
+
+    if (this.onFieldRegisterProxy) {
+      this.el.removeEventListener(FORM_FIELD_REGISTER, this.onFieldRegisterProxy);
+    }
+
+    if (this.onFieldUnregisterProxy) {
+      this.el.removeEventListener(FORM_FIELD_UNREGISTER, this.onFieldUnregisterProxy);
+    }
+
+    this.fields.clear();
+  }
+
+  public registerField(field: FieldControllerInterface): void {
+    if (field.fieldName) {
+      this.fields.set(field.fieldName, field);
+    }
+  }
+
+  public unregisterField(field: FieldControllerInterface): void {
+    this.fields.delete(field.fieldName);
+  }
+
+  public getField(name: string): FieldControllerInterface | undefined {
+    return this.fields.get(name);
+  }
+
+  public getFields(): FieldControllerInterface[] {
+    return [...this.fields.values()];
   }
 
   protected onBeforeSubmit(
