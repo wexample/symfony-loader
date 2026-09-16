@@ -243,9 +243,14 @@ export default class OverlayService extends AppService {
     const stackLength = this.overlayStack.length;
 
     // Use z-index gaps of 2 so the single backdrop can slot between layers.
-    // overlay[i] = baseZIndex + i*2
-    // stackLength=1: overlay[0]=baseZIndex, backdrop=baseZIndex-1 (dims page below)
-    // stackLength=2: overlay[0]=baseZIndex, overlay[1]=baseZIndex+2, backdrop=baseZIndex+1 (dims parent)
+    // overlay[i] = baseZIndex + i*2, and the backdrop sits just under the
+    // overlay it belongs to — never under the topmost one, which may be an
+    // overlay that wants no backdrop at all:
+    // [modal]: modal=baseZIndex, backdrop=baseZIndex-1 (dims the page below)
+    // [modal, modal]: 1000 / 1002, backdrop=1001 (dims the parent modal)
+    // [modal, select]: 1000 / 1002, backdrop=999 — the select opens inside the
+    // modal, so a backdrop above the modal would cover the very field it was
+    // opened from.
     for (let i = 0; i < stackLength; i++) {
       const overlay = this.overlayStack[i];
       const el = overlay?.overlayGetElement?.() || overlay?.el;
@@ -270,9 +275,11 @@ export default class OverlayService extends AppService {
     }
 
     if (targetOverlayEl) {
+      const backdropIndex = this.overlayStack.indexOf(backdropOverlay);
+
       targetOverlayEl.removeAttribute('hidden');
       targetOverlayEl.classList.add('is-active');
-      targetOverlayEl.style.zIndex = String(this.baseZIndex + (stackLength - 1) * 2 - 1);
+      targetOverlayEl.style.zIndex = String(this.baseZIndex + backdropIndex * 2 - 1);
     }
   }
 }
