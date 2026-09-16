@@ -14,7 +14,7 @@ use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\AdaptiveRendererService;
 use Wexample\SymfonyLoader\Service\ComponentService;
 
-#[Route(path: '/_system/component', name: '_system_component_')]
+#[Route(path: '/_system/component', name: 'system_component_')]
 class ComponentController extends AbstractLoaderController
 {
     public function __construct(
