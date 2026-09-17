@@ -1,6 +1,6 @@
 # symfony_loader
 
-Version: 5.0.0
+Version: 6.0.0
 
 `symfony-loader` is a Symfony bundle that replaces the standard `render()` call with `adaptiveRender()`, routing each request through a `RenderPass` that selects between a full HTML response and a JSON envelope depending on whether the request is XHR. Controllers extending `AbstractLoaderController` inherit this pipeline, which also collects and injects Webpack Encore assets — CSS variants for color scheme, responsive breakpoints, fonts, margins, and animations — at the end of every HTML response. It targets Symfony developers who need a single rendering path that handles both initial page loads and dynamic partial updates without duplicating controller logic.
 
@@ -134,10 +134,11 @@ Visit the [Wexample Suite documentation](https://docs.wexample.com) for the comp
 
 ## Dependencies
 
-- php: >=8.2
+- php: >=8.5
+- wexample/php-date: >=2.0.0
 - wexample/php-html: >=0.1.6
 - wexample/symfony-dev: >=4.0.0
-- wexample/symfony-helpers: >=7.0.0
+- wexample/symfony-helpers: >=8.0.0
 - wexample/symfony-routing: >=1.0.0
 - wexample/symfony-translations: >=4.0.0
 - friendsofsymfony/jsrouting-bundle: ^3.2.1
