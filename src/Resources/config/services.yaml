@@ -55,17 +55,17 @@ parameters:
       default: default
       list:
         default:
-          allow_switch: false
+          allow_switch: true
+        fluid:
+          allow_switch: true
 
-    # Animations
+    # Animations: whether the page moves of its own accord. Only the values a
+    # theme ships a file for belong here — a value that loads nothing is a
+    # switch that does nothing.
     loader.usages.animations:
       default: none
       list:
-        bounce:
-          allow_switch: false
         none:
-          allow_switch: false
-        soft:
           allow_switch: false
 
     # Fonts
