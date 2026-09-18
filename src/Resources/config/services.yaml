@@ -68,14 +68,16 @@ parameters:
         none:
           allow_switch: false
 
-    # Fonts
+    # Fonts: the faces a page is set in, and the weights it insists with.
     loader.usages.fonts:
-      default: none
+      default: system
       list:
-        none:
-          allow_switch: false
-        demo:
-          allow_switch: false
+        system:
+          allow_switch: true
+        editorial:
+          allow_switch: true
+        mono:
+          allow_switch: true
 
 services:
     _defaults:
