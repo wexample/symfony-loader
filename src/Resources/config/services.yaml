@@ -48,8 +48,6 @@ parameters:
           allow_switch: false
         slim:
           allow_switch: false
-        none:
-          allow_switch: false
 
     # Skin: the character, at equal density and light — radii, shadows,
     # borders, separators.
