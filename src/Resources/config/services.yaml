@@ -38,8 +38,8 @@ parameters:
         light:
           allow_switch: false
 
-    # Margins
-    loader.usages.margins:
+    # Density: how much fits on a screen — spacing, sizes, type scale.
+    loader.usages.density:
       default: default
       list:
         default:
@@ -49,6 +49,14 @@ parameters:
         slim:
           allow_switch: false
         none:
+          allow_switch: false
+
+    # Skin: the character, at equal density and light — radii, shadows,
+    # borders, separators.
+    loader.usages.skin:
+      default: default
+      list:
+        default:
           allow_switch: false
 
     # Animations

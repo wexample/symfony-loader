@@ -2,7 +2,7 @@
 
 Version: 6.0.0
 
-`symfony-loader` is a Symfony bundle that replaces the standard `render()` call with `adaptiveRender()`, routing each request through a `RenderPass` that selects between a full HTML response and a JSON envelope depending on whether the request is XHR. Controllers extending `AbstractLoaderController` inherit this pipeline, which also collects and injects Webpack Encore assets — CSS variants for color scheme, responsive breakpoints, fonts, margins, and animations — at the end of every HTML response. It targets Symfony developers who need a single rendering path that handles both initial page loads and dynamic partial updates without duplicating controller logic.
+`symfony-loader` is a Symfony bundle that replaces the standard `render()` call with `adaptiveRender()`, routing each request through a `RenderPass` that selects between a full HTML response and a JSON envelope depending on whether the request is XHR. Controllers extending `AbstractLoaderController` inherit this pipeline, which also collects and injects Webpack Encore assets — CSS variants for color scheme, responsive breakpoints, density, skin, fonts, and animations — at the end of every HTML response. It targets Symfony developers who need a single rendering path that handles both initial page loads and dynamic partial updates without duplicating controller logic.
 
 ## Table of Contents
 
@@ -22,7 +22,7 @@ The bundle is a dynamic rendering system layered on top of Symfony and Twig. Eve
 
 src/WexampleSymfonyLoaderBundle.php implements `LoaderBundleInterface` and registers `LoaderTemplatesCompilerPass` on `build()`. Any bundle that implements `LoaderBundleInterface` and returns paths from `getLoaderFrontPaths()` is picked up automatically.
 
-src/DependencyInjection/WexampleSymfonyLoaderExtension.php runs at container compilation time. It walks `kernel.bundles`, collects the front-asset paths each `LoaderBundleInterface` bundle declares, and stores them as the `loader_packages_front_paths` container parameter. It also merges usage configuration (color schemes, responsive breakpoints, margins, animations, fonts) into per-name `loader.usages.*` parameters, and records all front-asset directories as `translations_paths` so the translations subsystem can find them.
+src/DependencyInjection/WexampleSymfonyLoaderExtension.php runs at container compilation time. It walks `kernel.bundles`, collects the front-asset paths each `LoaderBundleInterface` bundle declares, and stores them as the `loader_packages_front_paths` container parameter. It also merges usage configuration (color schemes, responsive breakpoints, density, skin, animations, fonts) into per-name `loader.usages.*` parameters, and records all front-asset directories as `translations_paths` so the translations subsystem can find them.
 
 src/DependencyInjection/Compiler/LoaderTemplatesCompilerPass.php turns those collected paths into Twig namespace registrations by calling `addPath()` on `twig.loader.native_filesystem`, once per alias per bundle. This is what makes `@WexampleSymfonyLoaderBundle/…` and bundle-specific aliases resolvable in templates.
 
@@ -40,7 +40,7 @@ src/Helper/AdaptiveRequestHelper.php exposes static readers for both attributes 
 src/Rendering/RenderPass.php is a per-request value object. Controllers and Twig extensions share it as the single source of truth for what is being rendered. It holds:
 
 - `outputType` (`html` or `json`) and `layoutBase` (`default`, `modal`, …) copied from the request.
-- `usagesConfig` — the full list of allowed values for each usage dimension (color scheme, responsive tier, margins, animations, fonts), loaded from container parameters.
+- `usagesConfig` — the full list of allowed values for each usage dimension (color scheme, responsive tier, density, skin, animations, fonts), loaded from container parameters.
 - `usages` — the *active* value for each dimension, initialised from config defaults then optionally overridden by session-saved UI state.
 - A `registry` map, keyed by context type (`layout`, `page`, `component`, `vue`) and view name, that accumulates every render node created during the pass.
 - A `contextRenderNodeStack` that tracks which render node is currently being rendered.
@@ -95,9 +95,9 @@ src/Rendering/Asset.php holds two paths: `path` (the stable manifest key, e.g. `
 Six usage services, all subclassing src/Service/Usage/AbstractAssetUsageService.php, define how asset file names are derived from a view path:
 
 - src/Service/Usage/DefaultAssetUsageService.php — looks for `build/@Bundle/css/<view>.css` and `build/@Bundle/js/<view>.js`.
-- The remaining five (`color_scheme`, `responsive`, `margins`, `animations`, `fonts`) append a usage-dimension suffix, e.g. `view.color-scheme.dark.css`.
+- The remaining six (`color_scheme`, `responsive`, `density`, `skin`, `animations`, `fonts`) append a usage-dimension suffix, e.g. `view.color-scheme.dark.css`.
 
-src/Service/AssetsService.php wires the six services in CSS-loading order (default → color_scheme → responsive → margins → animations → fonts) and exposes `assetsDetect()`: for each file extension and each usage service, it walks the render node's inheritance stack and registers the first matching asset it finds. Assets are attached to `renderNode->assets` and added to `AssetsRegistryService`.
+src/Service/AssetsService.php wires the seven services in CSS-loading order (default → color_scheme → responsive → density → skin → animations → fonts) and exposes `assetsDetect()`: for each file extension and each usage service, it walks the render node's inheritance stack and registers the first matching asset it finds. Assets are attached to `renderNode->assets` and added to `AssetsRegistryService`.
 
 `buildTags()` in `AssetsService` decides which assets to server-side-render on an HTML response. For each type/context/usage combination it emits an `AssetTag` carrying the asset, or a placeholder tag when no asset was resolved. The placeholder tags let the front-end loader fill in usage variants that were not rendered server-side.
 

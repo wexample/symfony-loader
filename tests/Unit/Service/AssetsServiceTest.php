@@ -13,7 +13,8 @@ use Wexample\SymfonyLoader\Service\Usage\AnimationsAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\ColorSchemeAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\DefaultAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\FontsAssetUsageService;
-use Wexample\SymfonyLoader\Service\Usage\MarginsAssetUsageService;
+use Wexample\SymfonyLoader\Service\Usage\DensityAssetUsageService;
+use Wexample\SymfonyLoader\Service\Usage\SkinAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\ResponsiveAssetUsageService;
 use Wexample\SymfonyTesting\Tests\AbstractSymfonyKernelTestCase;
 
@@ -94,7 +95,8 @@ class AssetsServiceTest extends AbstractSymfonyKernelTestCase
                 AnimationsAssetUsageService::class,
                 ColorSchemeAssetUsageService::class,
                 DefaultAssetUsageService::class,
-                MarginsAssetUsageService::class,
+                DensityAssetUsageService::class,
+                SkinAssetUsageService::class,
                 ResponsiveAssetUsageService::class,
                 FontsAssetUsageService::class,
             ],
@@ -201,7 +203,8 @@ class AssetsServiceTest extends AbstractSymfonyKernelTestCase
                 'default' => 'm',
                 'list' => ['m' => ['breakpoint' => 768, 'allow_switch' => false]],
             ],
-            MarginsAssetUsageService::getName() => ['list' => ['default' => []]],
+            DensityAssetUsageService::getName() => ['list' => ['default' => []]],
+            SkinAssetUsageService::getName() => ['list' => ['default' => []]],
             AnimationsAssetUsageService::getName() => ['list' => ['none' => []]],
             FontsAssetUsageService::getName() => ['list' => ['none' => []]],
         ];
@@ -216,7 +219,8 @@ class AssetsServiceTest extends AbstractSymfonyKernelTestCase
         $this->assertContains('build/bundle/css/view.css', $paths);
         $this->assertContains('build/bundle/css/view.color-scheme.dark.css', $paths);
         $this->assertContains('build/bundle/css/view-m.css', $paths);
-        $this->assertContains('build/bundle/css/view.margins.default.css', $paths);
+        $this->assertContains('build/bundle/css/view.density.default.css', $paths);
+        $this->assertContains('build/bundle/css/view.skin.default.css', $paths);
         $this->assertContains('build/bundle/css/view.animations.none.css', $paths);
         $this->assertContains('build/bundle/css/view.fonts.none.css', $paths);
     }
@@ -295,7 +299,8 @@ class AssetsServiceTest extends AbstractSymfonyKernelTestCase
                 new AnimationsAssetUsageService($assetsRegistryService),
                 new ColorSchemeAssetUsageService($assetsRegistryService),
                 new DefaultAssetUsageService($assetsRegistryService),
-                new MarginsAssetUsageService($assetsRegistryService),
+                new DensityAssetUsageService($assetsRegistryService),
+                new SkinAssetUsageService($assetsRegistryService),
                 new ResponsiveAssetUsageService($assetsRegistryService),
                 new FontsAssetUsageService($assetsRegistryService),
                 $assetsRegistryService,

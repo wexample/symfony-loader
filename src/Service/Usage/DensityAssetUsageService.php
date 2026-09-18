@@ -2,10 +2,10 @@
 
 namespace Wexample\SymfonyLoader\Service\Usage;
 
-final class MarginsAssetUsageService extends AbstractAssetUsageService
+final class DensityAssetUsageService extends AbstractAssetUsageService
 {
     public static function getName(): string
     {
-        return 'margins';
+        return 'density';
     }
 }

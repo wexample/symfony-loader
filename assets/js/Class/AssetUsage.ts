@@ -9,11 +9,13 @@ export default abstract class AssetUsage extends AppChild {
 
   public static USAGE_DEFAULT: string = 'default';
 
+  public static USAGE_DENSITY: string = 'density';
+
   public static USAGE_FONTS: string = 'fonts';
 
-  public static USAGE_MARGINS: string = 'margins';
-
   public static USAGE_RESPONSIVE: string = 'responsive';
+
+  public static USAGE_SKIN: string = 'skin';
 
   public static USAGES: string[] = [
     // The order is the same as backend order.
@@ -21,6 +23,8 @@ export default abstract class AssetUsage extends AppChild {
     AssetUsage.USAGE_DEFAULT,
     AssetUsage.USAGE_COLOR_SCHEME,
     AssetUsage.USAGE_RESPONSIVE,
+    AssetUsage.USAGE_DENSITY,
+    AssetUsage.USAGE_SKIN,
     AssetUsage.USAGE_ANIMATIONS,
     AssetUsage.USAGE_FONTS,
   ];

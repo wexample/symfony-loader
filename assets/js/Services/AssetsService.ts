@@ -8,7 +8,8 @@ import MixinsAppService from '../Class/MixinsAppService';
 import AssetUsage from '../Class/AssetUsage';
 import ColorScheme from '../Class/AssetUsage/ColorScheme';
 import DefaultAssetUsage from '../Class/AssetUsage/Default';
-import Margins from '../Class/AssetUsage/Margins';
+import Density from '../Class/AssetUsage/Density';
+import Skin from '../Class/AssetUsage/Skin';
 import Fonts from '../Class/AssetUsage/Fonts';
 import ResponsiveAssetUsage from '../Class/AssetUsage/Responsive';
 import Animations from "../Class/AssetUsage/Animations";
@@ -45,7 +46,8 @@ export default class AssetsService extends AppService {
       Animations,
       ColorScheme,
       DefaultAssetUsage,
-      Margins,
+      Density,
+      Skin,
       ResponsiveAssetUsage,
       Fonts
     ].forEach(

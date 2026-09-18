@@ -10,9 +10,10 @@ use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\Usage\AnimationsAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\ColorSchemeAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\DefaultAssetUsageService;
+use Wexample\SymfonyLoader\Service\Usage\DensityAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\FontsAssetUsageService;
-use Wexample\SymfonyLoader\Service\Usage\MarginsAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\ResponsiveAssetUsageService;
+use Wexample\SymfonyLoader\Service\Usage\SkinAssetUsageService;
 
 class AssetsService
 {
@@ -30,7 +31,8 @@ class AssetsService
         AnimationsAssetUsageService $animationsAssetUsageService,
         ColorSchemeAssetUsageService $colorSchemeAssetUsageService,
         DefaultAssetUsageService $defaultAssetUsageService,
-        MarginsAssetUsageService $marginsAssetUsageService,
+        DensityAssetUsageService $densityAssetUsageService,
+        SkinAssetUsageService $skinAssetUsageService,
         ResponsiveAssetUsageService $responsiveAssetUsageService,
         FontsAssetUsageService $fontsAssetUsageService,
         protected readonly AssetsRegistryService $assetsRegistryService,
@@ -44,7 +46,8 @@ class AssetsService
                      $defaultAssetUsageService,
                      $colorSchemeAssetUsageService,
                      $responsiveAssetUsageService,
-                     $marginsAssetUsageService,
+                     $densityAssetUsageService,
+                     $skinAssetUsageService,
                      $animationsAssetUsageService,
                      $fontsAssetUsageService,
                  ] as $usage) {
@@ -58,7 +61,8 @@ class AssetsService
             AnimationsAssetUsageService::class,
             ColorSchemeAssetUsageService::class,
             DefaultAssetUsageService::class,
-            MarginsAssetUsageService::class,
+            DensityAssetUsageService::class,
+            SkinAssetUsageService::class,
             ResponsiveAssetUsageService::class,
             FontsAssetUsageService::class,
         ];
