@@ -52,11 +52,11 @@ parameters:
     # Skin: the character, at equal density and light — radii, shadows,
     # borders, separators.
     loader.usages.skin:
-      default: default
+      default: basic
       list:
-        default:
+        basic:
           allow_switch: true
-        fluid:
+        soft:
           allow_switch: true
 
     # Animations: whether the page moves of its own accord. Only the values a
