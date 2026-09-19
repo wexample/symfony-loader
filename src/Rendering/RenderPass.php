@@ -170,6 +170,18 @@ class RenderPass
             return;
         }
 
+        // A value the axis does not declare is a value no file answers to, and
+        // a page with no file for an axis has none of that axis at all — no
+        // spacing, no font. It comes from a session that remembers a value
+        // since renamed, or from a controller asking for one that is gone:
+        // either way the axis keeps what it had rather than going blank. An
+        // axis that declares no values constrains none.
+        $list = $this->usagesConfig[$usageName]['list'] ?? [];
+
+        if (null !== $usageValue && $list && ! isset($list[$usageValue])) {
+            return;
+        }
+
         $this->usages[$usageName] = $usageValue;
     }
 

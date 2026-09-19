@@ -80,6 +80,21 @@ class RenderPassTest extends TestCase
         $this->assertSame('val', $renderPass->getUsage('known'));
     }
 
+    public function testSetUsageKeepsCurrentValueWhenValueIsNotDeclared(): void
+    {
+        $renderPass = new RenderPass('view', new AssetsRegistry(sys_get_temp_dir()));
+        $renderPass->usagesConfig = ['fonts' => ['list' => ['system' => [], 'mono' => []]]];
+
+        $renderPass->setUsage('fonts', 'system');
+        // A value no file answers to — a renamed one still in a session, a
+        // controller asking for one that is gone — must not blank the axis.
+        $renderPass->setUsage('fonts', 'demo');
+        $this->assertSame('system', $renderPass->getUsage('fonts'));
+
+        $renderPass->setUsage('fonts', 'mono');
+        $this->assertSame('mono', $renderPass->getUsage('fonts'));
+    }
+
     public function testRenderNodeInitRegistersNode(): void
     {
         $renderPass = new RenderPass('bundle/view', new AssetsRegistry(sys_get_temp_dir()));
