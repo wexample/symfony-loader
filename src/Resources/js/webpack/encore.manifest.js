@@ -414,7 +414,10 @@ function buildEncoreConfig(options = {}) {
   config.resolve = {
     ...(config.resolve || {}),
     symlinks: false,
-    extensions: Array.from(new Set([...(config.resolve?.extensions || []), '.ts', '.tsx', '.js'])),
+    // Scripts first. A component keeps its script and its vue twin in one
+    // directory under one name, so `./button-input` has two candidates; the
+    // bare path means the script, and a vue file is always imported as `.vue`.
+    extensions: Array.from(new Set(['.ts', '.tsx', '.js', ...(config.resolve?.extensions || [])])),
     extensionAlias: {
       ...(config.resolve?.extensionAlias || {}),
       '.js': ['.ts', '.tsx', '.js'],

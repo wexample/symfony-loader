@@ -1,5 +1,5 @@
 <script>
-import ExplorerItem from './explorer-item';
+import ExplorerItem from './explorer-item.vue';
 
 export default {
   extends: ExplorerItem,
