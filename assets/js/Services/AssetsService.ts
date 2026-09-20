@@ -34,16 +34,7 @@ export class AssetsServiceType {
 export default class AssetsService extends AppService {
   public static dependencies: typeof AppService[] = [ErrorService];
 
-  // Worn by the body while a usage is being swapped, and only then. What it
-  // eases, and for how long, is not this bundle's business: a theme hangs its
-  // own rule on the class and says the duration in --usage-switch-duration.
-  public static CLASS_USAGE_SWITCHING: string = 'is-switching-usage';
-
   public usages: { [key: string]: AssetUsage } = {};
-
-  private usageSwitchDepth: number = 0;
-
-  private usageSwitchTimeout: number = null;
 
   public jsAssetsPending: { [key: string]: AssetInterface } = {};
 
@@ -84,7 +75,7 @@ export default class AssetsService extends AppService {
           usageValue: string,
           updateAssets: boolean
         ) {
-          const apply = () => RenderNode.prototype.setUsage.apply(
+          RenderNode.prototype.setUsage.apply(
             this,
             [
               usageName,
@@ -92,23 +83,7 @@ export default class AssetsService extends AppService {
               updateAssets,
             ]);
 
-          // Landing on the value already in force is not a change: the first
-          // mount passes through here for every usage, and dressing that would
-          // be dressing the page appearing.
-          if (this.usages[usageName] === usageValue) {
-            apply();
-            this.assetsUpdate(usageName);
-
-            return;
-          }
-
-          // A real swap: both stylesheets live side by side until the new one
-          // has loaded, which is the only moment the page can be seen moving
-          // from one to the other.
-          await this.app.services.assets.swapWithTransition(async () => {
-            apply();
-            await this.assetsUpdate(usageName);
-          });
+          this.assetsUpdate(usageName);
         },
       },
     };
@@ -225,61 +200,6 @@ export default class AssetsService extends AppService {
 
       return asset;
     });
-  }
-
-  /**
-   * Marks the document for the length of a usage swap. Swaps nest — a layout
-   * switching passes the word to every render node under it — so the mark goes
-   * on at the first and comes off after the last, once whatever the theme eases
-   * has had the time it asked for.
-   */
-  public async swapWithTransition(callback: () => Promise<void>): Promise<void> {
-    const el = document.body;
-
-    if (this.usageSwitchTimeout) {
-      window.clearTimeout(this.usageSwitchTimeout);
-      this.usageSwitchTimeout = null;
-    }
-
-    this.usageSwitchDepth++;
-    el.classList.add(AssetsService.CLASS_USAGE_SWITCHING);
-
-    try {
-      await callback();
-    } finally {
-      this.usageSwitchDepth--;
-
-      if (!this.usageSwitchDepth) {
-        this.usageSwitchTimeout = window.setTimeout(
-          () => {
-            el.classList.remove(AssetsService.CLASS_USAGE_SWITCHING);
-            this.usageSwitchTimeout = null;
-          },
-          this.getUsageSwitchDuration()
-        );
-      }
-    }
-  }
-
-  /**
-   * How long the theme says its swap lasts. Nothing said is nothing eased, and
-   * the mark comes straight back off.
-   */
-  private getUsageSwitchDuration(): number {
-    const raw = window
-      .getComputedStyle(document.body)
-      .getPropertyValue('--usage-switch-duration')
-      .trim();
-
-    if (raw.endsWith('ms')) {
-      return parseFloat(raw) || 0;
-    }
-
-    if (raw.endsWith('s')) {
-      return (parseFloat(raw) || 0) * 1000;
-    }
-
-    return 0;
   }
 
   assetsInCollection(
