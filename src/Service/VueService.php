@@ -111,7 +111,11 @@ class VueService
             ->assetsDetect(
                 $renderPass,
                 $rootComponent,
-                $view
+                $view,
+                // A vue compiles to javascript, and is built beside the scripts
+                // rather than among them: a component holding both would
+                // otherwise claim one file for two things.
+                VueExtension::ASSET_DIRECTORY
             );
 
         if (! isset($this->renderedTemplates[$view])) {

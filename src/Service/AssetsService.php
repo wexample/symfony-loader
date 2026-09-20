@@ -71,7 +71,8 @@ class AssetsService
     public function assetsDetect(
         RenderPass $renderPass,
         AbstractRenderNode $renderNode,
-        ?string $view = null
+        ?string $view = null,
+        ?string $directory = null
     ): void {
         if ($view) {
             $views = [$view];
@@ -90,7 +91,10 @@ class AssetsService
                         $renderPass,
                         $renderNode,
                         $ext,
-                        $view
+                        $view,
+                        // Only the javascript of a vue lives apart; its
+                        // stylesheet is where every other stylesheet is.
+                        $ext === Asset::EXTENSION_JS ? $directory : null
                     )) {
                         $usageFoundForType = true;
                     }

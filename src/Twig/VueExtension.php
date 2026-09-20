@@ -17,6 +17,12 @@ class VueExtension extends AbstractExtension
 {
     final public const TEMPLATE_FILE_EXTENSION = '.vue.twig';
 
+    /**
+     * Where a compiled vue is built, apart from the scripts it would otherwise
+     * collide with.
+     */
+    final public const ASSET_DIRECTORY = 'vue';
+
     public function __construct(
         private readonly VueService $vueService
     ) {

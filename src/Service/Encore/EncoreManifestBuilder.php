@@ -25,6 +25,14 @@ class EncoreManifestBuilder
     ];
     private const JS_MAIN_ALLOWED_DIRECTORIES = ['layouts'];
 
+    private const EXTENSION_VUE = 'vue';
+
+    /**
+     * What a vue definition is registered under, so that a component holding
+     * both a script and a vue twin keeps two definitions rather than one.
+     */
+    public const CLASS_NAME_PREFIX_VUE = 'vue:';
+
     private readonly string $projectDir;
     private readonly string $projectDirWithSeparator;
     private ?array $vendorSymlinkCache = null;
@@ -268,6 +276,13 @@ class EncoreManifestBuilder
         $type = self::EXTENSION_TYPE_MAP[$file['extension']] ?? $file['extension'];
         $pathWithoutExt = $this->removeExtension($file['relativeFront']);
 
+        // A component keeps its script and its vue twin in one directory under
+        // one name. Both compile to javascript, so both would claim the same
+        // output file and the same registry key — webpack would build one and
+        // drop the other without a word. The kind goes into the name.
+        $isVue = $file['extension'] === self::EXTENSION_VUE;
+        $directory = $isVue ? self::EXTENSION_VUE : $type;
+
         $entry = [
             'bundle' => $descriptor['bundle'],
             'frontKey' => $descriptor['key'],
@@ -276,13 +291,14 @@ class EncoreManifestBuilder
             'extension' => $file['extension'],
             'relative' => $file['relativeFront'],
             'source' => $file['relativeProject'],
-            'output' => $this->buildOutputName($descriptor['bundle'], $type, $pathWithoutExt),
+            'output' => $this->buildOutputName($descriptor['bundle'], $directory, $pathWithoutExt),
         ];
 
         if ($withWrapper) {
             $entry['wrapper'] = [
                 'type' => $wrapperType,
-                'className' => $this->buildClassName($descriptor['bundle'], $pathWithoutExt),
+                'className' => ($isVue ? self::CLASS_NAME_PREFIX_VUE : '')
+                    . $this->buildClassName($descriptor['bundle'], $pathWithoutExt),
             ];
         }
 

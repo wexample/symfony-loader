@@ -17,12 +17,14 @@ final class DefaultAssetUsageService extends AbstractAssetUsageService
         RenderPass $renderPass,
         AbstractRenderNode $renderNode,
         string $ext,
-        string $view
+        string $view,
+        ?string $directory = null
     ): bool {
         return (bool) $this->createAssetIfExists(
             $this->buildPublicAssetPathFromView(
                 $view,
-                $ext
+                $ext,
+                $directory
             ),
             $renderNode,
         );

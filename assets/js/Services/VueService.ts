@@ -12,6 +12,8 @@ import ErrorService from './ErrorService';
 import InvariantViolationError from '../Errors/InvariantViolationError';
 
 export default class VueService extends AppService {
+  public static readonly CLASS_NAME_PREFIX: string = 'vue:';
+
   public static dependencies: typeof AppService[] = [ErrorService];
   protected componentRegistered: { [key: string]: object } = {};
   protected elTemplates: HTMLElement;
@@ -227,7 +229,12 @@ export default class VueService extends AppService {
 
     if (!this.componentRegistered[vueName]) {
       const domId = 'vue-template-' + vueName;
-      const vueClassDefinition = this.app.getBundleClassDefinition(view) as any;
+      // Registered apart from a component class of the same name: one
+      // directory holds both, and the registry would keep whichever loaded
+      // first.
+      const vueClassDefinition = this.app.getBundleClassDefinition(
+        VueService.CLASS_NAME_PREFIX + view
+      ) as any;
 
       if (!vueClassDefinition) {
         this.app.services.error?.capture('Missing vue definition for component.', {

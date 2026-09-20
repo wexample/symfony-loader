@@ -18,7 +18,8 @@ final class ResponsiveAssetUsageService extends AbstractAssetUsageService
         RenderPass $renderPass,
         AbstractRenderNode $renderNode,
         string $ext,
-        string $view
+        string $view,
+        ?string $directory = null
     ): bool {
         $pathInfo = pathinfo($this->buildPublicAssetPathFromView($view, $ext));
         $maxWidth = null;

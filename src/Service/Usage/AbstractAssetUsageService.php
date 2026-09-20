@@ -22,24 +22,29 @@ abstract class AbstractAssetUsageService
 
     public function buildPublicAssetPathFromView(
         string $view,
-        string $ext
+        string $ext,
+        ?string $directory = null
     ): string {
         $nameParts = explode('/', $view);
         $bundle = array_shift($nameParts);
 
-        return AssetsRegistryService::DIR_BUILD.PathHelper::join(array_merge([$bundle, $ext], $nameParts)).'.'.$ext;
+        return AssetsRegistryService::DIR_BUILD
+            . PathHelper::join(array_merge([$bundle, $directory ?? $ext], $nameParts))
+            . '.' . $ext;
     }
 
     public function addAssetsForRenderNodeAndType(
         RenderPass $renderPass,
         AbstractRenderNode $renderNode,
         string $ext,
-        string $view
+        string $view,
+        ?string $directory = null
     ): bool {
         $pathInfo = pathinfo(
             $this->buildPublicAssetPathFromView(
                 $view,
-                $ext
+                $ext,
+                $directory
             )
         );
 
