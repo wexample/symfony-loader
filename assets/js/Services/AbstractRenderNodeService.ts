@@ -87,7 +87,9 @@ export default abstract class AbstractRenderNodeService extends AppService {
 
     const instance = await this.createRenderNode(
       parentRenderNode.renderRequestId,
-      view,
+      // The factory settled which of the two shapes of the name the component
+      // is actually under; the class registry is keyed by that one.
+      templateInstance.renderData.view,
       templateInstance.renderData,
       parentRenderNode
     );

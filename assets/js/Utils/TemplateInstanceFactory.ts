@@ -36,6 +36,11 @@ export default class TemplateInstanceFactory {
       return null;
     }
 
+    // From here on, the component is named the way the server found it: the
+    // class registry is keyed by that name too, and looking a class up under
+    // the shorter one the caller wrote would find nothing.
+    view = template.dataset.componentTemplate || view;
+
     const rootEl = this.findTemplateRoot(view, template, app);
     if (!rootEl) {
       return null;
@@ -63,6 +68,18 @@ export default class TemplateInstanceFactory {
   }
 
   private static findTemplate(view: string): HTMLTemplateElement | null {
+    return (
+      this.queryTemplate(view) ??
+      // A component may be a file or a directory holding every renderer of the
+      // same name, and whoever asks for one names it without saying which:
+      // `components/toast` is where the caller points, `components/toast/toast`
+      // is where the server found it. The php side settles the same two shapes
+      // in ComponentPathHelper, and this is its counterpart.
+      this.queryTemplate(`${view}/${view.split('/').pop()}`)
+    );
+  }
+
+  private static queryTemplate(view: string): HTMLTemplateElement | null {
     return document.querySelector(
       `template[data-component-template="${view}"]`
     ) as HTMLTemplateElement | null;
