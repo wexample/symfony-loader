@@ -2,6 +2,7 @@
 
 namespace Wexample\SymfonyLoader\Rendering\RenderNode;
 
+use Wexample\SymfonyLoader\Rendering\Asset;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -47,6 +48,14 @@ class ComponentRenderNode extends AbstractRenderNode
 
     public function renderTag(): string
     {
+        // The tag is a hook for the script that binds the component. A component
+        // with no script has nothing to bind, and now that every element of the
+        // design system is a component, emitting one anyway would put a dead
+        // span after every button, message and table cell on the page.
+        if (empty($this->assets[Asset::EXTENSION_JS] ?? [])) {
+            return '';
+        }
+
         $cssClassName = trim($this->cssClassName ?? '');
 
         return DomHelper::buildTag(

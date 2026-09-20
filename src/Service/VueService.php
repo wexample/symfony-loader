@@ -8,6 +8,7 @@ use Wexample\PhpHtml\Helper\DomHelper;
 use Wexample\SymfonyLoader\Helper\RenderingHelper;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Rendering\Vue;
+use Wexample\SymfonyLoader\Helper\ComponentPathHelper;
 use Wexample\SymfonyLoader\Twig\VueExtension;
 use Wexample\SymfonyTranslations\Translation\Translator;
 
@@ -45,6 +46,14 @@ class VueService
         string $tagName = self::TAG_TEMPLATE,
         ?array $options = []
     ): string {
+        // Same two shapes as a component: `components/button` finds
+        // `components/button/button.vue.twig` when the folder is there.
+        $view = ComponentPathHelper::resolveView(
+            $twig,
+            $view,
+            VueExtension::TEMPLATE_FILE_EXTENSION
+        );
+
         $pathWithExtension = $view.VueExtension::TEMPLATE_FILE_EXTENSION;
 
         if (! $twig->getLoader()->exists($pathWithExtension)) {

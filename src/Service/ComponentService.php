@@ -6,6 +6,8 @@ use Exception;
 use Twig\Environment;
 use Wexample\PhpHtml\Helper\DomHelper;
 use Wexample\SymfonyHelpers\Helper\BundleHelper;
+use Wexample\SymfonyTemplate\Helper\TemplateHelper;
+use Wexample\SymfonyLoader\Helper\ComponentPathHelper;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 use Wexample\SymfonyLoader\Rendering\ComponentManagerLocatorService;
 use Wexample\SymfonyLoader\Rendering\RenderNode\ComponentRenderNode;
@@ -126,7 +128,12 @@ class ComponentService extends AbstractRenderNodeService
             $name,
             self::INIT_MODE_CLASS,
             $options,
-            $templateVars
+            $templateVars,
+            // The markup is already there — the caller is the component's own
+            // template, asking for the class that will bind it. Rendering the
+            // body here would draw the element a second time, inside itself,
+            // with none of the options it was called with.
+            renderBody: false,
         );
     }
 
@@ -212,6 +219,18 @@ class ComponentService extends AbstractRenderNodeService
         bool $renderBody = true,
     ): ComponentRenderNode {
         $name = $this->componentManagerLocatorService->normalizeComponentName($name);
+
+        // A component may be a file or a directory holding every renderer of
+        // the same name. The caller does not say which, so it is settled once,
+        // here: the view is what template, assets, translations and dom ids are
+        // all derived from.
+        $name = ComponentPathHelper::resolveView(
+            $twig,
+            $name,
+            ($options['frontend'] ?? false) === true
+                ? '.front' . TemplateHelper::TEMPLATE_FILE_EXTENSION
+                : TemplateHelper::TEMPLATE_FILE_EXTENSION
+        );
 
         $componentManager = $this
             ->componentManagerLocatorService
