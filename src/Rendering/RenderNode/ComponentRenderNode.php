@@ -46,13 +46,26 @@ class ComponentRenderNode extends AbstractRenderNode
         return 'com-class-loaded' . (! empty($this->cssClassName) ? ' ' . $this->cssClassName : '');
     }
 
+    /**
+     * Whether anything in the browser has to be built from this component.
+     *
+     * A component with no script has no class to instantiate: its markup is
+     * already drawn and its stylesheet is loaded from the registry, so there is
+     * nothing left for the client to do with it. Now that every element of the
+     * design system is a component — a message, a menu item, a table cell —
+     * most of them are in that case, and telling the client about them would
+     * only have it look for a class nobody wrote.
+     */
+    public function hasClientSide(): bool
+    {
+        return ! empty($this->assets[Asset::EXTENSION_JS] ?? []);
+    }
+
     public function renderTag(): string
     {
-        // The tag is a hook for the script that binds the component. A component
-        // with no script has nothing to bind, and now that every element of the
-        // design system is a component, emitting one anyway would put a dead
-        // span after every button, message and table cell on the page.
-        if (empty($this->assets[Asset::EXTENSION_JS] ?? [])) {
+        // The tag is a hook for the script that binds the component, and there
+        // is nothing to hook when there is no script.
+        if (! $this->hasClientSide()) {
             return '';
         }
 

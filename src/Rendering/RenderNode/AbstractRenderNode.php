@@ -133,10 +133,30 @@ abstract class AbstractRenderNode extends RenderDataGenerator
         return $this->vars;
     }
 
+    /**
+     * The components the browser has something to do with.
+     *
+     * The list travels so that the client can build each one; one with no
+     * script has nothing to build, and sending it would only make the client
+     * look for a class that was never written.
+     *
+     * @return AbstractRenderNode[]
+     */
+    protected function getClientComponents(): array
+    {
+        return array_values(
+            array_filter(
+                $this->components,
+                static fn ($component): bool => ! $component instanceof ComponentRenderNode
+                    || $component->hasClientSide()
+            )
+        );
+    }
+
     public function toRenderData(): RenderData
     {
         $data = [
-            'components' => $this->arrayToRenderData($this->components),
+            'components' => $this->arrayToRenderData($this->getClientComponents()),
             'cssClassName' => $this->cssClassName,
             'contextType' => $this->getContextType(),
             'id' => $this->id,
