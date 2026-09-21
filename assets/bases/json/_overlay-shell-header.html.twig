@@ -7,7 +7,7 @@
     {% endif %}
     {% if overlay_show_external_link is not defined or overlay_show_external_link != false %}
         <div class="{{ overlay_type }}-external-link">
-            <a class="action-icon" href="{{ app.request.uri }}" target="_blank" rel="noopener">
+            <a class="action-icon" href="{{ adaptive_response_standalone_uri() }}" target="_blank" rel="noopener">
                 {{ icon('ph:bold/arrow-square-out') }}
             </a>
         </div>

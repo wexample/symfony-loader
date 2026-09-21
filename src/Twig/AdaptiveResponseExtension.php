@@ -2,6 +2,7 @@
 
 namespace Wexample\SymfonyLoader\Twig;
 
+use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\TwigFunction;
 use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
@@ -14,6 +15,7 @@ class AdaptiveResponseExtension extends AbstractExtension
      */
     public function __construct(
         protected AdaptiveResponseService $adaptiveResponseService,
+        protected RequestStack $requestStack,
     ) {
     }
 
@@ -25,6 +27,13 @@ class AdaptiveResponseExtension extends AbstractExtension
                 [
                     $this,
                     'adaptiveResponseRenderingBasePath',
+                ]
+            ),
+            new TwigFunction(
+                'adaptive_response_standalone_uri',
+                [
+                    $this,
+                    'adaptiveResponseStandaloneUri',
                 ]
             ),
         ];
@@ -39,6 +48,17 @@ class AdaptiveResponseExtension extends AbstractExtension
     ): string {
         return $this->adaptiveResponseService->getLayoutBasePath(
             $renderPass,
+        );
+    }
+
+    /**
+     * Return the current uri without the query keys that only choose a shell,
+     * for a link that opens the page on its own.
+     */
+    public function adaptiveResponseStandaloneUri(): string
+    {
+        return $this->adaptiveResponseService->getStandaloneUri(
+            $this->requestStack->getCurrentRequest(),
         );
     }
 }

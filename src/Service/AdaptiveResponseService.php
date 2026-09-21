@@ -22,6 +22,26 @@ class AdaptiveResponseService
     private const string QUERY_STRING_CONFIG_KEY_FORMAT = '__format';
     private const string QUERY_STRING_CONFIG_KEY_LAYOUT = '__layout';
 
+    /**
+     * The uri the page answers to on its own: the current one, minus the query
+     * keys that say nothing about the page and only tell it which shell to
+     * render into. This is what an embedded page links to when it offers to be
+     * opened whole.
+     */
+    public function getStandaloneUri(Request $request): string
+    {
+        $query = $request->query->all();
+        unset(
+            $query[self::QUERY_STRING_CONFIG_KEY_FORMAT],
+            $query[self::QUERY_STRING_CONFIG_KEY_LAYOUT],
+        );
+
+        return $request->getSchemeAndHttpHost()
+            . $request->getBaseUrl()
+            . $request->getPathInfo()
+            . ($query ? '?' . http_build_query($query) : '');
+    }
+
     public function getLayoutBasePath(RenderPass $renderPass): string
     {
         return RenderPass::BASES_MAIN_DIR
