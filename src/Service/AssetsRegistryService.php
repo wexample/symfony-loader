@@ -57,13 +57,22 @@ class AssetsRegistryService extends RenderDataGenerator
         return realpath($this->pathPublic . $this->getBuiltPath($pathInManifest));
     }
 
+    /**
+     * Keyed by the file, not by the view it belongs to.
+     *
+     * A component holding both a script and a vue builds two javascripts, one
+     * under `js/` and one under `vue/`, and `Asset::getView()` drops that very
+     * chunk: keyed by the view, the two claimed one slot and the page kept
+     * whichever was met first — the script when a twig call came before the vue
+     * one, the vue when it did not. Either way the other never reached the
+     * browser, which then asked for a definition nothing had loaded.
+     */
     public function addAsset(Asset $asset): void
     {
         $this->registry[$asset->type] = $this->registry[$asset->type] ?? [];
-        $templateName = $asset->getView();
 
-        if (! isset($this->registry[$asset->type][$templateName])) {
-            $this->registry[$asset->type][$templateName] = $asset;
+        if (! isset($this->registry[$asset->type][$asset->path])) {
+            $this->registry[$asset->type][$asset->path] = $asset;
         }
     }
 
