@@ -2,9 +2,9 @@
 
 namespace Wexample\SymfonyLoader\Service\Usage;
 
-use Exception;
 use Wexample\Helpers\Helper\PathHelper;
 use Wexample\Helpers\Helper\TextHelper;
+use Wexample\SymfonyLoader\Exception\AssetsNotBuiltException;
 use Wexample\SymfonyLoader\Rendering\Asset;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AbstractRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
@@ -70,7 +70,7 @@ abstract class AbstractAssetUsageService
     }
 
     /**
-     * @throws Exception
+     * @throws AssetsNotBuiltException
      */
     protected function createAssetIfExists(
         string $pathInManifest,
@@ -83,8 +83,17 @@ abstract class AbstractAssetUsageService
         $realPath = $this->assetsRegistryService->getRealPath($pathInManifest);
 
         if (! $realPath) {
-            throw new Exception('Unable to find realpath of asset "'
-                .$pathInManifest.', check build folder content or files permissions.');
+            // Listed in the manifest and absent from disk: a build that is not
+            // finished, which is the same state for whoever is looking at the
+            // page as one that never ran. A watcher sharing its output makes it
+            // ordinary -- webpack writes the manifest and the files in an order
+            // that leaves a window, and emptying the directory first widens it.
+            // Typed so that AdaptiveRendererService shows its page instead of a
+            // 500 saying nothing anyone can act on.
+            throw new AssetsNotBuiltException(
+                'Frontend assets need to be built: "'.$pathInManifest
+                .'" is in the manifest but not on disk yet.'
+            );
         }
 
         $asset = new Asset(
