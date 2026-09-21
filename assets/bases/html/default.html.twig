@@ -51,8 +51,12 @@
                     {# When app core is not loaded, -#}
                     {# js asset might be preloaded. -#}
                   if (app.hasCoreLoaded) {
-                      {# Mark now that class is loaded. -#}
-                    app.services.assets.jsPendingLoaded(view);
+                      {# A vue is registered apart from a component class of the -#}
+                      {# same name, but the asset it came from knows only the -#}
+                      {# name they share. -#}
+                    app.services.assets.jsPendingLoaded(
+                      view.indexOf('vue:') === 0 ? view.slice(4) : view
+                    );
                   }
 
                     {# Return to allow export or extending class. -#}

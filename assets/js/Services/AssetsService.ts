@@ -307,6 +307,12 @@ export default class AssetsService extends AppService {
 
   jsPendingLoaded(view: string) {
     let asset = this.jsAssetsPending[view];
+
+    // A script the page carried from the start was never awaited.
+    if (!asset) {
+      return;
+    }
+
     asset.resolver(asset);
 
     delete this.jsAssetsPending[view];
