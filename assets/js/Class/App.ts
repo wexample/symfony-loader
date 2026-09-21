@@ -276,10 +276,10 @@ class App extends AsyncConstructor {
   }
 
   // Persists a UI state key/value pair server-side.
-  // Default: POST to /ui-state/set (DS bundle stores in PHP session).
+  // Default: POST to /_ui-state/set (DS bundle stores in PHP session).
   // Override the backend controller to change persistence behavior (e.g. Syrtis API in manager).
   persistUiState(key: string, value: unknown): void {
-    void fetch('/ui-state/set', {
+    void fetch('/_ui-state/set', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ key, value }),
