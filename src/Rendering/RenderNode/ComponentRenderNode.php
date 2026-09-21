@@ -2,7 +2,6 @@
 
 namespace Wexample\SymfonyLoader\Rendering\RenderNode;
 
-use Wexample\SymfonyLoader\Rendering\Asset;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -11,6 +10,7 @@ use Wexample\PhpHtml\Helper\DomHelper;
 use Wexample\SymfonyHelpers\Class\Traits\WithBodyClassTrait;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 use Wexample\SymfonyLoader\Helper\RenderingHelper;
+use Wexample\SymfonyLoader\Rendering\Asset;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 

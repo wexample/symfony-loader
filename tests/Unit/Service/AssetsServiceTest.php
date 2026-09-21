@@ -12,10 +12,10 @@ use Wexample\SymfonyLoader\Service\AssetsService;
 use Wexample\SymfonyLoader\Service\Usage\AnimationsAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\ColorSchemeAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\DefaultAssetUsageService;
-use Wexample\SymfonyLoader\Service\Usage\FontsAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\DensityAssetUsageService;
-use Wexample\SymfonyLoader\Service\Usage\SkinAssetUsageService;
+use Wexample\SymfonyLoader\Service\Usage\FontsAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\ResponsiveAssetUsageService;
+use Wexample\SymfonyLoader\Service\Usage\SkinAssetUsageService;
 use Wexample\SymfonyTesting\Tests\AbstractSymfonyKernelTestCase;
 
 class AssetsServiceTest extends AbstractSymfonyKernelTestCase

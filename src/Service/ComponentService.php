@@ -6,13 +6,13 @@ use Exception;
 use Twig\Environment;
 use Wexample\PhpHtml\Helper\DomHelper;
 use Wexample\SymfonyHelpers\Helper\BundleHelper;
-use Wexample\SymfonyTemplate\Helper\TemplateHelper;
-use Wexample\SymfonyLoader\Helper\ComponentPathHelper;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
+use Wexample\SymfonyLoader\Helper\ComponentPathHelper;
 use Wexample\SymfonyLoader\Rendering\ComponentManagerLocatorService;
 use Wexample\SymfonyLoader\Rendering\RenderNode\ComponentRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\WexampleSymfonyLoaderBundle;
+use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 use Wexample\SymfonyTranslations\Translation\Translator;
 
 class ComponentService extends AbstractRenderNodeService
