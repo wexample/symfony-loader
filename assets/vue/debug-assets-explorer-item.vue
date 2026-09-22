@@ -34,11 +34,16 @@ export default {
     getChildren() {
       const children = [];
 
-      if (this.type === 'layout') {
+      // The page is made after the components it stands among — `pages` waits
+      // for `components` to be complete before building it — so the explorer
+      // renders at least once on a layout that has none. It shows what is
+      // there and redraws when the node appears, rather than handing a child
+      // an object that does not exist yet.
+      if (this.type === 'layout' && this.object.page) {
         children.push({ type: 'page', object: this.object.page });
       }
 
-      this.object.components.forEach((component) => {
+      (this.object.components || []).forEach((component) => {
         children.push({ type: 'component', object: component });
       });
 
