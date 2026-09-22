@@ -1,5 +1,6 @@
 import AbstractNoticeService from './AbstractNoticeService';
 import ComponentsService from './ComponentsService';
+import InvariantViolationError from '../Errors/InvariantViolationError';
 
 type BannerOptions = {
   id?: string;
@@ -17,7 +18,35 @@ type BannerOptions = {
 
 export default class BannerService extends AbstractNoticeService {
   public static serviceName: string = 'banner';
+
+  /**
+   * The component this shows, left for whoever ships one.
+   *
+   * Announcing something to the reader is a behaviour and belongs here; what
+   * the announcement looks like is markup, and markup belongs to the design
+   * system the application installed. Naming one here would have made every
+   * app that uses the loader without that design system fail on its first
+   * banner, with an error pointing at a package it never asked for. A design
+   * system sets it by extending this class, and the application registers
+   * that subclass.
+   */
+  public static componentPath: string | null = null;
+
   private instance: any | null = null;
+
+  protected resolveComponentPath(): string {
+    const path = (this.constructor as typeof BannerService).componentPath;
+
+    if (!path) {
+      throw new InvariantViolationError({
+        message: 'No banner component: register the BannerService your design system ships, or set BannerService.componentPath.',
+        code: 'ERR_BANNER_COMPONENT_UNSET',
+        context: { serviceName: BannerService.serviceName },
+      });
+    }
+
+    return path;
+  }
 
   async show(options: BannerOptions | string): Promise<string> {
     const normalized = this.normalizeOptions(options, 'banner') as BannerOptions;
@@ -31,7 +60,7 @@ export default class BannerService extends AbstractNoticeService {
     const service = this.app.getServiceOrFail(ComponentsService) as ComponentsService;
     const mountTarget = this.resolveMountTarget(normalized.target);
     const created = service.createComponentFromTemplate(
-      '@WexampleSymfonyDesignSystemBundle/components/banner',
+      this.resolveComponentPath(),
       {
         id: bannerId,
         type,

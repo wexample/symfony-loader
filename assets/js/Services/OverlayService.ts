@@ -8,6 +8,16 @@ export default class OverlayService extends AppService {
   public static OVERLAY_TARGET_MAIN: string = 'main';
   public static OVERLAY_TARGET_GLOBAL: string = 'global';
 
+  /**
+   * The component showStandalone() puts on the page, left for whoever ships
+   * one. Stacking, focus and the escape key are this service's business; the
+   * backdrop itself is markup, and markup belongs to the design system the
+   * application installed. Nothing else in the service needs it — an overlay
+   * a component registers brings its own element — so an application that
+   * never calls showStandalone() can keep this base as it is.
+   */
+  public static componentPath: string | null = null;
+
   private activeOverlay: any = null;
   private previousFocusedEl: HTMLElement | null = null;
   private registered = new Set<any>();
@@ -32,8 +42,18 @@ export default class OverlayService extends AppService {
     }
     componentOptions.overlayBackdropTarget = options.overlayTarget || OverlayService.OVERLAY_TARGET_MAIN;
 
+    const componentPath = (this.constructor as typeof OverlayService).componentPath;
+
+    if (!componentPath) {
+      throw new InvariantViolationError({
+        message: 'No overlay component: register the OverlayService your design system ships, or set OverlayService.componentPath.',
+        code: 'ERR_OVERLAY_COMPONENT_UNSET',
+        context: { serviceName: OverlayService.serviceName },
+      });
+    }
+
     const created = await service.createComponentFromTemplate(
-      '@WexampleSymfonyDesignSystemBundle/components/overlay',
+      componentPath,
       componentOptions,
       this.app.layout
     );

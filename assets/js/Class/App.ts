@@ -165,10 +165,19 @@ class App extends AsyncConstructor {
       }
 
       let name = serviceClass.serviceName;
-      if (!this.services[name]) {
-        this.services[name] = new serviceClass(this, ...serviceArgs);
-        instances.push(this.services[name]);
+      const current = this.services[name];
+
+      // First registration wins, with one exception: a service extending the
+      // one already there is a specialisation of it and takes its place. It is
+      // how an application swaps a service of the loader for the one its design
+      // system ships — the base arrives first, through super.getServices() or
+      // as somebody's dependency, and would otherwise be the one that stayed.
+      if (current && !(serviceClass.prototype instanceof (current.constructor as any))) {
+        return;
       }
+
+      this.services[name] = new serviceClass(this, ...serviceArgs);
+      instances.push(this.services[name]);
     });
 
     return instances;
