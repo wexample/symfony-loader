@@ -30,6 +30,13 @@ class TsconfigPathsSynchronizer
         $compilerOptions = $tsconfig['compilerOptions'] ?? [];
         $paths = $compilerOptions['paths'] ?? [];
 
+        // Each `@wexample/<package>/*` is sent to `vendor/<package>/assets/*`,
+        // the live tree — the same target the webpack aliases carry. A path
+        // mapping is a first choice, not a wall: when the mapped file does not
+        // exist, TypeScript falls back to node resolution under node_modules,
+        // which is why an app must declare these packages as `link:` and not
+        // `file:` (see symfony-design-system knowledge,
+        // contributing/assets-as-npm-package).
         foreach ($manifest['aliases'] as $alias => $relativePath) {
             $paths[$this->normalizeAlias($alias)] = [$this->normalizePath($relativePath)];
         }
