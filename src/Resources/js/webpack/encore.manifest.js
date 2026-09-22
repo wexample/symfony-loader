@@ -399,6 +399,127 @@ function renderWrapperTemplate(classPath, className) {
     .replace(/{className}/g, className);
 }
 
+/**
+ * Webpack settles its entries once, when it starts. A stylesheet, a script or a
+ * vue created afterwards is therefore not compiled and not served, and nothing
+ * says so: the page simply comes back without it, and the author concludes the
+ * convention does not exist. This watches the directories the manifest was
+ * built from and stops the watch when their contents stop matching it, so the
+ * next start — which regenerates the list — picks the file up.
+ *
+ * Only in watch mode: a one-off build has no afterwards.
+ */
+const ENTRY_EXTENSIONS = ['.scss', '.css', '.js', '.ts', '.vue'];
+
+/** Read by the shell loop that runs the watcher. */
+const ENTRY_LIST_CHANGED_EXIT_CODE = 75;
+
+function collectEntryCandidates(roots) {
+  const found = new Set();
+
+  const walk = (dir) => {
+    let entries;
+
+    try {
+      entries = fs.readdirSync(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+
+    for (const entry of entries) {
+      if (entry.name.startsWith('.') || entry.name === 'node_modules') {
+        continue;
+      }
+
+      const full = path.join(dir, entry.name);
+
+      if (entry.isDirectory()) {
+        walk(full);
+        continue;
+      }
+
+      // Underscored files are partials: they are compiled through another file
+      // and never become entries, so their coming and going changes nothing.
+      if (entry.name.startsWith('_')) {
+        continue;
+      }
+
+      if (ENTRY_EXTENSIONS.includes(path.extname(entry.name))) {
+        found.add(full);
+      }
+    }
+  };
+
+  roots.forEach(walk);
+
+  return found;
+}
+
+class EntryListWatchdog {
+  constructor(roots) {
+    this.roots = roots;
+    this.known = null;
+  }
+
+  apply(compiler) {
+    // Webpack watches what it compiled, and a file nobody imports is outside
+    // that: created, it would wake no one and be seen by no one. Declaring the
+    // roots as context dependencies is what puts the directories themselves
+    // under watch, so their contents changing is a reason to look again.
+    compiler.hooks.afterCompile.tap('EntryListWatchdog', (compilation) => {
+      this.roots.forEach((root) => compilation.contextDependencies.add(root));
+    });
+
+    compiler.hooks.watchRun.tap('EntryListWatchdog', () => {
+      const current = collectEntryCandidates(this.roots);
+
+      if (this.known === null) {
+        this.known = current;
+
+        return;
+      }
+
+      const added = [...current].filter((file) => !this.known.has(file));
+      const removed = [...this.known].filter((file) => !current.has(file));
+
+      if (!added.length && !removed.length) {
+        return;
+      }
+
+      this.known = current;
+
+      logTitle('The list of entries is out of date', COLORS.magenta);
+      added.forEach((file) => logPath('  appeared', file));
+      removed.forEach((file) => logPath('  gone', file));
+      console.log(
+        '\nWebpack was told its entries when it started and cannot be told '
+        + 'again.\nStopping here so the next start compiles what just '
+        + 'appeared.\n'
+      );
+
+      // A code of its own, so whoever runs the watch can tell this apart from
+      // a build that died and restart rather than give up.
+      process.exit(ENTRY_LIST_CHANGED_EXIT_CODE);
+    });
+  }
+}
+
+function watchEntryList(encore, manifest) {
+  const roots = (manifest.fronts || [])
+    .map((front) => front.paths?.absolute)
+    .filter((root) => root && fs.existsSync(root));
+
+  if (!roots.length) {
+    return;
+  }
+
+  // Registered whatever the mode: `watchRun` is a hook of the watcher and of
+  // nothing else, so a build that runs once never reaches it — and asking
+  // `process.argv` whether this is a watch is asking the wrong process, the
+  // encore binary having rewritten it by the time the config is read.
+  encore.addPlugin(new EntryListWatchdog(roots));
+}
+
 function buildEncoreConfig(options = {}) {
   if (options.clearCache !== false) {
     execSync('php bin/console cache:clear --no-warmup', {stdio: 'inherit'});
@@ -407,6 +528,7 @@ function buildEncoreConfig(options = {}) {
   maybeGenerateEncoreManifest(options);
   configureEncoreBase(options);
   applyManifestEntries(options);
+  watchEntryList(Encore, loadManifest());
 
   const config = Encore.getWebpackConfig();
 
@@ -431,6 +553,15 @@ function buildEncoreConfig(options = {}) {
       ...(options.alias || {}),
     },
   };
+  // The `@wexample/<php package>` aliases come from the manifest and point at
+  // `vendor/<package>/assets` — the live tree — and the tsconfig `paths` say the
+  // same, so whatever yarn put under node_modules/@wexample/ for those packages
+  // is never read by this build. Never, but for one case: a file a `paths`
+  // entry maps to that does not exist makes TypeScript fall back to node
+  // resolution, and if the app declared the package as `file:` (a copy) rather
+  // than `link:` (a symlink), the fallback type-checks a frozen copy of the
+  // whole package and reports errors in files nobody touched. The rule and the
+  // reasoning: symfony-design-system knowledge, contributing/assets-as-npm-package.
 
   // Remove FosRouting InjectPlugin (duplicate singleton bug). Routes are loaded via @fosRoutes alias.
   const fosRoutingIndex = config.plugins.findIndex(
@@ -479,6 +610,7 @@ function buildEncoreConfig(options = {}) {
 
 export {
   DEFAULT_MANIFEST_PATH,
+  ENTRY_LIST_CHANGED_EXIT_CODE,
   configureEncoreBase,
   applyManifestEntries,
   loadManifest,
