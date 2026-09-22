@@ -61,12 +61,13 @@ class PageService extends AbstractRenderNodeService
         /** @var AbstractLoaderController $controllerClass */
         $controllerClass = ClassHelper::getClassPath($controllerMethodPath);
 
-        $bundle = null;
-        if (ClassHelper::classUsesTrait($controllerClass, SymfonyDesignSystemBundleClassTrait::class)) {
-            $bundle = $controllerClass::getBundleClassName();
-        }
-
-        $templateLocationPrefix = $controllerClass::getTemplateLocationPrefix(bundle: $bundle);
+        // Passed nothing, the controller answers with its own bundle through
+        // getControllerBundle(), which asks for the generic BundleClassTrait
+        // and so works for whichever bundle the controller belongs to. This
+        // named one bundle in particular, and named it without importing it:
+        // the constant resolved inside this namespace, matched nothing, and the
+        // branch had never run.
+        $templateLocationPrefix = $controllerClass::getTemplateLocationPrefix();
 
         if (ClassHelper::hasAttributes(
             $controllerMethodPath,
