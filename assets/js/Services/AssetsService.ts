@@ -36,7 +36,7 @@ export default class AssetsService extends AppService {
 
   public usages: { [key: string]: AssetUsage } = {};
 
-  public jsAssetsPending: { [key: string]: AssetInterface } = {};
+  public jsAssetsPending: { [key: string]: AssetInterface[] } = {};
 
   public static serviceName: string = 'assets';
 
@@ -168,7 +168,14 @@ export default class AssetsService extends AppService {
         if (asset.type === 'js') {
           // Browsers does not load twice the JS file content.
           if (!asset.rendered) {
-            this.jsAssetsPending[asset.view] = asset;
+            // Two files answer to one view — a component's class and its vue
+            // twin — and each announces itself under the name they share, so
+            // the ones being waited for are kept in the order they were asked
+            // for rather than one overwriting the other.
+            this.jsAssetsPending[asset.view] =
+              this.jsAssetsPending[asset.view] || [];
+            this.jsAssetsPending[asset.view].push(asset);
+
             this.addScript(
               asset,
               assetReplaced);
@@ -268,11 +275,14 @@ export default class AssetsService extends AppService {
   registerAsset(asset: AssetInterface): AssetInterface {
     const registry = this.app.registry.assetsRegistry;
 
-    // Each asset has a unique reference object shared between all render node.
-    if (!registry[asset.type][asset.view]) {
-      registry[asset.type][asset.view] = asset;
+    // Each asset has a unique reference object shared between all render node,
+    // and what makes it one asset is the file: a component's script and its vue
+    // twin share a view, so keying this by view kept whichever came first and
+    // dropped the other's path without a word.
+    if (!registry[asset.type][asset.path]) {
+      registry[asset.type][asset.path] = asset;
     }
-    return registry[asset.type][asset.view];
+    return registry[asset.type][asset.path];
   }
 
   removeAssets(assetsCollection: AssetsCollectionInterface) {
@@ -288,7 +298,7 @@ export default class AssetsService extends AppService {
     if (asset.el) {
       // Do some cleanup, only useful for source readability.
       if (asset.initialLayout) {
-        const elPreload = document.getElementById(`${asset.view}-preload`);
+        const elPreload = document.getElementById(`${asset.domId}-preload`);
         if (elPreload) {
           elPreload.remove();
         }
@@ -306,16 +316,20 @@ export default class AssetsService extends AppService {
   }
 
   jsPendingLoaded(view: string) {
-    let asset = this.jsAssetsPending[view];
+    const pending = this.jsAssetsPending[view];
 
     // A script the page carried from the start was never awaited.
-    if (!asset) {
+    if (!pending || !pending.length) {
       return;
     }
 
-    asset.resolver(asset);
+    const asset = pending.shift();
 
-    delete this.jsAssetsPending[view];
+    if (!pending.length) {
+      delete this.jsAssetsPending[view];
+    }
+
+    asset.resolver(asset);
   }
 
   addScript(asset: AssetInterface, assetReplacement?: AssetInterface) {

@@ -71,24 +71,33 @@ class Asset extends RenderDataGenerator
         $this->path = $pathInManifest;
         $this->publicPath = $publicPath;
 
-        // Same as render node id
-        $this->setView(
-            $this->buildView($this->path)
-        );
-
-        $this->setDomId(
-            $this->type.'-'.DomHelper::buildStringIdentifier($this->getView())
-        );
-    }
-
-    private function buildView(string $path): string
-    {
-        $path = TextHelper::trimFirstChunk(
-            FileHelper::removeExtension($path),
+        $pathIdentity = TextHelper::trimFirstChunk(
+            FileHelper::removeExtension($this->path),
             AssetsRegistryService::DIR_BUILD
         );
 
-        $explode = explode('/', $path);
+        // Same as render node id
+        $this->setView(
+            $this->buildView($pathIdentity)
+        );
+
+        // The file, and not the component it belongs to: one directory holds a
+        // component's script and its vue twin, and the view drops the segment
+        // that tells them apart, so an id built on the view would be the same
+        // string on both tags and every lookup by it would find only the first.
+        $this->setDomId(
+            $this->type.'-'.DomHelper::buildStringIdentifier($pathIdentity)
+        );
+    }
+
+    /**
+     * The name a render node answers to: the file's, minus the segment saying
+     * what it was compiled from — `js`, `vue`, `css`. Several files share one
+     * view on purpose; none of them share an identity.
+     */
+    private function buildView(string $pathIdentity): string
+    {
+        $explode = explode('/', $pathIdentity);
         $parts = array_slice($explode, 2);
         array_unshift($parts, current($explode));
 
