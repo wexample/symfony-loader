@@ -143,7 +143,6 @@ Visit the [Wexample Suite documentation](https://docs.wexample.com) for the comp
 - wexample/php-html: >=0.1.6
 - wexample/symfony-dev: >=4.0.0
 - wexample/symfony-helpers: >=9.0.0
-- wexample/symfony-routing: >=1.0.0
 - wexample/symfony-translations: >=4.0.0
 - friendsofsymfony/jsrouting-bundle: ^3.2.1
 - symfony/webpack-encore-bundle: ^2.0.1
