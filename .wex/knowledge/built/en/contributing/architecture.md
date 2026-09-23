@@ -98,6 +98,10 @@ src/Service/ComponentService.php orchestrates the lifecycle:
 
 src/Twig/ComponentsExtension.php exposes all component functions to Twig (`component`, `component_init_class`, `component_init_parent`, `component_init_previous`, `component_frontend`, `component_lazy`) and registers `ComponentTokenParser` for the `{% component … %}{% endcomponent %}` block syntax.
 
+### Front-end services that draw something
+
+Three services of assets/js/Services put markup on the page and do not own it: `BannerService` (an announcement), `OverlayService` through `showStandalone()` (a backdrop), and the confirm dialog, which is not here at all. Each of the two declares `static componentPath: string | null = null` and throws an `InvariantViolationError` naming itself when asked to draw with nothing set. The design system the application installed ships a subclass setting the path, and the application registers that subclass in its `App.getServices()`; `App.loadServices()` lets a subclass take the place of a service already registered under the same name, so the base arriving first — through `super.getServices()` or as another service's dependency — does not win. This is the whole of what the loader knows about any design system: a name it does not say.
+
 ### Vue integration
 
 src/Service/VueService.php wraps a `.vue.html.twig` template in a `<template>` element, registers assets against the vue's root component render node, collects translations via `@vue::*`, and deduplicates repeated renders of the same view. On AJAX responses it attaches all rendered Vue templates to `AjaxLayoutRenderNode::vueTemplates` so the front-end can pick them up from the JSON payload.

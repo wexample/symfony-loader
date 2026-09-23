@@ -1,6 +1,6 @@
 # symfony_loader
 
-Version: 10.0.0
+Version: 11.0.0
 
 `symfony-loader` is a Symfony bundle that replaces the standard `render()` call with `adaptiveRender()`, routing each request through a `RenderPass` that selects between a full HTML response and a JSON envelope depending on whether the request is XHR. Controllers extending `AbstractLoaderController` inherit this pipeline, which also collects and injects Webpack Encore assets — CSS variants for color scheme, responsive breakpoints, density, skin, fonts, and animations — at the end of every HTML response. It targets Symfony developers who need a single rendering path that handles both initial page loads and dynamic partial updates without duplicating controller logic.
 
@@ -113,6 +113,10 @@ src/Service/ComponentService.php orchestrates the lifecycle:
 4. Call `componentRenderBody()` if `$renderBody` is true: sets the translation domain, calls `ComponentRenderNode::render()` to get the Twig body, then reverts the domain and pops the context stack.
 
 src/Twig/ComponentsExtension.php exposes all component functions to Twig (`component`, `component_init_class`, `component_init_parent`, `component_init_previous`, `component_frontend`, `component_lazy`) and registers `ComponentTokenParser` for the `{% component … %}{% endcomponent %}` block syntax.
+
+### Front-end services that draw something
+
+Three services of assets/js/Services put markup on the page and do not own it: `BannerService` (an announcement), `OverlayService` through `showStandalone()` (a backdrop), and the confirm dialog, which is not here at all. Each of the two declares `static componentPath: string | null = null` and throws an `InvariantViolationError` naming itself when asked to draw with nothing set. The design system the application installed ships a subclass setting the path, and the application registers that subclass in its `App.getServices()`; `App.loadServices()` lets a subclass take the place of a service already registered under the same name, so the base arriving first — through `super.getServices()` or as another service's dependency — does not win. This is the whole of what the loader knows about any design system: a name it does not say.
 
 ### Vue integration
 
