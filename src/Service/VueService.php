@@ -146,14 +146,19 @@ class VueService
                 $this->translator->transFilter('@vue::*')
             );
 
-            $this->translator->revertDomain(
-                Translator::DOMAIN_TYPE_VUE
-            );
-
             $renderPass->revertCurrentContextRenderNode();
 
             $this->renderedTemplates[$view] = $template;
         }
+
+        // Reverted whether or not the template was rendered this time: the
+        // domain was set above either way. A vue required a second time — a
+        // marker both a list and a distribution inside it ask for — would
+        // otherwise leave its own domain on the stack, and the vue that asked
+        // would find `@vue` pointing at a component that is not itself.
+        $this->translator->revertDomain(
+            Translator::DOMAIN_TYPE_VUE
+        );
 
         if ($renderPass->isJsonRequest()) {
             $renderPass->getLayoutRenderNode()->vueTemplates = $this->renderedTemplates;
