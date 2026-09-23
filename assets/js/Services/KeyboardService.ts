@@ -21,6 +21,8 @@ export default class KeyboardService extends AppService {
   public static readonly KEY_TAB: string = 'Tab';
   public static readonly KEY_ARROW_UP: string = 'ArrowUp';
   public static readonly KEY_ARROW_DOWN: string = 'ArrowDown';
+  public static readonly KEY_ARROW_LEFT: string = 'ArrowLeft';
+  public static readonly KEY_ARROW_RIGHT: string = 'ArrowRight';
   public static readonly KEY_HOME: string = 'Home';
   public static readonly KEY_END: string = 'End';
 
