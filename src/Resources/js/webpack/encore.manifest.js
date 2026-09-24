@@ -399,65 +399,157 @@ function renderWrapperTemplate(classPath, className) {
     .replace(/{className}/g, className);
 }
 
+/** Read by the shell loop that runs the watcher. */
+const ENTRY_LIST_CHANGED_EXIT_CODE = 75;
+
+/**
+ * How long a change is left to settle before it is believed. An editor saves by
+ * writing a temporary file and renaming it, a checkout or an agent writes a
+ * handful of files one after the other: read too early, the tree says something
+ * it stops saying a moment later.
+ */
+const ENTRY_LIST_SETTLE_MS = 1200;
+
+/**
+ * What makes a file an entry — the rules of EncoreManifestBuilder, on the PHP
+ * side, which writes the list webpack starts with. They are repeated here so a
+ * file that could never be an entry — a helper under js/, a class, a partial —
+ * does not stop the watch for nothing. A change to one is a change to both.
+ *
+ * Answers why the file is an entry, or null when it is not one.
+ */
+function describeEntrySource(relative) {
+  const filename = path.posix.basename(relative);
+
+  // Partials, and what an editor or a tool leaves behind for a moment.
+  if (!filename || filename.startsWith('_') || filename.startsWith('.')) {
+    return null;
+  }
+
+  const extension = path.posix.extname(filename).slice(1).toLowerCase();
+  const firstSegment = relative.split('/')[0];
+  // A class file is named with a capital: it is imported, never an entry of
+  // its own, where it stands beside a page or a layout.
+  const isClass = filename[0].toUpperCase() === filename[0];
+
+  if (extension === 'scss' || extension === 'css') {
+    return 'a stylesheet';
+  }
+
+  if (extension === 'vue') {
+    return 'a vue component';
+  }
+
+  if (extension !== 'js' && extension !== 'ts') {
+    return null;
+  }
+
+  if (firstSegment === 'layouts') {
+    return isClass ? null : 'a layout script';
+  }
+
+  if (firstSegment === 'pages') {
+    return isClass ? null : 'a page script';
+  }
+
+  if (firstSegment === 'components') {
+    return 'a component script';
+  }
+
+  if (firstSegment === 'forms') {
+    return 'a form script';
+  }
+
+  return null;
+}
+
+function realPathOrSelf(filePath) {
+  try {
+    return fs.realpathSync(filePath);
+  } catch {
+    return filePath;
+  }
+}
+
+/** Every file under the roots that the rules make an entry, by real path. */
+function collectEntrySources(roots) {
+  const found = new Map();
+
+  roots.forEach((root) => {
+    const walk = (dir) => {
+      let entries;
+
+      try {
+        entries = fs.readdirSync(dir, { withFileTypes: true });
+      } catch {
+        return;
+      }
+
+      for (const entry of entries) {
+        if (entry.name.startsWith('.') || entry.name === 'node_modules') {
+          continue;
+        }
+
+        const full = path.join(dir, entry.name);
+
+        if (entry.isDirectory()) {
+          walk(full);
+          continue;
+        }
+
+        const relative = toPosix(path.relative(root, full));
+        const reason = describeEntrySource(relative);
+
+        if (reason) {
+          found.set(full, { relative, reason });
+        }
+      }
+    };
+
+    walk(root);
+  });
+
+  return found;
+}
+
+/** The sources webpack was actually started with, by real path. */
+function collectManifestSources(manifest) {
+  const sources = new Set();
+  const add = (entry) => {
+    if (entry?.source) {
+      sources.add(realPathOrSelf(path.resolve(process.cwd(), entry.source)));
+    }
+  };
+
+  (manifest.entries?.css || []).forEach(add);
+  Object.values(manifest.entries?.js || {}).forEach((entries) => (entries || []).forEach(add));
+
+  return sources;
+}
+
+function waitFor(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 /**
  * Webpack settles its entries once, when it starts. A stylesheet, a script or a
  * vue created afterwards is therefore not compiled and not served, and nothing
  * says so: the page simply comes back without it, and the author concludes the
  * convention does not exist. This watches the directories the manifest was
- * built from and stops the watch when their contents stop matching it, so the
- * next start — which regenerates the list — picks the file up.
+ * built from and stops the watch when the entries they hold stop matching the
+ * ones webpack was given, so the next start — which regenerates the list —
+ * picks the change up.
+ *
+ * It stops for that and nothing else: a file the rules never make an entry
+ * comes and goes freely, a file that was not an entry may go without anyone
+ * minding, and a change is believed only once it has settled.
  *
  * Only in watch mode: a one-off build has no afterwards.
  */
-const ENTRY_EXTENSIONS = ['.scss', '.css', '.js', '.ts', '.vue'];
-
-/** Read by the shell loop that runs the watcher. */
-const ENTRY_LIST_CHANGED_EXIT_CODE = 75;
-
-function collectEntryCandidates(roots) {
-  const found = new Set();
-
-  const walk = (dir) => {
-    let entries;
-
-    try {
-      entries = fs.readdirSync(dir, { withFileTypes: true });
-    } catch {
-      return;
-    }
-
-    for (const entry of entries) {
-      if (entry.name.startsWith('.') || entry.name === 'node_modules') {
-        continue;
-      }
-
-      const full = path.join(dir, entry.name);
-
-      if (entry.isDirectory()) {
-        walk(full);
-        continue;
-      }
-
-      // Underscored files are partials: they are compiled through another file
-      // and never become entries, so their coming and going changes nothing.
-      if (entry.name.startsWith('_')) {
-        continue;
-      }
-
-      if (ENTRY_EXTENSIONS.includes(path.extname(entry.name))) {
-        found.add(full);
-      }
-    }
-  };
-
-  roots.forEach(walk);
-
-  return found;
-}
-
 class EntryListWatchdog {
-  constructor(roots) {
+  constructor(roots, manifestSources) {
     this.roots = roots;
+    this.manifestSources = manifestSources;
     this.known = null;
   }
 
@@ -470,31 +562,33 @@ class EntryListWatchdog {
       this.roots.forEach((root) => compilation.contextDependencies.add(root));
     });
 
-    compiler.hooks.watchRun.tap('EntryListWatchdog', () => {
-      const current = collectEntryCandidates(this.roots);
-
+    compiler.hooks.watchRun.tapPromise('EntryListWatchdog', async () => {
       if (this.known === null) {
-        this.known = current;
+        this.known = collectEntrySources(this.roots);
 
         return;
       }
 
-      const added = [...current].filter((file) => !this.known.has(file));
-      const removed = [...this.known].filter((file) => !current.has(file));
-
-      if (!added.length && !removed.length) {
+      if (!this.findChanges(collectEntrySources(this.roots)).length) {
         return;
       }
 
-      this.known = current;
+      // Read again once the tree has settled, and believed only then.
+      await waitFor(ENTRY_LIST_SETTLE_MS);
+
+      const current = collectEntrySources(this.roots);
+      const changes = this.findChanges(current);
+
+      if (!changes.length) {
+        return;
+      }
 
       logTitle('The list of entries is out of date', COLORS.magenta);
-      added.forEach((file) => logPath('  appeared', file));
-      removed.forEach((file) => logPath('  gone', file));
+      changes.forEach(({ kind, file, reason }) => logPath(`  ${kind}`, `${file} (${reason})`));
       console.log(
         '\nWebpack was told its entries when it started and cannot be told '
-        + 'again.\nStopping here so the next start compiles what just '
-        + 'appeared.\n'
+        + 'again.\nStopping here so the next start compiles the list as it '
+        + 'now stands.\n'
       );
 
       // A code of its own, so whoever runs the watch can tell this apart from
@@ -502,12 +596,42 @@ class EntryListWatchdog {
       process.exit(ENTRY_LIST_CHANGED_EXIT_CODE);
     });
   }
+
+  // What changed that webpack cares about: an entry that appeared and is not
+  // in its list, or one of its own sources that is gone — a file that was
+  // never an entry leaves the list as it was.
+  findChanges(current) {
+    const changes = [];
+
+    current.forEach(({ reason }, file) => {
+      if (!this.known.has(file) && !this.manifestSources.has(file)) {
+        changes.push({ kind: 'appeared', file, reason });
+      }
+    });
+
+    this.known.forEach(({ reason }, file) => {
+      if (!current.has(file) && this.manifestSources.has(file)) {
+        changes.push({ kind: 'gone', file, reason });
+      }
+    });
+
+    // What came and went without concerning webpack is taken as the new
+    // state, so it is not weighed again at the next compilation.
+    if (!changes.length) {
+      this.known = current;
+    }
+
+    return changes;
+  }
 }
 
 function watchEntryList(encore, manifest) {
+  // By their real path, like the files found under them: a front reached
+  // through a vendor link is the same directory as its source.
   const roots = (manifest.fronts || [])
     .map((front) => front.paths?.absolute)
-    .filter((root) => root && fs.existsSync(root));
+    .filter((root) => root && fs.existsSync(root))
+    .map(realPathOrSelf);
 
   if (!roots.length) {
     return;
@@ -517,7 +641,7 @@ function watchEntryList(encore, manifest) {
   // nothing else, so a build that runs once never reaches it — and asking
   // `process.argv` whether this is a watch is asking the wrong process, the
   // encore binary having rewritten it by the time the config is read.
-  encore.addPlugin(new EntryListWatchdog(roots));
+  encore.addPlugin(new EntryListWatchdog(roots, collectManifestSources(manifest)));
 }
 
 function buildEncoreConfig(options = {}) {
