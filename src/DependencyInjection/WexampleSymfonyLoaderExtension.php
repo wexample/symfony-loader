@@ -8,6 +8,7 @@ use Wexample\SymfonyHelpers\DependencyInjection\AbstractWexampleSymfonyExtension
 use Wexample\SymfonyHelpers\Helper\FileHelper;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 use Wexample\SymfonyHelpers\Interface\LoaderBundleInterface;
+use Wexample\SymfonyLoader\Interface\DevelopTabInterface;
 
 class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
 {
@@ -19,6 +20,12 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
             __DIR__,
             $container
         );
+
+        // A bundle adds a tab to the develop toolbar by implementing the
+        // interface, and nothing more: the tag the registry collects follows.
+        $container
+            ->registerForAutoconfiguration(DevelopTabInterface::class)
+            ->addTag('wexample_symfony_loader.develop_tab');
 
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
