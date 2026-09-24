@@ -50,8 +50,15 @@ export default class ComponentLazyLoaderService extends AppService {
   }
 
   observeRoot(root: Document | Element, parentRenderNode?: RenderNode): void {
-    root
-      .querySelectorAll<HTMLElement>('[data-component-lazy-path]:not([data-component-lazy-observed])')
+    const selector = '[data-component-lazy-path]:not([data-component-lazy-observed])';
+    // The root itself counts: a lazy body can be nothing but another placeholder.
+    const placeholders = Array.from(root.querySelectorAll<HTMLElement>(selector));
+
+    if (root instanceof HTMLElement && root.matches(selector)) {
+      placeholders.unshift(root);
+    }
+
+    placeholders
       .forEach((el) => {
         el.setAttribute('data-component-lazy-observed', '1');
         if (parentRenderNode) {
@@ -97,6 +104,8 @@ export default class ComponentLazyLoaderService extends AppService {
     const registered = assetsService.registerAssetsInCollection(allAssets);
     await assetsService.appendAssets(registered, AssetsService.createEmptyAssetsCollection());
 
+    let inserted: Element[] = [];
+
     if (placeholder && data.body) {
       // Add cssClassName so attachHtmlElements can locate this placeholder via querySelector.
       // Insert body before (not replacing) — placeholder stays in DOM during init,
@@ -104,12 +113,15 @@ export default class ComponentLazyLoaderService extends AppService {
       placeholder.classList.add(data.cssClassName);
       const tmp = document.createElement('div');
       tmp.innerHTML = data.body;
+      inserted = Array.from(tmp.children);
       placeholder.before(...Array.from(tmp.childNodes));
     }
 
     if (data.vueTemplates && this.app.services.vue) {
       (this.app.services.vue as VueService).addTemplatesHtml(data.vueTemplates);
     }
+
+    let owner: RenderNode | undefined = parentRenderNode;
 
     if (data.view && parentRenderNode) {
       const componentsService = this.app.services.components as ComponentsService;
@@ -124,6 +136,16 @@ export default class ComponentLazyLoaderService extends AppService {
         await component.mountTree();
         await component.setNewTreeRenderNodeReady();
         parentRenderNode.components.push(component as Component);
+        owner = component;
+      }
+    }
+
+    // The two scans at start-up have already run: a placeholder arriving inside
+    // a lazy body — a lazy tab in the lazy develop toolbar — is seen here or
+    // never. It hangs from the component that just brought it.
+    for (const el of inserted) {
+      if (el.isConnected) {
+        this.observeRoot(el, owner);
       }
     }
   }
