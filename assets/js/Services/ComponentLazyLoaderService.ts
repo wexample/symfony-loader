@@ -123,7 +123,9 @@ export default class ComponentLazyLoaderService extends AppService {
 
     let owner: RenderNode | undefined = parentRenderNode;
 
-    if (data.view && parentRenderNode) {
+    // Only a component with a script has a class to build; the others are done
+    // once their markup is in place and their stylesheet loaded.
+    if (data.view && data.clientSide !== false && parentRenderNode) {
       const componentsService = this.app.services.components as ComponentsService;
       const component = await componentsService.createRenderNode(
         parentRenderNode.renderRequestId,
@@ -138,6 +140,9 @@ export default class ComponentLazyLoaderService extends AppService {
         parentRenderNode.components.push(component as Component);
         owner = component;
       }
+    } else if (placeholder && data.body) {
+      // No mount to take the placeholder away: its body stands in its place.
+      placeholder.remove();
     }
 
     // The two scans at start-up have already run: a placeholder arriving inside

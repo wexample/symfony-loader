@@ -58,6 +58,9 @@ class ComponentController extends AbstractLoaderController
         $renderData = $component->toRenderData()->toArray();
         $renderData['body'] = $component->getBody();
         $renderData['vueTemplates'] = $layoutNode->vueTemplates;
+        // The rule the page applies to the components it lists: one with no
+        // script is drawn and styled, and the browser has nothing to build.
+        $renderData['clientSide'] = $component->hasClientSide();
 
         return new JsonResponse($renderData);
     }
