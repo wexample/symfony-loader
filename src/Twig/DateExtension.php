@@ -26,6 +26,10 @@ class DateExtension extends AbstractExtension
     {
         return [
             new TwigFunction(
+                'date_locale',
+                [$this->dateService, 'getLocale']
+            ),
+            new TwigFunction(
                 'date_display',
                 [$this, 'dateDisplay'],
                 [self::FUNCTION_OPTION_IS_SAFE => self::FUNCTION_OPTION_IS_SAFE_VALUE_HTML]

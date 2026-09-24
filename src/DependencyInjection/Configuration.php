@@ -19,6 +19,10 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('default_color_scheme')
             ->defaultNull()
             ->end()
+            // Locale used to format dates, when it must differ from the translation one (e.g. en_GB).
+            ->scalarNode('date_locale')
+            ->defaultNull()
+            ->end()
             ->arrayNode('front_paths')
             ->normalizeKeys(false)
             ->beforeNormalization()

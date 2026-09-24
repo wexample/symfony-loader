@@ -31,6 +31,11 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
             $config['tsconfig_path'] ?? null
         );
 
+        $container->setParameter(
+            'loader.date_locale',
+            $config['date_locale'] ?? null
+        );
+
         if (! empty($config['default_color_scheme'])) {
             $colorSchemeConfig = $container->hasParameter('loader.usages.color_scheme')
                 ? (array) $container->getParameter('loader.usages.color_scheme')

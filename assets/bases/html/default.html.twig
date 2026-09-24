@@ -4,6 +4,7 @@
     {{ parent() }}
     {{ var_export(render_pass, 'translatorDomainSeparator', constant('\\Wexample\\SymfonyTranslations\\Translation\\Translator::DOMAIN_SEPARATOR')) }}
     {{ var_export(render_pass, 'translatorDomainPrefix', constant('\\Wexample\\SymfonyTranslations\\Translation\\Translator::DOMAIN_PREFIX')) }}
+    {{ var_export(render_pass, 'dateLocale', date_locale()) }}
     {{ var_export(render_pass, 'displayBreakpoints', display_breakpoints) }}
     {{ var_export(render_pass, 'usagesConfig', render_pass.usagesConfig) }}
     {{ trans_js(render_pass, 'WexampleSymfonyLoaderBundle.common.system::*') }}

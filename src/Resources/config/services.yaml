@@ -2,6 +2,7 @@ parameters:
     loader.debug: false
     loader.environment: '%env(APP_ENV)%'
     loader.layout_bases: {}
+    loader.date_locale: ~
     
     # Loader colors
     loader.colors: {}
@@ -103,6 +104,10 @@ services:
     Wexample\SymfonyLoader\Twig\ColorExtension:
         arguments:
             $colors: '%loader.colors%'
+
+    Wexample\SymfonyLoader\Service\DateService:
+        arguments:
+            $dateLocale: '%loader.date_locale%'
 
     Wexample\SymfonyLoader\Service\LayoutService:
         arguments:

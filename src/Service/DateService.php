@@ -23,6 +23,7 @@ class DateService
 
     public function __construct(
         private readonly Translator $translator,
+        private readonly ?string $dateLocale = null,
     ) {
         $this->formatter = new DateFormatter(
             fn (string $key, array $parameters, ?string $locale): string => $this->translator->trans(
@@ -31,8 +32,16 @@ class DateService
                 null,
                 $locale
             ),
-            fn (): string => $this->translator->getLocale(),
+            fn (): string => $this->getLocale(),
         );
+    }
+
+    /**
+     * The configured date locale if any, the translation locale otherwise.
+     */
+    public function getLocale(): string
+    {
+        return $this->dateLocale ?? $this->translator->getLocale();
     }
 
     /**

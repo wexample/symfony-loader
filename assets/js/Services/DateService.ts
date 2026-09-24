@@ -55,8 +55,12 @@ export default class DateService extends AppService {
         (key: string, parameters: Record<string, string | number>): string =>
           (this.app.getServiceOrFail(LocaleService) as LocaleService)
             .trans(`${TRANSLATION_DOMAIN}::${key}`, parameters),
-        (): string =>
-          (this.app?.layout?.vars?.locale as string | undefined) || navigator.language
+        // Server locales use "_" (en_GB), Intl wants a BCP 47 tag (en-GB).
+        (): string => (
+          (this.app?.layout?.vars?.dateLocale as string | undefined)
+            || (this.app?.layout?.vars?.locale as string | undefined)
+            || navigator.language
+        ).replace('_', '-')
       );
     }
 
