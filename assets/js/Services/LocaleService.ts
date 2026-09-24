@@ -1,5 +1,5 @@
 import AppService from '../Class/AppService';
-import { stringFormat } from '@wexample/js-helpers/Helper/String';
+import { stringBuildIdentifier, stringFormat } from '@wexample/js-helpers/Helper/String';
 
 export type RenderNodeLocaleType = {
   trans(key?: string, args?: object, catalog?: object): string;
@@ -42,6 +42,39 @@ export default class LocaleService extends AppService {
     return key;
   }
 
+  // Only the vue the loader mounts carries its view as a prop; one imported by
+  // another vue does not. Every vue names its template after its view though,
+  // and the root holds the view of each vue it rendered: the one whose
+  // template id matches is the view.
+  private resolveVueView(
+    component: any,
+    domainsMap: any
+  ): string | undefined {
+    if (component.$props?.viewPath) {
+      return component.$props.viewPath;
+    }
+
+    const template = component.$options?.template;
+
+    if (typeof template !== 'string') {
+      return undefined;
+    }
+
+    for (const entry of Object.values(domainsMap || {})) {
+      if (entry && typeof entry === 'object') {
+        const view = Object.keys(entry).find(
+          (view) => `#vue-template-${stringBuildIdentifier(view)}` === template
+        );
+
+        if (view) {
+          return view;
+        }
+      }
+    }
+
+    return undefined;
+  }
+
   registerMethods() {
     const service = this;
 
@@ -62,26 +95,21 @@ export default class LocaleService extends AppService {
         methods: {
           trans(key: string = '', args: {} = {}, catalog?: object) {
             const component = this as any;
-            const rootComponent = component.$root?.rootComponent;
+            const rootComponent = component.$root.rootComponent;
 
-            if (rootComponent && rootComponent !== component) {
-              return rootComponent.trans(key, args, catalog);
-            }
-
-            const mergedCatalog = service.mergeCatalog(
-              catalog,
-              component.$props?.translations || {}
-            );
-            const keyResolved = service.resolveAlias(
-              key,
-              component.translationDomains || {},
-              component.$props?.viewPath
-            );
-
-            return service.trans(
-              keyResolved,
+            // The alias resolves against the view of the vue holding the key,
+            // here, before the root is handed anything. The root is the core
+            // vue component, whose own view matches no entry of the map: left
+            // to it, every vue of the page would read the domain of whichever
+            // one was rendered first.
+            return rootComponent.trans(
+              service.resolveAlias(
+                key,
+                rootComponent.translationDomains,
+                service.resolveVueView(component, rootComponent.translationDomains)
+              ),
               args,
-              mergedCatalog
+              catalog
             );
           },
         },
