@@ -9,6 +9,11 @@ export default abstract class PageManagerComponent extends Component {
   public onFormLoadingStartProxy: EventListener;
   public onFormLoadingEndProxy: EventListener;
   protected isInstantTransition: boolean = false;
+  private pageLoadingTimer: number | null = null;
+
+  // Past this, a page still on its way is said to be: a fast one arrives
+  // before anything would have flashed.
+  protected static readonly PAGE_LOADING_DELAY_MS = 300;
 
   mergeRenderData(renderData: ComponentInterface) {
     super.mergeRenderData(renderData);
@@ -32,6 +37,36 @@ export default abstract class PageManagerComponent extends Component {
 
   public getPageEl(): HTMLElement {
     return this.el;
+  }
+
+  /**
+   * A page is being fetched for this manager: once it has taken long enough to
+   * be noticed, the manager wears `is-page-loading`, which the design system
+   * draws as a spinner over the room the page will fill. A manager marked
+   * `data-page-loading="off"` says nothing.
+   */
+  public pageLoadingStart(): void {
+    this.pageLoadingEnd();
+
+    if (this.el.dataset.pageLoading === 'off') {
+      return;
+    }
+
+    this.pageLoadingTimer = window.setTimeout(() => {
+      this.pageLoadingTimer = null;
+      this.el.classList.add('is-page-loading');
+      this.el.setAttribute('aria-busy', 'true');
+    }, PageManagerComponent.PAGE_LOADING_DELAY_MS);
+  }
+
+  public pageLoadingEnd(): void {
+    if (this.pageLoadingTimer !== null) {
+      window.clearTimeout(this.pageLoadingTimer);
+      this.pageLoadingTimer = null;
+    }
+
+    this.el.classList.remove('is-page-loading');
+    this.el.removeAttribute('aria-busy');
   }
 
   public setPage(page: Page) {

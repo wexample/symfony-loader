@@ -21,6 +21,9 @@ export default class EmbedService extends AppService {
     delete this.embeds[name];
   }
 
+  // Says the page is coming while it does: a long page shows a spinner where it
+  // will stand, instead of the previous one sitting there as if nothing had
+  // been asked.
   load(
     name: string,
     path: string,
@@ -41,9 +44,18 @@ export default class EmbedService extends AppService {
     // destPage sends the rendered page to this embed instead of the manager the
     // layout base would otherwise designate, which is what lets two embeds live
     // on the same page.
-    return this.app.services.adaptive.get(`${path}${separator}__layout=embed`, {
-      ...requestOptions,
-      destPage: embed,
-    });
+    embed.pageLoadingStart();
+
+    const request = Promise.resolve(
+      this.app.services.adaptive.get(`${path}${separator}__layout=embed`, {
+        ...requestOptions,
+        destPage: embed,
+      })
+    );
+
+    // Over whichever way it ends; the request itself is handed back untouched.
+    request.then(() => embed.pageLoadingEnd(), () => embed.pageLoadingEnd());
+
+    return request;
   }
 }
