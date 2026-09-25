@@ -101,9 +101,16 @@ export default abstract class PageManagerComponent extends Component {
   private pageTransitionEnter(): void {
     const direction = this.pageTransitionDirection;
     this.pageTransitionDirection = null;
+
+    // Nothing was navigated here: a first page — the layout's own, set before
+    // its element is even there, or a modal opening — has nothing to undo.
+    if (!direction || !this.el) {
+      return;
+    }
+
     this.el.classList.remove('is-page-leaving--forward', 'is-page-leaving--back');
 
-    if (!direction || !this.el.querySelector('[data-page-transition="slide"]')) {
+    if (!this.el.querySelector('[data-page-transition="slide"]')) {
       return;
     }
 
