@@ -11,11 +11,19 @@ export default abstract class PageManagerComponent extends Component {
   protected isInstantTransition: boolean = false;
   private pageLoadingTimer: number | null = null;
   private onContainedClickProxy: EventListener | null = null;
+  // Set by a navigation made in this manager, so the page arriving after it
+  // slides in, and only that one: a modal opening has its own entrance.
+  private pageTransitionDirection: 'forward' | 'back' | null = null;
+  private pageTransitionTimer: number | null = null;
   private onPageNavigateProxy: EventListener | null = null;
 
   // Past this, a page still on its way is said to be: a fast one arrives
   // before anything would have flashed.
   protected static readonly PAGE_LOADING_DELAY_MS = 300;
+
+  // Long enough for the arriving page to be seen settling, short enough not to
+  // be waited for.
+  protected static readonly PAGE_TRANSITION_MS = 200;
 
   mergeRenderData(renderData: ComponentInterface) {
     super.mergeRenderData(renderData);
@@ -73,6 +81,41 @@ export default abstract class PageManagerComponent extends Component {
 
   public setPage(page: Page) {
     this.page = page;
+    this.pageTransitionEnter();
+  }
+
+  // The page leaving slides a few pixels the way the visitor goes and fades,
+  // the one arriving slides in from the other side: only where the page asked
+  // for it with `data-page-transition="slide"`, which the design system draws.
+  private pageTransitionLeave(direction: 'forward' | 'back'): void {
+    this.pageTransitionDirection = direction;
+
+    if (!this.el.querySelector('[data-page-transition="slide"]')) {
+      return;
+    }
+
+    this.el.classList.remove('is-page-entering--forward', 'is-page-entering--back');
+    this.el.classList.add(`is-page-leaving--${direction}`);
+  }
+
+  private pageTransitionEnter(): void {
+    const direction = this.pageTransitionDirection;
+    this.pageTransitionDirection = null;
+    this.el.classList.remove('is-page-leaving--forward', 'is-page-leaving--back');
+
+    if (!direction || !this.el.querySelector('[data-page-transition="slide"]')) {
+      return;
+    }
+
+    if (this.pageTransitionTimer !== null) {
+      window.clearTimeout(this.pageTransitionTimer);
+    }
+
+    this.el.classList.add(`is-page-entering--${direction}`);
+    this.pageTransitionTimer = window.setTimeout(() => {
+      this.pageTransitionTimer = null;
+      this.el.classList.remove('is-page-entering--forward', 'is-page-entering--back');
+    }, PageManagerComponent.PAGE_TRANSITION_MS);
   }
 
   /**
@@ -102,7 +145,7 @@ export default abstract class PageManagerComponent extends Component {
    * Loads the page at `url` into this manager rather than into the window or a
    * new one: the next step of a tunnel opened in a modal comes in the modal.
    */
-  public navigateContained(url: string): Promise<any> {
+  public navigateContained(url: string, direction: 'forward' | 'back' = 'forward'): Promise<any> {
     const base = this.getLayoutBase();
     const target = new URL(url, window.location.href);
 
@@ -111,6 +154,7 @@ export default abstract class PageManagerComponent extends Component {
     }
 
     this.pageLoadingStart();
+    this.pageTransitionLeave(direction);
 
     const request = Promise.resolve(
       this.app.services.adaptive.get(target.pathname + target.search, {
@@ -145,7 +189,8 @@ export default abstract class PageManagerComponent extends Component {
     }
 
     event.preventDefault();
-    void this.navigateContained(link.href);
+    // A link going back — previous — says so, and the page slides the other way.
+    void this.navigateContained(link.href, link.dataset.pageDirection === 'back' ? 'back' : 'forward');
   }
 
   // What a form of the page announces instead of leaving: a redirect (`url`)
@@ -161,6 +206,7 @@ export default abstract class PageManagerComponent extends Component {
     event.preventDefault();
 
     if (event.detail?.renderData) {
+      this.pageTransitionLeave('forward');
       void this.app.services.adaptive.handleRenderData(event.detail.renderData, {
         destPage: this,
         instant: true,
