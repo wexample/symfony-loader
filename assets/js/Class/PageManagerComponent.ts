@@ -128,17 +128,25 @@ export default abstract class PageManagerComponent extends Component {
 
   /**
    * Whether what stands at `el` asked for its links and redirects to stay in
-   * this manager: a page opts in by wrapping its content in
-   * `data-page-navigation="contained"`, and a link can opt out with
-   * `data-page-navigation="leave"`. A page that says nothing navigates as it
-   * always did.
+   * this manager. A page opts in by marking an element of its own with
+   * `data-page-navigation="contained"`, and that holds for the whole manager —
+   * the steps above its header and the actions at its foot included, which
+   * stand outside the page's body. A link or a region marked
+   * `data-page-navigation="leave"` opts out. A page that says nothing
+   * navigates as it always did.
    */
   public isNavigationContained(el: Element): boolean {
     if (!this.getLayoutBase() || !this.el.contains(el)) {
       return false;
     }
 
-    return el.closest('[data-page-navigation]')?.getAttribute('data-page-navigation') === 'contained';
+    const marked = el.closest('[data-page-navigation]');
+
+    if (marked && this.el.contains(marked)) {
+      return marked.getAttribute('data-page-navigation') === 'contained';
+    }
+
+    return this.el.querySelector('[data-page-navigation="contained"]') !== null;
   }
 
   /**
