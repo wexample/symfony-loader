@@ -217,6 +217,10 @@ export default class Form extends Component implements FieldRegistryInterface {
       if (renderData.ok === false) {
         return;
       }
+      if (this.announceNavigation({ renderData })) {
+        return;
+      }
+
       await this.closeEmbed();
       await adaptiveService.handleRenderData(renderData, {
         callerPage: this.app.layout.pageFocused,
@@ -281,6 +285,20 @@ export default class Form extends Component implements FieldRegistryInterface {
     submitter.disabled = disabled;
   }
 
+  // Asks whoever holds the form whether it takes the navigation: true when a
+  // page manager did, false when nobody answered.
+  private announceNavigation(detail: { url?: string; renderData?: RenderDataInterface }): boolean {
+    const event = new CustomEvent('page:navigate', {
+      bubbles: true,
+      cancelable: true,
+      detail,
+    });
+
+    this.el.dispatchEvent(event);
+
+    return event.defaultPrevented;
+  }
+
   private async closeEmbed(instant: boolean = true): Promise<void> {
     await this.trigger('embed:close', {
       source: this,
@@ -313,6 +331,14 @@ export default class Form extends Component implements FieldRegistryInterface {
   ): Promise<boolean> {
     if (action?.type !== ACTION_EMBED_REDIRECT || !action?.url) {
       return false;
+    }
+
+    // The page manager holding the form takes the next page itself when the
+    // page asked to keep its navigation — a tunnel moving to its next step
+    // inside the modal it was opened in, rather than closing it.
+    if (this.announceNavigation({ url: action.url })) {
+      this.triggerLoadingEnd();
+      return true;
     }
 
     this.triggerLoadingEnd();

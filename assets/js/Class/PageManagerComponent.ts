@@ -10,6 +10,8 @@ export default abstract class PageManagerComponent extends Component {
   public onFormLoadingEndProxy: EventListener;
   protected isInstantTransition: boolean = false;
   private pageLoadingTimer: number | null = null;
+  private onContainedClickProxy: EventListener | null = null;
+  private onPageNavigateProxy: EventListener | null = null;
 
   // Past this, a page still on its way is said to be: a fast one arrives
   // before anything would have flashed.
@@ -73,11 +75,111 @@ export default abstract class PageManagerComponent extends Component {
     this.page = page;
   }
 
+  /**
+   * The layout base this manager renders a page in — `modal`, `panel`,
+   * `embed` — or null for one that cannot take a page from a link.
+   */
+  protected getLayoutBase(): string | null {
+    return null;
+  }
+
+  /**
+   * Whether what stands at `el` asked for its links and redirects to stay in
+   * this manager: a page opts in by wrapping its content in
+   * `data-page-navigation="contained"`, and a link can opt out with
+   * `data-page-navigation="leave"`. A page that says nothing navigates as it
+   * always did.
+   */
+  public isNavigationContained(el: Element): boolean {
+    if (!this.getLayoutBase() || !this.el.contains(el)) {
+      return false;
+    }
+
+    return el.closest('[data-page-navigation]')?.getAttribute('data-page-navigation') === 'contained';
+  }
+
+  /**
+   * Loads the page at `url` into this manager rather than into the window or a
+   * new one: the next step of a tunnel opened in a modal comes in the modal.
+   */
+  public navigateContained(url: string): Promise<any> {
+    const base = this.getLayoutBase();
+    const target = new URL(url, window.location.href);
+
+    if (base && !target.searchParams.has('__layout')) {
+      target.searchParams.set('__layout', base);
+    }
+
+    this.pageLoadingStart();
+
+    const request = Promise.resolve(
+      this.app.services.adaptive.get(target.pathname + target.search, {
+        destPage: this,
+        instant: true,
+      })
+    );
+
+    request.then(() => this.pageLoadingEnd(), () => this.pageLoadingEnd());
+
+    return request;
+  }
+
+  // A plain left click on a link of this site, the page having asked for it:
+  // anything else — a new tab, a download, an anchor, another site — is left
+  // to the browser.
+  private onContainedClick(event: MouseEvent): void {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+
+    const link = (event.target as Element | null)?.closest?.('a[href]') as HTMLAnchorElement | null;
+
+    if (!link || !this.isNavigationContained(link)) {
+      return;
+    }
+
+    const href = link.getAttribute('href') ?? '';
+
+    if (href.startsWith('#') || link.target || link.hasAttribute('download') || link.origin !== window.location.origin) {
+      return;
+    }
+
+    event.preventDefault();
+    void this.navigateContained(link.href);
+  }
+
+  // What a form of the page announces instead of leaving: a redirect (`url`)
+  // or a page it already received (`renderData`). Taken only where the page
+  // asked for it; elsewhere the form does what it always did.
+  private onPageNavigate(event: CustomEvent): void {
+    const source = event.target as Element | null;
+
+    if (event.defaultPrevented || !source || !this.isNavigationContained(source)) {
+      return;
+    }
+
+    event.preventDefault();
+
+    if (event.detail?.renderData) {
+      void this.app.services.adaptive.handleRenderData(event.detail.renderData, {
+        destPage: this,
+        instant: true,
+      });
+    } else if (event.detail?.url) {
+      void this.navigateContained(event.detail.url);
+    }
+  }
+
   protected async activateListeners(): Promise<void> {
     await super.activateListeners();
 
     this.onEmbedCloseProxy = this.onEmbedClose.bind(this) as EventListener;
     this.el.addEventListener('embed:close', this.onEmbedCloseProxy);
+
+    this.onContainedClickProxy = this.onContainedClick.bind(this) as EventListener;
+    this.onPageNavigateProxy = this.onPageNavigate.bind(this) as EventListener;
+    this.el.addEventListener('click', this.onContainedClickProxy);
+    this.el.addEventListener('page:navigate', this.onPageNavigateProxy);
 
     this.onFormLoadingStartProxy = this.onFormLoadingStart.bind(this) as EventListener;
     this.onFormLoadingEndProxy = this.onFormLoadingEnd.bind(this) as EventListener;
@@ -97,6 +199,12 @@ export default abstract class PageManagerComponent extends Component {
     }
     if (this.onFormLoadingEndProxy) {
       this.el.removeEventListener('loading:end', this.onFormLoadingEndProxy);
+    }
+    if (this.onContainedClickProxy) {
+      this.el.removeEventListener('click', this.onContainedClickProxy);
+    }
+    if (this.onPageNavigateProxy) {
+      this.el.removeEventListener('page:navigate', this.onPageNavigateProxy);
     }
   }
 
