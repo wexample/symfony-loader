@@ -19,4 +19,10 @@
             {{ block('page_body') }}
         {%- endblock -%}
     </div>
+    {#- What the page does, below what it says: kept in view at the foot of the
+        modal whatever the body scrolls. A page fills `page_actions` to have it. -#}
+    {%- set pageActions %}{% block page_actions %}{% endblock %}{% endset -%}
+    {%- if pageActions|trim is not empty -%}
+        <div class="modal-actions page-actions">{{ pageActions }}</div>
+    {%- endif -%}
 {%- endblock -%}

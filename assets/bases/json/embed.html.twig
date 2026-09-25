@@ -13,4 +13,9 @@
             {{ block('page_body') }}
         {%- endblock -%}
     </div>
+    {#- What the page does, below what it says. -#}
+    {%- set pageActions %}{% block page_actions %}{% endblock %}{% endset -%}
+    {%- if pageActions|trim is not empty -%}
+        <div class="embed-actions page-actions">{{ pageActions }}</div>
+    {%- endif -%}
 {%- endblock -%}
