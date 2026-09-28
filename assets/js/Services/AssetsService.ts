@@ -166,8 +166,11 @@ export default class AssetsService extends AppService {
         asset.resolver = resolve;
 
         if (asset.type === 'js') {
-          // Browsers does not load twice the JS file content.
-          if (!asset.rendered) {
+          // Browsers does not load twice the JS file content. A script the
+          // page carried from the start has run already, even before the app
+          // marks it loaded: a responsive usage set on mount comes earlier
+          // than that, and waited here for an announcement that never comes.
+          if (!asset.rendered && !asset.initialLayout) {
             // Two files answer to one view — a component's class and its vue
             // twin — and each announces itself under the name they share, so
             // the ones being waited for are kept in the order they were asked
