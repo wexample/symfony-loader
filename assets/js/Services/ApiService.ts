@@ -1,5 +1,5 @@
 import AppService from '../Class/AppService';
-import AbstractApiEntitiesClient from "@wexample/js-api/Common/AbstractApiEntitiesClient";
+import AbstractApiEntitiesClient from "@wexample/js-api-entity/Common/AbstractApiEntitiesClient";
 import InvariantViolationError from '../Errors/InvariantViolationError';
 
 export type RenderNodeApiType = {

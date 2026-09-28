@@ -5,15 +5,15 @@ import RoutingService from './RoutingService';
 import MercureLiveUpdatesDriver, {
   type MercureDriverConfig,
   type MercureDriverConfigResolver,
-} from '@wexample/js-api/Common/LiveUpdates/MercureLiveUpdatesDriver';
+} from '@wexample/js-api-entity/Common/LiveUpdates/MercureLiveUpdatesDriver';
 import LiveSubscriberInfoResolver, {
   type LiveSubscriberInfo,
-} from '@wexample/js-api/Common/LiveUpdates/LiveSubscriberInfoResolver';
+} from '@wexample/js-api-entity/Common/LiveUpdates/LiveSubscriberInfoResolver';
 import ApiLiveUpdatesConnection, {
   type LiveUpdatesConnectionStatus as ApiLiveUpdatesConnectionStatus,
-} from '@wexample/js-api/Common/LiveUpdates/LiveUpdatesConnection';
-import LiveUpdatesConnectionRegistry from '@wexample/js-api/Common/LiveUpdates/LiveUpdatesConnectionRegistry';
-import type { LiveUpdatesDriverInterface } from '@wexample/js-api/Common/LiveUpdates/LiveUpdatesDriver';
+} from '@wexample/js-api-entity/Common/LiveUpdates/LiveUpdatesConnection';
+import LiveUpdatesConnectionRegistry from '@wexample/js-api-entity/Common/LiveUpdates/LiveUpdatesConnectionRegistry';
+import type { LiveUpdatesDriverInterface } from '@wexample/js-api-entity/Common/LiveUpdates/LiveUpdatesDriver';
 import InvariantViolationError from '../Errors/InvariantViolationError';
 import {
   type ReconnectBackoffOptions,
