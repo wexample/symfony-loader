@@ -1,0 +1,45 @@
+skip_to_main: 'پرش به محتوای اصلی'
+date:
+  relative:
+    now: 'همین حالا'
+    past:
+      minute_one: '1 دقیقه پیش'
+      minute_other: '%count% دقیقه پیش'
+      hour_one: '1 ساعت پیش'
+      hour_other: '%count% ساعت پیش'
+      day_one: '1 روز پیش'
+      day_other: '%count% روز پیش'
+      week_one: '1 هفته پیش'
+      week_other: '%count% هفته پیش'
+      month_one: '1 ماه پیش'
+      month_other: '%count% ماه پیش'
+      year_one: '1 سال پیش'
+      year_other: '%count% سال پیش'
+    future:
+      minute_one: 'در 1 دقیقه'
+      minute_other: 'در %count% دقیقه'
+      hour_one: 'در 1 ساعت'
+      hour_other: 'در %count% ساعت'
+      day_one: 'در 1 روز'
+      day_other: 'در %count% روز'
+      week_one: 'در 1 هفته'
+      week_other: 'در %count% هفته'
+      month_one: 'در 1 ماه'
+      month_other: 'در %count% ماه'
+      year_one: 'در 1 سال'
+      year_other: 'در %count% سال'
+frontend:
+  confirm:
+    title: تأیید
+  embed:
+    confirm:
+      form_leave: 'آیا مطمئن هستید که می‌خواهید این فرم را ترک کنید؟'
+  banner:
+    connection_offline:
+      message: 'اتصال اینترنت در دسترس نیست.'
+    connection_online:
+      message: 'اتصال اینترنت برقرار شد.'
+    live_update_reconnecting:
+      message: 'اتصال زنده قطع شده است. در حال اتصال مجدد...'
+    live_update_reconnected:
+      message: 'اتصال برقرار شد.'

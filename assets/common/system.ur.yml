@@ -1,0 +1,45 @@
+skip_to_main: 'اہم مواد پر جائیں'
+date:
+  relative:
+    now: ابھی
+    past:
+      minute_one: '1 منٹ پہلے'
+      minute_other: '%count% منٹ پہلے'
+      hour_one: '1 گھنٹہ پہلے'
+      hour_other: '%count% گھنٹے پہلے'
+      day_one: '1 دن پہلے'
+      day_other: '%count% دن پہلے'
+      week_one: '1 ہفتہ پہلے'
+      week_other: '%count% ہفتے پہلے'
+      month_one: '1 مہینہ پہلے'
+      month_other: '%count% مہینے پہلے'
+      year_one: '1 سال پہلے'
+      year_other: '%count% سال پہلے'
+    future:
+      minute_one: '1 منٹ میں'
+      minute_other: '%count% منٹ میں'
+      hour_one: '1 گھنٹہ میں'
+      hour_other: '%count% گھنٹوں میں'
+      day_one: '1 دن میں'
+      day_other: '%count% دنوں میں'
+      week_one: '1 ہفتے میں'
+      week_other: '%count% ہفتوں میں'
+      month_one: '1 مہینے میں'
+      month_other: '%count% مہینوں میں'
+      year_one: '1 سال میں'
+      year_other: '%count% سالوں میں'
+frontend:
+  confirm:
+    title: تصدیق
+  embed:
+    confirm:
+      form_leave: 'کیا آپ واقعی اس فارم کو چھوڑنا چاہتے ہیں؟'
+  banner:
+    connection_offline:
+      message: 'انٹرنیٹ کنکشن دستیاب نہیں ہے۔'
+    connection_online:
+      message: 'انٹرنیٹ کنکشن بحال ہو گیا ہے۔'
+    live_update_reconnecting:
+      message: 'لائیو کنکشن کھو گیا ہے۔ دوبارہ جڑنے کی کوشش کی جا رہی ہے...'
+    live_update_reconnected:
+      message: 'کنکشن بحال ہو گیا ہے۔'

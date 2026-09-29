@@ -1,0 +1,45 @@
+skip_to_main: 'Zum Hauptinhalt springen'
+date:
+  relative:
+    now: 'Gerade eben'
+    past:
+      minute_one: 'Vor 1 Min.'
+      minute_other: 'Vor %count% Min.'
+      hour_one: 'Vor 1 Std.'
+      hour_other: 'Vor %count% Std.'
+      day_one: 'Vor 1 Tag'
+      day_other: 'Vor %count% Tagen'
+      week_one: 'Vor 1 Woche'
+      week_other: 'Vor %count% Wochen'
+      month_one: 'Vor 1 Monat'
+      month_other: 'Vor %count% Monaten'
+      year_one: 'Vor 1 Jahr'
+      year_other: 'Vor %count% Jahren'
+    future:
+      minute_one: 'in 1 Min.'
+      minute_other: 'in %count% Min.'
+      hour_one: 'in 1 Std.'
+      hour_other: 'in %count% Std.'
+      day_one: 'in 1 Tag'
+      day_other: 'in %count% Tagen'
+      week_one: 'in 1 Woche'
+      week_other: 'in %count% Wochen'
+      month_one: 'in 1 Monat'
+      month_other: 'in %count% Monaten'
+      year_one: 'in 1 Jahr'
+      year_other: 'in %count% Jahren'
+frontend:
+  confirm:
+    title: Bestätigung
+  embed:
+    confirm:
+      form_leave: 'Sind Sie sicher, dass Sie dieses Formular verlassen möchten?'
+  banner:
+    connection_offline:
+      message: 'Internetverbindung ist nicht verfügbar.'
+    connection_online:
+      message: 'Internetverbindung wiederhergestellt.'
+    live_update_reconnecting:
+      message: 'Live-Verbindung verloren. Versuche erneut zu verbinden...'
+    live_update_reconnected:
+      message: 'Verbindung wiederhergestellt.'

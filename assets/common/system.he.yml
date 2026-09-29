@@ -1,0 +1,45 @@
+skip_to_main: 'דלג לתוכן העיקרי'
+date:
+  relative:
+    now: עכשיו
+    past:
+      minute_one: 'לפני דקה'
+      minute_other: 'לפני %count% דקות'
+      hour_one: 'לפני שעה'
+      hour_other: 'לפני %count% שעות'
+      day_one: 'לפני יום'
+      day_other: 'לפני %count% ימים'
+      week_one: 'לפני שבוע'
+      week_other: 'לפני %count% שבועות'
+      month_one: 'לפני חודש'
+      month_other: 'לפני %count% חודשים'
+      year_one: 'לפני שנה'
+      year_other: 'לפני %count% שנים'
+    future:
+      minute_one: 'בעוד דקה'
+      minute_other: 'בעוד %count% דקות'
+      hour_one: 'בעוד שעה'
+      hour_other: 'בעוד %count% שעות'
+      day_one: 'בעוד יום'
+      day_other: 'בעוד %count% ימים'
+      week_one: 'בעוד שבוע'
+      week_other: 'בעוד %count% שבועות'
+      month_one: 'בעוד חודש'
+      month_other: 'בעוד %count% חודשים'
+      year_one: 'בעוד שנה'
+      year_other: 'בעוד %count% שנים'
+frontend:
+  confirm:
+    title: אישור
+  embed:
+    confirm:
+      form_leave: 'האם אתה בטוח שברצונך לעזוב את הטופס הזה?'
+  banner:
+    connection_offline:
+      message: 'אין חיבור לאינטרנט.'
+    connection_online:
+      message: 'חיבור האינטרנט שוחזר.'
+    live_update_reconnecting:
+      message: 'החיבור חי אבד. מתחבר מחדש...'
+    live_update_reconnected:
+      message: 'החיבור שוחזר.'

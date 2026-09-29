@@ -1,0 +1,45 @@
+skip_to_main: 'Перейти к основному содержимому'
+date:
+  relative:
+    now: 'Только что'
+    past:
+      minute_one: '1 мин назад'
+      minute_other: '%count% мин назад'
+      hour_one: '1 ч назад'
+      hour_other: '%count% ч назад'
+      day_one: '1 день назад'
+      day_other: '%count% дней назад'
+      week_one: '1 неделя назад'
+      week_other: '%count% недель назад'
+      month_one: '1 месяц назад'
+      month_other: '%count% месяцев назад'
+      year_one: '1 год назад'
+      year_other: '%count% лет назад'
+    future:
+      minute_one: 'через 1 мин'
+      minute_other: 'через %count% мин'
+      hour_one: 'через 1 ч'
+      hour_other: 'через %count% ч'
+      day_one: 'через 1 день'
+      day_other: 'через %count% дней'
+      week_one: 'через 1 неделю'
+      week_other: 'через %count% недель'
+      month_one: 'через 1 месяц'
+      month_other: 'через %count% месяцев'
+      year_one: 'через 1 год'
+      year_other: 'через %count% лет'
+frontend:
+  confirm:
+    title: Подтверждение
+  embed:
+    confirm:
+      form_leave: 'Вы уверены, что хотите покинуть эту форму?'
+  banner:
+    connection_offline:
+      message: 'Нет интернет-соединения.'
+    connection_online:
+      message: 'Соединение с интернетом восстановлено.'
+    live_update_reconnecting:
+      message: 'Потеряно живое соединение. Повторное подключение...'
+    live_update_reconnected:
+      message: 'Соединение восстановлено.'

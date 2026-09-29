@@ -1,0 +1,45 @@
+skip_to_main: 'Przejdź do głównej treści'
+date:
+  relative:
+    now: 'Właśnie teraz'
+    past:
+      minute_one: '1 min temu'
+      minute_other: '%count% min temu'
+      hour_one: '1 h temu'
+      hour_other: '%count% h temu'
+      day_one: '1 dzień temu'
+      day_other: '%count% dni temu'
+      week_one: '1 tydzień temu'
+      week_other: '%count% tygodni temu'
+      month_one: '1 miesiąc temu'
+      month_other: '%count% miesięcy temu'
+      year_one: '1 rok temu'
+      year_other: '%count% lat temu'
+    future:
+      minute_one: 'za 1 min'
+      minute_other: 'za %count% min'
+      hour_one: 'za 1 h'
+      hour_other: 'za %count% h'
+      day_one: 'za 1 dzień'
+      day_other: 'za %count% dni'
+      week_one: 'za 1 tydzień'
+      week_other: 'za %count% tygodni'
+      month_one: 'za 1 miesiąc'
+      month_other: 'za %count% miesięcy'
+      year_one: 'za 1 rok'
+      year_other: 'za %count% lat'
+frontend:
+  confirm:
+    title: Potwierdzenie
+  embed:
+    confirm:
+      form_leave: 'Czy na pewno chcesz opuścić ten formularz?'
+  banner:
+    connection_offline:
+      message: 'Brak połączenia z internetem.'
+    connection_online:
+      message: 'Połączenie z internetem przywrócone.'
+    live_update_reconnecting:
+      message: 'Utracono połączenie na żywo. Próba ponownego połączenia...'
+    live_update_reconnected:
+      message: 'Połączenie przywrócone.'

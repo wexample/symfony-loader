@@ -1,0 +1,10 @@
+close: Закрыть
+symfony: 'Профайлер Symfony'
+tab:
+  assets: Активы
+  ssr: SSR
+  responsive: Адаптивный
+  usages: Использования
+  nodes: Узлы
+  routes: Маршруты
+  translations: Переводы

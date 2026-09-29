@@ -1,0 +1,10 @@
+close: 닫기
+symfony: 'Symfony 프로파일러'
+tab:
+  assets: 자산
+  ssr: SSR
+  responsive: 반응형
+  usages: 사용량
+  nodes: 노드
+  routes: 라우트
+  translations: 번역

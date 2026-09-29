@@ -1,0 +1,10 @@
+close: Chiudi
+symfony: 'Profiler Symfony'
+tab:
+  assets: Risorse
+  ssr: SSR
+  responsive: Responsive
+  usages: Usi
+  nodes: Nodi
+  routes: Percorsi
+  translations: Traduzioni

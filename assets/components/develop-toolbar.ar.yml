@@ -1,0 +1,10 @@
+close: اغلاق
+symfony: 'ملف تعريف Symfony'
+tab:
+  assets: الأصول
+  ssr: SSR
+  responsive: متجاوب
+  usages: الاستخدامات
+  nodes: العقد
+  routes: المسارات
+  translations: الترجمات

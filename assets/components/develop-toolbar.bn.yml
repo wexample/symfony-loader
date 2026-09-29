@@ -1,0 +1,10 @@
+close: 'বন্ধ করুন'
+symfony: 'Symfony প্রফাইলার'
+tab:
+  assets: অ্যাসেটস
+  ssr: SSR
+  responsive: রেসপন্সিভ
+  usages: ব্যবহার
+  nodes: নোডস
+  routes: রুটস
+  translations: অনুবাদগুলি

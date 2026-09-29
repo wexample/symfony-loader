@@ -1,0 +1,10 @@
+close: بستن
+symfony: 'پروفایلر Symfony'
+tab:
+  assets: دارایی‌ها
+  ssr: SSR
+  responsive: واکنش‌گرا
+  usages: استفاده‌ها
+  nodes: گره‌ها
+  routes: مسیرها
+  translations: ترجمه‌ها

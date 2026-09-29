@@ -1,0 +1,10 @@
+close: Sulje
+symfony: Symfony-profiili
+tab:
+  assets: Resurssit
+  ssr: SSR
+  responsive: Responsiivinen
+  usages: Käytöt
+  nodes: Solmut
+  routes: Reitit
+  translations: Käännökset
