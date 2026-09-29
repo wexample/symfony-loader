@@ -229,9 +229,12 @@ export default class AssetsService extends AppService {
     return output;
   }
 
+  // `stillReplaced` is asked again when the replaced assets are dropped, once
+  // the batch has loaded: meanwhile another node may have come to need one.
   async appendAssets(
     assetsCollection: AssetsCollectionInterface,
-    replacedCollection: AssetsCollectionInterface
+    replacedCollection: AssetsCollectionInterface,
+    stillReplaced: (asset: AssetInterface) => boolean = () => true
   ) {
     return new Promise((resolveAll) => {
       // Is empty.
@@ -239,7 +242,7 @@ export default class AssetsService extends AppService {
         // Nothing to load does not mean nothing to do: a usage value with no
         // file of its own still has to drop the file of the value it leaves,
         // or the page keeps wearing what it just stopped asking for.
-        this.removeAssets(replacedCollection);
+        this.removeAssets(replacedCollection, stillReplaced);
         resolveAll(assetsCollection);
         return;
       }
@@ -254,7 +257,7 @@ export default class AssetsService extends AppService {
 
             if (count === 0) {
               // Remove replaced and non replaced assets.
-              this.removeAssets(replacedCollection);
+              this.removeAssets(replacedCollection, stillReplaced);
               resolveAll(assetsCollection);
             }
           });
@@ -288,10 +291,13 @@ export default class AssetsService extends AppService {
     return registry[asset.type][asset.path];
   }
 
-  removeAssets(assetsCollection: AssetsCollectionInterface) {
-    this.assetsInCollection(assetsCollection).forEach((asset) =>
-      this.removeAsset(asset)
-    );
+  removeAssets(
+    assetsCollection: AssetsCollectionInterface,
+    filter: (asset: AssetInterface) => boolean = () => true
+  ) {
+    this.assetsInCollection(assetsCollection)
+      .filter(filter)
+      .forEach((asset) => this.removeAsset(asset));
   }
 
   removeAsset(asset: AssetInterface) {
@@ -447,7 +453,11 @@ export default class AssetsService extends AppService {
 
     if (hasChange) {
       // Load new assets.
-      await this.appendAssets(toLoad, toUnload);
+      await this.appendAssets(
+        toLoad,
+        toUnload,
+        (asset: AssetInterface) => !usageManager.assetShouldBeLoaded(asset, renderNode)
+      );
     }
   }
 

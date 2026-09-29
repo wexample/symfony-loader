@@ -221,7 +221,14 @@ export default class VueService extends AppService {
         component.renderData.options.name,
         component
       ),
-      component.renderData.options.props);
+      {
+        ...component.renderData.options.props,
+        // Given to each app, not left to the defaults: the definition is
+        // registered once, with the node of its first render as default, and
+        // a vue rendered again would talk to a node already destroyed.
+        rootComponent: component,
+        translations: component.translations,
+      });
   }
 
   initComponent(view: string, rootComponent: Component): object {

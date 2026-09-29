@@ -82,15 +82,20 @@ export default class ResponsiveService extends AppService {
         },
 
         async responsiveSet(size: string, propagate: boolean) {
-          if (size !== this.responsiveSizeCurrent) {
+          const changed = size !== this.responsiveSizeCurrent;
+
+          if (changed) {
             this.responsiveSizePrevious = this.responsiveSizeCurrent;
             this.responsiveSizeCurrent = size;
 
             await this.assetsUpdate(AssetUsage.USAGE_RESPONSIVE);
+          }
 
-            // Now change page class.
-            this.responsiveUpdateClass();
+          // Set even when the size stays: a node mounted again keeps its size
+          // but has a new element, which has no class yet.
+          this.responsiveUpdateClass();
 
+          if (changed) {
             this.app.services.events.trigger(
               ResponsiveServiceEvents.RESPONSIVE_CHANGE_SIZE,
               {
@@ -111,6 +116,12 @@ export default class ResponsiveService extends AppService {
         },
 
         responsiveUpdateClass() {
+          // Unmounted while its stylesheets loaded: the class goes on the
+          // element it is mounted with next.
+          if (!this.el) {
+            return;
+          }
+
           // Remove all responsive class names.
           const classList = this.el.classList;
 

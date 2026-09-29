@@ -1,3 +1,4 @@
+import ApiHttpError from '@wexample/js-api/Common/Errors/ApiHttpError';
 import AdaptiveClient from '../Class/AdaptiveClient';
 import AppService from '../Class/AppService';
 import AdaptiveResponseInterface from '../Interfaces/AdaptiveResponseInterface';
@@ -33,7 +34,13 @@ export default class AdaptiveService extends AppService {
     try {
       const method = (requestOptions.method ?? 'GET').toUpperCase();
       const client = this.getClient();
-      const kyOptions: Record<string, any> = {};
+      const kyOptions: Record<string, any> = {
+        context: {
+          // A page the server rendered for its own error is delivered, not
+          // lost: it is shown below, and is no failure to report.
+          onError: ({ error }) => !AdaptiveService.isRenderedResponse(error),
+        },
+      };
       if (requestOptions.headers) {
         kyOptions.headers = requestOptions.headers;
       }
@@ -51,6 +58,10 @@ export default class AdaptiveService extends AppService {
       }
       return data;
     } catch (error) {
+      if (AdaptiveService.isRenderedResponse(error)) {
+        return (error as ApiHttpError).payload as AdaptiveResponseInterface;
+      }
+
       this.app.services.error?.capture(error, {
         title: 'Failed to parse JSON response.',
         severity: 'error',
@@ -58,6 +69,14 @@ export default class AdaptiveService extends AppService {
       });
       return { ok: false, responseType: 'error' } as AdaptiveResponseInterface;
     }
+  }
+
+  // An error status whose body is still a render — a missing view, an
+  // exception page — rather than a failure to answer at all.
+  private static isRenderedResponse(error: unknown): boolean {
+    const payload = error instanceof ApiHttpError ? error.payload as any : null;
+
+    return typeof payload?.responseType === 'string' && payload.responseType !== 'error';
   }
 
   get(

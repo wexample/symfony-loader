@@ -13,7 +13,9 @@ export default class VueComponent extends Component {
     // First component render data is stored into service,
     // in order to reuse sub components definitions
     // as components ids in vue template stay the same.
-    let name = renderData.options.vueComName;
+    // Keyed by the view: its template enters the dom once, with the ids of the
+    // components the first render gave it.
+    let name = renderData.options.name;
     let cache = this.app.services.vue.vueRenderDataCache;
 
     if (cache[name]) {
