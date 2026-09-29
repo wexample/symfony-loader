@@ -1,0 +1,45 @@
+skip_to_main: 'Passer au contenu principal'
+date:
+  relative:
+    now: "À l'instant"
+    past:
+      minute_one: 'Il y a 1 min'
+      minute_other: 'Il y a %count% min'
+      hour_one: 'Il y a 1 h'
+      hour_other: 'Il y a %count% h'
+      day_one: 'Il y a 1 jour'
+      day_other: 'Il y a %count% jours'
+      week_one: 'Il y a 1 semaine'
+      week_other: 'Il y a %count% semaines'
+      month_one: 'Il y a 1 mois'
+      month_other: 'Il y a %count% mois'
+      year_one: 'Il y a 1 an'
+      year_other: 'Il y a %count% ans'
+    future:
+      minute_one: 'dans 1 min'
+      minute_other: 'dans %count% min'
+      hour_one: 'dans 1 h'
+      hour_other: 'dans %count% h'
+      day_one: 'dans 1 jour'
+      day_other: 'dans %count% jours'
+      week_one: 'dans 1 semaine'
+      week_other: 'dans %count% semaines'
+      month_one: 'dans 1 mois'
+      month_other: 'dans %count% mois'
+      year_one: 'dans 1 an'
+      year_other: 'dans %count% ans'
+frontend:
+  confirm:
+    title: Confirmation
+  embed:
+    confirm:
+      form_leave: 'Êtes-vous sûr de vouloir quitter ce formulaire ?'
+  banner:
+    connection_offline:
+      message: 'La connexion Internet est indisponible.'
+    connection_online:
+      message: 'Connexion Internet rétablie.'
+    live_update_reconnecting:
+      message: 'Connexion en direct perdue. Reconnection...'
+    live_update_reconnected:
+      message: 'Connexion rétablie.'
