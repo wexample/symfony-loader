@@ -1,0 +1,45 @@
+skip_to_main: 'मुख्य सामग्री पर जाएं'
+date:
+  relative:
+    now: अभी
+    past:
+      minute_one: '1 मिनट पहले'
+      minute_other: '%count% मिनट पहले'
+      hour_one: '1 घंटा पहले'
+      hour_other: '%count% घंटे पहले'
+      day_one: '1 दिन पहले'
+      day_other: '%count% दिन पहले'
+      week_one: '1 सप्ताह पहले'
+      week_other: '%count% सप्ताह पहले'
+      month_one: '1 माह पहले'
+      month_other: '%count% महीने पहले'
+      year_one: '1 वर्ष पहले'
+      year_other: '%count% वर्ष पहले'
+    future:
+      minute_one: '1 मिनट में'
+      minute_other: '%count% मिनट में'
+      hour_one: '1 घंटे में'
+      hour_other: '%count% घंटे में'
+      day_one: '1 दिन में'
+      day_other: '%count% दिन में'
+      week_one: '1 सप्ताह में'
+      week_other: '%count% सप्ताह में'
+      month_one: '1 महीने में'
+      month_other: '%count% महीने में'
+      year_one: '1 वर्ष में'
+      year_other: '%count% वर्ष में'
+frontend:
+  confirm:
+    title: पुष्टि
+  embed:
+    confirm:
+      form_leave: 'क्या आप सच में इस फॉर्म को छोड़ना चाहते हैं?'
+  banner:
+    connection_offline:
+      message: 'इंटरनेट कनेक्शन उपलब्ध नहीं है।'
+    connection_online:
+      message: 'इंटरनेट कनेक्शन बहाल हो गया है।'
+    live_update_reconnecting:
+      message: 'सीधा कनेक्शन खो गया। पुनः कनेक्ट हो रहा है...'
+    live_update_reconnected:
+      message: 'कनेक्शन बहाल हो गया।'

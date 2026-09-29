@@ -1,0 +1,45 @@
+skip_to_main: 'Saltar al contenido principal'
+date:
+  relative:
+    now: 'Ahora mismo'
+    past:
+      minute_one: 'hace 1 min'
+      minute_other: 'hace %count% min'
+      hour_one: 'hace 1 h'
+      hour_other: 'hace %count% h'
+      day_one: 'hace 1 día'
+      day_other: 'hace %count% días'
+      week_one: 'hace 1 semana'
+      week_other: 'hace %count% semanas'
+      month_one: 'hace 1 mes'
+      month_other: 'hace %count% meses'
+      year_one: 'hace 1 año'
+      year_other: 'hace %count% años'
+    future:
+      minute_one: 'en 1 min'
+      minute_other: 'en %count% min'
+      hour_one: 'en 1 h'
+      hour_other: 'en %count% h'
+      day_one: 'en 1 día'
+      day_other: 'en %count% días'
+      week_one: 'en 1 semana'
+      week_other: 'en %count% semanas'
+      month_one: 'en 1 mes'
+      month_other: 'en %count% meses'
+      year_one: 'en 1 año'
+      year_other: 'en %count% años'
+frontend:
+  confirm:
+    title: Confirmación
+  embed:
+    confirm:
+      form_leave: '¿Está seguro de que desea abandonar este formulario?'
+  banner:
+    connection_offline:
+      message: 'La conexión a Internet no está disponible.'
+    connection_online:
+      message: 'Conexión a Internet restaurada.'
+    live_update_reconnecting:
+      message: 'Conexión en vivo perdida. Reconectando...'
+    live_update_reconnected:
+      message: 'Conexión restaurada.'
