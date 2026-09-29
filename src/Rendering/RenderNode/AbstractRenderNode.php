@@ -138,19 +138,25 @@ abstract class AbstractRenderNode extends RenderDataGenerator
      *
      * The list travels so that the client can build each one; one with no
      * script has nothing to build, and sending it would only make the client
-     * look for a class that was never written.
+     * look for a class that was never written. Its own components may still
+     * have one — a menu inside a static block — so they take its place in the
+     * list, bound by the tag they carry wherever it sits in the markup.
      *
      * @return AbstractRenderNode[]
      */
     protected function getClientComponents(): array
     {
-        return array_values(
-            array_filter(
-                $this->components,
-                static fn ($component): bool => ! $component instanceof ComponentRenderNode
-                    || $component->hasClientSide()
-            )
-        );
+        $components = [];
+
+        foreach ($this->components as $component) {
+            if (! $component instanceof ComponentRenderNode || $component->hasClientSide()) {
+                $components[] = $component;
+            } else {
+                array_push($components, ...$component->getClientComponents());
+            }
+        }
+
+        return $components;
     }
 
     public function toRenderData(): RenderData
