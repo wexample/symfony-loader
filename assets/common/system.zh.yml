@@ -1,0 +1,45 @@
+skip_to_main: 跳到主要内容
+date:
+  relative:
+    now: 刚刚
+    past:
+      minute_one: 1分钟前
+      minute_other: '%count%分钟前'
+      hour_one: 1小时前
+      hour_other: '%count%小时前'
+      day_one: 1天前
+      day_other: '%count%天前'
+      week_one: 1周前
+      week_other: '%count%周前'
+      month_one: 1个月前
+      month_other: '%count%个月前'
+      year_one: 1年前
+      year_other: '%count%年前'
+    future:
+      minute_one: 1分钟后
+      minute_other: '%count%分钟后'
+      hour_one: 1小时后
+      hour_other: '%count%小时后'
+      day_one: 1天后
+      day_other: '%count%天后'
+      week_one: 1周后
+      week_other: '%count%周后'
+      month_one: 1个月后
+      month_other: '%count%个月后'
+      year_one: 1年后
+      year_other: '%count%年后'
+frontend:
+  confirm:
+    title: 确认
+  embed:
+    confirm:
+      form_leave: 您确定要离开此表单吗？
+  banner:
+    connection_offline:
+      message: 互联网连接不可用。
+    connection_online:
+      message: 互联网连接已恢复。
+    live_update_reconnecting:
+      message: 实时连接丢失。正在重新连接...
+    live_update_reconnected:
+      message: 连接已恢复。

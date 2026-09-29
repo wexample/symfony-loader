@@ -1,0 +1,10 @@
+close: 关闭
+symfony: 'Symfony Profiler'
+tab:
+  assets: 资源
+  ssr: SSR
+  responsive: 响应式
+  usages: 用法
+  nodes: 节点
+  routes: 路由
+  translations: 翻译
