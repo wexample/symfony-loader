@@ -1,0 +1,45 @@
+skip_to_main: 'Lanjutkan ke konten utama'
+date:
+  relative:
+    now: 'Baru saja'
+    past:
+      minute_one: '1 menit yang lalu'
+      minute_other: '%count% menit yang lalu'
+      hour_one: '1 jam yang lalu'
+      hour_other: '%count% jam yang lalu'
+      day_one: '1 hari yang lalu'
+      day_other: '%count% hari yang lalu'
+      week_one: '1 minggu yang lalu'
+      week_other: '%count% minggu yang lalu'
+      month_one: '1 bulan yang lalu'
+      month_other: '%count% bulan yang lalu'
+      year_one: '1 tahun yang lalu'
+      year_other: '%count% tahun yang lalu'
+    future:
+      minute_one: 'dalam 1 menit'
+      minute_other: 'dalam %count% menit'
+      hour_one: 'dalam 1 jam'
+      hour_other: 'dalam %count% jam'
+      day_one: 'dalam 1 hari'
+      day_other: 'dalam %count% hari'
+      week_one: 'dalam 1 minggu'
+      week_other: 'dalam %count% minggu'
+      month_one: 'dalam 1 bulan'
+      month_other: 'dalam %count% bulan'
+      year_one: 'dalam 1 tahun'
+      year_other: 'dalam %count% tahun'
+frontend:
+  confirm:
+    title: Konfirmasi
+  embed:
+    confirm:
+      form_leave: 'Apakah Anda yakin ingin meninggalkan formulir ini?'
+  banner:
+    connection_offline:
+      message: 'Koneksi internet tidak tersedia.'
+    connection_online:
+      message: 'Koneksi internet telah pulih.'
+    live_update_reconnecting:
+      message: 'Koneksi langsung terputus. Menghubungkan kembali...'
+    live_update_reconnected:
+      message: 'Koneksi telah dipulihkan.'

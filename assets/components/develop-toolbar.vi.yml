@@ -1,0 +1,10 @@
+close: Đóng
+symfony: 'Profiler Symfony'
+tab:
+  assets: 'Tài sản'
+  ssr: SSR
+  responsive: 'Phản hồi'
+  usages: 'Sử dụng'
+  nodes: Nút
+  routes: 'Đường dẫn'
+  translations: 'Dịch thuật'

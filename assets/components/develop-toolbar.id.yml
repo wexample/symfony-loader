@@ -1,0 +1,10 @@
+close: Tutup
+symfony: 'Profiler Symfony'
+tab:
+  assets: Aset
+  ssr: SSR
+  responsive: Responsif
+  usages: Penggunaan
+  nodes: Node
+  routes: Rute
+  translations: Terjemahan

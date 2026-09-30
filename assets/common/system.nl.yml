@@ -1,0 +1,45 @@
+skip_to_main: 'Overslaan naar de hoofdinhoud'
+date:
+  relative:
+    now: Zojuist
+    past:
+      minute_one: '1 min geleden'
+      minute_other: '%count% min geleden'
+      hour_one: '1 u geleden'
+      hour_other: '%count% u geleden'
+      day_one: '1 dag geleden'
+      day_other: '%count% dagen geleden'
+      week_one: '1 week geleden'
+      week_other: '%count% weken geleden'
+      month_one: '1 maand geleden'
+      month_other: '%count% maanden geleden'
+      year_one: '1 jaar geleden'
+      year_other: '%count% jaren geleden'
+    future:
+      minute_one: 'over 1 min'
+      minute_other: 'over %count% min'
+      hour_one: 'over 1 u'
+      hour_other: 'over %count% u'
+      day_one: 'over 1 dag'
+      day_other: 'over %count% dagen'
+      week_one: 'over 1 week'
+      week_other: 'over %count% weken'
+      month_one: 'over 1 maand'
+      month_other: 'over %count% maanden'
+      year_one: 'over 1 jaar'
+      year_other: 'over %count% jaren'
+frontend:
+  confirm:
+    title: Bevestiging
+  embed:
+    confirm:
+      form_leave: 'Weet je zeker dat je dit formulier wilt verlaten?'
+  banner:
+    connection_offline:
+      message: 'Internetverbinding is niet beschikbaar.'
+    connection_online:
+      message: 'Internetverbinding hersteld.'
+    live_update_reconnecting:
+      message: 'Liveverbinding verloren. Herverbinden...'
+    live_update_reconnected:
+      message: 'Verbinding hersteld.'

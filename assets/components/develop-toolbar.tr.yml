@@ -1,0 +1,10 @@
+close: Kapat
+symfony: 'Symfony profili'
+tab:
+  assets: Varlıklar
+  ssr: SSR
+  responsive: Duyarlı
+  usages: Kullanımlar
+  nodes: Düğümler
+  routes: Yollar
+  translations: Çeviriler
