@@ -1,0 +1,275 @@
+en:
+  close: Close
+  symfony: Symfony profiler
+  tab:
+    assets: Assets
+    ssr: SSR
+    responsive: Responsive
+    usages: Usages
+    nodes: Nodes
+    routes: Routes
+    translations: Translations
+
+ar:
+  close: اغلاق
+  symfony: 'ملف تعريف Symfony'
+  tab:
+    assets: الأصول
+    ssr: SSR
+    responsive: متجاوب
+    usages: الاستخدامات
+    nodes: العقد
+    routes: المسارات
+    translations: الترجمات
+
+bn:
+  close: 'বন্ধ করুন'
+  symfony: 'Symfony প্রফাইলার'
+  tab:
+    assets: অ্যাসেটস
+    ssr: SSR
+    responsive: রেসপন্সিভ
+    usages: ব্যবহার
+    nodes: নোডস
+    routes: রুটস
+    translations: অনুবাদগুলি
+
+de:
+  close: Schließen
+  symfony: Symfony-Profil
+  tab:
+    assets: Assets
+    ssr: SSR
+    responsive: Responsive
+    usages: Verwendungen
+    nodes: Knoten
+    routes: Routen
+    translations: Übersetzungen
+
+es:
+  close: Cerrar
+  symfony: 'Profiler de Symfony'
+  tab:
+    assets: Activos
+    ssr: SSR
+    responsive: Responsivo
+    usages: Usos
+    nodes: Nodos
+    routes: Rutas
+    translations: Traducciones
+
+fa:
+  close: بستن
+  symfony: 'پروفایلر Symfony'
+  tab:
+    assets: دارایی‌ها
+    ssr: SSR
+    responsive: واکنش‌گرا
+    usages: استفاده‌ها
+    nodes: گره‌ها
+    routes: مسیرها
+    translations: ترجمه‌ها
+
+fi:
+  close: Sulje
+  symfony: Symfony-profiili
+  tab:
+    assets: Resurssit
+    ssr: SSR
+    responsive: Responsiivinen
+    usages: Käytöt
+    nodes: Solmut
+    routes: Reitit
+    translations: Käännökset
+
+fr:
+  close: Fermer
+  symfony: 'Profiler Symfony'
+  tab:
+    assets: Actifs
+    ssr: SSR
+    responsive: Réactif
+    usages: Usages
+    nodes: Nœuds
+    routes: Routes
+    translations: Traductions
+
+he:
+  close: סגור
+  symfony: 'פרופילר של סימפוני'
+  tab:
+    assets: נכסים
+    ssr: SSR
+    responsive: רספונסיבי
+    usages: שימושים
+    nodes: צמתים
+    routes: נתיבים
+    translations: תרגומים
+
+hi:
+  close: 'बंद करें'
+  symfony: 'Symfony प्रोफाइलर'
+  tab:
+    assets: संसाधन
+    ssr: SSR
+    responsive: उत्तरदायी
+    usages: उपयोग
+    nodes: नोड्स
+    routes: मार्ग
+    translations: अनुवाद
+
+id:
+  close: Tutup
+  symfony: 'Profiler Symfony'
+  tab:
+    assets: Aset
+    ssr: SSR
+    responsive: Responsif
+    usages: Penggunaan
+    nodes: Node
+    routes: Rute
+    translations: Terjemahan
+
+it:
+  close: Chiudi
+  symfony: 'Profiler Symfony'
+  tab:
+    assets: Risorse
+    ssr: SSR
+    responsive: Responsive
+    usages: Usi
+    nodes: Nodi
+    routes: Percorsi
+    translations: Traduzioni
+
+ja:
+  close: 閉じる
+  symfony: 'Symfony プロファイラ'
+  tab:
+    assets: アセット
+    ssr: SSR
+    responsive: レスポンシブ
+    usages: 使用状況
+    nodes: ノード
+    routes: ルート
+    translations: 翻訳
+
+ko:
+  close: 닫기
+  symfony: 'Symfony 프로파일러'
+  tab:
+    assets: 자산
+    ssr: SSR
+    responsive: 반응형
+    usages: 사용량
+    nodes: 노드
+    routes: 라우트
+    translations: 번역
+
+nl:
+  close: Sluiten
+  symfony: Symfony-profiler
+  tab:
+    assets: Middelen
+    ssr: SSR
+    responsive: Responsief
+    usages: Gebruik
+    nodes: Knooppunten
+    routes: Routes
+    translations: Vertalingen
+
+pl:
+  close: Zamknij
+  symfony: 'Profiler Symfony'
+  tab:
+    assets: Zasoby
+    ssr: SSR
+    responsive: Responsywny
+    usages: Użycia
+    nodes: Węzły
+    routes: Trasy
+    translations: Tłumaczenia
+
+pt_BR:
+  close: Fechar
+  symfony: 'Profiler Symfony'
+  tab:
+    assets: Ativos
+    ssr: SSR
+    responsive: Responsivo
+    usages: Usos
+    nodes: Nós
+    routes: Rotas
+    translations: Traduções
+
+ru:
+  close: Закрыть
+  symfony: 'Профайлер Symfony'
+  tab:
+    assets: Активы
+    ssr: SSR
+    responsive: Адаптивный
+    usages: Использования
+    nodes: Узлы
+    routes: Маршруты
+    translations: Переводы
+
+th:
+  close: ปิด
+  symfony: 'โปรไฟล์ Symfony'
+  tab:
+    assets: แอสเซท
+    ssr: SSR
+    responsive: รองรับการแสดงผล
+    usages: การใช้งาน
+    nodes: โหนด
+    routes: เส้นทาง
+    translations: การแปล
+
+tr:
+  close: Kapat
+  symfony: 'Symfony profili'
+  tab:
+    assets: Varlıklar
+    ssr: SSR
+    responsive: Duyarlı
+    usages: Kullanımlar
+    nodes: Düğümler
+    routes: Yollar
+    translations: Çeviriler
+
+ur:
+  close: 'بند کریں'
+  symfony: 'Symfony پروفائلر'
+  tab:
+    assets: اثاثے
+    ssr: SSR
+    responsive: جوابدہ
+    usages: استعمالات
+    nodes: نوڈز
+    routes: راستے
+    translations: ترجمے
+
+vi:
+  close: Đóng
+  symfony: 'Profiler Symfony'
+  tab:
+    assets: 'Tài sản'
+    ssr: SSR
+    responsive: 'Phản hồi'
+    usages: 'Sử dụng'
+    nodes: Nút
+    routes: 'Đường dẫn'
+    translations: 'Dịch thuật'
+
+zh:
+  close: 关闭
+  symfony: 'Symfony Profiler'
+  tab:
+    assets: 资源
+    ssr: SSR
+    responsive: 响应式
+    usages: 用法
+    nodes: 节点
+    routes: 路由
+    translations: 翻译

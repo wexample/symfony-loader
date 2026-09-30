@@ -1,0 +1,1086 @@
+en:
+  skip_to_main: Skip to main content
+
+  # Read by the PHP and the JavaScript date services alike, which is what makes a
+  # date rendered by Twig and the same date redrawn by the browser agree. The
+  # `_one` / `_other` split is picked on the count, not by a plural rule, so a
+  # locale needing more buckets overrides the keys with its own wording.
+  date:
+    relative:
+      now: Just now
+      past:
+        minute_one: 1 min ago
+        minute_other: "%count% min ago"
+        hour_one: 1 h ago
+        hour_other: "%count% h ago"
+        day_one: 1 day ago
+        day_other: "%count% days ago"
+        week_one: 1 week ago
+        week_other: "%count% weeks ago"
+        month_one: 1 month ago
+        month_other: "%count% months ago"
+        year_one: 1 year ago
+        year_other: "%count% years ago"
+      future:
+        minute_one: in 1 min
+        minute_other: "in %count% min"
+        hour_one: in 1 h
+        hour_other: "in %count% h"
+        day_one: in 1 day
+        day_other: "in %count% days"
+        week_one: in 1 week
+        week_other: "in %count% weeks"
+        month_one: in 1 month
+        month_other: "in %count% months"
+        year_one: in 1 year
+        year_other: "in %count% years"
+
+  frontend:
+    confirm:
+      title: Confirmation
+    embed:
+      confirm:
+        form_leave: Are you sure you want to leave this form?
+    banner:
+      connection_offline:
+        message: Internet connection is unavailable.
+      connection_online:
+        message: Internet connection restored.
+      live_update_reconnecting:
+        message: Live connection lost. Reconnecting...
+      live_update_reconnected:
+        message: Connection restored.
+
+ar:
+  skip_to_main: 'تخطي إلى المحتوى الرئيسي'
+  date:
+    relative:
+      now: الآن
+      past:
+        minute_one: 'منذ دقيقة واحدة'
+        minute_other: 'منذ %count% دقائق'
+        hour_one: 'منذ ساعة واحدة'
+        hour_other: 'منذ %count% ساعات'
+        day_one: 'منذ يوم واحد'
+        day_other: 'منذ %count% أيام'
+        week_one: 'منذ أسبوع واحد'
+        week_other: 'منذ %count% أسابيع'
+        month_one: 'منذ شهر واحد'
+        month_other: 'منذ %count% أشهر'
+        year_one: 'منذ سنة واحدة'
+        year_other: 'منذ %count% سنوات'
+      future:
+        minute_one: 'بعد دقيقة واحدة'
+        minute_other: 'بعد %count% دقائق'
+        hour_one: 'بعد ساعة واحدة'
+        hour_other: 'بعد %count% ساعات'
+        day_one: 'بعد يوم واحد'
+        day_other: 'بعد %count% أيام'
+        week_one: 'بعد أسبوع واحد'
+        week_other: 'بعد %count% أسابيع'
+        month_one: 'بعد شهر واحد'
+        month_other: 'بعد %count% أشهر'
+        year_one: 'بعد سنة واحدة'
+        year_other: 'بعد %count% سنوات'
+  frontend:
+    confirm:
+      title: تأكيد
+    embed:
+      confirm:
+        form_leave: 'هل أنت متأكد أنك ترغب في مغادرة هذا النموذج؟'
+    banner:
+      connection_offline:
+        message: 'الاتصال بالإنترنت غير متوفر.'
+      connection_online:
+        message: 'تم استعادة اتصال الإنترنت.'
+      live_update_reconnecting:
+        message: 'تم فقد الاتصال الحي. يتم إعادة الاتصال...'
+      live_update_reconnected:
+        message: 'تم استعادة الاتصال.'
+
+bn:
+  skip_to_main: 'মুখ্য বিষয়বস্তুতে চলে যান'
+  date:
+    relative:
+      now: এখনই
+      past:
+        minute_one: '১ মিনিট আগে'
+        minute_other: '%count% মিনিট আগে'
+        hour_one: '১ ঘণ্টা আগে'
+        hour_other: '%count% ঘণ্টা আগে'
+        day_one: '১ দিন আগে'
+        day_other: '%count% দিন আগে'
+        week_one: '১ সপ্তাহ আগে'
+        week_other: '%count% সপ্তাহ আগে'
+        month_one: '১ মাস আগে'
+        month_other: '%count% মাস আগে'
+        year_one: '১ বছর আগে'
+        year_other: '%count% বছর আগে'
+      future:
+        minute_one: '১ মিনিটের মধ্যে'
+        minute_other: '%count% মিনিটের মধ্যে'
+        hour_one: '১ ঘণ্টার মধ্যে'
+        hour_other: '%count% ঘণ্টার মধ্যে'
+        day_one: '১ দিনের মধ্যে'
+        day_other: '%count% দিনের মধ্যে'
+        week_one: '১ সপ্তাহের মধ্যে'
+        week_other: '%count% সপ্তাহের মধ্যে'
+        month_one: '১ মাসের মধ্যে'
+        month_other: '%count% মাসের মধ্যে'
+        year_one: '১ বছরের মধ্যে'
+        year_other: '%count% বছরের মধ্যে'
+  frontend:
+    confirm:
+      title: নিশ্চিতকরণ
+    embed:
+      confirm:
+        form_leave: 'আপনি কি সত্যিই এই ফর্মটি ছাড়তে চান?'
+    banner:
+      connection_offline:
+        message: 'ইন্টারনেট সংযোগ অপ্রাপ্য।'
+      connection_online:
+        message: 'ইন্টারনেট সংযোগ পুনরুদ্ধার হয়েছে।'
+      live_update_reconnecting:
+        message: 'লাইভ সংযোগ হারানো হয়েছে। পুনরায় সংযোগ করা হচ্ছে...'
+      live_update_reconnected:
+        message: 'সংযোগ পুনরুদ্ধার হয়েছে।'
+
+de:
+  skip_to_main: 'Zum Hauptinhalt springen'
+  date:
+    relative:
+      now: 'Gerade eben'
+      past:
+        minute_one: 'Vor 1 Min.'
+        minute_other: 'Vor %count% Min.'
+        hour_one: 'Vor 1 Std.'
+        hour_other: 'Vor %count% Std.'
+        day_one: 'Vor 1 Tag'
+        day_other: 'Vor %count% Tagen'
+        week_one: 'Vor 1 Woche'
+        week_other: 'Vor %count% Wochen'
+        month_one: 'Vor 1 Monat'
+        month_other: 'Vor %count% Monaten'
+        year_one: 'Vor 1 Jahr'
+        year_other: 'Vor %count% Jahren'
+      future:
+        minute_one: 'in 1 Min.'
+        minute_other: 'in %count% Min.'
+        hour_one: 'in 1 Std.'
+        hour_other: 'in %count% Std.'
+        day_one: 'in 1 Tag'
+        day_other: 'in %count% Tagen'
+        week_one: 'in 1 Woche'
+        week_other: 'in %count% Wochen'
+        month_one: 'in 1 Monat'
+        month_other: 'in %count% Monaten'
+        year_one: 'in 1 Jahr'
+        year_other: 'in %count% Jahren'
+  frontend:
+    confirm:
+      title: Bestätigung
+    embed:
+      confirm:
+        form_leave: 'Sind Sie sicher, dass Sie dieses Formular verlassen möchten?'
+    banner:
+      connection_offline:
+        message: 'Internetverbindung ist nicht verfügbar.'
+      connection_online:
+        message: 'Internetverbindung wiederhergestellt.'
+      live_update_reconnecting:
+        message: 'Live-Verbindung verloren. Versuche erneut zu verbinden...'
+      live_update_reconnected:
+        message: 'Verbindung wiederhergestellt.'
+
+es:
+  skip_to_main: 'Saltar al contenido principal'
+  date:
+    relative:
+      now: 'Ahora mismo'
+      past:
+        minute_one: 'hace 1 min'
+        minute_other: 'hace %count% min'
+        hour_one: 'hace 1 h'
+        hour_other: 'hace %count% h'
+        day_one: 'hace 1 día'
+        day_other: 'hace %count% días'
+        week_one: 'hace 1 semana'
+        week_other: 'hace %count% semanas'
+        month_one: 'hace 1 mes'
+        month_other: 'hace %count% meses'
+        year_one: 'hace 1 año'
+        year_other: 'hace %count% años'
+      future:
+        minute_one: 'en 1 min'
+        minute_other: 'en %count% min'
+        hour_one: 'en 1 h'
+        hour_other: 'en %count% h'
+        day_one: 'en 1 día'
+        day_other: 'en %count% días'
+        week_one: 'en 1 semana'
+        week_other: 'en %count% semanas'
+        month_one: 'en 1 mes'
+        month_other: 'en %count% meses'
+        year_one: 'en 1 año'
+        year_other: 'en %count% años'
+  frontend:
+    confirm:
+      title: Confirmación
+    embed:
+      confirm:
+        form_leave: '¿Está seguro de que desea abandonar este formulario?'
+    banner:
+      connection_offline:
+        message: 'La conexión a Internet no está disponible.'
+      connection_online:
+        message: 'Conexión a Internet restaurada.'
+      live_update_reconnecting:
+        message: 'Conexión en vivo perdida. Reconectando...'
+      live_update_reconnected:
+        message: 'Conexión restaurada.'
+
+fa:
+  skip_to_main: 'پرش به محتوای اصلی'
+  date:
+    relative:
+      now: 'همین حالا'
+      past:
+        minute_one: '1 دقیقه پیش'
+        minute_other: '%count% دقیقه پیش'
+        hour_one: '1 ساعت پیش'
+        hour_other: '%count% ساعت پیش'
+        day_one: '1 روز پیش'
+        day_other: '%count% روز پیش'
+        week_one: '1 هفته پیش'
+        week_other: '%count% هفته پیش'
+        month_one: '1 ماه پیش'
+        month_other: '%count% ماه پیش'
+        year_one: '1 سال پیش'
+        year_other: '%count% سال پیش'
+      future:
+        minute_one: 'در 1 دقیقه'
+        minute_other: 'در %count% دقیقه'
+        hour_one: 'در 1 ساعت'
+        hour_other: 'در %count% ساعت'
+        day_one: 'در 1 روز'
+        day_other: 'در %count% روز'
+        week_one: 'در 1 هفته'
+        week_other: 'در %count% هفته'
+        month_one: 'در 1 ماه'
+        month_other: 'در %count% ماه'
+        year_one: 'در 1 سال'
+        year_other: 'در %count% سال'
+  frontend:
+    confirm:
+      title: تأیید
+    embed:
+      confirm:
+        form_leave: 'آیا مطمئن هستید که می‌خواهید این فرم را ترک کنید؟'
+    banner:
+      connection_offline:
+        message: 'اتصال اینترنت در دسترس نیست.'
+      connection_online:
+        message: 'اتصال اینترنت برقرار شد.'
+      live_update_reconnecting:
+        message: 'اتصال زنده قطع شده است. در حال اتصال مجدد...'
+      live_update_reconnected:
+        message: 'اتصال برقرار شد.'
+
+fi:
+  skip_to_main: 'Siirry pääsisältöön'
+  date:
+    relative:
+      now: 'Juuri nyt'
+      past:
+        minute_one: '1 min sitten'
+        minute_other: '%count% min sitten'
+        hour_one: '1 h sitten'
+        hour_other: '%count% h sitten'
+        day_one: '1 päivä sitten'
+        day_other: '%count% päivää sitten'
+        week_one: '1 viikko sitten'
+        week_other: '%count% viikkoa sitten'
+        month_one: '1 kuukausi sitten'
+        month_other: '%count% kuukautta sitten'
+        year_one: '1 vuosi sitten'
+        year_other: '%count% vuotta sitten'
+      future:
+        minute_one: '1 min kuluttua'
+        minute_other: '%count% min kuluttua'
+        hour_one: '1 h kuluttua'
+        hour_other: '%count% h kuluttua'
+        day_one: '1 päivä kuluttua'
+        day_other: '%count% päivää kuluttua'
+        week_one: '1 viikko kuluttua'
+        week_other: '%count% viikkoa kuluttua'
+        month_one: '1 kuukausi kuluttua'
+        month_other: '%count% kuukautta kuluttua'
+        year_one: '1 vuosi kuluttua'
+        year_other: '%count% vuotta kuluttua'
+  frontend:
+    confirm:
+      title: Vahvistus
+    embed:
+      confirm:
+        form_leave: 'Oletko varma, että haluat jättää tämän lomakkeen?'
+    banner:
+      connection_offline:
+        message: 'Internet-yhteys ei ole käytettävissä.'
+      connection_online:
+        message: 'Internet-yhteys palautettu.'
+      live_update_reconnecting:
+        message: 'Reaaliaikayhteys katkaistu. Yhdistetään uudelleen...'
+      live_update_reconnected:
+        message: 'Yhteys palautettu.'
+
+fr:
+  skip_to_main: 'Passer au contenu principal'
+  date:
+    relative:
+      now: "À l'instant"
+      past:
+        minute_one: 'Il y a 1 min'
+        minute_other: 'Il y a %count% min'
+        hour_one: 'Il y a 1 h'
+        hour_other: 'Il y a %count% h'
+        day_one: 'Il y a 1 jour'
+        day_other: 'Il y a %count% jours'
+        week_one: 'Il y a 1 semaine'
+        week_other: 'Il y a %count% semaines'
+        month_one: 'Il y a 1 mois'
+        month_other: 'Il y a %count% mois'
+        year_one: 'Il y a 1 an'
+        year_other: 'Il y a %count% ans'
+      future:
+        minute_one: 'dans 1 min'
+        minute_other: 'dans %count% min'
+        hour_one: 'dans 1 h'
+        hour_other: 'dans %count% h'
+        day_one: 'dans 1 jour'
+        day_other: 'dans %count% jours'
+        week_one: 'dans 1 semaine'
+        week_other: 'dans %count% semaines'
+        month_one: 'dans 1 mois'
+        month_other: 'dans %count% mois'
+        year_one: 'dans 1 an'
+        year_other: 'dans %count% ans'
+  frontend:
+    confirm:
+      title: Confirmation
+    embed:
+      confirm:
+        form_leave: 'Êtes-vous sûr de vouloir quitter ce formulaire ?'
+    banner:
+      connection_offline:
+        message: 'La connexion Internet est indisponible.'
+      connection_online:
+        message: 'Connexion Internet rétablie.'
+      live_update_reconnecting:
+        message: 'Connexion en direct perdue. Reconnection...'
+      live_update_reconnected:
+        message: 'Connexion rétablie.'
+
+he:
+  skip_to_main: 'דלג לתוכן העיקרי'
+  date:
+    relative:
+      now: עכשיו
+      past:
+        minute_one: 'לפני דקה'
+        minute_other: 'לפני %count% דקות'
+        hour_one: 'לפני שעה'
+        hour_other: 'לפני %count% שעות'
+        day_one: 'לפני יום'
+        day_other: 'לפני %count% ימים'
+        week_one: 'לפני שבוע'
+        week_other: 'לפני %count% שבועות'
+        month_one: 'לפני חודש'
+        month_other: 'לפני %count% חודשים'
+        year_one: 'לפני שנה'
+        year_other: 'לפני %count% שנים'
+      future:
+        minute_one: 'בעוד דקה'
+        minute_other: 'בעוד %count% דקות'
+        hour_one: 'בעוד שעה'
+        hour_other: 'בעוד %count% שעות'
+        day_one: 'בעוד יום'
+        day_other: 'בעוד %count% ימים'
+        week_one: 'בעוד שבוע'
+        week_other: 'בעוד %count% שבועות'
+        month_one: 'בעוד חודש'
+        month_other: 'בעוד %count% חודשים'
+        year_one: 'בעוד שנה'
+        year_other: 'בעוד %count% שנים'
+  frontend:
+    confirm:
+      title: אישור
+    embed:
+      confirm:
+        form_leave: 'האם אתה בטוח שברצונך לעזוב את הטופס הזה?'
+    banner:
+      connection_offline:
+        message: 'אין חיבור לאינטרנט.'
+      connection_online:
+        message: 'חיבור האינטרנט שוחזר.'
+      live_update_reconnecting:
+        message: 'החיבור חי אבד. מתחבר מחדש...'
+      live_update_reconnected:
+        message: 'החיבור שוחזר.'
+
+hi:
+  skip_to_main: 'मुख्य सामग्री पर जाएं'
+  date:
+    relative:
+      now: अभी
+      past:
+        minute_one: '1 मिनट पहले'
+        minute_other: '%count% मिनट पहले'
+        hour_one: '1 घंटा पहले'
+        hour_other: '%count% घंटे पहले'
+        day_one: '1 दिन पहले'
+        day_other: '%count% दिन पहले'
+        week_one: '1 सप्ताह पहले'
+        week_other: '%count% सप्ताह पहले'
+        month_one: '1 माह पहले'
+        month_other: '%count% महीने पहले'
+        year_one: '1 वर्ष पहले'
+        year_other: '%count% वर्ष पहले'
+      future:
+        minute_one: '1 मिनट में'
+        minute_other: '%count% मिनट में'
+        hour_one: '1 घंटे में'
+        hour_other: '%count% घंटे में'
+        day_one: '1 दिन में'
+        day_other: '%count% दिन में'
+        week_one: '1 सप्ताह में'
+        week_other: '%count% सप्ताह में'
+        month_one: '1 महीने में'
+        month_other: '%count% महीने में'
+        year_one: '1 वर्ष में'
+        year_other: '%count% वर्ष में'
+  frontend:
+    confirm:
+      title: पुष्टि
+    embed:
+      confirm:
+        form_leave: 'क्या आप सच में इस फॉर्म को छोड़ना चाहते हैं?'
+    banner:
+      connection_offline:
+        message: 'इंटरनेट कनेक्शन उपलब्ध नहीं है।'
+      connection_online:
+        message: 'इंटरनेट कनेक्शन बहाल हो गया है।'
+      live_update_reconnecting:
+        message: 'सीधा कनेक्शन खो गया। पुनः कनेक्ट हो रहा है...'
+      live_update_reconnected:
+        message: 'कनेक्शन बहाल हो गया।'
+
+id:
+  skip_to_main: 'Lanjutkan ke konten utama'
+  date:
+    relative:
+      now: 'Baru saja'
+      past:
+        minute_one: '1 menit yang lalu'
+        minute_other: '%count% menit yang lalu'
+        hour_one: '1 jam yang lalu'
+        hour_other: '%count% jam yang lalu'
+        day_one: '1 hari yang lalu'
+        day_other: '%count% hari yang lalu'
+        week_one: '1 minggu yang lalu'
+        week_other: '%count% minggu yang lalu'
+        month_one: '1 bulan yang lalu'
+        month_other: '%count% bulan yang lalu'
+        year_one: '1 tahun yang lalu'
+        year_other: '%count% tahun yang lalu'
+      future:
+        minute_one: 'dalam 1 menit'
+        minute_other: 'dalam %count% menit'
+        hour_one: 'dalam 1 jam'
+        hour_other: 'dalam %count% jam'
+        day_one: 'dalam 1 hari'
+        day_other: 'dalam %count% hari'
+        week_one: 'dalam 1 minggu'
+        week_other: 'dalam %count% minggu'
+        month_one: 'dalam 1 bulan'
+        month_other: 'dalam %count% bulan'
+        year_one: 'dalam 1 tahun'
+        year_other: 'dalam %count% tahun'
+  frontend:
+    confirm:
+      title: Konfirmasi
+    embed:
+      confirm:
+        form_leave: 'Apakah Anda yakin ingin meninggalkan formulir ini?'
+    banner:
+      connection_offline:
+        message: 'Koneksi internet tidak tersedia.'
+      connection_online:
+        message: 'Koneksi internet telah pulih.'
+      live_update_reconnecting:
+        message: 'Koneksi langsung terputus. Menghubungkan kembali...'
+      live_update_reconnected:
+        message: 'Koneksi telah dipulihkan.'
+
+it:
+  skip_to_main: 'Salta al contenuto principale'
+  date:
+    relative:
+      now: 'Proprio adesso'
+      past:
+        minute_one: '1 min fa'
+        minute_other: '%count% min fa'
+        hour_one: '1 h fa'
+        hour_other: '%count% h fa'
+        day_one: '1 giorno fa'
+        day_other: '%count% giorni fa'
+        week_one: '1 settimana fa'
+        week_other: '%count% settimane fa'
+        month_one: '1 mese fa'
+        month_other: '%count% mesi fa'
+        year_one: '1 anno fa'
+        year_other: '%count% anni fa'
+      future:
+        minute_one: 'tra 1 min'
+        minute_other: 'tra %count% min'
+        hour_one: 'tra 1 h'
+        hour_other: 'tra %count% h'
+        day_one: 'tra 1 giorno'
+        day_other: 'tra %count% giorni'
+        week_one: 'tra 1 settimana'
+        week_other: 'tra %count% settimane'
+        month_one: 'tra 1 mese'
+        month_other: 'tra %count% mesi'
+        year_one: 'tra 1 anno'
+        year_other: 'tra %count% anni'
+  frontend:
+    confirm:
+      title: Conferma
+    embed:
+      confirm:
+        form_leave: 'Sei sicuro di voler lasciare questo modulo?'
+    banner:
+      connection_offline:
+        message: 'Connessione internet non disponibile.'
+      connection_online:
+        message: 'Connessione internet ripristinata.'
+      live_update_reconnecting:
+        message: 'Connessione live persa. Riconnessione...'
+      live_update_reconnected:
+        message: 'Connessione ripristinata.'
+
+ja:
+  skip_to_main: メインコンテンツにスキップ
+  date:
+    relative:
+      now: たった今
+      past:
+        minute_one: '1 分前'
+        minute_other: '%count% 分前'
+        hour_one: '1 時間前'
+        hour_other: '%count% 時間前'
+        day_one: '1 日前'
+        day_other: '%count% 日前'
+        week_one: '1 週間前'
+        week_other: '%count% 週間前'
+        month_one: '1 ヶ月前'
+        month_other: '%count% ヶ月前'
+        year_one: '1 年前'
+        year_other: '%count% 年前'
+      future:
+        minute_one: '1 分後'
+        minute_other: '%count% 分後'
+        hour_one: '1 時間後'
+        hour_other: '%count% 時間後'
+        day_one: '1 日後'
+        day_other: '%count% 日後'
+        week_one: '1 週間後'
+        week_other: '%count% 週間後'
+        month_one: '1 ヶ月後'
+        month_other: '%count% ヶ月後'
+        year_one: '1 年後'
+        year_other: '%count% 年後'
+  frontend:
+    confirm:
+      title: 確認
+    embed:
+      confirm:
+        form_leave: このフォームを離れてもいいですか？
+    banner:
+      connection_offline:
+        message: インターネット接続が利用できません。
+      connection_online:
+        message: インターネット接続が復旧しました。
+      live_update_reconnecting:
+        message: ライブ接続が失われました。再接続中...
+      live_update_reconnected:
+        message: 接続が復旧しました。
+
+ko:
+  skip_to_main: '주 내용으로 건너뛰기'
+  date:
+    relative:
+      now: 방금
+      past:
+        minute_one: '1분 전'
+        minute_other: '%count%분 전'
+        hour_one: '1시간 전'
+        hour_other: '%count%시간 전'
+        day_one: '1일 전'
+        day_other: '%count%일 전'
+        week_one: '1주 전'
+        week_other: '%count%주 전'
+        month_one: '1개월 전'
+        month_other: '%count%개월 전'
+        year_one: '1년 전'
+        year_other: '%count%년 전'
+      future:
+        minute_one: '1분 후'
+        minute_other: '%count%분 후'
+        hour_one: '1시간 후'
+        hour_other: '%count%시간 후'
+        day_one: '1일 후'
+        day_other: '%count%일 후'
+        week_one: '1주 후'
+        week_other: '%count%주 후'
+        month_one: '1개월 후'
+        month_other: '%count%개월 후'
+        year_one: '1년 후'
+        year_other: '%count%년 후'
+  frontend:
+    confirm:
+      title: 확인
+    embed:
+      confirm:
+        form_leave: '이 양식을 정말로 떠나시겠습니까?'
+    banner:
+      connection_offline:
+        message: '인터넷 연결을 사용할 수 없습니다.'
+      connection_online:
+        message: '인터넷 연결이 복구되었습니다.'
+      live_update_reconnecting:
+        message: '실시간 연결이 끊어졌습니다. 재연결 중...'
+      live_update_reconnected:
+        message: '연결이 복구되었습니다.'
+
+nl:
+  skip_to_main: 'Overslaan naar de hoofdinhoud'
+  date:
+    relative:
+      now: Zojuist
+      past:
+        minute_one: '1 min geleden'
+        minute_other: '%count% min geleden'
+        hour_one: '1 u geleden'
+        hour_other: '%count% u geleden'
+        day_one: '1 dag geleden'
+        day_other: '%count% dagen geleden'
+        week_one: '1 week geleden'
+        week_other: '%count% weken geleden'
+        month_one: '1 maand geleden'
+        month_other: '%count% maanden geleden'
+        year_one: '1 jaar geleden'
+        year_other: '%count% jaren geleden'
+      future:
+        minute_one: 'over 1 min'
+        minute_other: 'over %count% min'
+        hour_one: 'over 1 u'
+        hour_other: 'over %count% u'
+        day_one: 'over 1 dag'
+        day_other: 'over %count% dagen'
+        week_one: 'over 1 week'
+        week_other: 'over %count% weken'
+        month_one: 'over 1 maand'
+        month_other: 'over %count% maanden'
+        year_one: 'over 1 jaar'
+        year_other: 'over %count% jaren'
+  frontend:
+    confirm:
+      title: Bevestiging
+    embed:
+      confirm:
+        form_leave: 'Weet je zeker dat je dit formulier wilt verlaten?'
+    banner:
+      connection_offline:
+        message: 'Internetverbinding is niet beschikbaar.'
+      connection_online:
+        message: 'Internetverbinding hersteld.'
+      live_update_reconnecting:
+        message: 'Liveverbinding verloren. Herverbinden...'
+      live_update_reconnected:
+        message: 'Verbinding hersteld.'
+
+pl:
+  skip_to_main: 'Przejdź do głównej treści'
+  date:
+    relative:
+      now: 'Właśnie teraz'
+      past:
+        minute_one: '1 min temu'
+        minute_other: '%count% min temu'
+        hour_one: '1 h temu'
+        hour_other: '%count% h temu'
+        day_one: '1 dzień temu'
+        day_other: '%count% dni temu'
+        week_one: '1 tydzień temu'
+        week_other: '%count% tygodni temu'
+        month_one: '1 miesiąc temu'
+        month_other: '%count% miesięcy temu'
+        year_one: '1 rok temu'
+        year_other: '%count% lat temu'
+      future:
+        minute_one: 'za 1 min'
+        minute_other: 'za %count% min'
+        hour_one: 'za 1 h'
+        hour_other: 'za %count% h'
+        day_one: 'za 1 dzień'
+        day_other: 'za %count% dni'
+        week_one: 'za 1 tydzień'
+        week_other: 'za %count% tygodni'
+        month_one: 'za 1 miesiąc'
+        month_other: 'za %count% miesięcy'
+        year_one: 'za 1 rok'
+        year_other: 'za %count% lat'
+  frontend:
+    confirm:
+      title: Potwierdzenie
+    embed:
+      confirm:
+        form_leave: 'Czy na pewno chcesz opuścić ten formularz?'
+    banner:
+      connection_offline:
+        message: 'Brak połączenia z internetem.'
+      connection_online:
+        message: 'Połączenie z internetem przywrócone.'
+      live_update_reconnecting:
+        message: 'Utracono połączenie na żywo. Próba ponownego połączenia...'
+      live_update_reconnected:
+        message: 'Połączenie przywrócone.'
+
+pt_BR:
+  skip_to_main: 'Ir para o conteúdo principal'
+  date:
+    relative:
+      now: 'Agora há pouco'
+      past:
+        minute_one: 'Há 1 min'
+        minute_other: 'Há %count% min'
+        hour_one: 'Há 1 h'
+        hour_other: 'Há %count% h'
+        day_one: 'Há 1 dia'
+        day_other: 'Há %count% dias'
+        week_one: 'Há 1 semana'
+        week_other: 'Há %count% semanas'
+        month_one: 'Há 1 mês'
+        month_other: 'Há %count% meses'
+        year_one: 'Há 1 ano'
+        year_other: 'Há %count% anos'
+      future:
+        minute_one: 'em 1 min'
+        minute_other: 'em %count% min'
+        hour_one: 'em 1 h'
+        hour_other: 'em %count% h'
+        day_one: 'em 1 dia'
+        day_other: 'em %count% dias'
+        week_one: 'em 1 semana'
+        week_other: 'em %count% semanas'
+        month_one: 'em 1 mês'
+        month_other: 'em %count% meses'
+        year_one: 'em 1 ano'
+        year_other: 'em %count% anos'
+  frontend:
+    confirm:
+      title: Confirmação
+    embed:
+      confirm:
+        form_leave: 'Você tem certeza de que deseja sair deste formulário?'
+    banner:
+      connection_offline:
+        message: 'Conexão com a Internet indisponível.'
+      connection_online:
+        message: 'Conexão com a Internet restaurada.'
+      live_update_reconnecting:
+        message: 'Conexão ao vivo perdida. Reconectando...'
+      live_update_reconnected:
+        message: 'Conexão restaurada.'
+
+ru:
+  skip_to_main: 'Перейти к основному содержимому'
+  date:
+    relative:
+      now: 'Только что'
+      past:
+        minute_one: '1 мин назад'
+        minute_other: '%count% мин назад'
+        hour_one: '1 ч назад'
+        hour_other: '%count% ч назад'
+        day_one: '1 день назад'
+        day_other: '%count% дней назад'
+        week_one: '1 неделя назад'
+        week_other: '%count% недель назад'
+        month_one: '1 месяц назад'
+        month_other: '%count% месяцев назад'
+        year_one: '1 год назад'
+        year_other: '%count% лет назад'
+      future:
+        minute_one: 'через 1 мин'
+        minute_other: 'через %count% мин'
+        hour_one: 'через 1 ч'
+        hour_other: 'через %count% ч'
+        day_one: 'через 1 день'
+        day_other: 'через %count% дней'
+        week_one: 'через 1 неделю'
+        week_other: 'через %count% недель'
+        month_one: 'через 1 месяц'
+        month_other: 'через %count% месяцев'
+        year_one: 'через 1 год'
+        year_other: 'через %count% лет'
+  frontend:
+    confirm:
+      title: Подтверждение
+    embed:
+      confirm:
+        form_leave: 'Вы уверены, что хотите покинуть эту форму?'
+    banner:
+      connection_offline:
+        message: 'Нет интернет-соединения.'
+      connection_online:
+        message: 'Соединение с интернетом восстановлено.'
+      live_update_reconnecting:
+        message: 'Потеряно живое соединение. Повторное подключение...'
+      live_update_reconnected:
+        message: 'Соединение восстановлено.'
+
+th:
+  skip_to_main: ข้ามไปยังเนื้อหาหลัก
+  date:
+    relative:
+      now: เมื่อสักครู่นี้
+      past:
+        minute_one: 'เมื่อ 1 นาทีที่แล้ว'
+        minute_other: 'เมื่อ%count% นาทีที่แล้ว'
+        hour_one: 'เมื่อ 1 ชั่วโมงที่แล้ว'
+        hour_other: 'เมื่อ%count% ชั่วโมงที่แล้ว'
+        day_one: 'เมื่อ 1 วันที่แล้ว'
+        day_other: 'เมื่อ%count% วันที่แล้ว'
+        week_one: 'เมื่อ 1 สัปดาห์ที่แล้ว'
+        week_other: 'เมื่อ%count% สัปดาห์ที่แล้ว'
+        month_one: 'เมื่อ 1 เดือนที่แล้ว'
+        month_other: 'เมื่อ%count% เดือนที่แล้ว'
+        year_one: 'เมื่อ 1 ปีที่แล้ว'
+        year_other: 'เมื่อ%count% ปีที่แล้ว'
+      future:
+        minute_one: 'ใน 1 นาที'
+        minute_other: 'ใน%count% นาที'
+        hour_one: 'ใน 1 ชั่วโมง'
+        hour_other: 'ใน%count% ชั่วโมง'
+        day_one: 'ใน 1 วัน'
+        day_other: 'ใน%count% วัน'
+        week_one: 'ใน 1 สัปดาห์'
+        week_other: 'ใน%count% สัปดาห์'
+        month_one: 'ใน 1 เดือน'
+        month_other: 'ใน%count% เดือน'
+        year_one: 'ใน 1 ปี'
+        year_other: 'ใน%count% ปี'
+  frontend:
+    confirm:
+      title: การยืนยัน
+    embed:
+      confirm:
+        form_leave: 'คุณแน่ใจหรือว่าต้องการออกจากแบบฟอร์มนี้?'
+    banner:
+      connection_offline:
+        message: การเชื่อมต่ออินเทอร์เน็ตไม่พร้อมใช้งาน
+      connection_online:
+        message: การเชื่อมต่ออินเทอร์เน็ตกลับมาใช้งานได้แล้ว
+      live_update_reconnecting:
+        message: 'การเชื่อมต่อสดหายไป กำลังเชื่อมต่ออีกครั้ง...'
+      live_update_reconnected:
+        message: การเชื่อมต่อกลับมาใช้งานได้แล้ว.
+
+tr:
+  skip_to_main: 'Ana içeriğe atla'
+  date:
+    relative:
+      now: Şimdi
+      past:
+        minute_one: '1 dk önce'
+        minute_other: '%count% dk önce'
+        hour_one: '1 s önce'
+        hour_other: '%count% s önce'
+        day_one: '1 gün önce'
+        day_other: '%count% gün önce'
+        week_one: '1 hafta önce'
+        week_other: '%count% hafta önce'
+        month_one: '1 ay önce'
+        month_other: '%count% ay önce'
+        year_one: '1 yıl önce'
+        year_other: '%count% yıl önce'
+      future:
+        minute_one: '1 dk içinde'
+        minute_other: '%count% dk içinde'
+        hour_one: '1 s içinde'
+        hour_other: '%count% s içinde'
+        day_one: '1 gün içinde'
+        day_other: '%count% gün içinde'
+        week_one: '1 hafta içinde'
+        week_other: '%count% hafta içinde'
+        month_one: '1 ay içinde'
+        month_other: '%count% ay içinde'
+        year_one: '1 yıl içinde'
+        year_other: '%count% yıl içinde'
+  frontend:
+    confirm:
+      title: Onay
+    embed:
+      confirm:
+        form_leave: 'Bu formdan çıkmak istediğinize emin misiniz?'
+    banner:
+      connection_offline:
+        message: 'İnternet bağlantısı mevcut değil.'
+      connection_online:
+        message: 'İnternet bağlantısı geri geldi.'
+      live_update_reconnecting:
+        message: 'Canlı bağlantı kesildi. Yeniden bağlanıyor...'
+      live_update_reconnected:
+        message: 'Bağlantı geri geldi.'
+
+ur:
+  skip_to_main: 'اہم مواد پر جائیں'
+  date:
+    relative:
+      now: ابھی
+      past:
+        minute_one: '1 منٹ پہلے'
+        minute_other: '%count% منٹ پہلے'
+        hour_one: '1 گھنٹہ پہلے'
+        hour_other: '%count% گھنٹے پہلے'
+        day_one: '1 دن پہلے'
+        day_other: '%count% دن پہلے'
+        week_one: '1 ہفتہ پہلے'
+        week_other: '%count% ہفتے پہلے'
+        month_one: '1 مہینہ پہلے'
+        month_other: '%count% مہینے پہلے'
+        year_one: '1 سال پہلے'
+        year_other: '%count% سال پہلے'
+      future:
+        minute_one: '1 منٹ میں'
+        minute_other: '%count% منٹ میں'
+        hour_one: '1 گھنٹہ میں'
+        hour_other: '%count% گھنٹوں میں'
+        day_one: '1 دن میں'
+        day_other: '%count% دنوں میں'
+        week_one: '1 ہفتے میں'
+        week_other: '%count% ہفتوں میں'
+        month_one: '1 مہینے میں'
+        month_other: '%count% مہینوں میں'
+        year_one: '1 سال میں'
+        year_other: '%count% سالوں میں'
+  frontend:
+    confirm:
+      title: تصدیق
+    embed:
+      confirm:
+        form_leave: 'کیا آپ واقعی اس فارم کو چھوڑنا چاہتے ہیں؟'
+    banner:
+      connection_offline:
+        message: 'انٹرنیٹ کنکشن دستیاب نہیں ہے۔'
+      connection_online:
+        message: 'انٹرنیٹ کنکشن بحال ہو گیا ہے۔'
+      live_update_reconnecting:
+        message: 'لائیو کنکشن کھو گیا ہے۔ دوبارہ جڑنے کی کوشش کی جا رہی ہے...'
+      live_update_reconnected:
+        message: 'کنکشن بحال ہو گیا ہے۔'
+
+vi:
+  skip_to_main: 'Chuyển đến nội dung chính'
+  date:
+    relative:
+      now: 'Vừa xong'
+      past:
+        minute_one: '1 phút trước'
+        minute_other: '%count% phút trước'
+        hour_one: '1 giờ trước'
+        hour_other: '%count% giờ trước'
+        day_one: '1 ngày trước'
+        day_other: '%count% ngày trước'
+        week_one: '1 tuần trước'
+        week_other: '%count% tuần trước'
+        month_one: '1 tháng trước'
+        month_other: '%count% tháng trước'
+        year_one: '1 năm trước'
+        year_other: '%count% năm trước'
+      future:
+        minute_one: 'trong 1 phút'
+        minute_other: 'trong %count% phút'
+        hour_one: 'trong 1 giờ'
+        hour_other: 'trong %count% giờ'
+        day_one: 'trong 1 ngày'
+        day_other: 'trong %count% ngày'
+        week_one: 'trong 1 tuần'
+        week_other: 'trong %count% tuần'
+        month_one: 'trong 1 tháng'
+        month_other: 'trong %count% tháng'
+        year_one: 'trong 1 năm'
+        year_other: 'trong %count% năm'
+  frontend:
+    confirm:
+      title: 'Xác nhận'
+    embed:
+      confirm:
+        form_leave: 'Bạn có chắc chắn muốn rời khỏi biểu mẫu này không?'
+    banner:
+      connection_offline:
+        message: 'Kết nối Internet không khả dụng.'
+      connection_online:
+        message: 'Kết nối Internet đã được khôi phục.'
+      live_update_reconnecting:
+        message: 'Mất kết nối trực tiếp. Đang kết nối lại...'
+      live_update_reconnected:
+        message: 'Kết nối đã được khôi phục.'
+
+zh:
+  skip_to_main: 跳到主要内容
+  date:
+    relative:
+      now: 刚刚
+      past:
+        minute_one: 1分钟前
+        minute_other: '%count%分钟前'
+        hour_one: 1小时前
+        hour_other: '%count%小时前'
+        day_one: 1天前
+        day_other: '%count%天前'
+        week_one: 1周前
+        week_other: '%count%周前'
+        month_one: 1个月前
+        month_other: '%count%个月前'
+        year_one: 1年前
+        year_other: '%count%年前'
+      future:
+        minute_one: 1分钟后
+        minute_other: '%count%分钟后'
+        hour_one: 1小时后
+        hour_other: '%count%小时后'
+        day_one: 1天后
+        day_other: '%count%天后'
+        week_one: 1周后
+        week_other: '%count%周后'
+        month_one: 1个月后
+        month_other: '%count%个月后'
+        year_one: 1年后
+        year_other: '%count%年后'
+  frontend:
+    confirm:
+      title: 确认
+    embed:
+      confirm:
+        form_leave: 您确定要离开此表单吗？
+    banner:
+      connection_offline:
+        message: 互联网连接不可用。
+      connection_online:
+        message: 互联网连接已恢复。
+      live_update_reconnecting:
+        message: 实时连接丢失。正在重新连接...
+      live_update_reconnected:
+        message: 连接已恢复。
