@@ -25,7 +25,7 @@ class SyncTsconfigPathsCommand extends AbstractBundleCommand
         BundleService $bundleService,
         private readonly TsconfigPathsSynchronizer $synchronizer,
         private readonly ParameterBagInterface $parameterBag,
-        string $name = null,
+        ?string $name = null,
     ) {
         parent::__construct(
             $bundleService,

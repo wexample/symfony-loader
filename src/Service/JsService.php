@@ -81,7 +81,7 @@ class JsService
      */
     public function serializeArray(
         array $array,
-        array $context = null
+        ?array $context = null
     ): array {
         $output = [];
 

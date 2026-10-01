@@ -57,8 +57,12 @@ class AdaptiveResponseExtension extends AbstractExtension
      */
     public function adaptiveResponseStandaloneUri(): string
     {
-        return $this->adaptiveResponseService->getStandaloneUri(
-            $this->requestStack->getCurrentRequest(),
-        );
+        $request = $this->requestStack->getCurrentRequest();
+
+        if (! $request) {
+            return '';
+        }
+
+        return $this->adaptiveResponseService->getStandaloneUri($request);
     }
 }

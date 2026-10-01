@@ -258,7 +258,6 @@ class EncoreManifestBuilderTest extends TestCase
     private function invokePrivate(object $object, string $method, array $args)
     {
         $refMethod = new \ReflectionMethod($object, $method);
-        $refMethod->setAccessible(true);
 
         return $refMethod->invokeArgs($object, $args);
     }

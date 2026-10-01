@@ -167,7 +167,7 @@ class VueExtension extends AbstractExtension
 
     public function vueKey(
         string $key,
-        string $filters = null
+        ?string $filters = null
     ): string {
         return '[[ ' . $key . ($filters ? ' | ' . $filters : '') . ' ]]';
     }

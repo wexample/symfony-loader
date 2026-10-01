@@ -114,7 +114,7 @@ class PageService extends AbstractRenderNodeService
 
     public function buildTranslationPathFromClassPath(
         string $classPath,
-        string $templateLocationPrefix = null
+        ?string $templateLocationPrefix = null
     ): string {
         $controllerFullPath = ClassHelper::getClassPath($classPath);
         $methodName = ClassHelper::getMethodNameFromClassPath($classPath);

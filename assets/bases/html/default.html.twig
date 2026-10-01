@@ -15,7 +15,7 @@
 {%- block layout_base -%}
     {{- parent() -}}
     <!DOCTYPE html>
-    <html lang="{{ app.request.locale }}">
+    <html lang="{{ app.request.locale ?? app.locale }}">
     <head>
         <meta charset="utf-8"/>
         <title>

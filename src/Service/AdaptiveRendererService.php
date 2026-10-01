@@ -64,25 +64,30 @@ class AdaptiveRendererService
             $renderPass->developTabs = $this->developToolbarRegistry->toArray();
         }
 
-        $request = $this->requestStack->getCurrentRequest();
+        // Without a request (console, tests rendering through the pipeline),
+        // the render pass keeps its own defaults: html output, default base.
+        if ($request = $this->requestStack->getCurrentRequest()) {
+            // A request the kernel did not dispatch never met the request subscriber.
+            $this->adaptiveResponseService->initializeRequestAttributes($request);
 
-        if ($request?->hasSession()) {
-            $session = $request->getSession();
-            foreach (array_keys($renderPass->usagesConfig) as $usageName) {
-                $saved = $session->get('ui_state.ui.' . $usageName);
-                if ($saved !== null) {
-                    $renderPass->setUsage($usageName, $saved);
+            if ($request->hasSession()) {
+                $session = $request->getSession();
+                foreach (array_keys($renderPass->usagesConfig) as $usageName) {
+                    $saved = $session->get('ui_state.ui.' . $usageName);
+                    if ($saved !== null) {
+                        $renderPass->setUsage($usageName, $saved);
+                    }
                 }
             }
+
+            $renderPass->setOutputType(
+                AdaptiveRequestHelper::getOutputType($request) ?? $renderPass->getOutputType()
+            );
+
+            $renderPass->setLayoutBase(
+                AdaptiveRequestHelper::getLayoutBase($request) ?? $renderPass->getLayoutBase()
+            );
         }
-
-        $renderPass->setOutputType(
-            AdaptiveRequestHelper::getOutputType($request)
-        );
-
-        $renderPass->setLayoutBase(
-            AdaptiveRequestHelper::getLayoutBase($request)
-        );
 
         if ($configurator) {
             $configured = $configurator($renderPass);
@@ -99,8 +104,8 @@ class AdaptiveRendererService
     public function adaptiveRender(
         string $view,
         array $parameters = [],
-        Response $response = null,
-        RenderPass $renderPass = null,
+        ?Response $response = null,
+        ?RenderPass $renderPass = null,
         ?callable $configurator = null
     ): Response {
         $renderPass = $renderPass ?: $this->createRenderPass($view, $configurator);
@@ -183,7 +188,7 @@ class AdaptiveRendererService
     public function renderRenderPass(
         RenderPass $renderPass,
         array $parameters = [],
-        Response $response = null,
+        ?Response $response = null,
     ): Response {
         $view = $renderPass->getView();
 

@@ -14,7 +14,7 @@ class ComponentNode extends Node
         ?Node $options,
         Node $body,
         int $lineno,
-        string $tag = null
+        ?string $tag = null
     ) {
         $nodes = [
             'name' => $name,

@@ -56,7 +56,7 @@ abstract class AbstractPagesController extends AbstractLoaderController
 
     protected function buildControllerTemplatePath(
         string $pageName,
-        string $bundle = null
+        ?string $bundle = null
     ): string {
         $bundle = $bundle ?: $this->getDefaultPageBundleClass();
 
@@ -78,9 +78,9 @@ abstract class AbstractPagesController extends AbstractLoaderController
     protected function renderPage(
         string $pageName,
         array $parameters = [],
-        Response $response = null,
-        AbstractBundle|string $bundle = null,
-        RenderPass $renderPass = null
+        ?Response $response = null,
+        AbstractBundle|string|null $bundle = null,
+        ?RenderPass $renderPass = null
     ): Response {
         return $this->adaptiveRender(
             $this->buildControllerTemplatePath($pageName, $bundle),

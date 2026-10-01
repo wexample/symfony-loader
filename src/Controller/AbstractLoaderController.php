@@ -25,8 +25,8 @@ abstract class AbstractLoaderController extends AbstractController
     public function adaptiveRender(
         string $view,
         array $parameters = [],
-        Response $response = null,
-        RenderPass $renderPass = null
+        ?Response $response = null,
+        ?RenderPass $renderPass = null
     ): Response {
         return $this->adaptiveRendererService->adaptiveRender(
             $view,
@@ -54,7 +54,7 @@ abstract class AbstractLoaderController extends AbstractController
      * @return string Allow bundle-specific front template directories.
      */
     public static function getTemplateLocationPrefix(
-        AbstractBundle|string $bundle = null
+        AbstractBundle|string|null $bundle = null
     ): string {
         $bundle = $bundle ?: static::getControllerBundle();
 
@@ -62,7 +62,7 @@ abstract class AbstractLoaderController extends AbstractController
     }
 
     public static function getTemplateFrontDir(
-        AbstractBundle|string $bundle = null
+        AbstractBundle|string|null $bundle = null
     ): string {
         return ($bundle ? LoaderHelper::TWIG_NAMESPACE_ASSETS : LoaderHelper::TWIG_NAMESPACE_FRONT);
     }
@@ -75,7 +75,7 @@ abstract class AbstractLoaderController extends AbstractController
      *   - config/loader/app/(index.html.twig)
      */
     public static function getControllerTemplateDir(
-        string $bundle = null
+        ?string $bundle = null
     ): string {
         return TemplateHelper::joinNormalizedParts(
             [

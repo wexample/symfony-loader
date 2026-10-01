@@ -12,7 +12,7 @@ class SlotNode extends Node
         Node $name,
         Node $body,
         int $lineno,
-        string $tag = null
+        ?string $tag = null
     ) {
         parent::__construct(
             [

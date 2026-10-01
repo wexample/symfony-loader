@@ -56,7 +56,6 @@ class FontsAssetUsageServiceTest extends TestCase
         AbstractRenderNode $renderNode,
     ): mixed {
         $ref = new \ReflectionMethod($service, 'createAssetIfExists');
-        $ref->setAccessible(true);
 
         return $ref->invoke($service, $path, $renderNode);
     }

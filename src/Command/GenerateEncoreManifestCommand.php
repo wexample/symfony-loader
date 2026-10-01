@@ -36,7 +36,7 @@ class GenerateEncoreManifestCommand extends AbstractBundleCommand
         private readonly ParameterBagInterface $parameterBag,
         private readonly KernelInterface $kernel,
         private readonly Filesystem $filesystem,
-        string $name = null,
+        ?string $name = null,
     ) {
         parent::__construct(
             $bundleService,

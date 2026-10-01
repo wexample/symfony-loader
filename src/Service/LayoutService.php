@@ -15,7 +15,7 @@ class LayoutService extends AbstractRenderNodeService
         AssetsService $assetsService,
         protected readonly ComponentService $componentService,
         private readonly PageService $pageService,
-        private readonly array $layoutBases = [],
+        private readonly array $layoutBases,
         protected readonly Translator $translator,
     ) {
         parent::__construct(

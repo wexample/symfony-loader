@@ -8,7 +8,7 @@ trait LoaderTestCaseTrait
 {
     use InlineJsonVarExtractorTrait;
 
-    protected function getPageLayoutData(string $content = null): array
+    protected function getPageLayoutData(?string $content = null): array
     {
         $content = $content ?? $this->content();
 

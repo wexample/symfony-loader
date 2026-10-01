@@ -4,7 +4,7 @@ framework:
 
 wexample_symfony_loader:
   front_paths:
-    front: tests/Fixtures/front/
+    front: '%kernel.project_dir%/../front/'
 
 twig:
   default_path: '%kernel.project_dir%/templates'
