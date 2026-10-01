@@ -228,6 +228,10 @@ export default class VueService extends AppService {
         // a vue rendered again would talk to a node already destroyed.
         rootComponent: component,
         translations: component.translations,
+        // A component declaring `app` itself — required, as the data table
+        // does — overrides the global mixin's default: it only gets one when
+        // the app is handed over as any other prop.
+        app: this.app,
       });
   }
 
