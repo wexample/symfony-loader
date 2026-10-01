@@ -101,7 +101,7 @@ class EncoreManifestBuilderTest extends TestCase
         $manifest = $builder->build();
 
         $this->assertSame(1, $manifest['frontCount']);
-        $this->assertSame('./front/', $manifest['aliases']['app']);
+        $this->assertSame(['@app' => './front/'], $manifest['aliases']);
         $this->assertSame(1, count($manifest['fronts']));
 
         $entries = $manifest['entries'];
@@ -113,16 +113,16 @@ class EncoreManifestBuilderTest extends TestCase
         $this->assertNotEmpty($entries['js']['vue']);
 
         $css = $entries['css'][0];
-        $this->assertSame('@AppBundle/css/styles', $css['output']);
+        $this->assertSame('@app/css/styles', $css['output']);
 
         $main = $entries['js']['main'][0];
         $this->assertSame('main', $main['category']);
-        $this->assertSame('@AppBundle/js/layouts/main', $main['output']);
+        $this->assertSame('@app/js/layouts/main', $main['output']);
 
         $pageWrapper = $entries['js']['pages'][0]['wrapper'] ?? null;
         $this->assertNotNull($pageWrapper);
         $this->assertSame('pages', $pageWrapper['type']);
-        $this->assertSame('@AppBundle/pages/home', $pageWrapper['className']);
+        $this->assertSame('@app/pages/home', $pageWrapper['className']);
 
         $componentPaths = array_column($entries['js']['components'], 'relative');
         $this->assertNotContains('components/_ignore.ts', $componentPaths);

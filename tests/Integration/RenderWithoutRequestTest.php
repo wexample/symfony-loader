@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyLoader\Tests\Integration\Loader;
+namespace Wexample\SymfonyLoader\Tests\Integration;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,9 +11,14 @@ use Wexample\SymfonyLoader\Service\AdaptiveRendererService;
 use Wexample\SymfonyLoader\Twig\AdaptiveResponseExtension;
 use Wexample\SymfonyTesting\Tests\AbstractSymfonyKernelTestCase;
 
-class RenderPassWithoutRequestIntegrationTest extends AbstractSymfonyKernelTestCase
+/**
+ * Rendering with no request at all — a console command, a test of another
+ * package going through the real pipeline — or with one the kernel never
+ * dispatched, which therefore never met the request subscriber.
+ */
+class RenderWithoutRequestTest extends AbstractSymfonyKernelTestCase
 {
-    private const string VIEW = '@front/layout/test-layout-with-registry.html.twig';
+    private const string VIEW = '@front/pages/test-page.html.twig';
 
     private function getRequestStack(): RequestStack
     {
@@ -41,7 +46,7 @@ class RenderPassWithoutRequestIntegrationTest extends AbstractSymfonyKernelTestC
     {
         self::bootKernel();
 
-        $response = $this->getRenderer()->adaptiveRender('@front/pages/test-page.html.twig');
+        $response = $this->getRenderer()->adaptiveRender(self::VIEW);
 
         $this->assertNotInstanceOf(JsonResponse::class, $response);
         $this->assertStringContainsString('TEST PAGE', (string) $response->getContent());

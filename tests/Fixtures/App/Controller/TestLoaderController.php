@@ -8,9 +8,15 @@ use Wexample\SymfonyLoader\Controller\AbstractLoaderController;
 
 final class TestLoaderController extends AbstractLoaderController
 {
-    #[Route('/_test/loader', name: 'symfony_loader_test_loader')]
-    public function loader(): Response
+    #[Route('/page', name: 'symfony_loader_test_page')]
+    public function page(): Response
     {
-        return $this->adaptiveRender('@front/layout/test-layout-with-registry.html.twig');
+        return $this->adaptiveRender('@front/pages/test-page.html.twig');
+    }
+
+    #[Route('/page/broken', name: 'symfony_loader_test_page_broken')]
+    public function broken(): Response
+    {
+        return $this->adaptiveRender('@front/pages/broken-page.html.twig');
     }
 }

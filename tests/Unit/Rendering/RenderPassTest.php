@@ -109,7 +109,7 @@ class RenderPassTest extends TestCase
         $node->init($renderPass, 'bundle/view.twig');
 
         $this->assertSame('bundle/view.twig', $node->getView());
-        $this->assertNotEmpty($node->toRenderData()['id'] ?? null);
+        $this->assertNotEmpty($node->toRenderData()->toArray()['id'] ?? null);
         $this->assertSame($node, $renderPass->registry['page']['bundle/view.twig'] ?? null);
     }
 }

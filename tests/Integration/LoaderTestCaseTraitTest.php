@@ -1,6 +1,6 @@
 <?php
 
-namespace Wexample\SymfonyLoader\Tests\Integration\Loader;
+namespace Wexample\SymfonyLoader\Tests\Integration;
 
 use Wexample\SymfonyLoader\Rendering\AssetsRegistry;
 use Wexample\SymfonyLoader\Rendering\RenderNode\InitialLayoutRenderNode;
@@ -10,7 +10,11 @@ use Wexample\SymfonyLoader\Tests\Traits\LoaderTestCaseTrait;
 use Wexample\SymfonyTesting\Tests\AbstractSymfonyKernelTestCase;
 use Wexample\SymfonyTesting\Traits\Rendering\TwigRenderTestCaseTrait;
 
-class LoaderTestCaseTraitKernelRenderTest extends AbstractSymfonyKernelTestCase
+/**
+ * `LoaderTestCaseTrait` is shipped for the applications' own tests: it must
+ * read back the render data a layout embeds.
+ */
+class LoaderTestCaseTraitTest extends AbstractSymfonyKernelTestCase
 {
     use TwigRenderTestCaseTrait;
     use LoaderTestCaseTrait;

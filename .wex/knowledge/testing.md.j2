@@ -1,94 +1,39 @@
 # Testing Guide
 
-## Prerequisites
+## What the suite checks
 
-### Coverage Engine Installation
+The suite tests what the bundle promises an application, through a real kernel, and not how its services call each other. A test that mocks a collaborator to check it was called breaks on every constructor change and proves nothing about the page; the unit tests that did so were removed when the suite was rewritten.
 
-The package uses **PCOV** for code coverage (lightweight alternative to Xdebug).
+`tests/Integration/` boots the fixture kernel ({{ path("tests/Fixtures/App/AppKernel.php") }}) and, for HTTP, browses it with `WebTestCase`:
 
-**Install PCOV (Alpine Linux):**
+- `RequestClassificationTest` — which answer a request gets (document or JSON envelope) and into which shell, for every combination of XHR, `__format` and `__layout`.
+- `HtmlPageTest` — the document a browser receives: shell, embedded `layoutRenderData`, the stylesheets linked by the server and the placeholders left to the front-end, UI state read from the session.
+- `JsonResponseTest` — the envelope the front-end receives, and the error answer when a page fails to render.
+- `RenderWithoutRequestTest` — rendering from a console command or another package's test, with no request.
+- `EncoreCommandsTest` — the Encore manifest and the tsconfig paths, written to a temporary directory.
+- `LoaderTestCaseTraitTest` — the test trait shipped to applications.
+
+`tests/Unit/` keeps the pure logic: value objects (`RenderPass`, `Asset`, `AssetTag`, `AssetsRegistry`), the manifest builder and the tsconfig synchronizer on a temporary filesystem, the usage matching.
+
+The fixture app lives in `tests/Fixtures/`: `App/` (kernel, config, controller, a `public/build/` with a manifest and the hashed stylesheets of the test page) and `front/` (the `@front` templates). JSON tests ask for `__layout=default`: the `modal`, `panel` and `overlay` shells call `icon()`, which comes from a design system this package does not install.
+
+## Running the tests
+
+The package requires PHP 8.5. With no local PHP, run them in a container, mounting the whole `packages/` tree so the path repositories symlinked into `vendor/` resolve:
+
 ```bash
-apk add --no-cache php83-dev autoconf g++ make
-pecl install pcov
-echo 'extension=pcov.so' > /usr/local/etc/php/conf.d/pcov.ini
+docker run --rm -u $(id -u):$(id -g) -v <packages-dir>:<packages-dir> -w $PWD \
+  wex-php85-intl php vendor/bin/phpunit
 ```
 
-**Verify installation:**
-```bash
-php -m | grep pcov
-```
-
-## Running Tests
-
-All commands below should be executed **inside the container** in the package directory:
-```bash
-cd /var/www/html/vendor/wexample/symfony-loader/
-```
-
-### Basic Test Execution
-
-**Run all tests:**
-```bash
-vendor/bin/phpunit tests/
-```
-
-**Run specific test suite:**
-```bash
-vendor/bin/phpunit tests/Unit
-vendor/bin/phpunit tests/Integration
-```
+Add `--display-deprecations` to list the deprecations, `--testdox` to read the suite as sentences. After changing the fixture config, delete `tests/Fixtures/App/var/cache/` if the kernel keeps the old container.
 
 ## Code Coverage
 
-### HTML Report (Recommended)
+The package uses **PCOV** for code coverage. With it installed:
 
-Generate an interactive HTML coverage report:
 ```bash
-vendor/bin/phpunit tests/ --coverage-html var/coverage --display-warnings
+vendor/bin/phpunit --coverage-html var/coverage
+vendor/bin/phpunit --coverage-text
+vendor/bin/phpunit --coverage-clover var/coverage/clover.xml
 ```
-
-View the report by opening `var/coverage/index.html` in your browser.
-
-### Text Report
-
-Quick coverage summary in terminal:
-```bash
-vendor/bin/phpunit tests/ --coverage-text
-```
-
-### Clover XML (CI/CD)
-
-Generate coverage report for CI tools:
-```bash
-vendor/bin/phpunit tests/ --coverage-clover var/coverage/clover.xml
-```
-
-## Configuration
-
-Coverage settings are configured in `phpunit.xml`:
-- Source directory: `src/`
-- Test suites: `tests/Unit` and `tests/Integration`
-- Bootstrap: `tests/bootstrap.php`
-
-## Debugging Tests
-
-**View detailed test execution:**
-```bash
-vendor/bin/phpunit tests/ --debug
-```
-
-This shows all PHPUnit notices, warnings, and detailed execution flow.
-
-## Troubleshooting
-
-**No coverage data generated:**
-- Verify PCOV is installed: `php -m | grep pcov`
-- Check `phpunit.xml` has `<source>` section configured
-
-**Tests fail to run:**
-- Ensure dependencies are installed: `composer install`
-- Check test bootstrap file exists: `tests/bootstrap.php`
-
-**PHPUnit notices about mock objects:**
-- Use `createStub()` instead of `createMock()` when no expectations are needed
-- Or add `#[AllowMockObjectsWithoutExpectations]` attribute to test methods

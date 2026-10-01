@@ -8,6 +8,7 @@
     <php>
         <env name="APP_ENV" value="test"/>
         <env name="APP_DEBUG" value="1"/>
+        <server name="SHELL_VERBOSITY" value="-1"/>
         <env name="KERNEL_CLASS" value="Wexample\SymfonyLoader\Tests\Fixtures\App\AppKernel"/>
     </php>
 

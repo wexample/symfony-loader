@@ -3,6 +3,7 @@
 namespace Wexample\SymfonyLoader\Tests\Unit\Service\Usage;
 
 use PHPUnit\Framework\TestCase;
+use Wexample\SymfonyLoader\Exception\AssetsNotBuiltException;
 use Wexample\SymfonyLoader\Rendering\Asset;
 use Wexample\SymfonyLoader\Rendering\AssetsRegistry;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AbstractRenderNode;
@@ -31,6 +32,11 @@ class FontsAssetUsageServiceTest extends TestCase
         $this->assertFalse($service->assetNeedsInitialRender($asset, $renderPass));
     }
 
+    /**
+     * Listed in the manifest and absent from disk: a build still being
+     * written. The typed exception is what lets the renderer show its
+     * "assets need to be built" page instead of a bare 500.
+     */
     public function testCreateAssetIfExistsThrowsWhenRealPathMissing(): void
     {
         $assetsRegistryService = $this->createStub(AssetsRegistryService::class);
@@ -46,7 +52,7 @@ class FontsAssetUsageServiceTest extends TestCase
             }
         };
 
-        $this->expectException(\Exception::class);
+        $this->expectException(AssetsNotBuiltException::class);
         $this->invokeCreateAssetIfExists($service, 'build/bundle/css/view.css', $renderNode);
     }
 

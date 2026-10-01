@@ -36,7 +36,9 @@
   },
   "require-dev": {
     "phpunit/phpunit": "*",
-    "wexample/symfony-testing": ">=1.0.86"
+    "wexample/symfony-testing": ">=1.0.86",
+    "symfony/browser-kit": "^7.4 || ^8.0",
+    "symfony/css-selector": "^7.4 || ^8.0"
   },
   "repositories": [
     {
