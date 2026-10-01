@@ -21,6 +21,7 @@ use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Twig\RenderPassGlobalsExtension;
 use Wexample\SymfonyLoader\WexampleSymfonyLoaderBundle;
 use Wexample\SymfonyTemplate\Helper\TemplateHelper;
+use Wexample\SymfonyTranslations\Translation\Translator;
 
 class AdaptiveRendererService
 {
@@ -32,6 +33,7 @@ class AdaptiveRendererService
         private readonly ParameterBagInterface $parameterBag,
         private readonly Environment $twig,
         private readonly RequestStack $requestStack,
+        private readonly Translator $translator,
     ) {
     }
 
@@ -201,10 +203,20 @@ class AdaptiveRendererService
         // whatever Twig rendered before.
         $this->twig->addGlobal(RenderPassGlobalsExtension::GLOBAL_RENDER_PASS, $renderPass);
 
-        $content = $this->twig->render(
-            $view,
-            $parameters
-        );
+        // The page's own words are reachable from its first line: a page
+        // template runs what stands outside its blocks — `set page_title =
+        // '@page::…'|trans` — before the layout it extends has registered the
+        // page, and `@page::` would print as the raw key.
+        $this->translator->setDomainFromTemplatePath(Translator::DOMAIN_TYPE_PAGE, $view);
+
+        try {
+            $content = $this->twig->render(
+                $view,
+                $parameters
+            );
+        } finally {
+            $this->translator->revertDomain(Translator::DOMAIN_TYPE_PAGE);
+        }
 
         $response ??= new Response();
         $response->setContent($content);
