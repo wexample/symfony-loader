@@ -18,6 +18,7 @@ use Wexample\SymfonyLoader\Rendering\AssetsRegistry;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AjaxLayoutRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderNode\InitialLayoutRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
+use Wexample\SymfonyLoader\Twig\RenderPassGlobalsExtension;
 use Wexample\SymfonyLoader\WexampleSymfonyLoaderBundle;
 use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 
@@ -196,8 +197,9 @@ class AdaptiveRendererService
             throw new Exception('View must be defined before adaptive rendering');
         }
 
-        $this->twig->addGlobal('render_pass', $renderPass);
-        $this->twig->addGlobal('debug', (bool) $this->getParameterOrDefault('loader.debug', false));
+        // Declared by RenderPassGlobalsExtension, so this only updates it,
+        // whatever Twig rendered before.
+        $this->twig->addGlobal(RenderPassGlobalsExtension::GLOBAL_RENDER_PASS, $renderPass);
 
         $content = $this->twig->render(
             $view,

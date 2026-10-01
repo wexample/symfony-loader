@@ -98,6 +98,19 @@ class HtmlPageTest extends WebTestCase
         $this->assertSame('default', $data['usages']['color_scheme']);
     }
 
+    /**
+     * Twig refuses a new global once it has rendered anything, so a global
+     * the loader adds while rendering the page must already be declared.
+     */
+    public function testAPageRenderedAfterAnotherTemplateIsWhole(): void
+    {
+        $html = $this->requestPage('/page/after-mail');
+
+        $this->assertResponseIsSuccessful();
+        $this->assertStringContainsString('<main class="page"><div>TEST PAGE</div></main>', $html);
+        $this->assertSame('@front/pages/test-page', $this->layoutRenderData($html)['page']['view']);
+    }
+
     public function testAPageThatFailsToRenderAnswersAServerError(): void
     {
         $this->requestPage('/page/broken');
