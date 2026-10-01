@@ -13,6 +13,7 @@ use Wexample\SymfonyLoader\Service\Usage\DefaultAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\DensityAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\FontsAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\ResponsiveAssetUsageService;
+use Wexample\SymfonyLoader\Service\Usage\PaletteAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\SkinAssetUsageService;
 
 class AssetsService
@@ -30,6 +31,7 @@ class AssetsService
     public function __construct(
         AnimationsAssetUsageService $animationsAssetUsageService,
         ColorSchemeAssetUsageService $colorSchemeAssetUsageService,
+        PaletteAssetUsageService $paletteAssetUsageService,
         DefaultAssetUsageService $defaultAssetUsageService,
         DensityAssetUsageService $densityAssetUsageService,
         SkinAssetUsageService $skinAssetUsageService,
@@ -45,6 +47,8 @@ class AssetsService
                      // to preserve order during dynamic assets loading.
                      $defaultAssetUsageService,
                      $colorSchemeAssetUsageService,
+                     // The colours, for whichever light the scheme above chose.
+                     $paletteAssetUsageService,
                      $responsiveAssetUsageService,
                      $densityAssetUsageService,
                      $skinAssetUsageService,
@@ -60,6 +64,7 @@ class AssetsService
         return [
             AnimationsAssetUsageService::class,
             ColorSchemeAssetUsageService::class,
+            PaletteAssetUsageService::class,
             DefaultAssetUsageService::class,
             DensityAssetUsageService::class,
             SkinAssetUsageService::class,

@@ -13,6 +13,8 @@ export default abstract class AssetUsage extends AppChild {
 
   public static USAGE_FONTS: string = 'fonts';
 
+  public static USAGE_PALETTE: string = 'palette';
+
   public static USAGE_RESPONSIVE: string = 'responsive';
 
   public static USAGE_SKIN: string = 'skin';
@@ -22,6 +24,7 @@ export default abstract class AssetUsage extends AppChild {
     // @see AssetsService.php.
     AssetUsage.USAGE_DEFAULT,
     AssetUsage.USAGE_COLOR_SCHEME,
+    AssetUsage.USAGE_PALETTE,
     AssetUsage.USAGE_RESPONSIVE,
     AssetUsage.USAGE_DENSITY,
     AssetUsage.USAGE_SKIN,

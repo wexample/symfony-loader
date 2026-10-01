@@ -39,6 +39,16 @@ parameters:
         light:
           allow_switch: false
 
+    # Palette: the colours — an accent, a neutral, the states and the
+    # categories, each a scale of twelve tones given for the light and the dark
+    # face alike. The colour scheme above picks which face; a palette never
+    # says light or dark, and a skin never says a colour.
+    loader.usages.palette:
+      default: default
+      list:
+        default:
+          allow_switch: false
+
     # Density: how much fits on a screen — spacing, sizes, type scale.
     loader.usages.density:
       default: default

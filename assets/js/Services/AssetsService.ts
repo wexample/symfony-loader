@@ -10,6 +10,7 @@ import ColorScheme from '../Class/AssetUsage/ColorScheme';
 import DefaultAssetUsage from '../Class/AssetUsage/Default';
 import Density from '../Class/AssetUsage/Density';
 import Skin from '../Class/AssetUsage/Skin';
+import Palette from '../Class/AssetUsage/Palette';
 import Fonts from '../Class/AssetUsage/Fonts';
 import ResponsiveAssetUsage from '../Class/AssetUsage/Responsive';
 import Animations from "../Class/AssetUsage/Animations";
@@ -46,6 +47,7 @@ export default class AssetsService extends AppService {
     [
       Animations,
       ColorScheme,
+      Palette,
       DefaultAssetUsage,
       Density,
       Skin,
