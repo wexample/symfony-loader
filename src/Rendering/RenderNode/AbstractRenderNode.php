@@ -10,6 +10,7 @@ use Wexample\SymfonyLoader\Rendering\RenderDataGenerator;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Rendering\Traits\WithView;
 use Wexample\SymfonyLoader\Service\AssetsService;
+use Wexample\SymfonyLoader\Service\ComponentService;
 use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 use Wexample\SymfonyTranslations\Translation\Translator;
 
@@ -108,6 +109,13 @@ abstract class AbstractRenderNode extends RenderDataGenerator
 
         /** @var ComponentRenderNode $component */
         foreach ($this->components as $component) {
+            // Only what the page does not already hold: a component drawn in
+            // place keeps its body for the markup, and copied here it would
+            // stand twice in the page — the same id, the same element.
+            if (! in_array($component->initMode, [ComponentService::INIT_MODE_TEMPLATE, ComponentService::INIT_MODE_LAYOUT], true)) {
+                continue;
+            }
+
             if ($component->getBody()) {
                 $output[] = $component->getBody();
             }
