@@ -24,7 +24,9 @@ export default class OverlayService extends AppService {
   private overlayStack: any[] = [];
   private overlayElGlobal: HTMLElement | null = null;
   private overlayElMain: HTMLElement | null = null;
-  private baseZIndex: number = 1000;
+  // Where the stack starts: the stylesheet's `--z-modal` when it says one, so
+  // the levels are written once, in the CSS; this number when it does not.
+  private baseZIndexFallback: number = 1000;
 
   public async showStandalone(options: {
     className?: string;
@@ -261,6 +263,7 @@ export default class OverlayService extends AppService {
     this.hideOverlayEl(otherOverlayEl);
 
     const stackLength = this.overlayStack.length;
+    const baseZIndex = this.getBaseZIndex();
 
     // Use z-index gaps of 2 so the single backdrop can slot between layers.
     // overlay[i] = baseZIndex + i*2, and the backdrop sits just under the
@@ -275,7 +278,7 @@ export default class OverlayService extends AppService {
       const overlay = this.overlayStack[i];
       const el = overlay?.overlayGetElement?.() || overlay?.el;
       if (el) {
-        el.style.zIndex = String(this.baseZIndex + i * 2);
+        el.style.zIndex = String(baseZIndex + i * 2);
 
         // Depth counts only overlays of the same group above this one.
         // Overlays without a group (confirmations, toasts…) never affect peer depth.
@@ -299,7 +302,13 @@ export default class OverlayService extends AppService {
 
       targetOverlayEl.removeAttribute('hidden');
       targetOverlayEl.classList.add('is-active');
-      targetOverlayEl.style.zIndex = String(this.baseZIndex + backdropIndex * 2 - 1);
+      targetOverlayEl.style.zIndex = String(baseZIndex + backdropIndex * 2 - 1);
     }
+  }
+
+  private getBaseZIndex(): number {
+    const declared = parseInt(getComputedStyle(document.body).getPropertyValue('--z-modal'), 10);
+
+    return Number.isFinite(declared) ? declared : this.baseZIndexFallback;
   }
 }
