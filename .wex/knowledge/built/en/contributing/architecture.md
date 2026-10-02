@@ -51,12 +51,14 @@ src/Controller/AbstractLoaderController.php is the base controller. `adaptiveRen
 1. Instantiates `RenderPass` with the view and a fresh `AssetsRegistry`.
 2. Loads each usage's config from the container and seeds the active value from the config default.
 3. Reads any saved UI state from the session and applies it.
-4. Sets output type and layout base from the request attributes.
+4. Sets output type and layout base from the request attributes. A request the kernel did not dispatch (pushed by hand onto the request stack) has not met the request subscriber, so the attributes are detected here the same way; with no request at all, the pass keeps its defaults, `html` and `default`.
 5. Optionally calls a `$configurator` closure so controllers can customise the pass.
+
+Rendering outside a request — a console command, or a test rendering a page through the real pipeline with an empty request stack — therefore produces the HTML document; `<html lang>` falls back to `app.locale` and `adaptive_response_standalone_uri()` to an empty string.
 
 `AdaptiveRendererService::adaptiveRender()` then branches on output type:
 
-**HTML path**: creates an `InitialLayoutRenderNode`, calls `LayoutService::layoutInitialInit()` (see below), then `renderRenderPass()`. `renderRenderPass()` adds `render_pass` as a Twig global, calls `$twig->render($view, $parameters)`, and passes the response to `injectLayoutAssets()`. That method finds the placeholder `<--  -->` left in the HTML by the layout macro, renders `@WexampleSymfonyLoaderBundle/macros/assets.html.twig` with the current render pass, and replaces the placeholder string with the resulting `<link>` and `<script>` tags.
+**HTML path**: creates an `InitialLayoutRenderNode`, calls `LayoutService::layoutInitialInit()` (see below), then `renderRenderPass()`. `renderRenderPass()` sets the `render_pass` Twig global (declared beforehand by src/Twig/RenderPassGlobalsExtension.php, since Twig refuses a new global once it has rendered anything, such as a mail sent by the controller), calls `$twig->render($view, $parameters)`, and passes the response to `injectLayoutAssets()`. That method finds the placeholder `<--  -->` left in the HTML by the layout macro, renders `@WexampleSymfonyLoaderBundle/macros/assets.html.twig` with the current render pass, and replaces the placeholder string with the resulting `<link>` and `<script>` tags.
 
 **JSON path**: creates an `AjaxLayoutRenderNode`, calls `LayoutService::initRenderNode()` to register it, renders the view to capture the page HTML, stores that HTML in the layout node's `body`, calls `toRenderData().toArray()` on the layout node, and returns a `JsonResponse` with the serialised tree. Any exception during rendering re-enters `adaptiveRender()` with a dedicated error view.
 

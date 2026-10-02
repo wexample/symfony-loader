@@ -12,8 +12,8 @@ use Wexample\SymfonyLoader\Service\Usage\ColorSchemeAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\DefaultAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\DensityAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\FontsAssetUsageService;
-use Wexample\SymfonyLoader\Service\Usage\ResponsiveAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\PaletteAssetUsageService;
+use Wexample\SymfonyLoader\Service\Usage\ResponsiveAssetUsageService;
 use Wexample\SymfonyLoader\Service\Usage\SkinAssetUsageService;
 
 class AssetsService
