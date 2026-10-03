@@ -44,6 +44,14 @@ class FormService extends ComponentService
         $options = $this->mergeFormOptions($formView, $options, ['ajax', 'name']);
         $options['embedType'] = $renderPass->getLayoutBase();
 
+        // The form tag carries an id, for a button standing outside it — in the
+        // foot of a card, of a modal — to send it (`form="…"`).
+        $formView->vars['attr']['id'] ??= $formView->vars['id'];
+        // `actions: false`: whoever places the form draws its actions where it
+        // has room (`form_actions(form, { outside: true })`), and the form's
+        // own template leaves them out.
+        $formView->vars['actions_outside'] = ($options['actions'] ?? true) === false;
+
         $templateVars = [
             'form' => $formView,
         ];
