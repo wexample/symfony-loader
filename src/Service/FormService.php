@@ -126,8 +126,12 @@ class FormService extends ComponentService
         FormView $formView,
         \Wexample\SymfonyLoader\Rendering\RenderNode\ComponentRenderNode $component
     ): string {
+        // What a form with a script of its own is told too: where it stands —
+        // a modal, a panel —, so a form without one is sent from there and
+        // answered there rather than leaving the page.
         $fallbackOptions = [
             'ajax' => (bool) ($formView->vars['ajax'] ?? false),
+            'embedType' => $renderPass->getLayoutBase(),
         ];
         if (! empty($formView->vars['name'])) {
             $fallbackOptions['name'] = $formView->vars['name'];
