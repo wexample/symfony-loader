@@ -179,7 +179,13 @@ export default class Form extends Component implements FieldRegistryInterface {
       return;
     }
 
-    const data = (await adaptiveService.requestData(action, {
+    // Said to come from a page: a script's request without it is taken for a
+    // modal's, and the server would answer with a move inside an embed there
+    // is none of — a tunnel's step going on to the next one.
+    const pageAction = new URL(action, window.location.href);
+    pageAction.searchParams.set('__layout', 'default');
+
+    const data = (await adaptiveService.requestData(pageAction.pathname + pageAction.search, {
       method: 'POST',
       body: formData,
     })) as FormResponsePayloadInterface;
