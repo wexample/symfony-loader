@@ -43,6 +43,12 @@ export default class Form extends Component implements FieldRegistryInterface {
     this.el.addEventListener('change', this.onDirtyProxy);
     this.el.addEventListener('input', this.onDirtyProxy);
 
+    if (this.submitsWhenValid) {
+      this.el.addEventListener('input', this.updateSubmittable);
+      this.el.addEventListener('change', this.updateSubmittable);
+      this.updateSubmittable();
+    }
+
     this.onFieldRegisterProxy = (event: Event) => {
       const field = (event as CustomEvent).detail?.field as FieldControllerInterface;
 
@@ -76,6 +82,9 @@ export default class Form extends Component implements FieldRegistryInterface {
       this.el.removeEventListener('change', this.onDirtyProxy);
       this.el.removeEventListener('input', this.onDirtyProxy);
     }
+
+    this.el.removeEventListener('input', this.updateSubmittable);
+    this.el.removeEventListener('change', this.updateSubmittable);
 
     if (this.onFieldRegisterProxy) {
       this.el.removeEventListener(FORM_FIELD_REGISTER, this.onFieldRegisterProxy);
@@ -270,8 +279,32 @@ export default class Form extends Component implements FieldRegistryInterface {
     this.isSubmitting = false;
     this.setSubmitDisabled(this.lastSubmitter, false);
     this.lastSubmitter = null;
+    this.updateSubmittable();
     this.triggerLoadingEnd();
   }
+
+  // A form saying so (`submit_when_valid`) holds its submit buttons until
+  // every field holds a valid value, as the browser checks it — read on each
+  // control's `validity`, which raises no `invalid` event and so shows no
+  // error before the form is sent.
+  private get submitsWhenValid(): boolean {
+    return (this.el as HTMLFormElement).dataset.submitWhenValid !== undefined;
+  }
+
+  private updateSubmittable = (): void => {
+    if (!this.submitsWhenValid || this.isSubmitting) {
+      return;
+    }
+
+    const elements = Array.from((this.el as HTMLFormElement).elements) as HTMLInputElement[];
+    const valid = elements.every((element) => element.disabled || !element.validity || element.validity.valid);
+
+    elements
+      .filter((element) => element.type === 'submit')
+      .forEach((button) => {
+        button.disabled = !valid;
+      });
+  };
 
   protected setSubmitDisabled(
     submitter: HTMLInputElement | HTMLButtonElement | null,
