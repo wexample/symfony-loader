@@ -87,6 +87,55 @@ export default class OverlayService extends AppService {
     };
   }
 
+  /**
+   * The page dimmed, a spinner over it, while what a modal or a panel is about
+   * to show is on its way: from the click, and not from the answer, which can
+   * take a while to come. Shown after a short delay only, so that a quick
+   * answer does not flash it. Escape, or a click on it, gives the request up
+   * — `signal` is what the request is told with. `done()` takes it away,
+   * answer or failure; the caller owes it in a `finally`.
+   */
+  public waitWhileLoading(delay: number = 150): { signal: AbortSignal; done: () => void } {
+    const controller = new AbortController();
+    let shown: { instance: any; close: () => Promise<void> } | null = null;
+    let finished = false;
+
+    const timer = window.setTimeout(async () => {
+      if (!(this.constructor as typeof OverlayService).componentPath) {
+        return;
+      }
+
+      shown = await this.showStandalone({ className: 'overlay--loading' });
+
+      if (!shown) {
+        return;
+      }
+
+      if (finished) {
+        await shown.close();
+
+        return;
+      }
+
+      const cancel = () => {
+        controller.abort();
+        void shown?.close();
+      };
+
+      shown.instance.overlayOnEscape = cancel;
+      shown.instance.el?.querySelector('.component-overlay')?.addEventListener('click', cancel);
+    }, delay);
+
+    return {
+      signal: controller.signal,
+      done: () => {
+        finished = true;
+        window.clearTimeout(timer);
+        void shown?.close();
+      },
+    };
+  }
+
   private onDocumentMouseDown = (event: MouseEvent) => {
     const overlay = this.getActiveOverlay();
     if (!overlay || !overlay.overlayIsOpen?.()) {

@@ -11,4 +11,7 @@ export default interface RequestOptionsInterface {
   instant?: boolean;
   layout?: string;
   method?: string;
+  // Gives the request up: what the reader cancelled is not answered, nor
+  // reported as a failure.
+  signal?: AbortSignal;
 }

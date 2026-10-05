@@ -47,6 +47,9 @@ export default class AdaptiveService extends AppService {
       if (requestOptions.body !== undefined) {
         kyOptions.body = requestOptions.body;
       }
+      if (requestOptions.signal) {
+        kyOptions.signal = requestOptions.signal;
+      }
 
       const response = method === 'POST'
         ? await client.post({ path, options: kyOptions })
@@ -60,6 +63,11 @@ export default class AdaptiveService extends AppService {
     } catch (error) {
       if (AdaptiveService.isRenderedResponse(error)) {
         return (error as ApiHttpError).payload as AdaptiveResponseInterface;
+      }
+
+      // Given up by the reader: nothing went wrong, nothing to say.
+      if (requestOptions.signal?.aborted) {
+        return { ok: false, responseType: 'error' } as AdaptiveResponseInterface;
       }
 
       this.app.services.error?.capture(error, {
