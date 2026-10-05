@@ -3,7 +3,7 @@
   "description": "A dynamic rendering system for Symfony",
   "type": "library",
   "license": "MIT",
-  "version": "20.0.0",
+  "version": "20.0.1",
   "keywords": [
     "symfony-ux"
   ],
@@ -28,8 +28,8 @@
     "wexample/php-date": ">=2.0.0",
     "wexample/php-html": ">=0.1.6",
     "wexample/symfony-dev": ">=4.0.0",
-    "wexample/symfony-helpers": ">=14.0.0",
-    "wexample/symfony-translations": ">=8.0.0",
+    "wexample/symfony-helpers": ">=15.0.0",
+    "wexample/symfony-translations": ">=9.0.0",
     "friendsofsymfony/jsrouting-bundle": "^3.2.1",
     "symfony/webpack-encore-bundle": "^2.0.1",
     "fortawesome/font-awesome": "^6.7"
