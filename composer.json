@@ -35,7 +35,7 @@
     "fortawesome/font-awesome": "^6.7"
   },
   "require-dev": {
-    "phpunit/phpunit": "*",
+    "phpunit/phpunit": "^13",
     "wexample/symfony-testing": ">=1.0.86",
     "symfony/browser-kit": "^7.4 || ^8.0",
     "symfony/css-selector": "^7.4 || ^8.0"
