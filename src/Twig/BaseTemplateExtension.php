@@ -2,8 +2,10 @@
 
 namespace Wexample\SymfonyLoader\Twig;
 
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\TwigFunction;
+use Wexample\SymfonyHelpers\Interface\HeadMetaProviderInterface;
 use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 use Wexample\SymfonyTranslations\Translation\Translator;
 
@@ -13,9 +15,14 @@ class BaseTemplateExtension extends AbstractExtension
     final public const DEFAULT_APP_TITLE_TRANSLATION_KEY = 'front.app.global::name';
     final public const DEFAULT_APP_DESCRIPTION_TRANSLATION_KEY = 'front.app.global::meta.description';
 
+    /**
+     * @param iterable<HeadMetaProviderInterface> $headMetaProviders
+     */
     public function __construct(
         protected Translator $translator,
         protected RequestStack $requestStack,
+        #[AutowireIterator(HeadMetaProviderInterface::TAG)]
+        private readonly iterable $headMetaProviders = [],
     ) {
     }
 
@@ -34,6 +41,16 @@ class BaseTemplateExtension extends AbstractExtension
                 [
                     $this,
                     'baseTemplateRenderMeta',
+                ],
+                [
+                    'is_safe' => ['html'],
+                ]
+            ),
+            new TwigFunction(
+                'base_template_render_head_meta',
+                [
+                    $this,
+                    'baseTemplateRenderHeadMeta',
                 ],
                 [
                     'is_safe' => ['html'],
@@ -108,6 +125,39 @@ class BaseTemplateExtension extends AbstractExtension
                 htmlspecialchars((string) $name, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8'),
                 htmlspecialchars((string) $content, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8')
             );
+        }
+
+        return implode("\n", $fragments);
+    }
+
+    /**
+     * What the installed bundles add to the head, told what the page already
+     * says of itself: its title, its description, its address.
+     */
+    public function baseTemplateRenderHeadMeta(
+        string $title,
+        ?string $description = null,
+        ?string $url = null,
+    ): string {
+        $document = [
+            'title' => $title,
+            'description' => $description ?: $this->translator->trans(self::DEFAULT_APP_DESCRIPTION_TRANSLATION_KEY),
+            'url' => $url ?: null,
+        ];
+        $fragments = [];
+
+        foreach ($this->headMetaProviders as $provider) {
+            foreach ($provider->getHeadMeta($document) as $attributes) {
+                $fragments[] = '<meta' . implode('', array_map(
+                    static fn (string $name, string $value): string => sprintf(
+                        ' %s="%s"',
+                        htmlspecialchars($name, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8'),
+                        htmlspecialchars($value, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8')
+                    ),
+                    array_keys($attributes),
+                    $attributes
+                )) . '>';
+            }
         }
 
         return implode("\n", $fragments);

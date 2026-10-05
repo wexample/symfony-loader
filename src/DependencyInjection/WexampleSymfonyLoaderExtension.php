@@ -7,6 +7,7 @@ use Wexample\Helpers\Helper\ClassHelper;
 use Wexample\SymfonyHelpers\DependencyInjection\AbstractWexampleSymfonyExtension;
 use Wexample\SymfonyHelpers\Helper\FileHelper;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
+use Wexample\SymfonyHelpers\Interface\HeadMetaProviderInterface;
 use Wexample\SymfonyHelpers\Interface\LoaderBundleInterface;
 use Wexample\SymfonyLoader\Interface\DevelopTabInterface;
 
@@ -26,6 +27,11 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
         $container
             ->registerForAutoconfiguration(DevelopTabInterface::class)
             ->addTag('wexample_symfony_loader.develop_tab');
+
+        // Same for what a bundle adds to the head of every page.
+        $container
+            ->registerForAutoconfiguration(HeadMetaProviderInterface::class)
+            ->addTag(HeadMetaProviderInterface::TAG);
 
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);

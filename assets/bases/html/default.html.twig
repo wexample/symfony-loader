@@ -18,15 +18,15 @@
     <html lang="{{ app.request.locale ?? app.locale }}">
     <head>
         <meta charset="utf-8"/>
-        <title>
-            {{- base_template_render_title(
-                document_title|default(null),
-                layout_title|default(page_title|default(null)),
-                layout_title_properties|default({}),
-                app_title|default(null),
-                app_title_properties|default({}),
-            ) -}}
-        </title>
+        {#- Once, for the title and for what the bundles add to the head. -#}
+        {%- set document_title_resolved = base_template_render_title(
+            document_title|default(null),
+            layout_title|default(page_title|default(null)),
+            layout_title_properties|default({}),
+            app_title|default(null),
+            app_title_properties|default({}),
+        ) -%}
+        <title>{{ document_title_resolved }}</title>
         {%- if render_pass.isUseJs() -%}
             <script nonce="layout-init">
               "use strict";
@@ -82,6 +82,8 @@
             {%- if canonical_href -%}
                 <link rel="canonical" href="{{ canonical_href }}">
             {%- endif -%}
+            {#- What the installed bundles add: symfony-seo's Open Graph card… -#}
+            {{- base_template_render_head_meta(document_title_resolved, document_meta_description|default(null), canonical_href) -}}
         {%- endblock -%}
     </head>
     <body class="{% for usage_name, usage_value in render_pass.usages %}{% if usage_value %}usage-{{ usage_name|replace({'_': '-'}) }}-{{ usage_value }} {% endif %}{% endfor %}{{ body_class|default('') }}">
