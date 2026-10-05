@@ -307,14 +307,6 @@ export default class AssetsService extends AppService {
     asset.loaded = false;
 
     if (asset.el) {
-      // Do some cleanup, only useful for source readability.
-      if (asset.initialLayout) {
-        const elPreload = document.getElementById(`${asset.domId}-preload`);
-        if (elPreload) {
-          elPreload.remove();
-        }
-      }
-
       // Remove from document.
       asset.el.remove();
       asset.el = null;
