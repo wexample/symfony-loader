@@ -23,7 +23,7 @@ Non mesuré dans le navigateur : panneaux, /files, page process (temps serveur s
 ## Reste à discuter, puis décider
 
 1. **Trop de petits fichiers** (loader / DS) — la page documentation déclare 39 CSS et 47 JS séparés, beaucoup d'1 Ko ; ~3 s sur 3,7. Piste : regrouper par layout ou par page. À peser contre le chargement à la demande des assets par render node (usages responsive, color scheme…), qui repose sur un fichier par vue.
-3. **layout.js = 362 Ko** sur 1,25 Mo de scripts — vérifier la minification en prod, sinon découper.
+3. **layout.js** — voir « Fait » : les 362 Ko venaient d'un build de dev. Reste ouvert : 693 Ko minifiés à parser en prod ; regarder ce qu'il contient avant de décider d'un découpage.
 6. **Deux appels API après chargement** : arbre de la documentation (0,32 s) et subscribe-info (0,26 s) — en parallèle, ou arbre inclus dans la page (board).
 
 ## Fait
@@ -34,6 +34,7 @@ Non mesuré dans le navigateur : panneaux, /files, page process (temps serveur s
   - Seule la graisse bold sert (2 510 `ph:bold/…`, aucune autre). Les règles regular visaient `.ph.ph-<nom>`, classe qu'aucune icône ne porte : 1 530 règles mortes dans chaque CSS de layout, retirées (symfony-template 3f987f0 ; la CSS de layout de design-system passe à 160 Ko).
   - Preload de `Phosphor-Bold.woff2` dans le `<head>`, avant les assets, avec `crossorigin` : nouvelle `HeadLinkProviderInterface` (symfony-helpers 0cb926f), rendue par `base_template_render_head_links()` (symfony-loader 834e03d), fournie par `PhosphorFontPreloadProvider` (symfony-template, parti dans la publication 2.0.5). Mesuré sur design-system : la police part avec la première feuille de style au lieu d'après les scripts, téléchargée une fois. Banc front du loader vert.
   - À publier : symfony-template requiert l'interface, donc une version de symfony-helpers qui la contient (contrainte actuelle `>=13.0.0`).
+- **Point 3, taille de layout.js : mesure faussée par le build de dev.** En local, `.wex/docker/watch-bundles.sh` (app-board) relance `encore dev --watch` par-dessus le build de l'image : le board local sert du non minifié, par conception. `@front/js/layouts/private/layout.js` : 2,06 Mo / 338 Ko gzip en local, contre 693 Ko minifié / 143 Ko gzip dans l'image de release (`yarn build`). Conséquence pour tout le benchmark : temps et poids mesurés sur des builds de dev ; à re-mesurer sur un build de production avant de trancher le point 1.
 - **Point 5, redirection 302 `/app/<id>/` → `/general`** : fait (par l'opérateur).
 
 Le board de doc manager tourne sur une image de release : effets visibles après publication.
