@@ -1,4 +1,4 @@
-# Performance du board : regrouper les assets, supprimer le double chargement CSS
+# Performance du board : regrouper les assets, police et layout.js
 
 Opened: 2026-10-05
 Updated: 2026-10-05
@@ -6,12 +6,12 @@ Author: agent:main
 
 ## Contexte
 
-Benchmark du board (doc manager, `board.doc-manager.wex`) en local, par un agent, Chrome headless, machine chargée (load 4,4 / 8 cœurs) : les temps varient d'un passage à l'autre.
+Benchmark du board (doc manager, `board.doc-manager.wex`) en local, par un agent, Chrome headless sans session, machine chargée (load 4,4 / 8 cœurs).
 
 | | Accueil | /app/<id>/general | /app/<id>/documentation |
 |---|---|---|---|
 | DOMContentLoaded | 0,9 s à chaud (2,2 s à froid) | 1,5 à 3,7 s | 3,7 s |
-| Requêtes | 40 | ~47 (90 une fois) | 103 |
+| Téléchargements réels | 40 | 44 | 54-56 |
 | Poids | 1,2 Mo | 1,25 Mo | 1,5 Mo |
 
 Écartés par la mesure :
@@ -20,32 +20,15 @@ Benchmark du board (doc manager, `board.doc-manager.wex`) en local, par un agent
 
 Non mesuré dans le navigateur : panneaux, /files, page process (temps serveur seul, 0,26 à 0,29 s).
 
-## Points à discuter, puis décider
+## Reste à discuter, puis décider
 
 1. **Trop de petits fichiers** (loader / DS) — la page documentation déclare 39 CSS et 47 JS séparés, beaucoup d'1 Ko ; ~3 s sur 3,7. Piste : regrouper par layout ou par page. À peser contre le chargement à la demande des assets par render node (usages responsive, color scheme…), qui repose sur un fichier par vue.
-2. **CSS de layout chargées deux fois** — voir « Vérification du point 2 » : non reproduit.
 3. **layout.js = 362 Ko** sur 1,25 Mo de scripts — vérifier la minification en prod, sinon découper.
 4. **Police Phosphor (150 Ko) demandée à 3,5 s**, après exécution du JS — piste : preload dans le `<head>`.
-5. ~~Redirection 302 `/app/<id>/` → `/general`~~ — fait (par l'opérateur).
 6. **Deux appels API après chargement** : arbre de la documentation (0,32 s) et subscribe-info (0,26 s) — en parallèle, ou arbre inclus dans la page (board).
-
-## Vérification du point 2 (2026-10-05)
-
-Capture réseau CDP (`/tmp/loadertest/net.mjs`, hors dépôt), sans session, sur `/`, `/app/<id>/general`, `/app/<id>/documentation` : à froid, à chaud, `prefers-color-scheme` dark et light, largeurs 400 / 800 / 1280 / 1920.
-
-- Aucune URL demandée deux fois, aucun `ERR_ABORTED`, dans tous les cas.
-- Documentation : 56 requêtes, pas 103. Accueil 40, general 44.
-- Chaque `layout.*.css` est demandée une fois, par le parser. Chrome fusionne le `<link rel="preload">` avec la balise qui le suit.
-- Le schéma de couleurs est choisi côté serveur (`layout.color-scheme.dark.css`), le JS ne le remplace pas au chargement.
-
-Le doublon `preload` + `stylesheet`/`script` existe bien dans `assets/macros/assets.html.twig`, mais il ne coûte pas de téléchargement : il est seulement inutile (balise suivie immédiatement de la vraie).
-
-Hypothèse non vérifiée pour les 103 requêtes et les abandons : une session connectée dont les usages enregistrés (schéma, palette, densité…) diffèrent de ce que le serveur a rendu, ce qui ferait remplacer les feuilles par le JS au démarrage. À reproduire avec une session.
-
-## Décisions
-
-- Point 5 : fait.
 
 ## Fait
 
-- Point 2 mesuré, non reproduit sans session.
+- **Point 2, double chargement des CSS : abandonné, il n'existait pas.** Les 103 « requêtes » de l'agent comptaient les demandes du navigateur, dont 49 servies depuis les preload sans téléchargement ; 54 téléchargements réels. Les `ERR_ABORTED` (5 `layout.*.css`, un seul passage) n'ont pas été reproduits, ni par l'agent ni ici (froid/chaud, clair/sombre, 400 à 1920 px).
+- **Preload redondants retirés** (symfony-loader, non commité) : `assets/macros/assets.html.twig` déclarait un `<link rel="preload">` juste avant chaque `<link rel="stylesheet">` / `<script>` de même URL ; supprimé, ainsi que le nettoyage de l'élément `-preload` dans `AssetsService.removeAsset()`. Vérifié sur design-system : plus aucun preload dans le HTML, banc de tests front du loader vert, aucune URL téléchargée deux fois. Le board de doc manager tourne sur une image de release : effet visible après publication.
+- **Point 5, redirection 302 `/app/<id>/` → `/general`** : fait (par l'opérateur).
