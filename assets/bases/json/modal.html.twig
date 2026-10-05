@@ -14,7 +14,9 @@
     {%- if export_navigation is defined and export_navigation -%}
         {{- block('page_navigation') -}}
     {%- endif -%}
-    <div class="modal-body">
+    {#- The body is the page's ground, as the zone a full page is drawn in: the
+        same rhythm between what it holds, the same surface under it. -#}
+    <div class="modal-body stack--vertical">
         {%- block page_composer_modal -%}
             {{ block('page_body') }}
         {%- endblock -%}

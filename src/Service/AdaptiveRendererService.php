@@ -63,7 +63,13 @@ class AdaptiveRendererService
 
         $renderPass->setDebug($this->kernel->isDebug());
 
-        if ($this->kernel->isDebug()) {
+        $renderPass->setDevelopToolbar(
+            $this->kernel->isDebug()
+            && $this->parameterBag->has('loader.develop_toolbar')
+            && (bool) $this->parameterBag->get('loader.develop_toolbar')
+        );
+
+        if ($renderPass->isDevelopToolbar()) {
             $renderPass->developTabs = $this->developToolbarRegistry->toArray();
         }
 

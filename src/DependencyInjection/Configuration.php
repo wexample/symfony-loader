@@ -19,6 +19,13 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('default_color_scheme')
             ->defaultNull()
             ->end()
+            // The developer's toolbar, and the tabs it loads, on every page of
+            // a debug kernel. Asked for by an app that wants it — the design
+            // system's showcase —, off everywhere else: a dozen scripts loaded
+            // on each page is a dozen requests an application waits behind.
+            ->booleanNode('develop_toolbar')
+            ->defaultFalse()
+            ->end()
             // Locale used to format dates, when it must differ from the translation one (e.g. en_GB).
             ->scalarNode('date_locale')
             ->defaultNull()

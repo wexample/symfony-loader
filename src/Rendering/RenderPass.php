@@ -57,6 +57,8 @@ class RenderPass
 
     private bool $debug = false;
 
+    private bool $developToolbar = false;
+
     private string $outputType = self::OUTPUT_TYPE_RESPONSE_HTML;
 
     protected string $layoutBase = self::BASE_DEFAULT;
@@ -193,6 +195,18 @@ class RenderPass
     public function setDebug(bool $debug): void
     {
         $this->debug = $debug;
+    }
+
+    // The developer's toolbar is drawn: a debug kernel, and an app asking for
+    // it (`develop_toolbar`).
+    public function isDevelopToolbar(): bool
+    {
+        return $this->developToolbar;
+    }
+
+    public function setDevelopToolbar(bool $developToolbar): void
+    {
+        $this->developToolbar = $developToolbar;
     }
 
     public function setOutputType(string $type): self

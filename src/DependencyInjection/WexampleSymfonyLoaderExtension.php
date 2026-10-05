@@ -49,6 +49,11 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
             $config['date_locale'] ?? null
         );
 
+        $container->setParameter(
+            'loader.develop_toolbar',
+            $config['develop_toolbar'] ?? false
+        );
+
         if (! empty($config['default_color_scheme'])) {
             $colorSchemeConfig = $container->hasParameter('loader.usages.color_scheme')
                 ? (array) $container->getParameter('loader.usages.color_scheme')
