@@ -41,6 +41,15 @@ function maybeGenerateEncoreManifest(options = {}) {
   );
 }
 
+// The chunk every page loads: see the splitChunks block of buildEncoreConfig.
+const SHARED_CHUNK_NAME = 'shared';
+const SHARED_CHUNK_TEST = new RegExp(
+  '[\\\\/]('
+  + 'vendor[\\\\/]wexample[\\\\/](symfony-loader|symfony-design-system)[\\\\/]assets[\\\\/]js'
+  + '|node_modules[\\\\/](vue|@vue|@wexample[\\\\/]js-[^\\\\/]+)'
+  + ')[\\\\/]'
+);
+
 function configureEncoreBase(options = {}) {
   const env = options.env || process.env.NODE_ENV || 'dev';
 
@@ -686,6 +695,31 @@ function buildEncoreConfig(options = {}) {
   // than `link:` (a symlink), the fallback type-checks a frozen copy of the
   // whole package and reports errors in files nobody touched. The rule and the
   // reasoning: symfony-design-system knowledge, contributing/assets-as-npm-package.
+
+  // One file per component stays the rule; what each of them used to carry
+  // along — the loader's classes, vue, the shared helpers — is built once,
+  // into `shared.js`, which the layout always renders beside `runtime.js`
+  // (AssetsService::buildTags). The runtime holds back an entry until the
+  // chunks it needs are there, so nothing else has to know. Only this core
+  // goes there: a library two components share, codemirror or mermaid, stays
+  // with them rather than reaching every page.
+  config.optimization = {
+    ...(config.optimization || {}),
+    splitChunks: {
+      chunks: 'initial',
+      cacheGroups: {
+        default: false,
+        defaultVendors: false,
+        shared: {
+          name: SHARED_CHUNK_NAME,
+          test: SHARED_CHUNK_TEST,
+          chunks: 'initial',
+          minChunks: 2,
+          enforce: true,
+        },
+      },
+    },
+  };
 
   // Remove FosRouting InjectPlugin (duplicate singleton bug). Routes are loaded via @fosRoutes alias.
   const fosRoutingIndex = config.plugins.findIndex(

@@ -26,6 +26,8 @@ class AssetsService
         Asset::EXTENSION_JS => [],
     ];
 
+    public const string PATH_SHARED_CHUNK = 'build/shared.js';
+
     private array $usages;
 
     public function __construct(
@@ -167,12 +169,31 @@ class AssetsService
             }
         }
 
+        $runtimeTags = [];
+
         $tag = new AssetTag();
         $tag->setPath('build/runtime.js');
         $tag->setId('javascript-runtime');
         $tag->setContext('extra');
+        $runtimeTags[] = $tag;
 
-        $tags[Asset::EXTENSION_JS]['runtime']['extra'][] = $tag;
+        // The code every component shares, built once (the splitChunks block
+        // of encore.manifest.js). Absent from a build made before it existed.
+        if ($this->assetsRegistryService->assetExists(self::PATH_SHARED_CHUNK)) {
+            $tag = new AssetTag();
+            $tag->setPath(self::PATH_SHARED_CHUNK);
+            $tag->setId('javascript-shared');
+            $tag->setContext('extra');
+            $runtimeTags[] = $tag;
+        }
+
+        // First, before any entry: the runtime holds back an entry until the
+        // chunks it needs are there, and lets one needing none run at once —
+        // last, they ran in that mixed order, a vue registering itself before
+        // the layout had created the app. Here every entry finds what it needs
+        // and runs as it arrives, in the order of the document.
+        $tags[Asset::EXTENSION_JS] = ['runtime' => ['extra' => $runtimeTags]]
+            + $tags[Asset::EXTENSION_JS];
 
         return $tags;
     }
