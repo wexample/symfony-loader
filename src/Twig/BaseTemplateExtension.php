@@ -5,6 +5,7 @@ namespace Wexample\SymfonyLoader\Twig;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\TwigFunction;
+use Wexample\SymfonyHelpers\Interface\HeadLinkProviderInterface;
 use Wexample\SymfonyHelpers\Interface\HeadMetaProviderInterface;
 use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 use Wexample\SymfonyTranslations\Translation\Translator;
@@ -17,12 +18,15 @@ class BaseTemplateExtension extends AbstractExtension
 
     /**
      * @param iterable<HeadMetaProviderInterface> $headMetaProviders
+     * @param iterable<HeadLinkProviderInterface> $headLinkProviders
      */
     public function __construct(
         protected Translator $translator,
         protected RequestStack $requestStack,
         #[AutowireIterator(HeadMetaProviderInterface::TAG)]
         private readonly iterable $headMetaProviders = [],
+        #[AutowireIterator(HeadLinkProviderInterface::TAG)]
+        private readonly iterable $headLinkProviders = [],
     ) {
     }
 
@@ -51,6 +55,16 @@ class BaseTemplateExtension extends AbstractExtension
                 [
                     $this,
                     'baseTemplateRenderHeadMeta',
+                ],
+                [
+                    'is_safe' => ['html'],
+                ]
+            ),
+            new TwigFunction(
+                'base_template_render_head_links',
+                [
+                    $this,
+                    'baseTemplateRenderHeadLinks',
                 ],
                 [
                     'is_safe' => ['html'],
@@ -148,19 +162,41 @@ class BaseTemplateExtension extends AbstractExtension
 
         foreach ($this->headMetaProviders as $provider) {
             foreach ($provider->getHeadMeta($document) as $attributes) {
-                $fragments[] = '<meta' . implode('', array_map(
-                    static fn (string $name, string $value): string => sprintf(
-                        ' %s="%s"',
-                        htmlspecialchars($name, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8'),
-                        htmlspecialchars($value, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8')
-                    ),
-                    array_keys($attributes),
-                    $attributes
-                )) . '>';
+                $fragments[] = $this->renderHeadTag('meta', $attributes);
             }
         }
 
         return implode("\n", $fragments);
+    }
+
+    /**
+     * What the installed bundles link from the head: files the page will
+     * need, printed ahead of its assets so they are asked for first.
+     */
+    public function baseTemplateRenderHeadLinks(): string
+    {
+        $fragments = [];
+
+        foreach ($this->headLinkProviders as $provider) {
+            foreach ($provider->getHeadLinks() as $attributes) {
+                $fragments[] = $this->renderHeadTag('link', $attributes);
+            }
+        }
+
+        return implode("\n", $fragments);
+    }
+
+    private function renderHeadTag(string $tagName, array $attributes): string
+    {
+        return '<' . $tagName . implode('', array_map(
+            static fn (string $name, string $value): string => sprintf(
+                ' %s="%s"',
+                htmlspecialchars($name, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8'),
+                htmlspecialchars($value, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8')
+            ),
+            array_keys($attributes),
+            $attributes
+        )) . '>';
     }
 
     public function baseTemplateRenderCanonical(?string $canonical = null): string

@@ -68,6 +68,8 @@
               window.appRegistry = {bundles: new AppRegistryBundlesManager()};
             </script>
         {%- endif -%}
+        {#- Ahead of the assets: files a stylesheet will name, asked for first. -#}
+        {{- base_template_render_head_links() -}}
         {{- constant('\\Wexample\\SymfonyLoader\\Helper\\RenderingHelper::PLACEHOLDER_PRELOAD_TAG') | raw -}}
         {%- block meta -%}
             <meta name="viewport" content="width=device-width, initial-scale=1">
