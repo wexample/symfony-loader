@@ -9,9 +9,12 @@ import MercureLiveUpdatesDriver, {
 import LiveSubscriberInfoResolver, {
   type LiveSubscriberInfo,
 } from '@wexample/js-api-entity/Common/LiveUpdates/LiveSubscriberInfoResolver';
-import ApiLiveUpdatesConnection, {
+import {
   type LiveUpdatesConnectionStatus as ApiLiveUpdatesConnectionStatus,
 } from '@wexample/js-api-entity/Common/LiveUpdates/LiveUpdatesConnection';
+import LiveUpdatesMultiplexer, {
+  type LiveUpdatesSubscription,
+} from '@wexample/js-api-entity/Common/LiveUpdates/LiveUpdatesMultiplexer';
 import LiveUpdatesConnectionRegistry from '@wexample/js-api-entity/Common/LiveUpdates/LiveUpdatesConnectionRegistry';
 import type { LiveUpdatesDriverInterface } from '@wexample/js-api-entity/Common/LiveUpdates/LiveUpdatesDriver';
 import InvariantViolationError from '../Errors/InvariantViolationError';
@@ -56,8 +59,8 @@ export type LiveUpdatesStatus = {
 
 export type LiveUpdatesConnectOptions = {
   topics: string | string[];
-  // A connection carrying its own driver: what subscribing to a single entity
-  // needs, its token being delivered for that entity and no other.
+  // Subscriptions sharing a driver share one stream: a driver of its own is a
+  // stream of its own.
   driver?: LiveUpdatesDriverInterface;
   owner?: object;
   metadata?: Record<string, unknown>;
@@ -81,9 +84,9 @@ export type LiveUpdatesConnection = {
 };
 
 type LiveUpdatesConnectionInternal = LiveUpdatesConnection & {
-  // Null between the record being registered and the stream being opened: opening
-  // may already call back into the status handlers.
-  apiConnection: ApiLiveUpdatesConnection | null;
+  // Null between the record being registered and the subscription being made:
+  // subscribing may already call back into the status handlers.
+  subscription: LiveUpdatesSubscription | null;
   onOpen?: (connection: LiveUpdatesConnection) => void;
   onError?: (connection: LiveUpdatesConnection) => void;
   onMessage?: (connection: LiveUpdatesConnection, payload: unknown, event: MessageEvent) => void;
@@ -113,8 +116,10 @@ export type RenderNodeLiveUpdatesType = {
   liveUpdatesStatus(): LiveUpdatesStatus;
 };
 
-// The route symfony-live serves subscriber tokens on.
+// The routes symfony-live serves subscriber tokens on: for an entity, telling
+// its topics, and for a set of topics, the one token a page's stream opens with.
 const SUBSCRIBE_INFO_ROUTE = 'wexample_symfony_live_subscribe_info';
+const SUBSCRIBE_TOPICS_ROUTE = 'wexample_symfony_live_subscribe_topics';
 
 export default class LiveUpdatesService extends AppService {
   public static serviceName: string = 'liveUpdates';
@@ -129,6 +134,14 @@ export default class LiveUpdatesService extends AppService {
   // One resolver per entity, so two components watching the same thing share a
   // token instead of each asking the server for one.
   private readonly subscriberResolvers: Map<string, LiveSubscriberInfoResolver> = new Map();
+  // One per set of topics a page's stream has been opened on, so a reconnection
+  // reuses the token until it is due.
+  private readonly topicsResolvers: Map<string, LiveSubscriberInfoResolver> = new Map();
+  // One stream per driver, whatever the number of components listening: a
+  // browser keeps six connections per host over HTTP/1.1, and every stream held
+  // open is one the page's own requests no longer have.
+  private readonly multiplexers: WeakMap<LiveUpdatesDriverInterface, LiveUpdatesMultiplexer> = new WeakMap();
+  private entityDriver: LiveUpdatesDriverInterface | null = null;
   private readonly ownerConnections: WeakMap<object, Set<string>> = new WeakMap();
   private reconnectOptions: ReconnectBackoffOptions = {
     initialDelayMs: 1000,
@@ -261,7 +274,7 @@ export default class LiveUpdatesService extends AppService {
     const connection: LiveUpdatesConnectionInternal = {
       id,
       topics,
-      apiConnection: null,
+      subscription: null,
       owner: options.owner,
       metadata: { ...(options.metadata || {}) },
       status: 'connecting',
@@ -276,10 +289,8 @@ export default class LiveUpdatesService extends AppService {
     this.connections.set(id, connection);
     this.trackOwnerConnection(connection);
 
-    connection.apiConnection = new ApiLiveUpdatesConnection({
-      driver,
+    connection.subscription = this.getMultiplexer(driver).subscribe({
       topics,
-      reconnect: this.reconnectOptions,
       onMessage: (payload, event) => {
         this.handleMessage(connection, payload, event);
       },
@@ -291,8 +302,6 @@ export default class LiveUpdatesService extends AppService {
       },
     });
 
-    this.registry.register(connection.apiConnection);
-
     this.emit(LiveUpdatesServiceEvents.CONNECTION_CREATED, connection);
     this.emitStatus(connection);
 
@@ -303,20 +312,12 @@ export default class LiveUpdatesService extends AppService {
   // server, which is what keeps a subscription and its publications together.
   async connectToEntity(options: LiveUpdatesEntityConnectOptions): Promise<LiveUpdatesConnection> {
     const { entityName, id, ...connectOptions } = options;
-    const resolver = this.getSubscriberInfoResolver(entityName, id);
-    const info = await resolver.resolve();
+    const info = await this.getSubscriberInfoResolver(entityName, id).resolve();
 
     return this.connect({
       ...connectOptions,
       topics: info.topics,
-      driver: new MercureLiveUpdatesDriver(async () => {
-        const current = await resolver.resolve();
-
-        return {
-          hubUrl: current.hubUrl,
-          jwt: current.jwt,
-        };
-      }),
+      driver: this.getEntityDriver(),
     });
   }
 
@@ -399,6 +400,75 @@ export default class LiveUpdatesService extends AppService {
     }
 
     return normalized.join('/');
+  }
+
+  private getMultiplexer(driver: LiveUpdatesDriverInterface): LiveUpdatesMultiplexer {
+    let multiplexer = this.multiplexers.get(driver);
+
+    if (!multiplexer) {
+      multiplexer = new LiveUpdatesMultiplexer({
+        driver,
+        reconnect: this.reconnectOptions,
+        onConnection: (connection) => this.registry.register(connection),
+      });
+
+      this.multiplexers.set(driver, multiplexer);
+    }
+
+    return multiplexer;
+  }
+
+  // Every entity of the page on one stream, its token signed for exactly the
+  // topics that stream is opened on.
+  private getEntityDriver(): LiveUpdatesDriverInterface {
+    if (!this.entityDriver) {
+      this.entityDriver = new MercureLiveUpdatesDriver(async ({ topics }) => {
+        const info = await this.getTopicsResolver(topics).resolve();
+
+        return {
+          hubUrl: info.hubUrl,
+          jwt: info.jwt,
+        };
+      });
+    }
+
+    return this.entityDriver;
+  }
+
+  private getTopicsResolver(topics: string[]): LiveSubscriberInfoResolver {
+    const sorted = [...topics].sort();
+    const key = sorted.join('\n');
+    let resolver = this.topicsResolvers.get(key);
+
+    if (!resolver) {
+      resolver = new LiveSubscriberInfoResolver({
+        fetchInfo: () => this.fetchTopicsInfo(sorted),
+      });
+
+      this.topicsResolvers.set(key, resolver);
+    }
+
+    return resolver;
+  }
+
+  private async fetchTopicsInfo(topics: string[]): Promise<LiveSubscriberInfo> {
+    const query = new URLSearchParams();
+    topics.forEach((topic) => query.append('topic[]', topic));
+
+    const response = await fetch(
+      `${this.getRoutingService().path(SUBSCRIBE_TOPICS_ROUTE)}?${query.toString()}`,
+      { headers: { Accept: 'application/json' } }
+    );
+
+    if (!response.ok) {
+      throw new InvariantViolationError({
+        message: `Unable to subscribe to ${topics.length} topics: the server answered ${response.status}.`,
+        code: 'ERR_LIVE_UPDATES_SUBSCRIBE_TOPICS_FAILED',
+        context: { topics, status: response.status },
+      });
+    }
+
+    return response.json();
   }
 
   private getSubscriberInfoResolver(entityName: string, id: string): LiveSubscriberInfoResolver {
@@ -568,7 +638,7 @@ export default class LiveUpdatesService extends AppService {
       nextStatus: 'closed',
     });
 
-    connection.apiConnection?.close();
+    connection.subscription?.close();
     this.markConnectionOnline(connection);
 
     this.untrackOwnerConnection(connection);
