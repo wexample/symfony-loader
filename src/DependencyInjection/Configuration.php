@@ -26,6 +26,22 @@ class Configuration implements ConfigurationInterface
             ->booleanNode('develop_toolbar')
             ->defaultFalse()
             ->end()
+            // Themes: named sets of axis values — skin, palette, fonts, density —
+            // applied together and offered to the visitor (the design system's
+            // theme_select()). Never the colour scheme: light or dark stays the
+            // visitor's own, whatever the theme.
+            ->arrayNode('themes')
+            ->normalizeKeys(false)
+            ->useAttributeAsKey('name')
+            ->arrayPrototype()
+            ->normalizeKeys(false)
+            ->scalarPrototype()->end()
+            ->validate()
+            ->ifTrue(static fn (array $axes): bool => isset($axes['color_scheme']))
+            ->thenInvalid('A theme never sets the colour scheme: light or dark is the visitor\'s choice, whatever the theme.')
+            ->end()
+            ->end()
+            ->end()
             // Locale used to format dates, when it must differ from the translation one (e.g. en_GB).
             ->scalarNode('date_locale')
             ->defaultNull()
