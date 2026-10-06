@@ -21,7 +21,9 @@
                to that. #}
             <div class="zone zone--panel">
                 <div class="zone zone--scrollable">
-                    <div class="zone--content stack--vertical">
+                    {# Edge to edge when the page asks (`page_zone_flush`), as
+                       the full layout does. #}
+                    <div class="zone--content{{ page_zone_flush|default(false) ? ' zone--content--flush' }} stack--vertical">
                         {%- block page_composer_embed_zoned -%}
                             {{ block('page_body') }}
                         {%- endblock -%}
