@@ -13,12 +13,18 @@ final class DefaultAssetUsageService extends AbstractAssetUsageService
         return 'default';
     }
 
+    public function inheritsPerValue(): bool
+    {
+        return false;
+    }
+
     public function addAssetsForRenderNodeAndType(
         RenderPass $renderPass,
         AbstractRenderNode $renderNode,
         string $ext,
         string $view,
-        ?string $directory = null
+        ?string $directory = null,
+        ?array &$found = null
     ): bool {
         return (bool) $this->createAssetIfExists(
             $this->buildPublicAssetPathFromView(

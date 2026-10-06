@@ -33,12 +33,25 @@ abstract class AbstractAssetUsageService
             . '.' . $ext;
     }
 
+    /**
+     * Whether each value of the axis is looked for on its own down the views
+     * a node inherits (`$found` the values already given by a closer view):
+     * an app shipping its own `palette.default` overrides that value alone,
+     * and still wears the design system's `palette.win95`. False for an axis
+     * whose files come as a whole set from one view.
+     */
+    public function inheritsPerValue(): bool
+    {
+        return true;
+    }
+
     public function addAssetsForRenderNodeAndType(
         RenderPass $renderPass,
         AbstractRenderNode $renderNode,
         string $ext,
         string $view,
-        ?string $directory = null
+        ?string $directory = null,
+        ?array &$found = null
     ): bool {
         $pathInfo = pathinfo(
             $this->buildPublicAssetPathFromView(
@@ -54,6 +67,11 @@ abstract class AbstractAssetUsageService
 
         if (isset($renderPass->usagesConfig[$usage]['list'])) {
             foreach ($renderPass->usagesConfig[$usage]['list'] as $usageValue => $config) {
+                // A closer view gave this value already: it is that view's.
+                if (null !== $found && isset($found[$usageValue])) {
+                    continue;
+                }
+
                 $assetPath = $pathInfo['dirname'].'/'.$pathInfo['filename'].'.'.$usageKebab.'.'.$usageValue.'.'.$pathInfo['extension'];
 
                 if ($asset = $this->createAssetIfExists(
@@ -62,6 +80,10 @@ abstract class AbstractAssetUsageService
                 )) {
                     $hasAsset = true;
                     $asset->usages[$usage] = $usageValue;
+
+                    if (null !== $found) {
+                        $found[$usageValue] = true;
+                    }
                 }
             }
         }

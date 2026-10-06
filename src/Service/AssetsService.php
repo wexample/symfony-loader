@@ -89,9 +89,13 @@ class AssetsService
 
         foreach (Asset::ASSETS_EXTENSIONS as $ext) {
             foreach ($this->usages as $usage) {
-                // i.e. only first css or js needed for the given usage,
-                // inheritance is managed into asset.
+                // The closest view having a file wins: for the whole axis, or
+                // value by value where the axis inherits per value
+                // (inheritsPerValue()) — an app's own palette.default
+                // overrides that value, not the palettes it does not ship.
                 $usageFoundForType = false;
+                $found = [];
+                $perValue = $usage->inheritsPerValue();
 
                 foreach ($views as $view) {
                     if (! $usageFoundForType && $usage->addAssetsForRenderNodeAndType(
@@ -101,8 +105,9 @@ class AssetsService
                         $view,
                         // Only the javascript of a vue lives apart; its
                         // stylesheet is where every other stylesheet is.
-                        $ext === Asset::EXTENSION_JS ? $directory : null
-                    )) {
+                        $ext === Asset::EXTENSION_JS ? $directory : null,
+                        $found
+                    ) && ! $perValue) {
                         $usageFoundForType = true;
                     }
                 }

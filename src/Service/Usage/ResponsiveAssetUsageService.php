@@ -14,12 +14,18 @@ final class ResponsiveAssetUsageService extends AbstractAssetUsageService
         return 'responsive';
     }
 
+    public function inheritsPerValue(): bool
+    {
+        return false;
+    }
+
     public function addAssetsForRenderNodeAndType(
         RenderPass $renderPass,
         AbstractRenderNode $renderNode,
         string $ext,
         string $view,
-        ?string $directory = null
+        ?string $directory = null,
+        ?array &$found = null
     ): bool {
         $pathInfo = pathinfo($this->buildPublicAssetPathFromView($view, $ext));
         $maxWidth = null;
