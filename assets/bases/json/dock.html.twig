@@ -6,7 +6,9 @@
 {%- block page_composer_json -%}
     {%- include '@WexampleSymfonyLoaderBundle/bases/json/_overlay-shell-header.html.twig' with { overlay_type: 'dock' } -%}
     {#- The body is the page's ground, as the zone a full page is drawn in. -#}
-    <div class="dock-body stack--vertical">
+    {#- Edge to edge when the page asks (`page_zone_flush`), as a page's zone
+        and an embed are: an editor, a document viewer. -#}
+    <div class="dock-body{{ page_zone_flush|default(false) ? ' dock-body--flush' }} stack--vertical">
         {%- block page_composer_dock -%}
             {{ block('page_body') }}
         {%- endblock -%}
