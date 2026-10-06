@@ -13,6 +13,7 @@ class AdaptiveResponseService
     private array $allowedBases = [
         RenderPass::BASE_MODAL,
         RenderPass::BASE_PANEL,
+        RenderPass::BASE_DOCK,
         RenderPass::BASE_OVERLAY,
         RenderPass::BASE_EMBED,
         RenderPass::BASE_PAGE,

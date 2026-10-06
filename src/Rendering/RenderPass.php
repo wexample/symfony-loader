@@ -24,6 +24,10 @@ class RenderPass
 
     public const BASE_PANEL = 'panel';
 
+    // A window docked at the foot of the screen, beside the page rather than
+    // over it: the page stays usable while it is open.
+    public const BASE_DOCK = 'dock';
+
     public const BASE_OVERLAY = 'overlay';
 
     public const BASE_EMBED = 'embed';

@@ -1,0 +1,18 @@
+{#- A page in a window docked at the foot of the screen: the same shell as a
+    panel's — its title, the way to open it whole, the way to close it — and
+    the page beside it stays usable. -#}
+{%- extends '@WexampleSymfonyLoaderBundle/bases/json/default.html.twig' -%}
+
+{%- block page_composer_json -%}
+    {%- include '@WexampleSymfonyLoaderBundle/bases/json/_overlay-shell-header.html.twig' with { overlay_type: 'dock' } -%}
+    {#- The body is the page's ground, as the zone a full page is drawn in. -#}
+    <div class="dock-body stack--vertical">
+        {%- block page_composer_dock -%}
+            {{ block('page_body') }}
+        {%- endblock -%}
+    </div>
+    {%- set pageActions %}{% block page_actions %}{% endblock %}{% endset -%}
+    {%- if pageActions|trim is not empty -%}
+        <div class="dock-actions page-actions">{{ pageActions }}</div>
+    {%- endif -%}
+{%- endblock -%}
