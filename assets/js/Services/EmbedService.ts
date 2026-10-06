@@ -21,6 +21,12 @@ export default class EmbedService extends AppService {
     delete this.embeds[name];
   }
 
+  // Whether the page holds an embed of this name: a page opened in a panel has
+  // none of those its full-page self places.
+  has(name: string): boolean {
+    return name in this.embeds;
+  }
+
   // Says the page is coming while it does: a long page shows a spinner where it
   // will stand, instead of the previous one sitting there as if nothing had
   // been asked.

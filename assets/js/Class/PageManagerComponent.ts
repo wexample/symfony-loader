@@ -183,6 +183,15 @@ export default abstract class PageManagerComponent extends Component {
     return request;
   }
 
+  /**
+   * A plain link of the page this manager holds — a panel, a modal, an embed —
+   * that would leave for a whole new page, taking down what lies under the
+   * manager. Left to the browser here; a design system decides where such a
+   * link opens instead, and prevents the event when it does.
+   */
+  protected onLinkLeaving(event: MouseEvent, link: HTMLAnchorElement): void {
+  }
+
   // A plain left click on a link of this site, the page having asked for it:
   // anything else — a new tab, a download, an anchor, another site — is left
   // to the browser.
@@ -193,13 +202,23 @@ export default abstract class PageManagerComponent extends Component {
 
     const link = (event.target as Element | null)?.closest?.('a[href]') as HTMLAnchorElement | null;
 
-    if (!link || !this.isNavigationContained(link)) {
+    if (!link || !this.el.contains(link)) {
       return;
     }
 
     const href = link.getAttribute('href') ?? '';
 
     if (href.startsWith('#') || link.target || link.hasAttribute('download') || link.origin !== window.location.origin) {
+      return;
+    }
+
+    if (!this.isNavigationContained(link)) {
+      // A link of a page this manager holds, about to replace the whole
+      // window and what lies under the manager with it.
+      if (this.getLayoutBase()) {
+        this.onLinkLeaving(event, link);
+      }
+
       return;
     }
 
