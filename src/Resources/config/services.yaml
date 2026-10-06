@@ -47,7 +47,9 @@ parameters:
       default: default
       list:
         default:
-          allow_switch: false
+          allow_switch: true
+        win95:
+          allow_switch: true
 
     # Density: how much fits on a screen — spacing, sizes, type scale.
     loader.usages.density:
@@ -69,6 +71,8 @@ parameters:
           allow_switch: true
         soft:
           allow_switch: true
+        win95:
+          allow_switch: true
 
     # Animations: whether the page moves of its own accord. Only the values a
     # theme ships a file for belong here — a value that loads nothing is a
@@ -88,6 +92,8 @@ parameters:
         editorial:
           allow_switch: true
         mono:
+          allow_switch: true
+        win95:
           allow_switch: true
 
 services:
