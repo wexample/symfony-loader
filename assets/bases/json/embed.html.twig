@@ -4,15 +4,38 @@
 {%- extends '@WexampleSymfonyLoaderBundle/bases/json/default.html.twig' -%}
 
 {%- block page_composer_json -%}
-    {# The vertical rhythm a page counts on comes from the stack the full page
-       layout puts on its container, which an embed does not go through. The
-       framing is not repeated here: width, border and scroll stay the business
-       of the zone holding the embed. #}
-    <div class="embed-body stack--vertical">
-        {%- block page_composer_embed -%}
-            {{ block('page_body') }}
-        {%- endblock -%}
-    </div>
+    {# What a page opens beside itself — a tree before, a column after — it
+       opens in an embed too: the page is a region of another page here, and
+       the zones it asks for are the row filling that region, the same blocks
+       the full layout draws around it. A page asking for none keeps the single
+       column, so an embed that never knew about zones is left as it was. #}
+    {%- set pageZonesBefore %}{% block page_zones_before %}{% endblock %}{% endset -%}
+    {%- set pageZonesAfter %}{% block page_zones_after %}{% endblock %}{% endset -%}
+    {%- if (pageZonesBefore ~ pageZonesAfter)|trim is not empty -%}
+        <div class="embed-body embed-body--zones zone zone--split">
+            {{- pageZonesBefore -}}
+            {# The page's own zone, which takes what the others leave. It holds
+               the vertical rhythm the page counts on, as the single column
+               below does; the room around the row is the business of the zone
+               holding the embed, here as there. #}
+            <div class="zone stack--vertical">
+                {%- block page_composer_embed_zoned -%}
+                    {{ block('page_body') }}
+                {%- endblock -%}
+            </div>
+            {{- pageZonesAfter -}}
+        </div>
+    {%- else -%}
+        {# The vertical rhythm a page counts on comes from the stack the full page
+           layout puts on its container, which an embed does not go through. The
+           framing is not repeated here: width, border and scroll stay the business
+           of the zone holding the embed. #}
+        <div class="embed-body stack--vertical">
+            {%- block page_composer_embed -%}
+                {{ block('page_body') }}
+            {%- endblock -%}
+        </div>
+    {%- endif -%}
     {#- What the page does, below what it says. -#}
     {%- set pageActions %}{% block page_actions %}{% endblock %}{% endset -%}
     {%- if pageActions|trim is not empty -%}
