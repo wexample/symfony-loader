@@ -72,20 +72,26 @@ export default class AssetsService extends AppService {
           );
         },
 
+        // The stylesheets of the new value first, the page's switch to it
+        // after: switched first, the page wore for a moment neither the old
+        // value's sheet, which no longer applies to it, nor the new one, still
+        // on its way — a whole page drawn bare. The old sheet goes once the
+        // new one is there, in the same task as the switch: no frame between.
         async setUsage(
           usageName: string,
           usageValue: string,
           updateAssets: boolean
         ) {
-          RenderNode.prototype.setUsage.apply(
+          this.usages[usageName] = usageValue;
+          await this.assetsUpdate(usageName);
+
+          await RenderNode.prototype.setUsage.apply(
             this,
             [
               usageName,
               usageValue,
               updateAssets,
             ]);
-
-          this.assetsUpdate(usageName);
         },
       },
     };
