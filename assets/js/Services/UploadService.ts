@@ -1,6 +1,7 @@
 import AppService from '../Class/AppService';
 import EventsService from './EventsService';
 import Queue from '@wexample/js-helpers/Helper/Queue';
+import ChunkedUploadTransport from '../Class/ChunkedUploadTransport';
 
 export class UploadServiceEvents {
   public static QUEUED: string = 'upload:queued';
@@ -22,6 +23,8 @@ export type UploadOptions = {
   headers?: { [key: string]: string };
   withCredentials?: boolean;
   responseType?: XMLHttpRequestResponseType;
+  // The size of each piece the file is sent in, said by the server that takes it.
+  chunkSize?: number;
 };
 
 export type UploadTransport = {
@@ -37,6 +40,9 @@ export type UploadJob = {
   context?: any;
   response?: any;
   error?: any;
+  // Gives the upload up, whether it waits or runs (`cancel()`).
+  controller?: AbortController;
+  signal?: AbortSignal;
 };
 
 export default class UploadService extends AppService {
@@ -57,6 +63,11 @@ export default class UploadService extends AppService {
           this.onUploadChangeProxy = this.onUploadChange.bind(this);
           this.registerEvent(UploadService.DEFAULT_EVENT_NAME);
           this.initQueue();
+
+          // Pieces by default: any size, past any limit a single request has.
+          if (!this.transport) {
+            this.transport = new ChunkedUploadTransport(this);
+          }
         },
       },
     };
@@ -88,6 +99,7 @@ export default class UploadService extends AppService {
     const jobs: UploadJob[] = [];
 
     for (const file of files) {
+      const controller = new AbortController();
       const job: UploadJob = {
         id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
         file,
@@ -95,6 +107,8 @@ export default class UploadService extends AppService {
         progress: 0,
         options,
         context,
+        controller,
+        signal: controller.signal,
       };
 
       jobs.push(job);
@@ -102,6 +116,12 @@ export default class UploadService extends AppService {
     }
 
     this.queue.enqueueMany(jobs);
+  }
+
+  // Gives an upload up: one waiting is skipped when its turn comes, one
+  // running stops where it is.
+  cancel(job: UploadJob): void {
+    job.controller?.abort();
   }
 
   setTransport(transport: UploadTransport): void {
@@ -149,6 +169,10 @@ export default class UploadService extends AppService {
   private sendJob(job: UploadJob): Promise<any> {
     if (!this.transport) {
       return Promise.reject(new Error('Upload transport is missing. Call setTransport().'));
+    }
+
+    if (job.signal?.aborted) {
+      return Promise.reject(Object.assign(new Error('Upload cancelled.'), { cancelled: true }));
     }
 
     return this.transport.upload(job);
