@@ -5,6 +5,11 @@
     {% else %}
         <div class="header-title"></div>
     {% endif %}
+    {#- What the page does with what it shows, beside the way out of the
+        overlay (`overlay_header_actions`, icons): a document's download. -#}
+    {% if overlay_header_actions | default('') | trim is not empty %}
+        <div class="{{ overlay_type }}-header-actions">{{ overlay_header_actions | raw }}</div>
+    {% endif %}
     {% if overlay_show_external_link is not defined or overlay_show_external_link != false %}
         <div class="{{ overlay_type }}-external-link">
             <a class="action-icon" href="{{ adaptive_response_standalone_uri() }}" target="_blank" rel="noopener">
