@@ -14,14 +14,19 @@
     {%- if (pageZonesBefore ~ pageZonesAfter)|trim is not empty -%}
         <div class="embed-body embed-body--zones zone zone--split">
             {{- pageZonesBefore -}}
-            {# The page's own zone, which takes what the others leave. It holds
-               the vertical rhythm the page counts on, as the single column
-               below does; the room around the row is the business of the zone
-               holding the embed, here as there. #}
-            <div class="zone stack--vertical">
-                {%- block page_composer_embed_zoned -%}
-                    {{ block('page_body') }}
-                {%- endblock -%}
+            {# The page's own zone, which takes what the others leave. Standing
+               on its own ground and scrolling by itself, as it does when the
+               page is drawn full: three regions of a row are three objects
+               with the page showing between them, and an embed changes nothing
+               to that. #}
+            <div class="zone zone--panel">
+                <div class="zone zone--scrollable">
+                    <div class="zone--content stack--vertical">
+                        {%- block page_composer_embed_zoned -%}
+                            {{ block('page_body') }}
+                        {%- endblock -%}
+                    </div>
+                </div>
             </div>
             {{- pageZonesAfter -}}
         </div>
