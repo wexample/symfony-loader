@@ -287,13 +287,21 @@ class App extends AsyncConstructor {
   // Persists a UI state key/value pair server-side.
   // Default: POST to /_ui-state/set (DS bundle stores in PHP session).
   // Override the backend controller to change persistence behavior (e.g. Syrtis API in manager).
+  //
+  // One after the other: each request reads the session, adds its key and
+  // writes it back whole, so two sent together lose one of the two — a theme
+  // setting four axes at once kept only the last.
   persistUiState(key: string, value: unknown): void {
-    void fetch('/_ui-state/set', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ key, value }),
-    });
+    this.uiStateQueue = this.uiStateQueue
+      .then(() => fetch('/_ui-state/set', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, value }),
+      }))
+      .catch(() => undefined);
   }
+
+  private uiStateQueue: Promise<unknown> = Promise.resolve();
 }
 
 export default App;
