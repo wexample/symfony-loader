@@ -1,5 +1,5 @@
 <div class="{{ overlay_type }}-header">
-    {% set page_title = page_title | default('@page::page_title' | trans) %}
+    {% set page_title = page_title|default(null) ?: '@page::page_title'|trans %}
     {% if page_title | default(false) %}
         <h2 class="header-title">{{ page_title | trans }}</h2>
     {% else %}
