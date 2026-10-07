@@ -39,7 +39,11 @@ class Asset extends RenderDataGenerator
 
     public bool $initialLayout = false;
 
-    public string $media = 'screen';
+    // Every medium, paper included: a stylesheet held to the screen left a
+    // printed page bare — no layout, no print rules of its own —, while the
+    // ones the script adds later carry no medium and applied anyway. A sheet
+    // meant for one width says so itself (the responsive usage).
+    public string $media = 'all';
 
     /**
      * Logical manifest key (e.g. build/@Bundle/js/components/modal.js).
