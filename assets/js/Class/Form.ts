@@ -49,6 +49,10 @@ export default class Form extends Component implements FieldRegistryInterface {
       this.updateSubmittable();
     }
 
+    if (this.submitsOnChange) {
+      this.el.addEventListener('change', this.submitOnChange);
+    }
+
     this.onFieldRegisterProxy = (event: Event) => {
       const field = (event as CustomEvent).detail?.field as FieldControllerInterface;
 
@@ -85,6 +89,7 @@ export default class Form extends Component implements FieldRegistryInterface {
 
     this.el.removeEventListener('input', this.updateSubmittable);
     this.el.removeEventListener('change', this.updateSubmittable);
+    this.el.removeEventListener('change', this.submitOnChange);
 
     if (this.onFieldRegisterProxy) {
       this.el.removeEventListener(FORM_FIELD_REGISTER, this.onFieldRegisterProxy);
@@ -296,6 +301,25 @@ export default class Form extends Component implements FieldRegistryInterface {
   private get submitsWhenValid(): boolean {
     return (this.el as HTMLFormElement).dataset.submitWhenValid !== undefined;
   }
+
+  // A form saying so (`submit_on_change`) is sent as soon as one of its
+  // controls settles on a new value — a bar steering a view, which holds no
+  // submit button to press. `change` and not `input`: a range fires once
+  // released, so a move costs one request and not one per step.
+  private get submitsOnChange(): boolean {
+    return (this.el as HTMLFormElement).dataset.submitOnChange !== undefined;
+  }
+
+  // No submitter: nothing was pressed. `requestSubmit` and not `submit`, so
+  // the submit event is raised and the form goes the same way as any other —
+  // in ajax when it is an ajax form, by navigation otherwise.
+  private submitOnChange = (): void => {
+    if (this.isSubmitting) {
+      return;
+    }
+
+    (this.el as HTMLFormElement).requestSubmit();
+  };
 
   private updateSubmittable = (): void => {
     if (!this.submitsWhenValid || this.isSubmitting) {
