@@ -8,6 +8,7 @@ use Twig\TwigFunction;
 use Wexample\SymfonyHelpers\Interface\HeadLinkProviderInterface;
 use Wexample\SymfonyHelpers\Interface\HeadMetaProviderInterface;
 use Wexample\SymfonyHelpers\Twig\AbstractExtension;
+use Wexample\SymfonyTranslations\Exception\MissingTranslationException;
 use Wexample\SymfonyTranslations\Translation\Translator;
 
 class BaseTemplateExtension extends AbstractExtension
@@ -91,12 +92,12 @@ class BaseTemplateExtension extends AbstractExtension
             return $documentTitle;
         }
 
-        $resolvedLayoutTitle = $layoutTitle ?: $this->translator->trans(
+        $resolvedLayoutTitle = $layoutTitle ?: $this->translateOptional(
             self::DEFAULT_LAYOUT_TITLE_TRANSLATION_KEY,
             $layoutTitleParameters
         );
 
-        $resolvedAppTitle = $appTitle ?: $this->translator->trans(
+        $resolvedAppTitle = $appTitle ?: $this->translateOptional(
             self::DEFAULT_APP_TITLE_TRANSLATION_KEY,
             $appTitleParameters
         );
@@ -113,6 +114,28 @@ class BaseTemplateExtension extends AbstractExtension
     }
 
     /**
+     * A key the page may or may not define, since these are defaults the
+     * caller did not ask for: an application naming no title of its own has
+     * none, which is not the same as having a broken one. The plain translator
+     * answers an undefined key with the key — in the title of the document, and
+     * by throwing where it is strict, which is the test environment.
+     *
+     * @return string|null Null when no catalogue of the locale chain defines it
+     */
+    private function translateOptional(string $key, array $parameters = []): ?string
+    {
+        try {
+            $translated = $this->translator->trans($key, $parameters);
+        } catch (MissingTranslationException) {
+            return null;
+        }
+
+        return str_contains($translated, Translator::DOMAIN_SEPARATOR)
+            ? null
+            : $translated;
+    }
+
+    /**
      * Render meta tags from a provided map, with sensible defaults for common keys.
      *
      * @param array<string, string|null> $meta
@@ -123,7 +146,7 @@ class BaseTemplateExtension extends AbstractExtension
         array $defaults = [],
     ): string {
         $resolvedDefaults = [
-                'description' => $this->translator->trans(self::DEFAULT_APP_DESCRIPTION_TRANSLATION_KEY),
+                'description' => $this->translateOptional(self::DEFAULT_APP_DESCRIPTION_TRANSLATION_KEY),
             ] + $defaults;
 
         $values = array_filter(
@@ -155,7 +178,7 @@ class BaseTemplateExtension extends AbstractExtension
     ): string {
         $document = [
             'title' => $title,
-            'description' => $description ?: $this->translator->trans(self::DEFAULT_APP_DESCRIPTION_TRANSLATION_KEY),
+            'description' => $description ?: $this->translateOptional(self::DEFAULT_APP_DESCRIPTION_TRANSLATION_KEY),
             'url' => $url ?: null,
         ];
         $fragments = [];
