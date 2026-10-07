@@ -1,4 +1,15 @@
+{#- The page an error is answered with, for every status the loader has no
+    wording of its own for. An application saying something else about a code
+    puts an `error<code>.html.twig` beside this one in its own front path, or
+    overrides this template to draw it in its layout — `ErrorPageHelper` names
+    the four paths that are looked for, in that order. -#}
 {%- extends '@WexampleSymfonyLoaderBundle/layouts/default/layout.html.twig' -%}
+
+{#- The codes an internal tool answers in so many words. Any other status
+    keeps the generic wording, so a 418 is still a readable page. -#}
+{%- set error_key = status_code in [401, 403, 404, 500] ? status_code : 'default' -%}
+{%- set error_domain = '@page::code.' ~ error_key -%}
+{%- set page_title = (error_domain ~ '.title') | trans -%}
 
 {%- block page_config -%}
     {{ parent() }}
@@ -6,5 +17,12 @@
 {%- endblock -%}
 
 {%- block page_body -%}
-    {{ exception.message }}
+    <section class="system-error">
+        <p class="system-error--code">{{ status_code }}</p>
+        <h1 class="system-error--title">{{ page_title }}</h1>
+        <p class="system-error--message">{{ (error_domain ~ '.message') | trans }}</p>
+        {#- A way out, which is the only thing this page can offer: the root of
+            the site, the one address every application has. -#}
+        <p class="system-error--exit"><a href="/">{{ '@page::exit' | trans }}</a></p>
+    </section>
 {%- endblock -%}

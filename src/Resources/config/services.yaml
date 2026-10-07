@@ -123,6 +123,12 @@ services:
             - '../../Twig/TokenParser'
         tags: ['controller.service_arguments']
 
+    # Symfony aliases no interface to its error renderer, so the one the error
+    # controller delegates to in development is named here.
+    Wexample\SymfonyLoader\Controller\System\ErrorController:
+        arguments:
+            $errorRenderer: '@error_renderer'
+
     Wexample\SymfonyLoader\Twig\ColorExtension:
         arguments:
             $colors: '%loader.colors%'

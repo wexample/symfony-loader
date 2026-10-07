@@ -1,0 +1,19 @@
+{#- Rendering a page for an XHR threw: there is no page to deliver, and the
+    front-end shows this one in its place. Reached from
+    `AdaptiveRendererService`, never routed. -#}
+{%- extends '@WexampleSymfonyLoaderBundle/layouts/default/layout.html.twig' -%}
+
+{%- block page_config -%}
+    {{ parent() }}
+    {{- var_export(render_pass, 'hasError', true) -}}
+{%- endblock -%}
+
+{%- block page_body -%}
+    {#- The message names a template, a variable, a service: a developer's
+        sentence. Said only where a developer is reading. -#}
+    {%- if render_pass.debug -%}
+        {{ exception.message }}
+    {%- else -%}
+        {{ '@page::message' | trans }}
+    {%- endif -%}
+{%- endblock -%}

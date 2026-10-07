@@ -1,0 +1,7 @@
+{#- An application's own page for one status, which the error controller has
+    to prefer to the bundle's. -#}
+{%- extends '@WexampleSymfonyLoaderBundle/layouts/default/layout.html.twig' -%}
+
+{%- block page_body -%}
+    <div>THE APPLICATION SAYS {{ status_code }}</div>
+{%- endblock -%}

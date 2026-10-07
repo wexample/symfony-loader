@@ -32,5 +32,12 @@ class AppKernel extends AbstractFixtureKernel
         parent::configureRoutes($routes);
 
         $routes->import(__DIR__ . '/Controller/', 'attribute');
+
+        // What an application imports to look at its error pages, and what
+        // asks this bundle's error controller for the page rather than for the
+        // exception.
+        $routes
+            ->import('@FrameworkBundle/Resources/config/routing/errors.php')
+            ->prefix('/_error');
     }
 }

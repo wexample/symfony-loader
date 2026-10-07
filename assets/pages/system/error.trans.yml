@@ -1,0 +1,37 @@
+en:
+  exit: Back to the home page
+  code:
+    '401':
+      title: Please sign in
+      message: This page is for signed-in users. Sign in and open it again.
+    '403':
+      title: This page is not yours to open
+      message: Your account does not have access to it. Ask whoever manages the application if you need it.
+    '404':
+      title: This page does not exist
+      message: The address is wrong, or what it pointed to has been removed.
+    '500':
+      title: Something went wrong
+      message: The error has been recorded. Try again in a moment, and tell whoever manages the application if it keeps happening.
+    default:
+      title: This page cannot be shown
+      message: Try again in a moment, and tell whoever manages the application if it keeps happening.
+
+fr:
+  exit: Retour à l'accueil
+  code:
+    '401':
+      title: Connectez-vous
+      message: Cette page est réservée aux personnes connectées. Connectez-vous, puis ouvrez-la à nouveau.
+    '403':
+      title: Cette page ne vous est pas ouverte
+      message: Votre compte n'y a pas accès. Demandez-le à la personne qui administre l'application si vous en avez besoin.
+    '404':
+      title: Cette page n'existe pas
+      message: L'adresse est erronée, ou ce qu'elle désignait a été supprimé.
+    '500':
+      title: Une erreur est survenue
+      message: L'erreur a été enregistrée. Réessayez dans un instant, et signalez-le si cela se reproduit.
+    default:
+      title: Cette page ne peut pas être affichée
+      message: Réessayez dans un instant, et signalez-le si cela se reproduit.

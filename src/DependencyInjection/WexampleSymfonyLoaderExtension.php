@@ -10,10 +10,24 @@ use Wexample\SymfonyHelpers\Helper\VariableHelper;
 use Wexample\SymfonyHelpers\Interface\HeadLinkProviderInterface;
 use Wexample\SymfonyHelpers\Interface\HeadMetaProviderInterface;
 use Wexample\SymfonyHelpers\Interface\LoaderBundleInterface;
+use Wexample\SymfonyLoader\Controller\System\ErrorController;
 use Wexample\SymfonyLoader\Interface\DevelopTabInterface;
 
 class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
 {
+    /**
+     * Prepended, not set: an application that names its own error controller
+     * keeps it, since its own configuration is read after this one.
+     */
+    public function prepend(ContainerBuilder $container): void
+    {
+        parent::prepend($container);
+
+        $container->prependExtensionConfig('framework', [
+            'error_controller' => ErrorController::class,
+        ]);
+    }
+
     public function load(
         array $configs,
         ContainerBuilder $container

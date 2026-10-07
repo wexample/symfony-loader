@@ -9,18 +9,15 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Twig\Environment;
-use Wexample\SymfonyHelpers\Helper\BundleHelper;
-use Wexample\SymfonyLoader\Controller\AbstractPagesController;
 use Wexample\SymfonyLoader\Exception\AssetsNotBuiltException;
 use Wexample\SymfonyLoader\Helper\AdaptiveRequestHelper;
+use Wexample\SymfonyLoader\Helper\ErrorPageHelper;
 use Wexample\SymfonyLoader\Helper\RenderingHelper;
 use Wexample\SymfonyLoader\Rendering\AssetsRegistry;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AjaxLayoutRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderNode\InitialLayoutRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Twig\RenderPassGlobalsExtension;
-use Wexample\SymfonyLoader\WexampleSymfonyLoaderBundle;
-use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 use Wexample\SymfonyTranslations\Translation\Translator;
 
 class AdaptiveRendererService
@@ -155,11 +152,7 @@ class AdaptiveRendererService
 
                 return $finalResponse;
             } catch (Exception $exception) {
-                $errorView = BundleHelper::ALIAS_PREFIX .
-                    WexampleSymfonyLoaderBundle::getAlias() . '/' .
-                    AbstractPagesController::RESOURCES_DIR_PAGE .
-                    'system/error' .
-                    TemplateHelper::TEMPLATE_FILE_EXTENSION;
+                $errorView = ErrorPageHelper::renderFailureView();
 
                 if ($view !== $errorView) {
                     $errorResponse = new JsonResponse();
@@ -234,12 +227,14 @@ class AdaptiveRendererService
         Response $response,
         RenderPass $renderPass
     ): Response {
+        // An error status is not a reason to skip: a 404 answered with a page
+        // is a page, and it needs its stylesheets as much as any other. What
+        // decides is the placeholder below — a response the loader did not
+        // render carries none, whatever its status.
         if ($renderPass->isJsonRequest()
             || $response instanceof JsonResponse
             || $response->isEmpty()
             || $response->isRedirection()
-            || $response->isClientError()
-            || $response->isServerError()
         ) {
             return $response;
         }
