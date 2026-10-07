@@ -17,6 +17,15 @@ import Animations from "../Class/AssetUsage/Animations";
 import ErrorService from './ErrorService';
 import InvariantViolationError from '../Errors/InvariantViolationError';
 
+export class AssetsServiceEvents {
+  // An axis of the theme switched — the colour scheme, the palette, the skin,
+  // the density —, once its stylesheet is applied: what reads the theme's
+  // variables in script (a chart, a map) reads the new ones. `detail`:
+  // `{ usage, value, previous }`. Said once, by the layout, whatever the
+  // number of render nodes the switch went through.
+  public static USAGE_CHANGE: string = 'usage:change';
+}
+
 export type RenderNodeAssetsType = {
   assetsUpdate(usage: string): Promise<void>;
 };
@@ -82,6 +91,7 @@ export default class AssetsService extends AppService {
           usageValue: string,
           updateAssets: boolean
         ) {
+          const previous = this.usages[usageName];
           this.usages[usageName] = usageValue;
           await this.assetsUpdate(usageName);
 
@@ -92,6 +102,14 @@ export default class AssetsService extends AppService {
               usageValue,
               updateAssets,
             ]);
+
+          if (this === this.app.layout && previous !== usageValue) {
+            this.app.services.events.trigger(AssetsServiceEvents.USAGE_CHANGE, {
+              usage: usageName,
+              value: usageValue,
+              previous,
+            });
+          }
         },
       },
     };

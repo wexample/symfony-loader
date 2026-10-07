@@ -32,12 +32,14 @@ chacune est une piste.
    par exemple `name-to-m.scss` (sous `l`… à nommer) et `name-from-m.scss` (dès `m`) — dirait
    en un fichier ce que les media queries disent en une ligne.
 
-3. **Les fichiers par taille d'un layout, cherchés aussi dans les layouts qu'il étend.**
-   Ils sont cherchés sous la vue du layout rendu : pour Mojoe, `@front/layouts/private/layout-m`,
-   jamais sous `@WexampleSymfonyDesignSystemBundle/layouts/dashboard/layout-m` qu'il étend.
-   Le design system ne peut donc rien livrer par taille pour le layout : chaque application
-   devrait écrire ses `layout-xs/-s/-m` (faisable, mais une application qui les oublie n'a pas
-   de mobile sans que rien ne le dise). Les chercher le long de la chaîne `extends` règle ça.
+3. ~~**Les fichiers par taille d'un layout, cherchés aussi dans les layouts qu'il étend.**~~
+   Déjà le cas, relevé à tort au départ : le layout dashboard du design system s'inscrit dans
+   la pile d'héritage du layout (`setDefaultView(_self)`), et `AssetsService::assetsDetect()` la
+   parcourt du plus proche au plus lointain. Le design system peut donc livrer
+   `layouts/dashboard/layout-m.scss`, reçu par toute application qui l'étend. Seule réserve :
+   sur l'axe responsive la vue la plus proche l'emporte pour tout l'axe — une application qui
+   livre un seul fichier par taille à elle masque ceux du design system. Un héritage valeur par
+   valeur (`inheritsPerValue()`, comme la palette) la lèverait.
 
 4. **Un composant mesuré à sa largeur, ou à celle de la fenêtre.**
    `RenderNode::getElWidth()` mesure l'élément du composant : un menu latéral (220 px, 0 replié)
@@ -57,6 +59,6 @@ chacune est une piste.
 
 ## Ordre proposé
 
-1 et 3 d'abord : ils suffisent pour que le design system déplace le repli du header dans des
-fichiers par taille du layout dashboard. 2 rend la chose légère. 4, 5 et 6 ensuite, selon le
-besoin.
+1 d'abord : avec lui, le design system peut déplacer le repli du header dans des fichiers par
+taille du layout dashboard (le 3 n'en est pas un, voir plus haut). 2 rend la chose légère.
+4, 5 et 6 ensuite, selon le besoin.
