@@ -34,6 +34,11 @@ en:
         month_other: "in %count% months"
         year_one: in 1 year
         year_other: "in %count% years"
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    # `%range%` its days, already in the locale.
+    week:
+      label: "Week %week%"
+      range: "Week %week% · %range%"
 
   frontend:
     confirm:
@@ -82,6 +87,10 @@ ar:
         month_other: 'بعد %count% أشهر'
         year_one: 'بعد سنة واحدة'
         year_other: 'بعد %count% سنوات'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "الأسبوع %week%"
+      range: "الأسبوع %week% · %range%"
   frontend:
     confirm:
       title: تأكيد
@@ -129,6 +138,10 @@ bn:
         month_other: '%count% মাসের মধ্যে'
         year_one: '১ বছরের মধ্যে'
         year_other: '%count% বছরের মধ্যে'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "সপ্তাহ %week%"
+      range: "সপ্তাহ %week% · %range%"
   frontend:
     confirm:
       title: নিশ্চিতকরণ
@@ -176,6 +189,10 @@ de:
         month_other: 'in %count% Monaten'
         year_one: 'in 1 Jahr'
         year_other: 'in %count% Jahren'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "Woche %week%"
+      range: "Woche %week% · %range%"
   frontend:
     confirm:
       title: Bestätigung
@@ -223,6 +240,10 @@ es:
         month_other: 'en %count% meses'
         year_one: 'en 1 año'
         year_other: 'en %count% años'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "Semana %week%"
+      range: "Semana %week% · %range%"
   frontend:
     confirm:
       title: Confirmación
@@ -270,6 +291,10 @@ fa:
         month_other: 'در %count% ماه'
         year_one: 'در 1 سال'
         year_other: 'در %count% سال'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "هفتهٔ %week%"
+      range: "هفتهٔ %week% · %range%"
   frontend:
     confirm:
       title: تأیید
@@ -317,6 +342,10 @@ fi:
         month_other: '%count% kuukautta kuluttua'
         year_one: '1 vuosi kuluttua'
         year_other: '%count% vuotta kuluttua'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "Viikko %week%"
+      range: "Viikko %week% · %range%"
   frontend:
     confirm:
       title: Vahvistus
@@ -364,6 +393,10 @@ fr:
         month_other: 'dans %count% mois'
         year_one: 'dans 1 an'
         year_other: 'dans %count% ans'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "Semaine %week%"
+      range: "Semaine %week% · %range%"
   frontend:
     confirm:
       title: Confirmation
@@ -411,6 +444,10 @@ he:
         month_other: 'בעוד %count% חודשים'
         year_one: 'בעוד שנה'
         year_other: 'בעוד %count% שנים'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "שבוע %week%"
+      range: "שבוע %week% · %range%"
   frontend:
     confirm:
       title: אישור
@@ -458,6 +495,10 @@ hi:
         month_other: '%count% महीने में'
         year_one: '1 वर्ष में'
         year_other: '%count% वर्ष में'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "सप्ताह %week%"
+      range: "सप्ताह %week% · %range%"
   frontend:
     confirm:
       title: पुष्टि
@@ -505,6 +546,10 @@ id:
         month_other: 'dalam %count% bulan'
         year_one: 'dalam 1 tahun'
         year_other: 'dalam %count% tahun'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "Minggu %week%"
+      range: "Minggu %week% · %range%"
   frontend:
     confirm:
       title: Konfirmasi
@@ -552,6 +597,10 @@ it:
         month_other: 'tra %count% mesi'
         year_one: 'tra 1 anno'
         year_other: 'tra %count% anni'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "Settimana %week%"
+      range: "Settimana %week% · %range%"
   frontend:
     confirm:
       title: Conferma
@@ -599,6 +648,10 @@ ja:
         month_other: '%count% ヶ月後'
         year_one: '1 年後'
         year_other: '%count% 年後'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "第%week%週"
+      range: "第%week%週 · %range%"
   frontend:
     confirm:
       title: 確認
@@ -646,6 +699,10 @@ ko:
         month_other: '%count%개월 후'
         year_one: '1년 후'
         year_other: '%count%년 후'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "%week%주차"
+      range: "%week%주차 · %range%"
   frontend:
     confirm:
       title: 확인
@@ -693,6 +750,10 @@ nl:
         month_other: 'over %count% maanden'
         year_one: 'over 1 jaar'
         year_other: 'over %count% jaren'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "Week %week%"
+      range: "Week %week% · %range%"
   frontend:
     confirm:
       title: Bevestiging
@@ -740,6 +801,10 @@ pl:
         month_other: 'za %count% miesięcy'
         year_one: 'za 1 rok'
         year_other: 'za %count% lat'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "Tydzień %week%"
+      range: "Tydzień %week% · %range%"
   frontend:
     confirm:
       title: Potwierdzenie
@@ -787,6 +852,10 @@ pt_BR:
         month_other: 'em %count% meses'
         year_one: 'em 1 ano'
         year_other: 'em %count% anos'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "Semana %week%"
+      range: "Semana %week% · %range%"
   frontend:
     confirm:
       title: Confirmação
@@ -834,6 +903,10 @@ ru:
         month_other: 'через %count% месяцев'
         year_one: 'через 1 год'
         year_other: 'через %count% лет'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "Неделя %week%"
+      range: "Неделя %week% · %range%"
   frontend:
     confirm:
       title: Подтверждение
@@ -881,6 +954,10 @@ th:
         month_other: 'ใน%count% เดือน'
         year_one: 'ใน 1 ปี'
         year_other: 'ใน%count% ปี'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "สัปดาห์ที่ %week%"
+      range: "สัปดาห์ที่ %week% · %range%"
   frontend:
     confirm:
       title: การยืนยัน
@@ -928,6 +1005,10 @@ tr:
         month_other: '%count% ay içinde'
         year_one: '1 yıl içinde'
         year_other: '%count% yıl içinde'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "%week%. hafta"
+      range: "%week%. hafta · %range%"
   frontend:
     confirm:
       title: Onay
@@ -975,6 +1056,10 @@ ur:
         month_other: '%count% مہینوں میں'
         year_one: '1 سال میں'
         year_other: '%count% سالوں میں'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "ہفتہ %week%"
+      range: "ہفتہ %week% · %range%"
   frontend:
     confirm:
       title: تصدیق
@@ -1022,6 +1107,10 @@ vi:
         month_other: 'trong %count% tháng'
         year_one: 'trong 1 năm'
         year_other: 'trong %count% năm'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "Tuần %week%"
+      range: "Tuần %week% · %range%"
   frontend:
     confirm:
       title: 'Xác nhận'
@@ -1069,6 +1158,10 @@ zh:
         month_other: '%count%个月后'
         year_one: 1年后
         year_other: '%count%年后'
+    # ISO week, as php-date and js-date format it: `%week%` its number,
+    week:
+      label: "第%week%周"
+      range: "第%week%周 · %range%"
   frontend:
     confirm:
       title: 确认
