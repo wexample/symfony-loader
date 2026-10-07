@@ -109,6 +109,7 @@ export default abstract class PageManagerComponent extends Component {
     }
 
     this.el.classList.remove('is-page-leaving--forward', 'is-page-leaving--back');
+    this.scrollToTop();
 
     if (!this.el.querySelector('[data-page-transition="slide"]')) {
       return;
@@ -123,6 +124,20 @@ export default abstract class PageManagerComponent extends Component {
       this.pageTransitionTimer = null;
       this.el.classList.remove('is-page-entering--forward', 'is-page-entering--back');
     }, PageManagerComponent.PAGE_TRANSITION_MS);
+  }
+
+  /**
+   * A page arriving in this manager opens at its top, as a page opened in the
+   * window does: the next step of a tunnel would otherwise be read from where
+   * the reader had scrolled the step before. The box that scrolls is the one
+   * the layout base marks `data-page-scroll` — the body of a modal, a panel, a
+   * dock, an overlay — or this manager's own element when it scrolls itself.
+   * Nothing else is touched: the window behind an overlay stays where it was.
+   */
+  private scrollToTop(): void {
+    const box = this.el.querySelector<HTMLElement>('[data-page-scroll]') ?? this.el;
+
+    box.scrollTop = 0;
   }
 
   /**

@@ -18,7 +18,7 @@
         same rhythm between what it holds, the same surface under it. -#}
     {#- Edge to edge when the page asks (`page_zone_flush`), as a page's zone
         and an embed are: an editor, a document viewer. -#}
-    <div class="modal-body{{ page_zone_flush|default(false) ? ' modal-body--flush' }} stack--vertical">
+    <div class="modal-body{{ page_zone_flush|default(false) ? ' modal-body--flush' }} stack--vertical" data-page-scroll>
         {%- block page_composer_modal -%}
             {{ block('page_body') }}
         {%- endblock -%}

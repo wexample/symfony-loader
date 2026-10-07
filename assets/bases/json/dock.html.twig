@@ -8,7 +8,7 @@
     {#- The body is the page's ground, as the zone a full page is drawn in. -#}
     {#- Edge to edge when the page asks (`page_zone_flush`), as a page's zone
         and an embed are: an editor, a document viewer. -#}
-    <div class="dock-body{{ page_zone_flush|default(false) ? ' dock-body--flush' }} stack--vertical">
+    <div class="dock-body{{ page_zone_flush|default(false) ? ' dock-body--flush' }} stack--vertical" data-page-scroll>
         {%- block page_composer_dock -%}
             {{ block('page_body') }}
         {%- endblock -%}
