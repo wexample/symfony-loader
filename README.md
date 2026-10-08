@@ -1,6 +1,6 @@
 # symfony_loader
 
-Version: 21.0.0
+Version: 22.0.0
 
 `symfony-loader` is a Symfony bundle that replaces the standard `render()` call with `adaptiveRender()`, routing each request through a `RenderPass` that selects between a full HTML response and a JSON envelope depending on whether the request is XHR. Controllers extending `AbstractLoaderController` inherit this pipeline, which also collects and injects Webpack Encore assets — CSS variants for color scheme, responsive breakpoints, density, skin, fonts, and animations — at the end of every HTML response. It targets Symfony developers who need a single rendering path that handles both initial page loads and dynamic partial updates without duplicating controller logic.
 
@@ -74,9 +74,19 @@ Rendering outside a request — a console command, or a test rendering a page th
 
 `AdaptiveRendererService::adaptiveRender()` then branches on output type:
 
-**HTML path**: creates an `InitialLayoutRenderNode`, calls `LayoutService::layoutInitialInit()` (see below), then `renderRenderPass()`. `renderRenderPass()` sets the `render_pass` Twig global (declared beforehand by src/Twig/RenderPassGlobalsExtension.php, since Twig refuses a new global once it has rendered anything, such as a mail sent by the controller), calls `$twig->render($view, $parameters)`, and passes the response to `injectLayoutAssets()`. That method finds the placeholder `<--  -->` left in the HTML by the layout macro, renders `@WexampleSymfonyLoaderBundle/macros/assets.html.twig` with the current render pass, and replaces the placeholder string with the resulting `<link>` and `<script>` tags.
+**HTML path**: creates an `InitialLayoutRenderNode`, calls `LayoutService::layoutInitialInit()` (see below), then `renderRenderPass()`. `renderRenderPass()` sets the `render_pass` Twig global (declared beforehand by src/Twig/RenderPassGlobalsExtension.php, since Twig refuses a new global once it has rendered anything, such as a mail sent by the controller), calls `$twig->render($view, $parameters)`, and passes the response to `injectLayoutAssets()`. That method finds the placeholder `<--  -->` left in the HTML by the layout macro, renders `@WexampleSymfonyLoaderBundle/macros/assets.html.twig` with the current render pass, and replaces the placeholder string with the resulting `<link>` and `<script>` tags. An error status is no reason to skip it: a `404` answered with a page is a page, and what decides is the placeholder — a response the loader did not render carries none, whatever its status.
 
-**JSON path**: creates an `AjaxLayoutRenderNode`, calls `LayoutService::initRenderNode()` to register it, renders the view to capture the page HTML, stores that HTML in the layout node's `body`, calls `toRenderData().toArray()` on the layout node, and returns a `JsonResponse` with the serialised tree. Any exception during rendering re-enters `adaptiveRender()` with a dedicated error view.
+**JSON path**: creates an `AjaxLayoutRenderNode`, calls `LayoutService::initRenderNode()` to register it, renders the view to capture the page HTML, stores that HTML in the layout node's `body`, calls `toRenderData().toArray()` on the layout node, and returns a `JsonResponse` with the serialised tree. Any exception during rendering re-enters `adaptiveRender()` with `@WexampleSymfonyLoaderBundle/pages/system/render-failure.html.twig`, named by src/Helper/ErrorPageHelper.php: the front-end shows it in place of the page it asked for, which is what `hasError` on the page's vars says. The exception message is printed only on a debug kernel — it names a template or a service, and that is a developer's sentence.
+
+### Error pages
+
+The bundle prepends `framework.error_controller` in src/DependencyInjection/WexampleSymfonyLoaderExtension.php, pointing it at src/Controller/System/ErrorController.php — prepended rather than set, so an application naming its own error controller keeps it. Symfony's error listener and the `/_error/{code}` preview route both go through that value, so one class covers the real error and the way an application looks at its pages.
+
+The controller renders through `adaptiveRender()` like any page: a browser gets a whole document with the stylesheets of the page, an XHR gets the render envelope, whose `responseType` stays `render` — which is what tells the front-end to show the page rather than report a request that failed (`AdaptiveService::isRenderedResponse()`).
+
+src/Helper/ErrorPageHelper.php names the templates, tried in that order: `@front/pages/system/error<code>`, `@front/pages/system/error`, then the bundle's two. The bundle's generic `error.html.twig` carries the wording of 401, 403, 404 and 500 in its own `.trans.yml`, and falls back to a generic sentence for any other status, so an unnamed code still reads as a page. An application says something else about a code by dropping an `error<code>.html.twig` in its front path, or draws the page in its own layout by overriding `error.html.twig`.
+
+A debug kernel still answers a real exception with the exception: the controller hands over to `error_renderer` when `kernel.debug` is set and the request does not say `showException: false`, the same rule Symfony's own Twig renderer applies. `/_error/{code}`, which sets that attribute, therefore shows the page in development too.
 
 ### Layout and page initialisation
 
@@ -116,9 +126,25 @@ src/Service/ComponentService.php orchestrates the lifecycle:
 
 src/Twig/ComponentsExtension.php exposes all component functions to Twig (`component`, `component_init_class`, `component_init_parent`, `component_init_previous`, `component_frontend`, `component_lazy`) and registers `ComponentTokenParser` for the `{% component … %}{% endcomponent %}` block syntax.
 
+### A component that waits to be seen
+
+assets/js/Class/Mixins/LazyActivationMixin.ts, applied in a component's `init()`, defers its `activateListeners()` until its element comes into view (one shared `IntersectionObserver`, `rootMargin: 50px`, as the lazy loader's). Its html is in the page from the start — unlike `component_lazy()`, which fetches the html itself when its placeholder shows. The page mounts its components one after the other, each awaiting the last: a heavy one below the fold — a chart, a map — no longer holds back the ones in view. Lazy by default once applied; `lazy: false` in the component's options activates it at once (a chart at the top of a page). One held out of view — a closed tab, a folded panel — waits until it shows. `deactivateListeners()` takes down only a component that was activated.
+
+### A theme axis switched
+
+`AssetsServiceEvents.USAGE_CHANGE` (`usage:change`, assets/js/Services/AssetsService.ts) is said once by the layout when `setUsage()` switched an axis — the colour scheme, the palette, the skin, the density —, after the new value's stylesheet is applied and the body's class switched: `detail` is `{ usage, value, previous }`. What reads the theme's variables in script, and draws with them in a canvas, listens to it instead of watching the body's class itself.
+
 ### Front-end services that draw something
 
 Three services of assets/js/Services put markup on the page and do not own it: `BannerService` (an announcement), `OverlayService` through `showStandalone()` (a backdrop), and the confirm dialog, which is not here at all. Each of the two declares `static componentPath: string | null = null` and throws an `InvariantViolationError` naming itself when asked to draw with nothing set. The design system the application installed ships a subclass setting the path, and the application registers that subclass in its `App.getServices()`; `App.loadServices()` lets a subclass take the place of a service already registered under the same name, so the base arriving first — through `super.getServices()` or as another service's dependency — does not win. This is the whole of what the loader knows about any design system: a name it does not say.
+
+### Pages a manager holds
+
+assets/js/Class/PageManagerComponent.ts is the base of anything that holds a page other than the window: a modal, a panel, a dock, an embed. A page it holds opts into keeping its links inside the manager by marking an element `data-page-navigation="contained"`; `navigateContained()` then fetches the next page with the manager's layout base appended as `__layout=` and mounts it in place, which is how a tunnel's steps follow one another inside one modal.
+
+Three attributes are the whole contract with a design system, which draws what they announce: `data-page-navigation` (`contained` / `leave`), `data-page-transition="slide"` on an element of the page that wants the arriving page to slide in, and `data-page-scroll` on the box that scrolls — the body each JSON layout base of assets/bases/json marks. A page arriving from a navigation opens at the top of that box, as a page opened in the window does; nothing above it is scrolled, so the window behind an overlay stays where it was.
+
+A page replaced in place keeps the address of the one before it: no history entry is pushed, so a browser's back button leaves the page under the manager rather than stepping back inside it.
 
 ### Vue integration
 
@@ -141,11 +167,11 @@ Visit the [Wexample Suite documentation](https://docs.wexample.com) for the comp
 ## Dependencies
 
 - php: >=8.5
-- wexample/php-date: >=2.0.0
+- wexample/php-date: >=2.1.0
 - wexample/php-html: >=0.1.6
-- wexample/symfony-dev: >=4.0.0
+- wexample/symfony-dev: >=5.0.0
 - wexample/symfony-helpers: >=15.0.0
-- wexample/symfony-translations: >=10.0.0
+- wexample/symfony-translations: >=12.0.0
 - friendsofsymfony/jsrouting-bundle: ^3.2.1
 - symfony/webpack-encore-bundle: ^2.0.1
 - fortawesome/font-awesome: ^6.7
