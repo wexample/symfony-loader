@@ -12,9 +12,12 @@ import {
   ACTION_REDIRECT,
 } from '../Constants/FormActions';
 import {
+  FORM_ABANDONED,
   FORM_FIELD_COLLECT,
   FORM_FIELD_REGISTER,
   FORM_FIELD_UNREGISTER,
+  FORM_INVALID,
+  FORM_OPENED,
   formSuccessEvent,
 } from '../Constants/FormEvents';
 import type { FieldControllerInterface } from '@wexample/js-api/Vue/FieldControllerInterface';
@@ -31,6 +34,8 @@ export default class Form extends Component implements FieldRegistryInterface {
   private lastSubmitter: HTMLInputElement | HTMLButtonElement | null = null;
   private loadingEnded = false;
   private isDirty = false;
+  // Sent and accepted, or handed to the browser to send: not abandoned.
+  private isSent = false;
   private onDirtyProxy?: EventListener;
 
   protected async activateListeners(): Promise<void> {
@@ -73,9 +78,17 @@ export default class Form extends Component implements FieldRegistryInterface {
 
     // Whoever was ready before this form did not find it: they are asked now.
     this.el.dispatchEvent(new CustomEvent(FORM_FIELD_COLLECT, { bubbles: true }));
+
+    window.addEventListener('pagehide', this.onPageHide);
+    this.tell(FORM_OPENED);
   }
 
   protected async deactivateListeners(): Promise<void> {
+    // Before the listeners go: the form is still in the page, its event
+    // still bubbles to the document.
+    this.tellIfAbandoned();
+    window.removeEventListener('pagehide', this.onPageHide);
+
     await super.deactivateListeners();
 
     if (this.onSubmitProxy) {
@@ -157,6 +170,7 @@ export default class Form extends Component implements FieldRegistryInterface {
     const isEmbedded = this.options?.embedType && this.options.embedType !== 'default';
 
     if (!this.options?.ajax && !isEmbedded) {
+      this.isSent = true;
       // Native form submission: browser collects data and navigates.
       // Do not call beginSubmit here — loading:start would fire during
       // the submit event and disable fields before the browser reads them.
@@ -379,6 +393,30 @@ export default class Form extends Component implements FieldRegistryInterface {
     this.trigger('loading:end', { source: this });
   }
 
+  // Its name, which the server knows it by; its id when it has none.
+  private get formName(): string {
+    return this.el.getAttribute('name') || this.el.id;
+  }
+
+  private tell(eventName: string, detail: Record<string, unknown> = {}): void {
+    this.el.dispatchEvent(new CustomEvent(eventName, {
+      bubbles: true,
+      detail: { form: this.formName, ...detail },
+    }));
+  }
+
+  private tellIfAbandoned(): void {
+    if (this.isDirty && !this.isSent) {
+      this.tell(FORM_ABANDONED);
+      // Told once: leaving the page after closing the form is not a second abandon.
+      this.isSent = true;
+    }
+  }
+
+  private onPageHide = (): void => {
+    this.tellIfAbandoned();
+  };
+
   private onDirty(): void {
     if (this.isDirty) {
       return;
@@ -431,6 +469,7 @@ export default class Form extends Component implements FieldRegistryInterface {
       return;
     }
 
+    this.isSent = true;
     await this.trigger(formSuccessEvent(payload.form.name), { payload });
   }
 
@@ -451,6 +490,8 @@ export default class Form extends Component implements FieldRegistryInterface {
     if (!payload?.form?.errors) {
       return;
     }
+
+    this.tell(FORM_INVALID, { fields: Object.keys(payload.form.errors.fields ?? {}) });
 
     this.applyFormErrors(
       this.el as HTMLFormElement,
