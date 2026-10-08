@@ -21,6 +21,12 @@ final class TestLoaderController extends AbstractLoaderController
         return $this->adaptiveRender('@front/pages/broken-page.html.twig');
     }
 
+    #[Route('/page/twice-the-same-vue', name: 'symfony_loader_test_page_twice_the_same_vue')]
+    public function twiceTheSameVue(): Response
+    {
+        return $this->adaptiveRender('@front/pages/twice-the-same-vue.html.twig');
+    }
+
     /**
      * A controller sending a mail before answering: the mail body is rendered
      * through the shared Twig environment before the page is.

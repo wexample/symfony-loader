@@ -7,6 +7,7 @@ use Twig\Environment;
 use Wexample\PhpHtml\Helper\DomHelper;
 use Wexample\SymfonyLoader\Helper\ComponentPathHelper;
 use Wexample\SymfonyLoader\Helper\RenderingHelper;
+use Wexample\SymfonyLoader\Rendering\RenderNode\AbstractRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Rendering\Vue;
 use Wexample\SymfonyLoader\Twig\VueExtension;
@@ -17,6 +18,17 @@ class VueService
     public array $renderedTemplates = [];
 
     public array $rootComponents = [];
+
+    /**
+     * What each rendered vue gave its root component, so that another root
+     * of the same vue gets it too: its template is rendered once per page.
+     */
+    protected array $renderedTranslations = [];
+
+    /**
+     * Vues whose template is being rendered, innermost last.
+     */
+    protected array $renderingViews = [];
 
     public const string TAG_TEMPLATE = 'template';
 
@@ -118,6 +130,10 @@ class VueService
                 VueExtension::ASSET_DIRECTORY
             );
 
+        if ($parentView = end($this->renderingViews)) {
+            $this->renderedTranslations[$parentView]['children'][$view] = true;
+        }
+
         if (! isset($this->renderedTemplates[$view])) {
             $renderPass->setCurrentContextRenderNode(
                 $rootComponent
@@ -128,6 +144,15 @@ class VueService
                 $translationDomain,
                 $view
             );
+
+            // Collected apart, to be kept for the next roots of this vue.
+            $rootTranslations = $rootComponent->translations;
+            $rootComponent->translations = [];
+            $this->renderedTranslations[$view] = [
+                'domain' => $translationDomain,
+                'children' => [],
+            ];
+            $this->renderingViews[] = $view;
 
             $template = DomHelper::buildTag(
                 $tagName,
@@ -141,14 +166,23 @@ class VueService
                 )
             );
 
-            $rootComponent->translations = array_merge(
+            array_pop($this->renderingViews);
+
+            $this->renderedTranslations[$view]['translations'] = array_merge(
                 $rootComponent->translations,
                 $this->translator->transFilter('@vue::*')
+            );
+
+            $rootComponent->translations = array_merge(
+                $rootTranslations,
+                $this->renderedTranslations[$view]['translations']
             );
 
             $renderPass->revertCurrentContextRenderNode();
 
             $this->renderedTemplates[$view] = $template;
+        } else {
+            $this->restoreTranslations($rootComponent, $view);
         }
 
         // Reverted whether or not the template was rendered this time: the
@@ -181,5 +215,39 @@ class VueService
             ],
             $outputBody
         );
+    }
+
+    /**
+     * Give a root the domains and translations a vue gave the first root it
+     * was rendered for, the vues rendered inside its template included.
+     */
+    protected function restoreTranslations(
+        AbstractRenderNode $rootComponent,
+        string $view,
+        array $restored = []
+    ): void {
+        $rendered = $this->renderedTranslations[$view] ?? null;
+
+        // Still rendering, or already given: a vue inside itself (a tree).
+        if (! isset($rendered['translations']) || isset($restored[$view])) {
+            return;
+        }
+
+        $restored[$view] = true;
+
+        $rootComponent->addTranslationDomain(
+            Translator::DOMAIN_TYPE_VUE,
+            $rendered['domain'],
+            $view
+        );
+
+        $rootComponent->translations = array_merge(
+            $rootComponent->translations,
+            $rendered['translations']
+        );
+
+        foreach (array_keys($rendered['children']) as $childView) {
+            $this->restoreTranslations($rootComponent, $childView, $restored);
+        }
     }
 }

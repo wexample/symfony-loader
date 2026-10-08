@@ -1,0 +1,6 @@
+{%- extends '@WexampleSymfonyLoaderBundle/layouts/default/layout.html.twig' -%}
+
+{%- block page_body -%}
+    {{ vue(render_pass, '@front/components/greeting') }}
+    {{ vue(render_pass, '@front/components/greeting') }}
+{%- endblock -%}
