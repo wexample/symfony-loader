@@ -97,9 +97,7 @@ class JsService
      */
     public function serializeEntity(
         $value,
-        ?array $context = [
-            'displayFormat' => EntityDto::DISPLAY_FORMAT_DEFAULT,
-        ]
+        ?array $context = []
     ): ?array {
         if (is_object($value)
             && is_subclass_of(
