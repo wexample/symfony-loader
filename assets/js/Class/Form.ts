@@ -480,9 +480,12 @@ export default class Form extends Component implements FieldRegistryInterface {
       return;
     }
 
+    const action = payload.notification.action;
+
     (this.app.getServiceOrFail(ToastService) as ToastService).show({
       type: payload.notification.type,
       message: this.trans(payload.notification.message),
+      ...(action ? { action: { ...action, label: this.trans(action.label) } } : {}),
     });
   }
 

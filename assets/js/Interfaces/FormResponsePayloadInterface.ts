@@ -17,9 +17,19 @@ export interface FormActionInterface {
   [key: string]: any;
 }
 
+// What to do next, drawn as a button in the toast: `target` opens `href`
+// where a target button would (`panel`, `modal`).
+export interface NotificationActionInterface {
+  label: string;
+  href: string;
+  icon?: string;
+  target?: string;
+}
+
 export interface FormNotificationInterface {
   type: 'success' | 'error' | 'warning' | 'info';
   message: string;
+  action?: NotificationActionInterface;
 }
 
 export default interface FormResponsePayloadInterface extends AdaptiveResponseInterface {

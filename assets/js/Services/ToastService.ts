@@ -1,4 +1,5 @@
 import AbstractNoticeService from './AbstractNoticeService';
+import type { NotificationActionInterface } from '../Interfaces/FormResponsePayloadInterface';
 
 type ToastOptions = {
   id?: string;
@@ -11,6 +12,7 @@ type ToastOptions = {
   position?: 'tl' | 'tr' | 'bl' | 'br';
   stackId?: string;
   actions?: Record<string, () => void>;
+  action?: NotificationActionInterface;
 };
 
 export default class ToastService extends AbstractNoticeService {
