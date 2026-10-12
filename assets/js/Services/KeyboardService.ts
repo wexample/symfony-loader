@@ -1,4 +1,9 @@
 import AppService from '../Class/AppService';
+import {
+  keyboardShortcutMatches,
+  keyboardShortcutParse,
+  type KeyboardShortcut,
+} from '@wexample/js-helpers/Helper/Keyboard';
 
 interface KeyboardListenerOptions {
   priority?: number;
@@ -27,15 +32,30 @@ export default class KeyboardService extends AppService {
   public static readonly KEY_END: string = 'End';
 
   private listenersByKey: Map<string, KeyboardListener[]> = new Map();
+  private shortcutListeners: (KeyboardListener & { shortcut: KeyboardShortcut })[] = [];
   private registrationOrder: number = 0;
 
   private onKeyDown = (event: KeyboardEvent) => {
+    // A shortcut first — `Mod+S`, whatever the platform calls Mod —, then the
+    // listeners of the key alone.
+    const shortcuts = this.shortcutListeners.filter((listener) => keyboardShortcutMatches(event, listener.shortcut));
+
+    if (shortcuts.length && this.dispatch(event, shortcuts)) {
+      return;
+    }
+
     const keyListeners = this.listenersByKey.get(event.key) || [];
     if (!keyListeners.length) {
       return;
     }
 
-    const listeners = [...keyListeners].sort((a, b) => {
+    this.dispatch(event, keyListeners);
+  };
+
+  // To the listeners in their order — the highest priority, then the last
+  // registered —, until one handles it. Whether one did.
+  private dispatch(event: KeyboardEvent, candidates: KeyboardListener[]): boolean {
+    const listeners = [...candidates].sort((a, b) => {
       if (a.options.priority === b.options.priority) {
         return b.order - a.order;
       }
@@ -58,10 +78,12 @@ export default class KeyboardService extends AppService {
 
       const handled = listener.callback(event);
       if (handled !== false) {
-        break;
+        return true;
       }
     }
-  };
+
+    return false;
+  }
 
   registerHooks() {
     return {
@@ -96,7 +118,34 @@ export default class KeyboardService extends AppService {
     this.listenersByKey.set(key, listeners);
   }
 
+  /**
+   * A combination rather than a key: `Mod+S`, `Mod+Shift+Z`, `Alt+ArrowUp`.
+   * `Mod` is ⌘ on a Mac and Ctrl elsewhere — the one key to write for what
+   * both platforms do with their own. The modifiers must be those, no more.
+   */
+  registerShortcut(
+    owner: any,
+    combo: string,
+    callback: (event: KeyboardEvent) => any,
+    options: KeyboardListenerOptions = {}
+  ): void {
+    this.shortcutListeners.push({
+      owner,
+      callback,
+      shortcut: keyboardShortcutParse(combo),
+      options: {
+        priority: options.priority ?? 0,
+        preventDefault: options.preventDefault ?? false,
+        stopPropagation: options.stopPropagation ?? false,
+        enabled: options.enabled ?? (() => true)
+      },
+      order: ++this.registrationOrder
+    });
+  }
+
   unregisterOwner(owner: any): void {
+    this.shortcutListeners = this.shortcutListeners.filter((listener) => listener.owner !== owner);
+
     this.listenersByKey.forEach((listeners, key) => {
       const filtered = listeners.filter((listener) => listener.owner !== owner);
       if (filtered.length) {
