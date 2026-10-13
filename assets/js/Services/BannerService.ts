@@ -10,6 +10,10 @@ type BannerOptions = {
   actions?: Record<string, () => void>;
   class?: string;
   floating?: boolean;
+  // A bubble the width of its message rather than a bar across the page.
+  compact?: boolean;
+  // The edge a floating banner holds to.
+  position?: 'top' | 'bottom';
   sticky?: boolean;
   target?: string | HTMLElement;
   animate?: boolean;
@@ -69,6 +73,8 @@ export default class BannerService extends AbstractNoticeService {
         actions: normalized.actions,
         class: normalized.class,
         floating: normalized.floating !== false,
+        compact: normalized.compact === true,
+        position: normalized.position || 'top',
         sticky: normalized.sticky === true,
         animate: normalized.animate !== false,
         timeout: normalized.timeout

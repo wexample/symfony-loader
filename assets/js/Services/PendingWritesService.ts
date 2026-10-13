@@ -8,6 +8,8 @@ export type PendingWritesOptions = {
   savedMessage?: string;
   failedMessage?: string;
   savedTimeout?: number;
+  compact?: boolean;
+  position?: 'top' | 'bottom';
 };
 
 const DEFAULT_OPTIONS: Required<PendingWritesOptions> = {
@@ -15,6 +17,8 @@ const DEFAULT_OPTIONS: Required<PendingWritesOptions> = {
   savedMessage: 'WexampleSymfonyLoaderBundle.common.system::frontend.banner.pending_writes_saved.message',
   failedMessage: 'WexampleSymfonyLoaderBundle.common.system::frontend.banner.pending_writes_failed.message',
   savedTimeout: 4000,
+  compact: true,
+  position: 'top',
 };
 
 const BANNER_ID = 'pending-writes';
@@ -24,7 +28,7 @@ const BANNER_ID = 'pending-writes';
  *
  * A page saving without a submit button — a cell, an inline field, an
  * autosaved form — hands each write to `track()`. The first one shows a
- * sticky "Saving…" banner, the last one to settle replaces it with "All
+ * sticky "Saving…" bubble, the last one to settle replaces it with "All
  * changes saved", which fades. A write that failed keeps the banner up with a
  * retry link, and leaving the page while anything is pending or failed asks
  * for confirmation: the reader is the one who loses the change.
@@ -127,6 +131,8 @@ export default class PendingWritesService extends AppService {
       id: BANNER_ID,
       type,
       message: localeService.trans(message),
+      compact: this.options.compact,
+      position: this.options.position,
       ...options,
     });
   }
