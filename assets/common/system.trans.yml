@@ -55,6 +55,12 @@ en:
         message: Live connection lost. Reconnecting...
       live_update_reconnected:
         message: Connection restored.
+      pending_writes_saving:
+        message: 'Saving…'
+      pending_writes_saved:
+        message: 'All changes saved.'
+      pending_writes_failed:
+        message: 'Some changes could not be saved. @action:retry(Retry)'
 
 ar:
   skip_to_main: 'تخطي إلى المحتوى الرئيسي'
@@ -106,6 +112,12 @@ ar:
         message: 'تم فقد الاتصال الحي. يتم إعادة الاتصال...'
       live_update_reconnected:
         message: 'تم استعادة الاتصال.'
+      pending_writes_saving:
+        message: 'جارٍ الحفظ…'
+      pending_writes_saved:
+        message: 'تم حفظ جميع التغييرات.'
+      pending_writes_failed:
+        message: 'تعذّر حفظ بعض التغييرات. @action:retry(إعادة المحاولة)'
 
 bn:
   skip_to_main: 'মুখ্য বিষয়বস্তুতে চলে যান'
@@ -157,6 +169,12 @@ bn:
         message: 'লাইভ সংযোগ হারানো হয়েছে। পুনরায় সংযোগ করা হচ্ছে...'
       live_update_reconnected:
         message: 'সংযোগ পুনরুদ্ধার হয়েছে।'
+      pending_writes_saving:
+        message: 'সংরক্ষণ করা হচ্ছে…'
+      pending_writes_saved:
+        message: 'সব পরিবর্তন সংরক্ষিত হয়েছে।'
+      pending_writes_failed:
+        message: 'কিছু পরিবর্তন সংরক্ষণ করা যায়নি। @action:retry(আবার চেষ্টা করুন)'
 
 de:
   skip_to_main: 'Zum Hauptinhalt springen'
@@ -208,6 +226,12 @@ de:
         message: 'Live-Verbindung verloren. Versuche erneut zu verbinden...'
       live_update_reconnected:
         message: 'Verbindung wiederhergestellt.'
+      pending_writes_saving:
+        message: 'Wird gespeichert…'
+      pending_writes_saved:
+        message: 'Alle Änderungen gespeichert.'
+      pending_writes_failed:
+        message: 'Einige Änderungen konnten nicht gespeichert werden. @action:retry(Erneut versuchen)'
 
 es:
   skip_to_main: 'Saltar al contenido principal'
@@ -259,6 +283,12 @@ es:
         message: 'Conexión en vivo perdida. Reconectando...'
       live_update_reconnected:
         message: 'Conexión restaurada.'
+      pending_writes_saving:
+        message: 'Guardando…'
+      pending_writes_saved:
+        message: 'Todos los cambios se han guardado.'
+      pending_writes_failed:
+        message: 'No se han podido guardar algunos cambios. @action:retry(Reintentar)'
 
 fa:
   skip_to_main: 'پرش به محتوای اصلی'
@@ -310,6 +340,12 @@ fa:
         message: 'اتصال زنده قطع شده است. در حال اتصال مجدد...'
       live_update_reconnected:
         message: 'اتصال برقرار شد.'
+      pending_writes_saving:
+        message: 'در حال ذخیره…'
+      pending_writes_saved:
+        message: 'همه تغییرات ذخیره شد.'
+      pending_writes_failed:
+        message: 'برخی از تغییرات ذخیره نشد. @action:retry(تلاش دوباره)'
 
 fi:
   skip_to_main: 'Siirry pääsisältöön'
@@ -361,6 +397,12 @@ fi:
         message: 'Reaaliaikayhteys katkaistu. Yhdistetään uudelleen...'
       live_update_reconnected:
         message: 'Yhteys palautettu.'
+      pending_writes_saving:
+        message: 'Tallennetaan…'
+      pending_writes_saved:
+        message: 'Kaikki muutokset tallennettu.'
+      pending_writes_failed:
+        message: 'Joitakin muutoksia ei voitu tallentaa. @action:retry(Yritä uudelleen)'
 
 fr:
   skip_to_main: 'Passer au contenu principal'
@@ -412,6 +454,12 @@ fr:
         message: 'Connexion en direct perdue. Reconnection...'
       live_update_reconnected:
         message: 'Connexion rétablie.'
+      pending_writes_saving:
+        message: 'Enregistrement…'
+      pending_writes_saved:
+        message: 'Toutes les modifications sont enregistrées.'
+      pending_writes_failed:
+        message: 'Certaines modifications n''ont pas pu être enregistrées. @action:retry(Réessayer)'
 
 he:
   skip_to_main: 'דלג לתוכן העיקרי'
@@ -463,6 +511,12 @@ he:
         message: 'החיבור חי אבד. מתחבר מחדש...'
       live_update_reconnected:
         message: 'החיבור שוחזר.'
+      pending_writes_saving:
+        message: 'שומר…'
+      pending_writes_saved:
+        message: 'כל השינויים נשמרו.'
+      pending_writes_failed:
+        message: 'חלק מהשינויים לא נשמרו. @action:retry(נסה שוב)'
 
 hi:
   skip_to_main: 'मुख्य सामग्री पर जाएं'
@@ -514,6 +568,12 @@ hi:
         message: 'सीधा कनेक्शन खो गया। पुनः कनेक्ट हो रहा है...'
       live_update_reconnected:
         message: 'कनेक्शन बहाल हो गया।'
+      pending_writes_saving:
+        message: 'सहेजा जा रहा है…'
+      pending_writes_saved:
+        message: 'सभी बदलाव सहेजे गए।'
+      pending_writes_failed:
+        message: 'कुछ बदलाव सहेजे नहीं जा सके। @action:retry(फिर से प्रयास करें)'
 
 id:
   skip_to_main: 'Lanjutkan ke konten utama'
@@ -565,6 +625,12 @@ id:
         message: 'Koneksi langsung terputus. Menghubungkan kembali...'
       live_update_reconnected:
         message: 'Koneksi telah dipulihkan.'
+      pending_writes_saving:
+        message: 'Menyimpan…'
+      pending_writes_saved:
+        message: 'Semua perubahan tersimpan.'
+      pending_writes_failed:
+        message: 'Beberapa perubahan tidak dapat disimpan. @action:retry(Coba lagi)'
 
 it:
   skip_to_main: 'Salta al contenuto principale'
@@ -616,6 +682,12 @@ it:
         message: 'Connessione live persa. Riconnessione...'
       live_update_reconnected:
         message: 'Connessione ripristinata.'
+      pending_writes_saving:
+        message: 'Salvataggio…'
+      pending_writes_saved:
+        message: 'Tutte le modifiche sono state salvate.'
+      pending_writes_failed:
+        message: 'Alcune modifiche non sono state salvate. @action:retry(Riprova)'
 
 ja:
   skip_to_main: メインコンテンツにスキップ
@@ -667,6 +739,12 @@ ja:
         message: ライブ接続が失われました。再接続中...
       live_update_reconnected:
         message: 接続が復旧しました。
+      pending_writes_saving:
+        message: '保存中…'
+      pending_writes_saved:
+        message: 'すべての変更を保存しました。'
+      pending_writes_failed:
+        message: '一部の変更を保存できませんでした。@action:retry(再試行)'
 
 ko:
   skip_to_main: '주 내용으로 건너뛰기'
@@ -718,6 +796,12 @@ ko:
         message: '실시간 연결이 끊어졌습니다. 재연결 중...'
       live_update_reconnected:
         message: '연결이 복구되었습니다.'
+      pending_writes_saving:
+        message: '저장 중…'
+      pending_writes_saved:
+        message: '모든 변경 사항이 저장되었습니다.'
+      pending_writes_failed:
+        message: '일부 변경 사항을 저장하지 못했습니다. @action:retry(다시 시도)'
 
 nl:
   skip_to_main: 'Overslaan naar de hoofdinhoud'
@@ -769,6 +853,12 @@ nl:
         message: 'Liveverbinding verloren. Herverbinden...'
       live_update_reconnected:
         message: 'Verbinding hersteld.'
+      pending_writes_saving:
+        message: 'Opslaan…'
+      pending_writes_saved:
+        message: 'Alle wijzigingen zijn opgeslagen.'
+      pending_writes_failed:
+        message: 'Sommige wijzigingen konden niet worden opgeslagen. @action:retry(Opnieuw proberen)'
 
 pl:
   skip_to_main: 'Przejdź do głównej treści'
@@ -820,6 +910,12 @@ pl:
         message: 'Utracono połączenie na żywo. Próba ponownego połączenia...'
       live_update_reconnected:
         message: 'Połączenie przywrócone.'
+      pending_writes_saving:
+        message: 'Zapisywanie…'
+      pending_writes_saved:
+        message: 'Wszystkie zmiany zostały zapisane.'
+      pending_writes_failed:
+        message: 'Nie udało się zapisać niektórych zmian. @action:retry(Spróbuj ponownie)'
 
 pt_BR:
   skip_to_main: 'Ir para o conteúdo principal'
@@ -871,6 +967,12 @@ pt_BR:
         message: 'Conexão ao vivo perdida. Reconectando...'
       live_update_reconnected:
         message: 'Conexão restaurada.'
+      pending_writes_saving:
+        message: 'Salvando…'
+      pending_writes_saved:
+        message: 'Todas as alterações foram salvas.'
+      pending_writes_failed:
+        message: 'Não foi possível salvar algumas alterações. @action:retry(Tentar novamente)'
 
 ru:
   skip_to_main: 'Перейти к основному содержимому'
@@ -922,6 +1024,12 @@ ru:
         message: 'Потеряно живое соединение. Повторное подключение...'
       live_update_reconnected:
         message: 'Соединение восстановлено.'
+      pending_writes_saving:
+        message: 'Сохранение…'
+      pending_writes_saved:
+        message: 'Все изменения сохранены.'
+      pending_writes_failed:
+        message: 'Не удалось сохранить некоторые изменения. @action:retry(Повторить)'
 
 th:
   skip_to_main: ข้ามไปยังเนื้อหาหลัก
@@ -973,6 +1081,12 @@ th:
         message: 'การเชื่อมต่อสดหายไป กำลังเชื่อมต่ออีกครั้ง...'
       live_update_reconnected:
         message: การเชื่อมต่อกลับมาใช้งานได้แล้ว.
+      pending_writes_saving:
+        message: 'กำลังบันทึก…'
+      pending_writes_saved:
+        message: 'บันทึกการเปลี่ยนแปลงทั้งหมดแล้ว'
+      pending_writes_failed:
+        message: 'ไม่สามารถบันทึกการเปลี่ยนแปลงบางส่วนได้ @action:retry(ลองอีกครั้ง)'
 
 tr:
   skip_to_main: 'Ana içeriğe atla'
@@ -1024,6 +1138,12 @@ tr:
         message: 'Canlı bağlantı kesildi. Yeniden bağlanıyor...'
       live_update_reconnected:
         message: 'Bağlantı geri geldi.'
+      pending_writes_saving:
+        message: 'Kaydediliyor…'
+      pending_writes_saved:
+        message: 'Tüm değişiklikler kaydedildi.'
+      pending_writes_failed:
+        message: 'Bazı değişiklikler kaydedilemedi. @action:retry(Yeniden dene)'
 
 ur:
   skip_to_main: 'اہم مواد پر جائیں'
@@ -1075,6 +1195,12 @@ ur:
         message: 'لائیو کنکشن کھو گیا ہے۔ دوبارہ جڑنے کی کوشش کی جا رہی ہے...'
       live_update_reconnected:
         message: 'کنکشن بحال ہو گیا ہے۔'
+      pending_writes_saving:
+        message: 'محفوظ کیا جا رہا ہے…'
+      pending_writes_saved:
+        message: 'تمام تبدیلیاں محفوظ ہو گئیں۔'
+      pending_writes_failed:
+        message: 'کچھ تبدیلیاں محفوظ نہیں ہو سکیں۔ @action:retry(دوبارہ کوشش کریں)'
 
 vi:
   skip_to_main: 'Chuyển đến nội dung chính'
@@ -1126,6 +1252,12 @@ vi:
         message: 'Mất kết nối trực tiếp. Đang kết nối lại...'
       live_update_reconnected:
         message: 'Kết nối đã được khôi phục.'
+      pending_writes_saving:
+        message: 'Đang lưu…'
+      pending_writes_saved:
+        message: 'Đã lưu tất cả thay đổi.'
+      pending_writes_failed:
+        message: 'Không thể lưu một số thay đổi. @action:retry(Thử lại)'
 
 zh:
   skip_to_main: 跳到主要内容
@@ -1177,3 +1309,9 @@ zh:
         message: 实时连接丢失。正在重新连接...
       live_update_reconnected:
         message: 连接已恢复。
+      pending_writes_saving:
+        message: '正在保存…'
+      pending_writes_saved:
+        message: '所有更改已保存。'
+      pending_writes_failed:
+        message: '部分更改未能保存。@action:retry(重试)'

@@ -15,6 +15,7 @@ import KeyboardService from '../Services/KeyboardService';
 import LiveUpdatesService from '../Services/LiveUpdatesService';
 import ConnectionStatusService from '../Services/ConnectionStatusService';
 import ConnectionStatusNoticeService from '../Services/ConnectionStatusNoticeService';
+import PendingWritesService from '../Services/PendingWritesService';
 import ErrorService from '../Services/ErrorService';
 import ComponentLazyLoaderService from '../Services/ComponentLazyLoaderService';
 import DevelopToolbarService from '../Services/DevelopToolbarService';
@@ -38,6 +39,7 @@ export default interface ServicesRegistryInterface {
   mixins?: MixinsService;
   overlay?: OverlayService;
   pages?: PagesService;
+  pendingWrites?: PendingWritesService;
   routing?: RoutingService;
   vue?: VueService;
 }
