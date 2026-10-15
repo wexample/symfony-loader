@@ -284,9 +284,9 @@ class App extends AsyncConstructor {
     this.persistUiState(`ui.layout.menu.${menuId}`, open);
   }
 
-  // Persists a UI state key/value pair server-side.
-  // Default: POST to /_ui-state/set (DS bundle stores in PHP session).
-  // Override the backend controller to change persistence behavior (e.g. Syrtis API in manager).
+  // Persists a UI state key/value pair server-side, as a preference
+  // (symfony-preference): where it is kept — the session, or the database per
+  // user or for everybody — is the server's choice, never the client's.
   persistUiState(key: string, value: unknown): void {
     this.persistUiStates({ [key]: value });
   }
@@ -299,7 +299,7 @@ class App extends AsyncConstructor {
   // two.
   persistUiStates(values: Record<string, unknown>): void {
     this.uiStateQueue = this.uiStateQueue
-      .then(() => fetch('/_ui-state/set', {
+      .then(() => fetch('/api/preference/set', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ values }),
