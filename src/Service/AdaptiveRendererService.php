@@ -14,6 +14,7 @@ use Wexample\SymfonyLoader\Helper\AdaptiveRequestHelper;
 use Wexample\SymfonyLoader\Helper\ErrorPageHelper;
 use Wexample\SymfonyLoader\Helper\FallbackPageHelper;
 use Wexample\SymfonyLoader\Helper\RenderingHelper;
+use Wexample\SymfonyLoader\Interface\UsageChoiceReaderInterface;
 use Wexample\SymfonyLoader\Rendering\AssetsRegistry;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AjaxLayoutRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderNode\InitialLayoutRenderNode;
@@ -32,6 +33,7 @@ class AdaptiveRendererService
         private readonly Environment $twig,
         private readonly RequestStack $requestStack,
         private readonly Translator $translator,
+        private readonly ?UsageChoiceReaderInterface $usageChoices = null,
     ) {
     }
 
@@ -77,12 +79,13 @@ class AdaptiveRendererService
             // A request the kernel did not dispatch never met the request subscriber.
             $this->adaptiveResponseService->initializeRequestAttributes($request);
 
-            if ($request->hasSession()) {
-                $session = $request->getSession();
+            // What the visitor chose — a colour scheme — drawn from the first
+            // byte, read back where the application keeps such choices.
+            if ($this->usageChoices) {
                 foreach (array_keys($renderPass->usagesConfig) as $usageName) {
-                    $saved = $session->get('ui_state.ui.' . $usageName);
-                    if ($saved !== null) {
-                        $renderPass->setUsage($usageName, $saved);
+                    $chosen = $this->usageChoices->chosenUsage($usageName);
+                    if ($chosen !== null) {
+                        $renderPass->setUsage($usageName, $chosen);
                     }
                 }
             }
