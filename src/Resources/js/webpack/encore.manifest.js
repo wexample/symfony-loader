@@ -16,6 +16,10 @@ const FosRouting = require('fos-router/webpack/FosRouting');
 const VirtualModules = require('webpack-virtual-modules');
 
 const DEFAULT_OUTPUT_PATH = 'public/build/';
+// What a build says of itself, beside what it builds: the page an application
+// shows while its interface is not built reads it (FallbackPageHelper), and the
+// output directory is the one place the server and a watcher always share.
+const BUILD_STATUS_FILE = 'build-progress.json';
 const DEFAULT_PUBLIC_PATH = '/build';
 const DEFAULT_MANIFEST_PATH = path.resolve(process.cwd(), 'assets', 'encore.manifest.json');
 const WRAPPER_VIRTUAL_ROOT = path.resolve(process.cwd(), '.encore', 'virtual', 'wrappers');
@@ -49,6 +53,38 @@ const SHARED_CHUNK_TEST = new RegExp(
   + '|node_modules[\\\\/](vue|@vue|@wexample[\\\\/]js-[^\\\\/]+)'
   + ')[\\\\/]'
 );
+
+// Tells whoever waits on the build where it stands, coarsely: running from the
+// moment a compilation starts, then built or failed — as the page an
+// application shows meanwhile expects it ({ state, label }). A plugin on the
+// compiler's own hooks rather than webpack's progress one, which a
+// `--progress` on the command line already holds.
+class BuildStatusPlugin {
+  constructor(file) {
+    this.file = file;
+  }
+
+  write(status) {
+    try {
+      fs.mkdirSync(path.dirname(this.file), { recursive: true });
+      fs.writeFileSync(this.file, JSON.stringify(status));
+    } catch (error) {
+      // Nobody may be waiting, and the build is what matters.
+    }
+  }
+
+  apply(compiler) {
+    const running = () => this.write({ state: 'running', label: 'Building the interface' });
+
+    compiler.hooks.run.tap('BuildStatusPlugin', running);
+    compiler.hooks.watchRun.tap('BuildStatusPlugin', running);
+    compiler.hooks.done.tap('BuildStatusPlugin', (stats) => {
+      this.write(stats.hasErrors()
+        ? { state: 'failed', label: 'The build failed: its output says why.' }
+        : { state: 'ready', percent: 100, label: 'Built' });
+    });
+  }
+}
 
 function configureEncoreBase(options = {}) {
   const env = options.env || process.env.NODE_ENV || 'dev';
@@ -109,7 +145,11 @@ function configureEncoreBase(options = {}) {
     .setOutputPath(options.outputPath || DEFAULT_OUTPUT_PATH)
     .setPublicPath(options.publicPath || DEFAULT_PUBLIC_PATH)
     .enableSingleRuntimeChunk()
-    .cleanupOutputBeforeBuild()
+    // Cleaned of what the build no longer emits, but for what it says of
+    // itself, which it writes rather than emits.
+    .cleanupOutputBeforeBuild((cleanOptions) => {
+      cleanOptions.keep = (asset) => asset === BUILD_STATUS_FILE;
+    })
     .enableBuildNotifications()
     .enableSourceMaps(options.sourceMaps ?? !isProd)
     .enableVersioning(options.versioning ?? isProd)
@@ -119,6 +159,7 @@ function configureEncoreBase(options = {}) {
       __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
     }))
     .addPlugin(new FosRouting())
+    .addPlugin(new BuildStatusPlugin(path.resolve(process.cwd(), options.outputPath || DEFAULT_OUTPUT_PATH, BUILD_STATUS_FILE)))
     .enableSassLoader((loaderOptions) => {
       const additionalData = loaderConfig.sass.additionalData;
 

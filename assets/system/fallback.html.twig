@@ -1,0 +1,244 @@
+{#- A page shown when the application cannot draw its own: starting, its
+    interface not built yet, or an error it could not render. Whole in itself —
+    its style written here, no asset to fetch, no layout to load —, so whatever
+    is up can serve it: Symfony, the built-in server holding the port while the
+    application starts, or the file `loader:dump-fallback-pages` wrote it to.
+
+    The look is the design system's, its basic skin, copied as a handful of
+    values rather than read from it: the design system is precisely what may be
+    missing. An application wanting another look overrides this template
+    (templates/bundles/WexampleSymfonyLoaderBundle/system/fallback.html.twig).
+
+    Given a `poll` url, it follows what it waits for: the url answers
+    { state: running|ready|failed, label, step, total, percent }, and the page
+    shows the step and a bar. Once `ready` — or, with `poll_gone: 'site'`, once
+    the url stops answering, the server it came from gone —, it waits for its
+    own address to answer with something else than a fallback page (every one
+    is sent with `X-Fallback-Page`) and only then reloads: between the server
+    holding the port during a start and the application taking it, there is a
+    moment with nobody at all. -#}
+{%- set status_code = status_code|default(null) -%}
+{%- set poll = poll|default(null) -%}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>{{ title }}</title>
+    {%- if poll %}
+    <noscript><meta http-equiv="refresh" content="5"></noscript>
+    {%- endif %}
+    <style>
+        :root {
+            color-scheme: light dark;
+            --surface-page: #f2f2f2;
+            --surface-zone: #ffffff;
+            --text: #1f1f1f;
+            --muted: #6b6b6b;
+            --line: #e0e0e0;
+            --accent: #2f6fed;
+            --error: #c43c3c;
+            font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --surface-page: #1f1f1f;
+                --surface-zone: #141414;
+                --text: #f2f2f2;
+                --muted: #9a9a9a;
+                --line: #2e2e2e;
+                --error: #e77979;
+            }
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--surface-page);
+            color: var(--text);
+        }
+
+        .fallback {
+            box-sizing: border-box;
+            width: min(100% - 2rem, 32rem);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            background: var(--surface-zone);
+            border: 1px solid var(--line);
+        }
+
+        .fallback--code {
+            color: var(--muted);
+            font-size: 0.875rem;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.05em;
+        }
+
+        .fallback.is-error .fallback--code {
+            color: var(--error);
+        }
+
+        .fallback--title {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .fallback--message,
+        .fallback--step {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .fallback--hint {
+            margin: 0;
+            color: var(--muted);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+            font-size: 0.8125rem;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .fallback--step {
+            min-height: 1.5em;
+            font-size: 0.875rem;
+        }
+
+        .fallback--step.is-failed {
+            color: var(--error);
+        }
+
+        .fallback--progress {
+            height: 0.25rem;
+            overflow: hidden;
+            background: var(--line);
+        }
+
+        .fallback--progress-bar {
+            width: 0;
+            height: 100%;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        /* Nothing said yet about how far it is: a bar that moves, so the page
+           is not taken for a frozen one. */
+        .fallback--progress.is-indeterminate .fallback--progress-bar {
+            width: 30%;
+            animation: fallback-slide 1.2s ease-in-out infinite;
+        }
+
+        @keyframes fallback-slide {
+            from {
+                transform: translateX(-100%);
+            }
+
+            to {
+                transform: translateX(340%);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .fallback--progress.is-indeterminate .fallback--progress-bar {
+                width: 100%;
+                opacity: 0.4;
+                animation: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<main class="fallback{{ status_code and status_code >= 500 ? ' is-error' }}">
+    {%- if status_code %}
+    <div class="fallback--code">{{ status_code }}</div>
+    {%- endif %}
+    <h1 class="fallback--title">{{ title }}</h1>
+    <p class="fallback--message">{{ message }}</p>
+    {%- if hint|default(null) %}
+    <p class="fallback--hint">{{ hint }}</p>
+    {%- endif %}
+    {%- if poll %}
+    <div class="fallback--progress is-indeterminate" role="progressbar" aria-label="{{ title }}">
+        <div class="fallback--progress-bar"></div>
+    </div>
+    <p class="fallback--step" aria-live="polite"></p>
+    <script>
+        (() => {
+            const url = {{ poll|json_encode|raw }};
+            const goneMeansSite = {{ (poll_gone|default('wait') == 'site')|json_encode|raw }};
+            const bar = document.querySelector('.fallback--progress');
+            const fill = document.querySelector('.fallback--progress-bar');
+            const step = document.querySelector('.fallback--step');
+
+            const show = (status) => {
+                const percent = typeof status.percent === 'number'
+                    ? status.percent
+                    : (status.total ? (100 * (status.step || 0)) / status.total : null);
+
+                bar.classList.toggle('is-indeterminate', percent === null);
+                fill.style.width = percent === null ? '' : Math.min(100, Math.max(0, percent)) + '%';
+                step.textContent = status.label || '';
+                step.classList.toggle('is-failed', status.state === 'failed');
+            };
+
+            // Reloaded only once the address answers with the application:
+            // anything carrying the header is still a fallback page, and a
+            // refused connection is the moment between two servers.
+            const waitForSite = async () => {
+                try {
+                    const response = await fetch(location.href, { method: 'HEAD', cache: 'no-store' });
+
+                    if (!response.headers.has('X-Fallback-Page')) {
+                        location.reload();
+                        return;
+                    }
+                } catch (error) {
+                    // Nobody on the port yet.
+                }
+
+                setTimeout(waitForSite, 1000);
+            };
+
+            const poll = async () => {
+                let status = null;
+
+                try {
+                    const response = await fetch(url, { cache: 'no-store' });
+                    status = response.ok ? await response.json() : null;
+                } catch (error) {
+                    status = null;
+                }
+
+                if (status && typeof status === 'object') {
+                    show(status);
+
+                    if (status.state === 'ready') {
+                        waitForSite();
+                        return;
+                    }
+                } else if (goneMeansSite) {
+                    waitForSite();
+                    return;
+                }
+
+                setTimeout(poll, status ? 1000 : 3000);
+            };
+
+            poll();
+        })();
+    </script>
+    {%- endif %}
+</main>
+</body>
+</html>

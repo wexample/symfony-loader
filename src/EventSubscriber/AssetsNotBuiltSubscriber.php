@@ -8,6 +8,7 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Twig\Environment;
 use Wexample\SymfonyLoader\Exception\AssetsNotBuiltException;
+use Wexample\SymfonyLoader\Helper\FallbackPageHelper;
 
 /**
  * A build that is missing or not finished is one state for whoever is looking
@@ -18,8 +19,6 @@ use Wexample\SymfonyLoader\Exception\AssetsNotBuiltException;
  */
 class AssetsNotBuiltSubscriber implements EventSubscriberInterface
 {
-    private const TEMPLATE = '@WexampleSymfonyLoaderBundle/system/fatal.html.twig';
-
     public function __construct(
         private readonly Environment $twig,
     ) {
@@ -41,11 +40,14 @@ class AssetsNotBuiltSubscriber implements EventSubscriberInterface
         }
 
         $event->setResponse(new Response(
-            $this->twig->render(self::TEMPLATE, ['message' => $exception->getMessage()]),
+            $this->twig->render(FallbackPageHelper::TEMPLATE, FallbackPageHelper::assets($exception->getMessage())),
             Response::HTTP_SERVICE_UNAVAILABLE,
             // Said to the browser too: a build in progress is over in a minute,
             // and a page that says so is worth asking for again.
-            ['Retry-After' => '30'],
+            [
+                'Retry-After' => '30',
+                FallbackPageHelper::HEADER => FallbackPageHelper::PAGE_ASSETS,
+            ],
         ));
     }
 

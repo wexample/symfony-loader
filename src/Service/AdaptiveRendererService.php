@@ -12,6 +12,7 @@ use Twig\Environment;
 use Wexample\SymfonyLoader\Exception\AssetsNotBuiltException;
 use Wexample\SymfonyLoader\Helper\AdaptiveRequestHelper;
 use Wexample\SymfonyLoader\Helper\ErrorPageHelper;
+use Wexample\SymfonyLoader\Helper\FallbackPageHelper;
 use Wexample\SymfonyLoader\Helper\RenderingHelper;
 use Wexample\SymfonyLoader\Rendering\AssetsRegistry;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AjaxLayoutRenderNode;
@@ -268,12 +269,15 @@ class AdaptiveRendererService
 
             if ($assetsException) {
                 $content = $this->twig->render(
-                    '@WexampleSymfonyLoaderBundle/system/fatal.html.twig',
-                    [
-                        'message' => $assetsException->getMessage(),
-                    ]
+                    FallbackPageHelper::TEMPLATE,
+                    FallbackPageHelper::assets($assetsException->getMessage())
                 );
                 $response->setContent($content);
+                // As AssetsNotBuiltSubscriber answers it: unavailable for the
+                // minute a build takes, and said to be so.
+                $response->setStatusCode(Response::HTTP_SERVICE_UNAVAILABLE);
+                $response->headers->set('Retry-After', '30');
+                $response->headers->set(FallbackPageHelper::HEADER, FallbackPageHelper::PAGE_ASSETS);
 
                 return $response;
             }

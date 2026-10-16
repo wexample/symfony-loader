@@ -11,6 +11,7 @@ use Throwable;
 use Twig\Environment;
 use Wexample\SymfonyLoader\Controller\AbstractLoaderController;
 use Wexample\SymfonyLoader\Helper\ErrorPageHelper;
+use Wexample\SymfonyLoader\Helper\FallbackPageHelper;
 use Wexample\SymfonyLoader\Service\AdaptiveRendererService;
 
 /**
@@ -50,15 +51,27 @@ class ErrorController extends AbstractLoaderController
 
         $statusCode = $flatten->getStatusCode();
 
-        return $this->adaptiveRender(
-            $this->resolveView($statusCode),
-            [
-                'status_code' => $statusCode,
-                'status_text' => $flatten->getStatusText(),
-                'exception' => $flatten,
-            ],
-            new Response('', $statusCode, $flatten->getHeaders())
-        );
+        try {
+            return $this->adaptiveRender(
+                $this->resolveView($statusCode),
+                [
+                    'status_code' => $statusCode,
+                    'status_text' => $flatten->getStatusText(),
+                    'exception' => $flatten,
+                ],
+                new Response('', $statusCode, $flatten->getHeaders())
+            );
+        } catch (Throwable) {
+            // The error page could not be drawn — its layout broken by what
+            // broke the page, say. The page that needs nothing is shown
+            // instead of Symfony's own, the same the application shows when it
+            // cannot answer at all.
+            return new Response(
+                $this->twig->render(FallbackPageHelper::TEMPLATE, FallbackPageHelper::error($statusCode)),
+                $statusCode,
+                $flatten->getHeaders()
+            );
+        }
     }
 
     /**
