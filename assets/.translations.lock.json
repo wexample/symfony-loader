@@ -3694,5 +3694,117 @@
             "hash": "d5c1560c79b0d77f33b9d5ebc66bd3c9",
             "engine": "syrtis"
         }
+    },
+    "pages/system/error.ar.yml": {
+        "code.401.message": {
+            "hash": "4183840fb89bc27ecb9d81f3f0511408",
+            "engine": "syrtis"
+        },
+        "code.401.title": {
+            "hash": "9525fe3c7267cc203a71345132365b4b",
+            "engine": "syrtis"
+        },
+        "code.403.message": {
+            "hash": "cd6304bb4173ab549e7fe916c1a48f8c",
+            "engine": "syrtis"
+        },
+        "code.403.title": {
+            "hash": "c56e8cf1cc7bc8190f952208e90b8ac2",
+            "engine": "syrtis"
+        },
+        "code.404.message": {
+            "hash": "eb55893efc91a9c62dbc11e463f75712",
+            "engine": "syrtis"
+        },
+        "code.404.title": {
+            "hash": "57f61efb84489e904206e39cf52c4e89",
+            "engine": "syrtis"
+        },
+        "code.500.message": {
+            "hash": "3ac1de6a71f4294f2540605a000dba9a",
+            "engine": "syrtis"
+        },
+        "code.500.title": {
+            "hash": "d32572c091dc15401ca54042c436331d",
+            "engine": "syrtis"
+        },
+        "code.default.message": {
+            "hash": "ae45f2a05746eb8827f939b2e2a8763a",
+            "engine": "syrtis"
+        },
+        "code.default.title": {
+            "hash": "e64f85fc67d7bd499e579865d634f4f0",
+            "engine": "syrtis"
+        },
+        "exit": {
+            "hash": "a2e8562de9e18f11907e48b745b0fabe",
+            "engine": "syrtis"
+        }
+    },
+    "pages/system/error.zh.yml": {
+        "code.401.message": {
+            "hash": "4183840fb89bc27ecb9d81f3f0511408",
+            "engine": "syrtis"
+        },
+        "code.401.title": {
+            "hash": "9525fe3c7267cc203a71345132365b4b",
+            "engine": "syrtis"
+        },
+        "code.403.message": {
+            "hash": "cd6304bb4173ab549e7fe916c1a48f8c",
+            "engine": "syrtis"
+        },
+        "code.403.title": {
+            "hash": "c56e8cf1cc7bc8190f952208e90b8ac2",
+            "engine": "syrtis"
+        },
+        "code.404.message": {
+            "hash": "eb55893efc91a9c62dbc11e463f75712",
+            "engine": "syrtis"
+        },
+        "code.404.title": {
+            "hash": "57f61efb84489e904206e39cf52c4e89",
+            "engine": "syrtis"
+        },
+        "code.500.message": {
+            "hash": "3ac1de6a71f4294f2540605a000dba9a",
+            "engine": "syrtis"
+        },
+        "code.500.title": {
+            "hash": "d32572c091dc15401ca54042c436331d",
+            "engine": "syrtis"
+        },
+        "code.default.message": {
+            "hash": "ae45f2a05746eb8827f939b2e2a8763a",
+            "engine": "syrtis"
+        },
+        "code.default.title": {
+            "hash": "e64f85fc67d7bd499e579865d634f4f0",
+            "engine": "syrtis"
+        },
+        "exit": {
+            "hash": "a2e8562de9e18f11907e48b745b0fabe",
+            "engine": "syrtis"
+        }
+    },
+    "pages/system/render-failure.ar.yml": {
+        "message": {
+            "hash": "eea46d427bdd03332dfa98cbd9e911ac",
+            "engine": "syrtis"
+        },
+        "page_title": {
+            "hash": "d32572c091dc15401ca54042c436331d",
+            "engine": "syrtis"
+        }
+    },
+    "pages/system/render-failure.zh.yml": {
+        "message": {
+            "hash": "eea46d427bdd03332dfa98cbd9e911ac",
+            "engine": "syrtis"
+        },
+        "page_title": {
+            "hash": "d32572c091dc15401ca54042c436331d",
+            "engine": "syrtis"
+        }
     }
 }

@@ -5,3 +5,11 @@ en:
 fr:
   page_title: Une erreur est survenue
   message: Cette partie de la page n'a pas pu s'afficher. Réessayez dans un instant.
+
+zh:
+  page_title: 出现错误
+  message: 此页面的部分内容无法显示。请稍后再试。
+
+ar:
+  page_title: 'حدث خطأ ما'
+  message: 'لم يتمكن هذا الجزء من الصفحة من العرض. حاول مرة أخرى بعد قليل.'
