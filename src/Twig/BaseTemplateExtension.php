@@ -24,8 +24,8 @@ class BaseTemplateExtension extends AbstractExtension
      * @param iterable<HeadStructuredDataProviderInterface> $headStructuredDataProviders
      */
     public function __construct(
-        protected Translator $translator,
-        protected RequestStack $requestStack,
+        protected readonly Translator $translator,
+        protected readonly RequestStack $requestStack,
         #[AutowireIterator(HeadMetaProviderInterface::TAG)]
         private readonly iterable $headMetaProviders = [],
         #[AutowireIterator(HeadLinkProviderInterface::TAG)]

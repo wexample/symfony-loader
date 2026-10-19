@@ -16,7 +16,7 @@ use Wexample\SymfonyLoader\Twig\TokenParser\SlotTokenParser;
 class ComponentsExtension extends AbstractExtension
 {
     public function __construct(
-        protected ComponentService $componentService,
+        protected readonly ComponentService $componentService,
     ) {
     }
 

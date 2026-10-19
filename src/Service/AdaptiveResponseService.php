@@ -10,7 +10,7 @@ use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 
 class AdaptiveResponseService
 {
-    private array $allowedBases = [
+    private const array ALLOWED_BASES = [
         RenderPass::BASE_MODAL,
         RenderPass::BASE_PANEL,
         RenderPass::BASE_DOCK,
@@ -92,7 +92,7 @@ class AdaptiveResponseService
                 RenderPass::BASE_MODAL
             );
 
-            return in_array($base, $this->allowedBases, true)
+            return in_array($base, self::ALLOWED_BASES, true)
                 ? $base
                 : RenderPass::BASE_MODAL;
         }

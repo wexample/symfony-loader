@@ -13,7 +13,7 @@ use Wexample\SymfonyLoader\Service\AssetsRegistryService;
 abstract class AbstractAssetUsageService
 {
     public function __construct(
-        protected AssetsRegistryService $assetsRegistryService
+        protected readonly AssetsRegistryService $assetsRegistryService
     ) {
 
     }

@@ -9,6 +9,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Wexample\Helpers\Helper\TextHelper;
 use Wexample\SymfonyDev\Service\JsDevPackagesResolver;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
+use Wexample\SymfonyHelpers\Attribute\WorkerSafe;
 
 class EncoreManifestBuilder
 {
@@ -35,6 +36,7 @@ class EncoreManifestBuilder
 
     private readonly string $projectDir;
     private readonly string $projectDirWithSeparator;
+    #[WorkerSafe('Read while the build manifest is generated, from the console only.')]
     private ?array $vendorSymlinkCache = null;
 
     public function __construct(

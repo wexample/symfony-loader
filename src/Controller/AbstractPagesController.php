@@ -30,7 +30,7 @@ abstract class AbstractPagesController extends AbstractLoaderController
 
     public function __construct(
         AdaptiveRendererService $adaptiveRendererService,
-        protected PageService $pageService,
+        protected readonly PageService $pageService,
     ) {
         parent::__construct(
             $adaptiveRendererService,

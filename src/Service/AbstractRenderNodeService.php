@@ -8,7 +8,7 @@ use Wexample\SymfonyLoader\Rendering\RenderPass;
 abstract class AbstractRenderNodeService
 {
     public function __construct(
-        protected AssetsService $assetsService,
+        protected readonly AssetsService $assetsService,
     ) {
     }
 

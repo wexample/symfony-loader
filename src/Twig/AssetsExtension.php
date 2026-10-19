@@ -11,8 +11,8 @@ use Wexample\SymfonyLoader\Service\AssetsService;
 class AssetsExtension extends AbstractExtension
 {
     public function __construct(
-        protected AssetsService $assetsService,
-        protected AssetsRegistryService $assetsRegistryService
+        protected readonly AssetsService $assetsService,
+        protected readonly AssetsRegistryService $assetsRegistryService
     ) {
     }
 

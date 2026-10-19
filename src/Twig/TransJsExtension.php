@@ -11,8 +11,8 @@ use Wexample\SymfonyTranslations\Translation\Translator;
 class TransJsExtension extends AbstractExtension
 {
     public function __construct(
-        protected AdaptiveResponseService $adaptiveResponseService,
-        protected Translator $translator
+        protected readonly AdaptiveResponseService $adaptiveResponseService,
+        protected readonly Translator $translator
     ) {
     }
 

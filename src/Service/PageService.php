@@ -20,8 +20,8 @@ class PageService extends AbstractRenderNodeService
 {
     public function __construct(
         AssetsService $assetsService,
-        protected Translator $translator,
-        protected RouterInterface $router
+        protected readonly Translator $translator,
+        protected readonly RouterInterface $router
     ) {
         parent::__construct(
             $assetsService,

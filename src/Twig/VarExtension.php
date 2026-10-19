@@ -10,7 +10,7 @@ use Wexample\SymfonyLoader\Service\JsService;
 class VarExtension extends AbstractExtension
 {
     public function __construct(
-        protected JsService $jsService
+        protected readonly JsService $jsService
     ) {
     }
 

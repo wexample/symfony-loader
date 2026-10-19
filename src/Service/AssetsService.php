@@ -28,7 +28,7 @@ class AssetsService
 
     public const string PATH_SHARED_CHUNK = 'build/shared.js';
 
-    private array $usages;
+    private readonly array $usages;
 
     public function __construct(
         AnimationsAssetUsageService $animationsAssetUsageService,
@@ -41,6 +41,7 @@ class AssetsService
         FontsAssetUsageService $fontsAssetUsageService,
         protected readonly AssetsRegistryService $assetsRegistryService,
     ) {
+        $usages = [];
         foreach ([
                      // Order is important, it defines the order the assets
                      // i.e. the order of CSS loading, so responsive or
@@ -57,8 +58,10 @@ class AssetsService
                      $animationsAssetUsageService,
                      $fontsAssetUsageService,
                  ] as $usage) {
-            $this->usages[$usage->getName()] = $usage;
+            $usages[$usage->getName()] = $usage;
         }
+
+        $this->usages = $usages;
     }
 
     public static function getAssetsUsagesStatic(): array

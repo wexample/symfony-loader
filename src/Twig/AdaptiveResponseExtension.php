@@ -14,8 +14,8 @@ class AdaptiveResponseExtension extends AbstractExtension
      * CommonExtension constructor.
      */
     public function __construct(
-        protected AdaptiveResponseService $adaptiveResponseService,
-        protected RequestStack $requestStack,
+        protected readonly AdaptiveResponseService $adaptiveResponseService,
+        protected readonly RequestStack $requestStack,
     ) {
     }
 
