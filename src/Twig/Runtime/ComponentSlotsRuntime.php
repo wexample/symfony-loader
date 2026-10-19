@@ -3,11 +3,11 @@
 namespace Wexample\SymfonyLoader\Twig\Runtime;
 
 use Exception;
+use Symfony\Contracts\Service\ResetInterface;
 use Twig\Environment;
 use Twig\Extension\RuntimeExtensionInterface;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\ComponentService;
-use Symfony\Contracts\Service\ResetInterface;
 
 class ComponentSlotsRuntime implements RuntimeExtensionInterface, ResetInterface
 {

@@ -3,10 +3,10 @@
 namespace Wexample\SymfonyLoader\Service;
 
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Contracts\Service\ResetInterface;
 use Wexample\SymfonyHelpers\Helper\JsonHelper;
 use Wexample\SymfonyLoader\Rendering\Asset;
 use Wexample\SymfonyLoader\Rendering\RenderDataGenerator;
-use Symfony\Contracts\Service\ResetInterface;
 
 class AssetsRegistryService extends RenderDataGenerator implements ResetInterface
 {

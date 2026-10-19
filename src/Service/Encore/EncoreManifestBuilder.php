@@ -8,8 +8,8 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Wexample\Helpers\Helper\TextHelper;
 use Wexample\SymfonyDev\Service\JsDevPackagesResolver;
-use Wexample\SymfonyHelpers\Helper\VariableHelper;
 use Wexample\SymfonyHelpers\Attribute\WorkerSafe;
+use Wexample\SymfonyHelpers\Helper\VariableHelper;
 
 class EncoreManifestBuilder
 {

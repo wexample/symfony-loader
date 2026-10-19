@@ -2,8 +2,8 @@
 
 namespace Wexample\SymfonyLoader\Service;
 
-use InvalidArgumentException;
 use Exception;
+use InvalidArgumentException;
 use Twig\Environment;
 use Wexample\PhpHtml\Helper\DomHelper;
 use Wexample\SymfonyHelpers\Helper\BundleHelper;

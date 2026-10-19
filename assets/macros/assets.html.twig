@@ -9,7 +9,7 @@
                     {% if type == 'css' -%}
                         <link id="{{ tag.id }}" rel="stylesheet" media="{{ tag.media }}" href="{{ tag.path ? asset(tag.path) : '' }}"/>
                     {% elseif type == 'js' and render_pass.isUseJs() -%}
-                        <script id="{{ tag.id }}" type="text/javascript" src="{{ tag.path ? asset(tag.path) : '' }}"></script>
+                        <script id="{{ tag.id }}" type="text/javascript" src="{{ tag.path ? asset(tag.path) : '' }}" defer></script>
                     {% endif %}
                     <!--END_USAGE[{{ assets_group_name }}]-->
                 {% endfor -%}
