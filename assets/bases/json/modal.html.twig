@@ -20,7 +20,13 @@
         and an embed are: an editor, a document viewer. -#}
     <div class="modal-body{{ page_zone_flush|default(false) ? ' modal-body--flush' }} stack--vertical" data-page-scroll>
         {%- block page_composer_modal -%}
-            {{ block('page_body') }}
+            {#- A page that takes over its container rather than its body —
+                a workspace laid out in regions — is drawn by its container. -#}
+            {%- if block('page_body') is defined -%}
+                {{ block('page_body') }}
+            {%- elseif block('page_body_container') is defined -%}
+                {{ block('page_body_container') }}
+            {%- endif -%}
         {%- endblock -%}
     </div>
     {#- What the page does, below what it says: kept in view at the foot of the

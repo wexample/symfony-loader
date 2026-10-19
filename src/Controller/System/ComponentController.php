@@ -2,12 +2,14 @@
 
 namespace Wexample\SymfonyLoader\Controller\System;
 
+use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Twig\Environment;
+use Twig\Error\RuntimeError;
 use Wexample\SymfonyLoader\Controller\AbstractLoaderController;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AjaxLayoutRenderNode;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
@@ -48,6 +50,13 @@ class ComponentController extends AbstractLoaderController
             );
         }
 
+        if (! $this->componentService->exists($this->twig, $path)) {
+            return new JsonResponse(
+                ['ok' => false, 'error' => 'Unknown component'],
+                Response::HTTP_NOT_FOUND
+            );
+        }
+
         $props = $request->query->all('props');
 
         $renderPass = $this->adaptiveRendererService->createRenderPass('_system/component/render');
@@ -57,13 +66,28 @@ class ComponentController extends AbstractLoaderController
         $renderPass->setLayoutRenderNode($layoutNode);
         $this->componentService->initRenderNode($layoutNode, $renderPass, '_system/component');
 
-        $component = $this->componentService->registerComponent(
-            $this->twig,
-            $renderPass,
-            $path,
-            ComponentService::INIT_MODE_LAYOUT,
-            $props,
-        );
+        try {
+            $component = $this->componentService->registerComponent(
+                $this->twig,
+                $renderPass,
+                $path,
+                ComponentService::INIT_MODE_LAYOUT,
+                $props,
+            );
+        } catch (Exception $exception) {
+            // The props come from the client: a template that cannot run with
+            // them is a request it got wrong, not a failure of the server.
+            for ($cause = $exception; $cause; $cause = $cause->getPrevious()) {
+                if ($cause instanceof RuntimeError) {
+                    return new JsonResponse(
+                        ['ok' => false, 'error' => 'Invalid props for this component'],
+                        Response::HTTP_BAD_REQUEST
+                    );
+                }
+            }
+
+            throw $exception;
+        }
 
         $renderData = $component->toRenderData()->toArray();
         $renderData['body'] = $component->getBody();

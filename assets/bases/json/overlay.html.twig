@@ -12,7 +12,13 @@
 {%- block page_composer_json -%}
     <div class="overlay-body" data-page-scroll>
         {%- block page_composer_overlay -%}
-            {{ block('page_body') }}
+            {#- A page that takes over its container rather than its body —
+                a workspace laid out in regions — is drawn by its container. -#}
+            {%- if block('page_body') is defined -%}
+                {{ block('page_body') }}
+            {%- elseif block('page_body_container') is defined -%}
+                {{ block('page_body_container') }}
+            {%- endif -%}
         {%- endblock -%}
     </div>
 {%- endblock -%}

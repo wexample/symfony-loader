@@ -2,6 +2,7 @@
 
 namespace Wexample\SymfonyLoader\Service;
 
+use InvalidArgumentException;
 use Exception;
 use Twig\Environment;
 use Wexample\PhpHtml\Helper\DomHelper;
@@ -209,6 +210,22 @@ class ComponentService extends AbstractRenderNodeService
     /**
      * @throws Exception
      */
+    /**
+     * Whether a component of this name exists, as registerComponent() would
+     * look it up; an unknown bundle is a component that does not exist.
+     */
+    public function exists(Environment $twig, string $name): bool
+    {
+        try {
+            $name = $this->componentManagerLocatorService->normalizeComponentName($name);
+            $view = ComponentPathHelper::resolveView($twig, $name, TemplateHelper::TEMPLATE_FILE_EXTENSION);
+
+            return $twig->getLoader()->exists($view . TemplateHelper::TEMPLATE_FILE_EXTENSION);
+        } catch (InvalidArgumentException) {
+            return false;
+        }
+    }
+
     public function registerComponent(
         Environment $twig,
         RenderPass $renderPass,

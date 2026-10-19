@@ -10,7 +10,13 @@
         and an embed are: an editor, a document viewer. -#}
     <div class="dock-body{{ page_zone_flush|default(false) ? ' dock-body--flush' }} stack--vertical" data-page-scroll>
         {%- block page_composer_dock -%}
-            {{ block('page_body') }}
+            {#- A page that takes over its container rather than its body —
+                a workspace laid out in regions — is drawn by its container. -#}
+            {%- if block('page_body') is defined -%}
+                {{ block('page_body') }}
+            {%- elseif block('page_body_container') is defined -%}
+                {{ block('page_body_container') }}
+            {%- endif -%}
         {%- endblock -%}
     </div>
     {%- set pageActions %}{% block page_actions %}{% endblock %}{% endset -%}

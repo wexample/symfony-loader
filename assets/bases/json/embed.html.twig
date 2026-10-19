@@ -25,7 +25,13 @@
                        the full layout does. #}
                     <div class="zone--content{{ page_zone_flush|default(false) ? ' zone--content--flush' }} stack--vertical">
                         {%- block page_composer_embed_zoned -%}
-                            {{ block('page_body') }}
+                            {#- A page that takes over its container rather than its body —
+                                a workspace laid out in regions — is drawn by its container. -#}
+                            {%- if block('page_body') is defined -%}
+                                {{ block('page_body') }}
+                            {%- elseif block('page_body_container') is defined -%}
+                                {{ block('page_body_container') }}
+                            {%- endif -%}
                         {%- endblock -%}
                     </div>
                 </div>
@@ -39,7 +45,13 @@
            of the zone holding the embed. #}
         <div class="embed-body stack--vertical">
             {%- block page_composer_embed -%}
-                {{ block('page_body') }}
+                {#- A page that takes over its container rather than its body —
+                    a workspace laid out in regions — is drawn by its container. -#}
+                {%- if block('page_body') is defined -%}
+                    {{ block('page_body') }}
+                {%- elseif block('page_body_container') is defined -%}
+                    {{ block('page_body_container') }}
+                {%- endif -%}
             {%- endblock -%}
         </div>
     {%- endif -%}
