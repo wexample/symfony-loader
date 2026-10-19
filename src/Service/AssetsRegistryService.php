@@ -6,8 +6,9 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Wexample\SymfonyHelpers\Helper\JsonHelper;
 use Wexample\SymfonyLoader\Rendering\Asset;
 use Wexample\SymfonyLoader\Rendering\RenderDataGenerator;
+use Symfony\Contracts\Service\ResetInterface;
 
-class AssetsRegistryService extends RenderDataGenerator
+class AssetsRegistryService extends RenderDataGenerator implements ResetInterface
 {
     private array $manifest = [];
 
@@ -40,6 +41,15 @@ class AssetsRegistryService extends RenderDataGenerator
             JSON_OBJECT_AS_ARRAY,
             default: $this->manifest
         );
+    }
+
+    /**
+     * The assets a page asked for are that page's: a worker serving the next one
+     * starts from none, the manifest read once staying.
+     */
+    public function reset(): void
+    {
+        $this->registry = [];
     }
 
     public function assetExists(string $pathInManifest): bool

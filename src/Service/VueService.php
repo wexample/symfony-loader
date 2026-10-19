@@ -12,8 +12,9 @@ use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Rendering\Vue;
 use Wexample\SymfonyLoader\Twig\VueExtension;
 use Wexample\SymfonyTranslations\Translation\Translator;
+use Symfony\Contracts\Service\ResetInterface;
 
-class VueService
+class VueService implements ResetInterface
 {
     public array $renderedTemplates = [];
 
@@ -39,6 +40,18 @@ class VueService
         protected readonly Translator $translator,
         protected readonly JsService $jsService
     ) {
+    }
+
+    /**
+     * What was rendered belongs to the page that rendered it: a worker serving
+     * the next page must render its vues and templates again.
+     */
+    public function reset(): void
+    {
+        $this->renderedTemplates = [];
+        $this->rootComponents = [];
+        $this->renderedTranslations = [];
+        $this->renderingViews = [];
     }
 
     public function isRenderPassInVueContext(RenderPass $renderPass): bool

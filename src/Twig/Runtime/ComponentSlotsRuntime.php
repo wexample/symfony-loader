@@ -7,8 +7,9 @@ use Twig\Environment;
 use Twig\Extension\RuntimeExtensionInterface;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyLoader\Service\ComponentService;
+use Symfony\Contracts\Service\ResetInterface;
 
-class ComponentSlotsRuntime implements RuntimeExtensionInterface
+class ComponentSlotsRuntime implements RuntimeExtensionInterface, ResetInterface
 {
     private array $componentStack = [];
     private array $slotStack = [];
@@ -16,6 +17,16 @@ class ComponentSlotsRuntime implements RuntimeExtensionInterface
     public function __construct(
         private readonly ComponentService $componentService
     ) {
+    }
+
+    /**
+     * Balanced by a page that renders to its end; one interrupted by an error
+     * would leave its open components to the next request.
+     */
+    public function reset(): void
+    {
+        $this->componentStack = [];
+        $this->slotStack = [];
     }
 
     /**
