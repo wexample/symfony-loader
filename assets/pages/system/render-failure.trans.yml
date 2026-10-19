@@ -13,3 +13,79 @@ zh:
 ar:
   page_title: 'حدث خطأ ما'
   message: 'لم يتمكن هذا الجزء من الصفحة من العرض. حاول مرة أخرى بعد قليل.'
+
+hi:
+  page_title: 'कुछ गलत हो गया'
+  message: 'इस पृष्ठ का यह भाग प्रदर्शित नहीं किया जा सका। कृपया कुछ क्षण बाद फिर से प्रयास करें।'
+
+he:
+  page_title: 'משהו השתבש'
+  message: 'לא ניתן להציג חלק זה מהדף. נסה שוב בעוד רגע.'
+
+fa:
+  page_title: 'مشکلی پیش آمد'
+  message: 'این بخش از صفحه نتوانست نمایش داده شود. لطفاً کمی بعد دوباره تلاش کنید.'
+
+ur:
+  page_title: 'کچھ غلط ہو گیا'
+  message: 'اس صفحے کا یہ حصہ ظاہر نہیں ہو سکا۔ براہ کرم تھوڑی دیر بعد دوبارہ کوشش کریں۔'
+
+ja:
+  page_title: エラーが発生しました
+  message: ページのこの部分を表示できませんでした。しばらくしてから再試行してください。
+
+ko:
+  page_title: '문제가 발생했습니다'
+  message: '페이지의 이 부분을 표시할 수 없습니다. 잠시 후 다시 시도하세요.'
+
+bn:
+  page_title: 'কিছু সমস্যা হয়েছে'
+  message: 'এই পৃষ্ঠার এই অংশ প্রদর্শিত হতে পারেনি। কিছুক্ষণ পরে আবার চেষ্টা করুন।'
+
+th:
+  page_title: เกิดข้อผิดพลาดบางอย่าง
+  message: 'ไม่สามารถแสดงส่วนนี้ของหน้าได้ ลองอีกครั้งในสักครู่.'
+
+de:
+  page_title: 'Etwas ist schiefgegangen'
+  message: 'Dieser Teil der Seite konnte nicht angezeigt werden. Versuchen Sie es in einem Moment erneut.'
+
+fi:
+  page_title: 'Jotain meni pieleen'
+  message: 'Tätä osaa sivusta ei voitu näyttää. Yritä uudelleen hetken kuluttua.'
+
+ru:
+  page_title: 'Что-то пошло не так'
+  message: 'Эта часть страницы не может быть отображена. Попробуйте снова через некоторое время.'
+
+pl:
+  page_title: 'Coś poszło nie tak'
+  message: 'Ta część strony nie mogła zostać wyświetlona. Spróbuj ponownie za chwilę.'
+
+es:
+  page_title: 'Algo salió mal'
+  message: 'Esta parte de la página no se pudo mostrar. Intenta de nuevo en un momento.'
+
+it:
+  page_title: 'Qualcosa è andato storto'
+  message: 'Questa parte della pagina non può essere visualizzata. Riprova tra un momento.'
+
+pt_BR:
+  page_title: 'Algo deu errado'
+  message: 'Esta parte da página não pôde ser exibida. Tente novamente em um momento.'
+
+tr:
+  page_title: 'Bir şeyler yanlış gitti'
+  message: 'Bu sayfanın bu kısmı görüntülenemedi. Bir süre sonra tekrar deneyin.'
+
+vi:
+  page_title: 'Có gì đó không ổn'
+  message: 'Phần này của trang không thể hiển thị. Vui lòng thử lại sau một chút.'
+
+id:
+  page_title: 'Terjadi kesalahan'
+  message: 'Bagian halaman ini tidak dapat ditampilkan. Coba lagi dalam beberapa saat.'
+
+nl:
+  page_title: 'Er is iets misgegaan'
+  message: 'Dit deel van de pagina kon niet worden weergegeven. Probeer het over een moment opnieuw.'

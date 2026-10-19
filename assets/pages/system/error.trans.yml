@@ -73,3 +73,364 @@ ar:
     default:
       title: 'لا يمكن عرض هذه الصفحة'
       message: 'حاول مرة أخرى بعد لحظة، وقل لمن يدير التطبيق إذا استمر في الحدوث.'
+
+hi:
+  exit: 'मुख्य पृष्ठ पर वापस जाएँ'
+  code:
+    401:
+      title: 'कृपया साइन इन करें'
+      message: 'यह पृष्ठ साइन इन किए गए उपयोगकर्ताओं के लिए है। साइन इन करें और फिर से खोलें।'
+    403:
+      title: 'यह पृष्ठ खोलने के लिए आपका नहीं है'
+      message: 'आपके खाते को इसकी पहुँच नहीं है। यदि आपको इसकी आवश्यकता है, तो उस व्यक्ति से पूछें जो एप्लिकेशन का प्रबंधन करता है।'
+    404:
+      title: 'यह पृष्ठ अस्तित्व में नहीं है'
+      message: 'पता गलत है, या जिस चीज़ की ओर यह इशारा करता है, उसे हटा दिया गया है।'
+    500:
+      title: 'कुछ गलत हुआ'
+      message: 'गलती को रिकॉर्ड किया गया है। कृपया कुछ देर में फिर से प्रयास करें, और यदि यह बार-बार हो रहा है तो उस व्यक्ति को बताएं जो एप्लिकेशन का प्रबंधन करता है।'
+    default:
+      title: 'यह पृष्ठ प्रदर्शित नहीं किया जा सकता'
+      message: 'कृपया कुछ देर में फिर से प्रयास करें, और यदि यह बार-बार हो रहा है तो उस व्यक्ति को बताएं जो एप्लिकेशन का प्रबंधन करता है।'
+
+he:
+  exit: 'חזרה לדף הבית'
+  code:
+    401:
+      title: 'אנא התחבר'
+      message: 'דף זה מיועד למשתמשים מחוברים. התחבר ופתח אותו שוב.'
+    403:
+      title: 'דף זה אינו שלך לפתוח'
+      message: 'לחשבון שלך אין גישה אליו. שאל את מי שמנהל את האפליקציה אם אתה צריך את זה.'
+    404:
+      title: 'דף זה אינו קיים'
+      message: 'הכתובת שגויה, או שהדבר שאליו היא הפנתה הוסר.'
+    500:
+      title: 'משהו השתבש'
+      message: 'הטעות נרשמה. נסה שוב בעוד רגע, ואמור למי שמנהל את האפליקציה אם זה קורה שוב.'
+    default:
+      title: 'דף זה אינו יכול להציג'
+      message: 'נסה שוב בעוד רגע, ואמור למי שמנהל את האפליקציה אם זה קורה שוב.'
+
+fa:
+  exit: 'بازگشت به صفحه اصلی'
+  code:
+    401:
+      title: 'لطفاً وارد شوید'
+      message: 'این صفحه مخصوص کاربران وارد شده است. وارد شوید و دوباره آن را باز کنید.'
+    403:
+      title: 'این صفحه متعلق به شما نیست'
+      message: 'حساب شما به آن دسترسی ندارد. اگر به آن نیاز دارید از کسی که برنامه را مدیریت می‌کند بپرسید.'
+    404:
+      title: 'این صفحه وجود ندارد'
+      message: 'آدرس اشتباه است، یا چیزی که به آن اشاره می‌کرده حذف شده است.'
+    500:
+      title: 'مشکلی پیش آمده است'
+      message: 'خطا ثبت شده است. کمی بعد دوباره تلاش کنید و اگر این مشکل ادامه داشت به کسی که برنامه را مدیریت می‌کند اطلاع دهید.'
+    default:
+      title: 'این صفحه قابل نمایش نیست'
+      message: 'کمی بعد دوباره تلاش کنید و اگر این مشکل ادامه داشت به کسی که برنامه را مدیریت می‌کند اطلاع دهید.'
+
+ur:
+  exit: 'ہوم پیج پر واپس جائیں'
+  code:
+    401:
+      title: 'براہ کرم سائن ان کریں'
+      message: 'یہ صفحہ سائن ان شدہ صارفین کے لیے ہے۔ سائن ان کریں اور دوبارہ کھولیں۔'
+    403:
+      title: 'یہ صفحہ آپ کے لیے نہیں ہے'
+      message: 'آپ کے اکاؤنٹ کو اس تک رسائی حاصل نہیں ہے۔ اگر آپ کو ضرورت ہے تو ایپلیکیشن کے منتظم سے پوچھیں۔'
+    404:
+      title: 'یہ صفحہ موجود نہیں ہے'
+      message: 'پتہ غلط ہے، یا جس چیز کی طرف اشارہ کیا گیا تھا وہ ہٹا دی گئی ہے۔'
+    500:
+      title: 'کچھ غلط ہو گیا'
+      message: 'غلطی کو ریکارڈ کر لیا گیا ہے۔ ابھی دوبارہ کوشش کریں، اور اگر یہ دوبارہ ہو تو ایپلیکیشن کے منتظم کو بتائیں۔'
+    default:
+      title: 'یہ صفحہ نہیں دکھایا جا سکتا'
+      message: 'ابھی دوبارہ کوشش کریں، اور اگر یہ دوبارہ ہو تو ایپلیکیشن کے منتظم کو بتائیں۔'
+
+ja:
+  exit: ホームページに戻る
+  code:
+    401:
+      title: サインインしてください
+      message: このページはサインインしたユーザー専用です。サインインして再度開いてください。
+    403:
+      title: このページはあなたが開くものではありません
+      message: あなたのアカウントではアクセスできません。必要であればアプリケーションの管理者に確認してください。
+    404:
+      title: このページは存在しません
+      message: アドレスが間違っているか、指し示されているものが削除されました。
+    500:
+      title: 何かが問題です
+      message: エラーが記録されました。少し待ってから再試行し、問題が続く場合はアプリケーションの管理者に知らせてください。
+    default:
+      title: このページは表示できません
+      message: 少し待ってから再試行し、問題が続く場合はアプリケーションの管理者に知らせてください。
+
+ko:
+  exit: '홈 페이지로 돌아가기'
+  code:
+    401:
+      title: '로그인 해주세요'
+      message: '이 페이지는 로그인한 사용자만 사용할 수 있습니다. 로그인 후 다시 열어주세요.'
+    403:
+      title: '이 페이지를 열 수 없습니다'
+      message: '귀하의 계정은 이 페이지에 접근할 수 없습니다. 필요하시면 애플리케이션 관리자를 문의하세요.'
+    404:
+      title: '이 페이지는 존재하지 않습니다'
+      message: '주소가 잘못되었거나, 해당 내용이 제거되었습니다.'
+    500:
+      title: '문제가 발생했습니다'
+      message: '오류가 기록되었습니다. 잠시 후 다시 시도해 보시고, 계속 문제가 발생하면 애플리케이션 관리자에게 알려주세요.'
+    default:
+      title: '이 페이지를 표시할 수 없습니다'
+      message: '잠시 후 다시 시도해 보시고, 계속 문제가 발생하면 애플리케이션 관리자에게 알려주세요.'
+
+bn:
+  exit: 'মূল পৃষ্ঠায় ফিরে যান'
+  code:
+    401:
+      title: 'দয়া করে সাইন ইন করুন'
+      message: 'এই পৃষ্ঠা সাইন ইন করা ব্যবহারকারীদের জন্য। সাইন ইন করুন এবং আবার এটি খুলুন।'
+    403:
+      title: 'এই পৃষ্ঠা আপনার জন্য নয়'
+      message: 'আপনার অ্যাকাউন্টে এর অ্যাক্সেস নেই। যদি আপনাকে এটি প্রয়োজন হয় তবে অ্যাপ্লিকেশনটি পরিচালনা করে এমন ব্যক্তির কাছে জিজ্ঞাসা করুন।'
+    404:
+      title: 'এই পৃষ্ঠা বিদ্যমান নেই'
+      message: 'ঠিকানা ভুল, অথবা যা এটি নির্দেশ করেছিল তা মুছে ফেলা হয়েছে।'
+    500:
+      title: 'কিছু ভুল হয়েছে'
+      message: 'ত্রুটিটি রেকর্ড করা হয়েছে। একটু পরে আবার চেষ্টা করুন, এবং যদি এটি ঘটতেই থাকে তবে অ্যাপ্লিকেশনটি পরিচালনা করে এমন ব্যক্তির কাছে জানান।'
+    default:
+      title: 'এই পৃষ্ঠা দেখানো যাচ্ছে না'
+      message: 'অ sedikit পরে আবার চেষ্টা করুন, এবং যদি এটি ঘটতেই থাকে তবে অ্যাপ্লিকেশনটি পরিচালনা করে এমন ব্যক্তির কাছে জানান।'
+
+th:
+  exit: กลับไปที่หน้าแรก
+  code:
+    401:
+      title: กรุณาเข้าสู่ระบบ
+      message: 'หน้านี้สำหรับผู้ใช้ที่เข้าสู่ระบบแล้ว กรุณาเข้าสู่ระบบแล้วเปิดใหม่อีกครั้ง'
+    403:
+      title: หน้านี้ไม่ใช่ของคุณที่จะเปิด
+      message: 'บัญชีของคุณไม่มีสิทธิ์เข้าถึงมัน ถามผู้ที่จัดการแอปพลิเคชันหากคุณต้องการ'
+    404:
+      title: หน้านี้ไม่มีอยู่จริง
+      message: 'ที่อยู่ไม่ถูกต้อง หรือสิ่งที่ชี้ไปได้ถูกลบออกแล้ว'
+    500:
+      title: เกิดข้อผิดพลาดบางอย่าง
+      message: 'ข้อผิดพลาดได้ถูกบันทึกไว้ กรุณาลองอีกครั้งในอีกสักครู่ และบอกผู้ที่จัดการแอปพลิเคชันหากมันยังเกิดขึ้นต่อไป'
+    default:
+      title: หน้านี้ไม่สามารถแสดงได้
+      message: 'ลองอีกครั้งในอีกสักครู่ และบอกผู้ที่จัดการแอปพลิเคชันหากมันยังเกิดขึ้นต่อไป.'
+
+de:
+  exit: 'Zur Startseite zurück'
+  code:
+    401:
+      title: 'Bitte melden Sie sich an'
+      message: 'Diese Seite ist nur für angemeldete Benutzer. Melden Sie sich an und öffnen Sie sie erneut.'
+    403:
+      title: 'Diese Seite gehört Ihnen nicht'
+      message: 'Ihr Konto hat keinen Zugriff darauf. Fragen Sie denjenigen, der die Anwendung verwaltet, wenn Sie es benötigen.'
+    404:
+      title: 'Diese Seite existiert nicht'
+      message: 'Die Adresse ist falsch oder der Inhalt wurde entfernt.'
+    500:
+      title: 'Etwas ist schiefgelaufen'
+      message: 'Der Fehler wurde protokolliert. Versuchen Sie es in einem Moment erneut und informieren Sie denjenigen, der die Anwendung verwaltet, wenn es weiterhin auftritt.'
+    default:
+      title: 'Diese Seite kann nicht angezeigt werden'
+      message: 'Versuchen Sie es in einem Moment erneut und informieren Sie denjenigen, der die Anwendung verwaltet, wenn es weiterhin auftritt.'
+
+fi:
+  exit: 'Takaisin etusivulle'
+  code:
+    401:
+      title: 'Ole hyvä ja kirjaudu sisään'
+      message: 'Tämä sivu on tarkoitettu kirjautuneille käyttäjille. Kirjaudu sisään ja avaa se uudelleen.'
+    403:
+      title: 'Tätä sivua ei ole sinun avattavaksi'
+      message: 'Tililläsi ei ole pääsyä siihen. Kysy sovelluksen ylläpitäjältä, jos tarvitset sitä.'
+    404:
+      title: 'Tätä sivua ei ole olemassa'
+      message: 'Osoite on väärä tai siihen viitattu on poistettu.'
+    500:
+      title: 'Jokin meni pieleen'
+      message: 'Virhe on kirjattu. Yritä uudelleen hetken kuluttua ja kerro sovelluksen ylläpitäjälle, jos se toistuu.'
+    default:
+      title: 'Tätä sivua ei voida näyttää'
+      message: 'Yritä uudelleen hetken kuluttua ja kerro sovelluksen ylläpitäjälle, jos se toistuu.'
+
+ru:
+  exit: 'Вернуться на главную страницу'
+  code:
+    401:
+      title: 'Пожалуйста, войдите в систему'
+      message: 'Эта страница доступна только для вошедших пользователей. Войдите и откройте её снова.'
+    403:
+      title: 'Эта страница недоступна'
+      message: 'У вашей учетной записи нет доступа к ней. Попросите управляющего приложением, если она вам нужна.'
+    404:
+      title: 'Эта страница не существует'
+      message: 'Адрес неверен или то, на что он указывал, было удалено.'
+    500:
+      title: 'Что-то пошло не так'
+      message: 'Ошибка была зафиксирована. Попробуйте снова через мгновение и сообщите управляющему приложением, если это повторится.'
+    default:
+      title: 'Эту страницу нельзя отобразить'
+      message: 'Попробуйте снова через мгновение и сообщите управляющему приложением, если это повторится.'
+
+pl:
+  exit: 'Powrót do strony głównej'
+  code:
+    401:
+      title: 'Zaloguj się'
+      message: 'Ta strona jest przeznaczona dla zalogowanych użytkowników. Zaloguj się i otwórz ją ponownie.'
+    403:
+      title: 'Ta strona nie jest do otwarcia przez Ciebie'
+      message: 'Twoje konto nie ma dostępu do tej strony. Zapytaj osobę zarządzającą aplikacją, jeśli jej potrzebujesz.'
+    404:
+      title: 'Ta strona nie istnieje'
+      message: 'Adres jest nieprawidłowy lub to, do czego prowadził, zostało usunięte.'
+    500:
+      title: 'Coś poszło nie tak'
+      message: 'Błąd został zapisany. Spróbuj ponownie za chwilę i powiedz osobie zarządzającej aplikacją, jeśli to się powtarza.'
+    default:
+      title: 'Ta strona nie może być wyświetlona'
+      message: 'Spróbuj ponownie za chwilę i powiedz osobie zarządzającej aplikacją, jeśli to się powtarza.'
+
+es:
+  exit: 'Volver a la página de inicio'
+  code:
+    401:
+      title: 'Por favor, inicia sesión'
+      message: 'Esta página es solo para usuarios registrados. Inicia sesión y ábrela de nuevo.'
+    403:
+      title: 'Esta página no te pertenece'
+      message: 'Tu cuenta no tiene acceso. Pregunta a quien administre la aplicación si la necesitas.'
+    404:
+      title: 'Esta página no existe'
+      message: 'La dirección es incorrecta, o lo que apuntaba ha sido eliminado.'
+    500:
+      title: 'Algo salió mal'
+      message: 'El error ha sido registrado. Intenta de nuevo en un momento, y avisa a quien administre la aplicación si sigue ocurriendo.'
+    default:
+      title: 'Esta página no se puede mostrar'
+      message: 'Intenta de nuevo en un momento, y avisa a quien administre la aplicación si sigue ocurriendo.'
+
+it:
+  exit: 'Torna alla home page'
+  code:
+    401:
+      title: 'Accedi per favore'
+      message: 'Questa pagina è riservata agli utenti autenticati. Accedi e aprila di nuovo.'
+    403:
+      title: 'Questa pagina non è tua da aprire'
+      message: "Il tuo account non ha accesso a questa pagina. Chiedi a chi gestisce l'applicazione se ne hai bisogno."
+    404:
+      title: 'Questa pagina non esiste'
+      message: "L'indirizzo è errato o ciò a cui puntava è stato rimosso."
+    500:
+      title: 'Qualcosa è andato storto'
+      message: "L'errore è stato registrato. Riprova tra un momento e avvisa chi gestisce l'applicazione se continua a verificarsi."
+    default:
+      title: 'Questa pagina non può essere mostrata'
+      message: "Riprova tra un momento e avvisa chi gestisce l'applicazione se continua a verificarsi."
+
+pt_BR:
+  exit: 'Voltar para a página inicial'
+  code:
+    401:
+      title: 'Por favor, faça login'
+      message: 'Esta página é para usuários conectados. Faça login e abra novamente.'
+    403:
+      title: 'Esta página não é sua para abrir'
+      message: 'Sua conta não tem acesso a ela. Pergunte a quem gerencia o aplicativo se você precisar.'
+    404:
+      title: 'Esta página não existe'
+      message: 'O endereço está errado ou o que ele apontava foi removido.'
+    500:
+      title: 'Algo deu errado'
+      message: 'O erro foi registrado. Tente novamente em um momento e avise a quem gerencia o aplicativo se continuar acontecendo.'
+    default:
+      title: 'Esta página não pode ser exibida'
+      message: 'Tente novamente em um momento e avise a quem gerencia o aplicativo se continuar acontecendo.'
+
+tr:
+  exit: 'Ana sayfaya geri dön'
+  code:
+    401:
+      title: 'Lütfen oturum açın'
+      message: 'Bu sayfa, oturum açmış kullanıcılar içindir. Oturum açın ve tekrar açmayı deneyin.'
+    403:
+      title: 'Bu sayfayı açmaya yetkiniz yok'
+      message: 'Hesabınızın buna erişimi yok. Gerekirse uygulamayı yöneten kişiye danışın.'
+    404:
+      title: 'Bu sayfa mevcut değil'
+      message: 'Adres yanlış ya da yönlendirdiği içerik kaldırılmış.'
+    500:
+      title: 'Bir şeyler yanlış gitti'
+      message: 'Hata kaydedildi. Birazdan tekrar deneyin ve sorun devam ederse uygulamayı yöneten kişiye bildirin.'
+    default:
+      title: 'Bu sayfa gösterilemiyor'
+      message: 'Birazdan tekrar deneyin ve sorun devam ederse uygulamayı yöneten kişiye bildirin.'
+
+vi:
+  exit: 'Quay lại trang chủ'
+  code:
+    401:
+      title: 'Vui lòng đăng nhập'
+      message: 'Trang này chỉ dành cho người dùng đã đăng nhập. Hãy đăng nhập và mở lại trang.'
+    403:
+      title: 'Trang này không phải của bạn để mở'
+      message: 'Tài khoản của bạn không có quyền truy cập vào trang này. Hãy hỏi người quản lý ứng dụng nếu bạn cần truy cập.'
+    404:
+      title: 'Trang này không tồn tại'
+      message: 'Địa chỉ không đúng, hoặc nội dung mà nó chỉ đến đã bị xóa.'
+    500:
+      title: 'Đã xảy ra lỗi'
+      message: 'Lỗi đã được ghi lại. Hãy thử lại trong giây lát, và thông báo cho người quản lý ứng dụng nếu lỗi vẫn tiếp diễn.'
+    default:
+      title: 'Trang này không thể hiển thị'
+      message: 'Hãy thử lại trong giây lát, và thông báo cho người quản lý ứng dụng nếu lỗi vẫn tiếp diễn.'
+
+id:
+  exit: 'Kembali ke halaman utama'
+  code:
+    401:
+      title: 'Silakan masuk'
+      message: 'Halaman ini hanya untuk pengguna yang sudah masuk. Masuk dan buka lagi.'
+    403:
+      title: 'Halaman ini bukan milikmu untuk dibuka'
+      message: 'Akunmu tidak memiliki akses ke halaman ini. Tanyakan kepada pengelola aplikasi jika kamu membutuhkannya.'
+    404:
+      title: 'Halaman ini tidak ada'
+      message: 'Alamatnya salah, atau konten yang dituju telah dihapus.'
+    500:
+      title: 'Terjadi kesalahan'
+      message: 'Kesalahan telah dicatat. Coba lagi sebentar, dan beri tahu pengelola aplikasi jika masalah ini terus terjadi.'
+    default:
+      title: 'Halaman ini tidak dapat ditampilkan'
+      message: 'Coba lagi sebentar, dan beri tahu pengelola aplikasi jika masalah ini terus terjadi.'
+
+nl:
+  exit: 'Terug naar de startpagina'
+  code:
+    401:
+      title: 'Gelieve in te loggen'
+      message: 'Deze pagina is alleen voor ingelogde gebruikers. Log in en open het opnieuw.'
+    403:
+      title: 'Deze pagina is niet van jou om te openen'
+      message: 'Je account heeft hier geen toegang toe. Vraag degene die de applicatie beheert als je het nodig hebt.'
+    404:
+      title: 'Deze pagina bestaat niet'
+      message: 'Het adres is onjuist, of waar het naar verwees is verwijderd.'
+    500:
+      title: 'Er is iets misgegaan'
+      message: 'De fout is geregistreerd. Probeer het over een moment opnieuw, en vertel degene die de applicatie beheert als het blijft gebeuren.'
+    default:
+      title: 'Deze pagina kan niet worden weergegeven'
+      message: 'Probeer het over een moment opnieuw, en vertel degene die de applicatie beheert als het blijft gebeuren.'
