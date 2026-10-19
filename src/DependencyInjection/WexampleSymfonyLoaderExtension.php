@@ -9,6 +9,7 @@ use Wexample\SymfonyHelpers\Helper\FileHelper;
 use Wexample\SymfonyHelpers\Helper\VariableHelper;
 use Wexample\SymfonyHelpers\Interface\HeadLinkProviderInterface;
 use Wexample\SymfonyHelpers\Interface\HeadMetaProviderInterface;
+use Wexample\SymfonyHelpers\Interface\HeadStructuredDataProviderInterface;
 use Wexample\SymfonyHelpers\Interface\LoaderBundleInterface;
 use Wexample\SymfonyLoader\Controller\System\ErrorController;
 use Wexample\SymfonyLoader\Interface\DevelopTabInterface;
@@ -50,6 +51,9 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
         $container
             ->registerForAutoconfiguration(HeadLinkProviderInterface::class)
             ->addTag(HeadLinkProviderInterface::TAG);
+        $container
+            ->registerForAutoconfiguration(HeadStructuredDataProviderInterface::class)
+            ->addTag(HeadStructuredDataProviderInterface::TAG);
 
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);

@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\TwigFunction;
 use Wexample\SymfonyHelpers\Interface\HeadLinkProviderInterface;
 use Wexample\SymfonyHelpers\Interface\HeadMetaProviderInterface;
+use Wexample\SymfonyHelpers\Interface\HeadStructuredDataProviderInterface;
 use Wexample\SymfonyHelpers\Twig\AbstractExtension;
 use Wexample\SymfonyTranslations\Exception\MissingTranslationException;
 use Wexample\SymfonyTranslations\Translation\Translator;
@@ -20,6 +21,7 @@ class BaseTemplateExtension extends AbstractExtension
     /**
      * @param iterable<HeadMetaProviderInterface> $headMetaProviders
      * @param iterable<HeadLinkProviderInterface> $headLinkProviders
+     * @param iterable<HeadStructuredDataProviderInterface> $headStructuredDataProviders
      */
     public function __construct(
         protected Translator $translator,
@@ -28,6 +30,8 @@ class BaseTemplateExtension extends AbstractExtension
         private readonly iterable $headMetaProviders = [],
         #[AutowireIterator(HeadLinkProviderInterface::TAG)]
         private readonly iterable $headLinkProviders = [],
+        #[AutowireIterator(HeadStructuredDataProviderInterface::TAG)]
+        private readonly iterable $headStructuredDataProviders = [],
     ) {
     }
 
@@ -46,6 +50,16 @@ class BaseTemplateExtension extends AbstractExtension
                 [
                     $this,
                     'baseTemplateRenderMeta',
+                ],
+                [
+                    'is_safe' => ['html'],
+                ]
+            ),
+            new TwigFunction(
+                'base_template_render_head_structured_data',
+                [
+                    $this,
+                    'baseTemplateRenderHeadStructuredData',
                 ],
                 [
                     'is_safe' => ['html'],
@@ -186,6 +200,35 @@ class BaseTemplateExtension extends AbstractExtension
         foreach ($this->headMetaProviders as $provider) {
             foreach ($provider->getHeadMeta($document) as $attributes) {
                 $fragments[] = $this->renderHeadTag('meta', $attributes);
+            }
+        }
+
+        return implode("\n", $fragments);
+    }
+
+    /**
+     * What the installed bundles tell the search engines of the page, each
+     * object a JSON-LD block. Data and not a script: nothing runs it, so no
+     * nonce, but a `</script>` inside a value must not close it, hence the hex.
+     */
+    public function baseTemplateRenderHeadStructuredData(
+        string $title,
+        ?string $description = null,
+        ?string $url = null,
+    ): string {
+        $document = [
+            'title' => $title,
+            'description' => $description ?: $this->translateOptional(self::DEFAULT_APP_DESCRIPTION_TRANSLATION_KEY),
+            'url' => $url ?: null,
+        ];
+        $fragments = [];
+
+        foreach ($this->headStructuredDataProviders as $provider) {
+            foreach ($provider->getHeadStructuredData($document) as $object) {
+                $fragments[] = '<script type="application/ld+json">' . json_encode(
+                    $object,
+                    \JSON_UNESCAPED_SLASHES | \JSON_UNESCAPED_UNICODE | \JSON_HEX_TAG | \JSON_THROW_ON_ERROR
+                ) . '</script>';
             }
         }
 
