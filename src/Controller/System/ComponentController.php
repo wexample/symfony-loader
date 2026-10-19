@@ -38,6 +38,16 @@ class ComponentController extends AbstractLoaderController
             );
         }
 
+        // A component is named, never reached by walking the tree: a path
+        // climbing out of it is refused here rather than by the template
+        // loader, which would answer it with an error.
+        if (str_contains($path, '..')) {
+            return new JsonResponse(
+                ['ok' => false, 'error' => 'Invalid path parameter'],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
         $props = $request->query->all('props');
 
         $renderPass = $this->adaptiveRendererService->createRenderPass('_system/component/render');
