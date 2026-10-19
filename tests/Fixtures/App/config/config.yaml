@@ -19,6 +19,9 @@ services:
 
   Wexample\SymfonyLoader\Tests\Fixtures\App\Controller\TestLoaderController: ~
 
+  Wexample\SymfonyLoader\Interface\UsageChoiceReaderInterface:
+    class: Wexample\SymfonyLoader\Tests\Fixtures\App\Service\SessionUsageChoiceReader
+
   Wexample\SymfonyHelpers\Service\Entity\EntityNeutralService:
     autowire: false
     arguments:
