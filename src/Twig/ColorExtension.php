@@ -7,7 +7,7 @@ use Twig\TwigFunction;
 
 class ColorExtension extends AbstractExtension
 {
-    private array $colors;
+    private readonly array $colors;
 
     public function __construct(array $colors)
     {

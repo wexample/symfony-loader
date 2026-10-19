@@ -7,13 +7,16 @@ use Wexample\SymfonyLoader\Interface\DevelopTabInterface;
 class DevelopToolbarRegistryService
 {
     /** @var DevelopTabInterface[] */
-    private array $tabs = [];
+    private readonly array $tabs;
 
     public function __construct(iterable $tabs = [])
     {
+        $registered = [];
         foreach ($tabs as $tab) {
-            $this->tabs[] = $tab;
+            $registered[] = $tab;
         }
+
+        $this->tabs = $registered;
     }
 
     public function toArray(): array
