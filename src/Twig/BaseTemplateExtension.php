@@ -149,10 +149,10 @@ class BaseTemplateExtension extends AbstractExtension
                 'description' => $this->translateOptional(self::DEFAULT_APP_DESCRIPTION_TRANSLATION_KEY),
             ] + $defaults;
 
-        $values = array_filter(
-            array_merge($resolvedDefaults, $meta),
-            static fn ($value): bool => null !== $value && '' !== trim((string) $value)
-        );
+        $isSet = static fn ($value): bool => null !== $value && '' !== trim((string) $value);
+        // A key the page leaves empty keeps its default: the base template
+        // passes `description` whether the page set one or not.
+        $values = array_filter(array_merge($resolvedDefaults, array_filter($meta, $isSet)), $isSet);
 
         $fragments = [];
 
