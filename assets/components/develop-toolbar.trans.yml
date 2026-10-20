@@ -14,7 +14,7 @@ ar:
   close: اغلاق
   symfony: 'ملف تعريف Symfony'
   tab:
-    assets: الأصول
+    assets: 'الموارد'
     ssr: SSR
     responsive: متجاوب
     usages: الاستخدامات
@@ -50,9 +50,9 @@ es:
   close: Cerrar
   symfony: 'Profiler de Symfony'
   tab:
-    assets: Activos
+    assets: 'Recursos'
     ssr: SSR
-    responsive: Responsivo
+    responsive: 'Adaptable'
     usages: Usos
     nodes: Nodos
     routes: Rutas
@@ -62,7 +62,7 @@ fa:
   close: بستن
   symfony: 'پروفایلر Symfony'
   tab:
-    assets: دارایی‌ها
+    assets: 'منابع'
     ssr: SSR
     responsive: واکنش‌گرا
     usages: استفاده‌ها
@@ -76,7 +76,7 @@ fi:
   tab:
     assets: Resurssit
     ssr: SSR
-    responsive: Responsiivinen
+    responsive: 'Responsiivisuus'
     usages: Käytöt
     nodes: Solmut
     routes: Reitit
@@ -86,9 +86,9 @@ fr:
   close: Fermer
   symfony: 'Profiler Symfony'
   tab:
-    assets: Actifs
+    assets: 'Ressources'
     ssr: SSR
-    responsive: Réactif
+    responsive: 'Responsive'
     usages: Usages
     nodes: Nœuds
     routes: Routes
@@ -98,7 +98,7 @@ he:
   close: סגור
   symfony: 'פרופילר של סימפוני'
   tab:
-    assets: נכסים
+    assets: 'משאבים'
     ssr: SSR
     responsive: רספונסיבי
     usages: שימושים
@@ -112,7 +112,7 @@ hi:
   tab:
     assets: संसाधन
     ssr: SSR
-    responsive: उत्तरदायी
+    responsive: 'रिस्पॉन्सिव'
     usages: उपयोग
     nodes: नोड्स
     routes: मार्ग
@@ -158,7 +158,7 @@ ko:
   close: 닫기
   symfony: 'Symfony 프로파일러'
   tab:
-    assets: 자산
+    assets: '에셋'
     ssr: SSR
     responsive: 반응형
     usages: 사용량
@@ -172,7 +172,7 @@ nl:
   tab:
     assets: Middelen
     ssr: SSR
-    responsive: Responsief
+    responsive: 'Responsive'
     usages: Gebruik
     nodes: Knooppunten
     routes: Routes
@@ -184,7 +184,7 @@ pl:
   tab:
     assets: Zasoby
     ssr: SSR
-    responsive: Responsywny
+    responsive: 'Responsywność'
     usages: Użycia
     nodes: Węzły
     routes: Trasy
@@ -194,7 +194,7 @@ pt_BR:
   close: Fechar
   symfony: 'Profiler Symfony'
   tab:
-    assets: Ativos
+    assets: 'Recursos'
     ssr: SSR
     responsive: Responsivo
     usages: Usos
@@ -206,9 +206,9 @@ ru:
   close: Закрыть
   symfony: 'Профайлер Symfony'
   tab:
-    assets: Активы
+    assets: 'Ресурсы'
     ssr: SSR
-    responsive: Адаптивный
+    responsive: 'Адаптивность'
     usages: Использования
     nodes: Узлы
     routes: Маршруты
@@ -230,9 +230,9 @@ tr:
   close: Kapat
   symfony: 'Symfony profili'
   tab:
-    assets: Varlıklar
+    assets: 'Kaynaklar'
     ssr: SSR
-    responsive: Duyarlı
+    responsive: 'Duyarlı tasarım'
     usages: Kullanımlar
     nodes: Düğümler
     routes: Yollar
@@ -242,9 +242,9 @@ ur:
   close: 'بند کریں'
   symfony: 'Symfony پروفائلر'
   tab:
-    assets: اثاثے
+    assets: 'وسائل'
     ssr: SSR
-    responsive: جوابدہ
+    responsive: 'ریسپانسیو'
     usages: استعمالات
     nodes: نوڈز
     routes: راستے
@@ -254,9 +254,9 @@ vi:
   close: Đóng
   symfony: 'Profiler Symfony'
   tab:
-    assets: 'Tài sản'
+    assets: 'Tài nguyên'
     ssr: SSR
-    responsive: 'Phản hồi'
+    responsive: 'Responsive'
     usages: 'Sử dụng'
     nodes: Nút
     routes: 'Đường dẫn'

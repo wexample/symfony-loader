@@ -451,7 +451,7 @@ fr:
       connection_online:
         message: 'Connexion Internet rétablie.'
       live_update_reconnecting:
-        message: 'Connexion en direct perdue. Reconnection...'
+        message: 'Connexion en direct perdue. Reconnexion…'
       live_update_reconnected:
         message: 'Connexion rétablie.'
       pending_writes_saving:
