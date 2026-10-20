@@ -1,6 +1,6 @@
 # symfony_loader
 
-Version: 23.3.0
+Version: 24.0.0
 
 `symfony-loader` is a Symfony bundle that replaces the standard `render()` call with `adaptiveRender()`, routing each request through a `RenderPass` that selects between a full HTML response and a JSON envelope depending on whether the request is XHR. Controllers extending `AbstractLoaderController` inherit this pipeline, which also collects and injects Webpack Encore assets — CSS variants for color scheme, responsive breakpoints, density, skin, fonts, and animations — at the end of every HTML response. It targets Symfony developers who need a single rendering path that handles both initial page loads and dynamic partial updates without duplicating controller logic.
 
@@ -15,7 +15,7 @@ Each page names itself in its own translation file, beside what the application 
 
 `page_title` also labels the page in the menu, beside its neighbours; `document_title` is what it is called alone, in a search result or a tab — `Data` in the menu, `Tables, file explorers and live lists — Design system` in the head.
 
-A template may still set the `document_title` or `document_meta_description` variable itself, which wins over both. Without `page_description`, every page of a site shares one description, which a search engine then ignores.
+A template may still set the `document_title` or `document_meta_description` variable itself, which wins over both. Without `page_description`, every page of a site shares one description, which a search engine then ignores. A page about an entity names it in `document_subject`, which symfony-seo describes in schema.org's words.
 
 ## Table of Contents
 
@@ -182,8 +182,8 @@ The suite includes packages for configuration management, file handling, prompts
 - wexample/php-date: >=2.1.0
 - wexample/php-html: >=0.1.6
 - wexample/symfony-dev: >=6.0.0
-- wexample/symfony-helpers: >=17.0.0
-- wexample/symfony-translations: >=15.0.0
+- wexample/symfony-helpers: >=18.0.0
+- wexample/symfony-translations: >=16.0.0
 - friendsofsymfony/jsrouting-bundle: ^3.2.1
 - symfony/webpack-encore-bundle: ^2.0.1
 - fortawesome/font-awesome: ^6.7
