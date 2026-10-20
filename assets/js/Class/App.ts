@@ -99,14 +99,25 @@ class App extends AsyncConstructor {
       readyCallback && (await readyCallback());
     };
 
-    let readyState = doc.readyState;
+    // Parsed is not enough: the page's scripts are deferred, and they run while
+    // the document already says `interactive` — this one first, the classes of
+    // the components after it, between which the browser may run anything. So
+    // the app waits for DOMContentLoaded, which comes once they have all run;
+    // `load`, for a script added after it, when the document no longer emits
+    // it. Already complete, nothing is left to wait for.
+    let started = false;
+    const start = () => {
+      if (!started) {
+        started = true;
+        this.async(run);
+      }
+    };
 
-    // Document has been parsed.
-    // Allows running after loaded event.
-    if (['complete', 'loaded', 'interactive'].indexOf(readyState) !== -1) {
-      this.async(run);
+    if (doc.readyState === 'complete') {
+      start();
     } else {
-      doc.addEventListener('DOMContentLoaded', run);
+      doc.addEventListener('DOMContentLoaded', start, { once: true });
+      window.addEventListener('load', start, { once: true });
     }
   }
 
