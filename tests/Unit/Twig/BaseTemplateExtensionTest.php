@@ -66,4 +66,25 @@ class BaseTemplateExtensionTest extends TestCase
             $extension->baseTemplateRenderMeta(['description' => 'Given'])
         );
     }
+
+    public function testThePageDocumentTitleComesBeforeItsMenuTitle(): void
+    {
+        $extension = $this->extension([
+            BaseTemplateExtension::DEFAULT_LAYOUT_TITLE_TRANSLATION_KEY => 'Data',
+            BaseTemplateExtension::DEFAULT_DOCUMENT_TITLE_TRANSLATION_KEY => 'Tables and lists',
+            BaseTemplateExtension::DEFAULT_APP_TITLE_TRANSLATION_KEY => 'The app',
+        ]);
+
+        $this->assertSame('Tables and lists | The app', $extension->baseTemplateRenderTitle());
+    }
+
+    public function testWithoutADocumentTitleThePageTitleIsUsed(): void
+    {
+        $extension = $this->extension([
+            BaseTemplateExtension::DEFAULT_LAYOUT_TITLE_TRANSLATION_KEY => 'Data',
+            BaseTemplateExtension::DEFAULT_APP_TITLE_TRANSLATION_KEY => 'The app',
+        ]);
+
+        $this->assertSame('Data | The app', $extension->baseTemplateRenderTitle());
+    }
 }

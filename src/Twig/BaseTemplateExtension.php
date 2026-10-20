@@ -15,6 +15,7 @@ use Wexample\SymfonyTranslations\Translation\Translator;
 class BaseTemplateExtension extends AbstractExtension
 {
     final public const DEFAULT_LAYOUT_TITLE_TRANSLATION_KEY = '@page::page_title';
+    final public const DEFAULT_DOCUMENT_TITLE_TRANSLATION_KEY = '@page::document_title';
     final public const DEFAULT_APP_TITLE_TRANSLATION_KEY = 'front.app.global::name';
     final public const DEFAULT_PAGE_DESCRIPTION_TRANSLATION_KEY = '@page::page_description';
     final public const DEFAULT_APP_DESCRIPTION_TRANSLATION_KEY = 'front.app.global::meta.description';
@@ -107,10 +108,11 @@ class BaseTemplateExtension extends AbstractExtension
             return $documentTitle;
         }
 
-        $resolvedLayoutTitle = $layoutTitle ?: $this->translateOptional(
-            self::DEFAULT_LAYOUT_TITLE_TRANSLATION_KEY,
-            $layoutTitleParameters
-        );
+        // What the page is called outside the menu — a search result, a tab —
+        // where its menu label alone, among its neighbours, would say little.
+        $resolvedLayoutTitle = $layoutTitle
+            ?: $this->translateOptional(self::DEFAULT_DOCUMENT_TITLE_TRANSLATION_KEY, $layoutTitleParameters)
+            ?? $this->translateOptional(self::DEFAULT_LAYOUT_TITLE_TRANSLATION_KEY, $layoutTitleParameters);
 
         $resolvedAppTitle = $appTitle ?: $this->translateOptional(
             self::DEFAULT_APP_TITLE_TRANSLATION_KEY,

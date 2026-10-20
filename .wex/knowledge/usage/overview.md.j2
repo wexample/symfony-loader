@@ -6,7 +6,9 @@ Each page names itself in its own translation file, beside what the application 
 
 | Head | Page key | Application key |
 |---|---|---|
-| `<title>` | `page_title` | `front.app.global::name`, appended after a ` \| ` |
+| `<title>` | `document_title`, else `page_title` | `front.app.global::name`, appended after a ` \| ` |
 | `<meta name="description">`, `og:description` | `page_description` | `front.app.global::meta.description`, in its place when the page has none |
 
-A template may still set `document_title` or `document_meta_description` itself, which wins over both. Without `page_description`, every page of a site shares one description, which a search engine then ignores.
+`page_title` also labels the page in the menu, beside its neighbours; `document_title` is what it is called alone, in a search result or a tab — `Data` in the menu, `Tables, file explorers and live lists — Design system` in the head.
+
+A template may still set the `document_title` or `document_meta_description` variable itself, which wins over both. Without `page_description`, every page of a site shares one description, which a search engine then ignores.
