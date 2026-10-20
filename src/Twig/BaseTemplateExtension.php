@@ -16,6 +16,7 @@ class BaseTemplateExtension extends AbstractExtension
 {
     final public const DEFAULT_LAYOUT_TITLE_TRANSLATION_KEY = '@page::page_title';
     final public const DEFAULT_APP_TITLE_TRANSLATION_KEY = 'front.app.global::name';
+    final public const DEFAULT_PAGE_DESCRIPTION_TRANSLATION_KEY = '@page::page_description';
     final public const DEFAULT_APP_DESCRIPTION_TRANSLATION_KEY = 'front.app.global::meta.description';
 
     /**
@@ -150,6 +151,22 @@ class BaseTemplateExtension extends AbstractExtension
     }
 
     /**
+     * What the page says of itself, as `page_title` names it: the one it was
+     * given, else the `page_description` of its own translations, else the
+     * application's. Without the middle step every page of a site shares one
+     * description, which a search engine then ignores.
+     */
+    private function resolveDescription(?string $description = null): ?string
+    {
+        if (null !== $description && '' !== trim($description)) {
+            return $description;
+        }
+
+        return $this->translateOptional(self::DEFAULT_PAGE_DESCRIPTION_TRANSLATION_KEY)
+            ?? $this->translateOptional(self::DEFAULT_APP_DESCRIPTION_TRANSLATION_KEY);
+    }
+
+    /**
      * Render meta tags from a provided map, with sensible defaults for common keys.
      *
      * @param array<string, string|null> $meta
@@ -160,7 +177,7 @@ class BaseTemplateExtension extends AbstractExtension
         array $defaults = [],
     ): string {
         $resolvedDefaults = [
-                'description' => $this->translateOptional(self::DEFAULT_APP_DESCRIPTION_TRANSLATION_KEY),
+                'description' => $this->resolveDescription(),
             ] + $defaults;
 
         $isSet = static fn ($value): bool => null !== $value && '' !== trim((string) $value);
@@ -192,7 +209,7 @@ class BaseTemplateExtension extends AbstractExtension
     ): string {
         $document = [
             'title' => $title,
-            'description' => $description ?: $this->translateOptional(self::DEFAULT_APP_DESCRIPTION_TRANSLATION_KEY),
+            'description' => $this->resolveDescription($description),
             'url' => $url ?: null,
         ];
         $fragments = [];
@@ -218,7 +235,7 @@ class BaseTemplateExtension extends AbstractExtension
     ): string {
         $document = [
             'title' => $title,
-            'description' => $description ?: $this->translateOptional(self::DEFAULT_APP_DESCRIPTION_TRANSLATION_KEY),
+            'description' => $this->resolveDescription($description),
             'url' => $url ?: null,
         ];
         $fragments = [];
