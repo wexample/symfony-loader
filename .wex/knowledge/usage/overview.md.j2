@@ -11,4 +11,4 @@ Each page names itself in its own translation file, beside what the application 
 
 `page_title` also labels the page in the menu, beside its neighbours; `document_title` is what it is called alone, in a search result or a tab — `Data` in the menu, `Tables, file explorers and live lists — Design system` in the head.
 
-A template may still set the `document_title` or `document_meta_description` variable itself, which wins over both. Without `page_description`, every page of a site shares one description, which a search engine then ignores.
+A template may still set the `document_title` or `document_meta_description` variable itself, which wins over both. Without `page_description`, every page of a site shares one description, which a search engine then ignores. A page about an entity names it in `document_subject`, which symfony-seo describes in schema.org's words.

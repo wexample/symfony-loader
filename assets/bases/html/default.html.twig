@@ -87,7 +87,7 @@
             {#- What the installed bundles add: symfony-seo's Open Graph card… -#}
             {{- base_template_render_head_meta(document_title_resolved, document_meta_description|default(null), canonical_href) -}}
             {#- …and what they tell the search engines in schema.org's words. -#}
-            {{- base_template_render_head_structured_data(document_title_resolved, document_meta_description|default(null), canonical_href) -}}
+            {{- base_template_render_head_structured_data(document_title_resolved, document_meta_description|default(null), canonical_href, document_subject|default(null)) -}}
         {%- endblock -%}
     </head>
     <body class="{% for usage_name, usage_value in render_pass.usages %}{% if usage_value %}usage-{{ usage_name|replace({'_': '-'}) }}-{{ usage_value }} {% endif %}{% endfor %}{{ body_class|default('') }}">

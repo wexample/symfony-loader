@@ -234,11 +234,14 @@ class BaseTemplateExtension extends AbstractExtension
         string $title,
         ?string $description = null,
         ?string $url = null,
+        ?object $subject = null,
     ): string {
         $document = [
             'title' => $title,
             'description' => $this->resolveDescription($description),
             'url' => $url ?: null,
+            // The entity the page is about, as its template set `document_subject`.
+            'subject' => $subject,
         ];
         $fragments = [];
 
