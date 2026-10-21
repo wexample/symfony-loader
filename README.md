@@ -1,6 +1,6 @@
 # symfony_loader
 
-Version: 24.0.1
+Version: 25.0.0
 
 `symfony-loader` is a Symfony bundle that replaces the standard `render()` call with `adaptiveRender()`, routing each request through a `RenderPass` that selects between a full HTML response and a JSON envelope depending on whether the request is XHR. Controllers extending `AbstractLoaderController` inherit this pipeline, which also collects and injects Webpack Encore assets — CSS variants for color scheme, responsive breakpoints, density, skin, fonts, and animations — at the end of every HTML response. It targets Symfony developers who need a single rendering path that handles both initial page loads and dynamic partial updates without duplicating controller logic.
 
@@ -99,6 +99,8 @@ The bundle prepends `framework.error_controller` in src/DependencyInjection/Wexa
 The controller renders through `adaptiveRender()` like any page: a browser gets a whole document with the stylesheets of the page, an XHR gets the render envelope, whose `responseType` stays `render` — which is what tells the front-end to show the page rather than report a request that failed (`AdaptiveService::isRenderedResponse()`).
 
 src/Helper/ErrorPageHelper.php names the templates, tried in that order: `@front/pages/system/error<code>`, `@front/pages/system/error`, then the bundle's two. The bundle's generic `error.html.twig` carries the wording of 401, 403, 404 and 500 in its own `.trans.yml`, and falls back to a generic sentence for any other status, so an unnamed code still reads as a page. An application says something else about a code by dropping an `error<code>.html.twig` in its front path, or draws the page in its own layout by overriding `error.html.twig`.
+
+Opened as a whole document, the bundle's page would stand in the bundle's own layout, whose assets no application builds: it would come without a stylesheet. So when no template of the application answers, the controller renders the self-contained fallback page (`FallbackPageHelper::TEMPLATE`, the one shown while the interface builds) instead, worded from that same `.trans.yml` in the request's language, with its way back to `/`. Fetched by a page already open — an XHR —, the bundle's page is still rendered as the envelope, drawn in that page's layout.
 
 A debug kernel still answers a real exception with the exception: the controller hands over to `error_renderer` when `kernel.debug` is set and the request does not say `showException: false`, the same rule Symfony's own Twig renderer applies. `/_error/{code}`, which sets that attribute, therefore shows the page in development too.
 
