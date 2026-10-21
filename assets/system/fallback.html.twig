@@ -18,9 +18,11 @@
     holding the port during a start and the application taking it, there is a
     moment with nobody at all. -#}
 {%- set status_code = status_code|default(null) -%}
+{#- An error rendered live comes worded in the visitor's language (`lang`),
+    with its way out (`exit`: href, label). -#}
 {%- set poll = poll|default(null) -%}
 <!doctype html>
-<html lang="en">
+<html lang="{{ lang|default('en') }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -101,6 +103,14 @@
             line-height: 1.5;
         }
 
+        .fallback--exit {
+            margin: 0;
+        }
+
+        .fallback--exit a {
+            color: var(--accent);
+        }
+
         .fallback--hint {
             margin: 0;
             color: var(--muted);
@@ -165,6 +175,9 @@
     {%- endif %}
     <h1 class="fallback--title">{{ title }}</h1>
     <p class="fallback--message">{{ message }}</p>
+    {%- if exit|default(null) %}
+    <p class="fallback--exit"><a href="{{ exit.href }}">{{ exit.label }}</a></p>
+    {%- endif %}
     {%- if hint|default(null) %}
     <p class="fallback--hint">{{ hint }}</p>
     {%- endif %}

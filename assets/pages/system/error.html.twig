@@ -7,7 +7,7 @@
 
 {#- The codes an internal tool answers in so many words. Any other status
     keeps the generic wording, so a 418 is still a readable page. -#}
-{%- set error_key = status_code in [401, 403, 404, 500] ? status_code : 'default' -%}
+{%- set error_key = status_code in constant('Wexample\\SymfonyLoader\\Helper\\ErrorPageHelper::WORDED_CODES') ? status_code : 'default' -%}
 {%- set error_domain = '@page::code.' ~ error_key -%}
 {%- set page_title = (error_domain ~ '.title') | trans -%}
 

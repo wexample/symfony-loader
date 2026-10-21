@@ -27,22 +27,24 @@ class ErrorPageTest extends WebTestCase
 
         $this->assertResponseStatusCodeSame(404);
         $this->assertResponseHeaderSame('Content-Type', 'text/html; charset=UTF-8');
-        $this->assertStringContainsString('<!DOCTYPE html>', $html);
+        $this->assertStringContainsStringIgnoringCase('<!DOCTYPE html>', $html);
         $this->assertStringContainsString('<title>This page does not exist</title>', $html);
-        $this->assertStringContainsString('<p class="system-error--code">404</p>', $html);
+        $this->assertStringContainsString('<div class="fallback--code">404</div>', $html);
+        $this->assertStringContainsString('<a href="/">Back to the home page</a>', $html);
     }
 
     /**
-     * The regression this page was unusable for: assets were skipped on any
-     * error status, so the document kept the placeholder the stylesheets are
-     * written into and arrived with none of them.
+     * The regression this page was unusable for: the bundle's page stands in a
+     * layout no application builds, so the document kept the placeholder the
+     * stylesheets are written into and arrived with none of them. Without a
+     * page of the application's own, it is the one that needs no asset.
      */
-    public function testAnErrorPageIsServedItsAssets(): void
+    public function testAnErrorPageNeedsNoAsset(): void
     {
         $html = $this->requestPage('/_error/500');
 
         $this->assertResponseStatusCodeSame(500);
-        $this->assertStringContainsString('<p class="system-error--code">500</p>', $html);
+        $this->assertStringContainsString('<div class="fallback--code">500</div>', $html);
         $this->assertStringNotContainsString(
             RenderingHelper::PLACEHOLDER_PRELOAD_TAG,
             $html
@@ -70,7 +72,7 @@ class ErrorPageTest extends WebTestCase
         $html = $this->requestPage('/_error/418');
 
         $this->assertStringContainsString('This page cannot be shown', $html);
-        $this->assertStringContainsString('<p class="system-error--code">418</p>', $html);
+        $this->assertStringContainsString('<div class="fallback--code">418</div>', $html);
     }
 
     /**

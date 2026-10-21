@@ -7,12 +7,15 @@ use Symfony\Component\ErrorHandler\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 use Twig\Environment;
+use Wexample\SymfonyHelpers\Helper\BundleHelper;
 use Wexample\SymfonyLoader\Controller\AbstractLoaderController;
 use Wexample\SymfonyLoader\Helper\ErrorPageHelper;
 use Wexample\SymfonyLoader\Helper\FallbackPageHelper;
 use Wexample\SymfonyLoader\Service\AdaptiveRendererService;
+use Wexample\SymfonyTranslations\Translation\Translator;
 
 /**
  * The page an error is answered with, rendered through the loader like any
@@ -31,6 +34,7 @@ class ErrorController extends AbstractLoaderController
         private readonly ErrorRendererInterface $errorRenderer,
         private readonly Environment $twig,
         private readonly KernelInterface $kernel,
+        private readonly TranslatorInterface $translator,
     ) {
         parent::__construct($adaptiveRendererService);
     }
@@ -50,10 +54,24 @@ class ErrorController extends AbstractLoaderController
         }
 
         $statusCode = $flatten->getStatusCode();
+        $view = $this->resolveView($statusCode);
+
+        // The bundle's page stands in a layout of the bundle, which no
+        // application builds the assets of: opened as a whole document, it
+        // would come without a stylesheet. The page that needs none says the
+        // same instead, in the visitor's language. Fetched by a page already
+        // open, it is drawn in that page's layout, styled.
+        if (ErrorPageHelper::isBundleView($view) && ! $this->createRenderPass($view)->isJsonRequest()) {
+            return new Response(
+                $this->twig->render(FallbackPageHelper::TEMPLATE, $this->translateError($statusCode, $view, $request)),
+                $statusCode,
+                $flatten->getHeaders()
+            );
+        }
 
         try {
             return $this->adaptiveRender(
-                $this->resolveView($statusCode),
+                $view,
                 [
                     'status_code' => $statusCode,
                     'status_text' => $flatten->getStatusText(),
@@ -72,6 +90,27 @@ class ErrorController extends AbstractLoaderController
                 $flatten->getHeaders()
             );
         }
+    }
+
+    /**
+     * The fallback page's error, worded as the bundle's page words it, in
+     * the request's language, with its way out.
+     *
+     * @return array<string, mixed>
+     */
+    private function translateError(int $statusCode, string $view, Request $request): array
+    {
+        $domain = Translator::buildDomainFromTemplatePath(substr($view, strlen(BundleHelper::ALIAS_PREFIX)));
+        $key = in_array($statusCode, ErrorPageHelper::WORDED_CODES, true) ? (string) $statusCode : 'default';
+        $locale = $request->getLocale();
+
+        return [
+            'status_code' => $statusCode,
+            'title' => $this->translator->trans('code.'.$key.'.title', [], $domain, $locale),
+            'message' => $this->translator->trans('code.'.$key.'.message', [], $domain, $locale),
+            'exit' => ['href' => '/', 'label' => $this->translator->trans('exit', [], $domain, $locale)],
+            'lang' => $locale,
+        ];
     }
 
     /**

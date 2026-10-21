@@ -20,6 +20,9 @@ class ErrorPageHelper
 
     final public const VIEW_RENDER_FAILURE = 'render-failure';
 
+    /** The statuses the bundle's page words in so many words; any other is `default`. */
+    final public const array WORDED_CODES = [401, 403, 404, 500];
+
     /**
      * The templates that may answer a status, most specific first: the
      * application's page for the code, its generic page, then the bundle's.
@@ -43,6 +46,19 @@ class ErrorPageHelper
     public static function renderFailureView(): string
     {
         return self::bundleView(self::VIEW_RENDER_FAILURE);
+    }
+
+    /**
+     * Whether the template is one of the bundle's error pages, an
+     * application having none of its own.
+     */
+    public static function isBundleView(string $view): bool
+    {
+        // `error.html.twig` and `error<code>.html.twig` alike.
+        return str_starts_with(
+            $view,
+            substr(self::bundleView(), 0, -strlen(TemplateHelper::TEMPLATE_FILE_EXTENSION))
+        );
     }
 
     public static function bundleView(string $name = self::VIEW_ERROR): string

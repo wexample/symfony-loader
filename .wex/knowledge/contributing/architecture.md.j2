@@ -70,6 +70,8 @@ The controller renders through `adaptiveRender()` like any page: a browser gets 
 
 {{ path("src/Helper/ErrorPageHelper.php") }} names the templates, tried in that order: `@front/pages/system/error<code>`, `@front/pages/system/error`, then the bundle's two. The bundle's generic `error.html.twig` carries the wording of 401, 403, 404 and 500 in its own `.trans.yml`, and falls back to a generic sentence for any other status, so an unnamed code still reads as a page. An application says something else about a code by dropping an `error<code>.html.twig` in its front path, or draws the page in its own layout by overriding `error.html.twig`.
 
+Opened as a whole document, the bundle's page would stand in the bundle's own layout, whose assets no application builds: it would come without a stylesheet. So when no template of the application answers, the controller renders the self-contained fallback page (`FallbackPageHelper::TEMPLATE`, the one shown while the interface builds) instead, worded from that same `.trans.yml` in the request's language, with its way back to `/`. Fetched by a page already open — an XHR —, the bundle's page is still rendered as the envelope, drawn in that page's layout.
+
 A debug kernel still answers a real exception with the exception: the controller hands over to `error_renderer` when `kernel.debug` is set and the request does not say `showException: false`, the same rule Symfony's own Twig renderer applies. `/_error/{code}`, which sets that attribute, therefore shows the page in development too.
 
 ### Layout and page initialisation
