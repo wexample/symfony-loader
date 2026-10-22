@@ -1,223 +1,109 @@
 # symfony_loader
 
-Version: 25.0.0
+Version: 25.0.1
 
-`symfony-loader` is a Symfony bundle that replaces the standard `render()` call with `adaptiveRender()`, routing each request through a `RenderPass` that selects between a full HTML response and a JSON envelope depending on whether the request is XHR. Controllers extending `AbstractLoaderController` inherit this pipeline, which also collects and injects Webpack Encore assets — CSS variants for color scheme, responsive breakpoints, density, skin, fonts, and animations — at the end of every HTML response. It targets Symfony developers who need a single rendering path that handles both initial page loads and dynamic partial updates without duplicating controller logic.
-
-## What a page says of itself in the head
-
-Each page names itself in its own translation file, beside what the application says of itself:
-
-| Head | Page key | Application key |
-|---|---|---|
-| `<title>` | `document_title`, else `page_title` | `front.app.global::name`, appended after a ` \| ` |
-| `<meta name="description">`, `og:description` | `page_description` | `front.app.global::meta.description`, in its place when the page has none |
-
-`page_title` also labels the page in the menu, beside its neighbours; `document_title` is what it is called alone, in a search result or a tab — `Data` in the menu, `Tables, file explorers and live lists — Design system` in the head.
-
-A template may still set the `document_title` or `document_meta_description` variable itself, which wins over both. Without `page_description`, every page of a site shares one description, which a search engine then ignores. A page about an entity names it in `document_subject`, which symfony-seo describes in schema.org's words.
+A dynamic rendering system for Symfony
 
 ## Table of Contents
 
-- [What a page says of itself in the head](#what-a-page-says-of-itself-in-the-head)
-- [Architecture](#architecture)
-- [Integration in the Suite](#integration-in-the-suite)
-- [Dependencies](#dependencies)
-- [Versioning & Compatibility Policy](#versioning--compatibility-policy)
-- [License](#license)
-- [About us](#about-us)
-- [Migration Notes](#migration-notes)
+- [Installation](#installation)
+- [Introduction](#introduction)
 
-## Architecture
+## Installation
 
-The bundle is a dynamic rendering system layered on top of Symfony and Twig. Every HTTP response—whether a full HTML page or an AJAX JSON payload—travels through the same pipeline: request classification, render-pass construction, Twig rendering with a shared context object, asset detection, and final serialisation. The sections below describe each layer in the order a call passes through them.
+### JS helpers resolution
 
-### Bundle and dependency injection
+The webpack helper (`src/Resources/js/webpack/encore.manifest.js`) expects `@wexample/js-helpers` to be installed in the app.
 
-src/WexampleSymfonyLoaderBundle.php implements `LoaderBundleInterface` and registers `LoaderTemplatesCompilerPass` on `build()`. Any bundle that implements `LoaderBundleInterface` and returns paths from `getLoaderFrontPaths()` is picked up automatically.
+For local dev containers, use `link:` in `package.json`:
 
-src/DependencyInjection/WexampleSymfonyLoaderExtension.php runs at container compilation time. It walks `kernel.bundles`, collects the front-asset paths each `LoaderBundleInterface` bundle declares, and stores them as the `loader_packages_front_paths` container parameter. It also merges usage configuration (color schemes, responsive breakpoints, density, skin, animations, fonts) into per-name `loader.usages.*` parameters, and records all front-asset directories as `translations_paths` so the translations subsystem can find them.
+```json
+{
+  "devDependencies": {
+    "@wexample/js-helpers": "link:/var/www/javascript-dev/wexample/js-helpers"
+  }
+}
+```
 
-src/DependencyInjection/Compiler/LoaderTemplatesCompilerPass.php turns those collected paths into Twig namespace registrations by calling `addPath()` on `twig.loader.native_filesystem`, once per alias per bundle. This is what makes `@WexampleSymfonyLoaderBundle/…` and bundle-specific aliases resolvable in templates.
+### Local JS packages (dev only)
 
-### Request classification
+To use local JS packages in development, configure them in `config/packages/wexample_symfony_dev.yaml`:
 
-src/EventSubscriber/AdaptiveResponseRequestSubscriber.php listens on `KernelEvents::REQUEST` at priority 100. It calls src/Service/AdaptiveResponseService.php`::initializeRequestAttributes()`, which stamps two attributes onto the request object:
+```yaml
+wexample_symfony_dev:
+    js_dev_packages:
+        - '/var/www/javascript-dev/wexample/*'
+```
 
-- `_adaptive_output_type` — `html` for a normal browser request, `json` for an `XMLHttpRequest`. A `__format` query parameter can override the detection.
-- `_adaptive_layout_base` — `default` for HTML, or the value of `__layout` (constrained to `default`, `modal`, `panel`, `overlay`, `page`) for JSON.
+The glob `*` scans all subdirectories containing a `package.json` and automatically:
+- Adds webpack aliases via `Encore.addAliases()`
+- Adds TypeScript paths in `tsconfig.json`
 
-src/Helper/AdaptiveRequestHelper.php exposes static readers for both attributes and is the single place that knows their string names.
+### Assets shipped by a PHP package
 
-### RenderPass
+The `assets/` directory of this package, and of every bundle built on it, is also an npm package (`@wexample/symfony-loader`, `@wexample/symfony-design-system`…). Declare those as `link:` in the app's `package.json`, never `file:`:
 
-src/Rendering/RenderPass.php is a per-request value object. Controllers and Twig extensions share it as the single source of truth for what is being rendered. It holds:
+```json
+"@wexample/symfony-loader": "link:vendor/wexample/symfony-loader/assets"
+```
 
-- `outputType` (`html` or `json`) and `layoutBase` (`default`, `modal`, …) copied from the request.
-- `usagesConfig` — the full list of allowed values for each usage dimension (color scheme, responsive tier, density, skin, animations, fonts), loaded from container parameters.
-- `usages` — the *active* value for each dimension, initialised from config defaults then optionally overridden by session-saved UI state.
-- A `registry` map, keyed by context type (`layout`, `page`, `component`, `vue`) and view name, that accumulates every render node created during the pass.
-- A `contextRenderNodeStack` that tracks which render node is currently being rendered.
-- An src/Rendering/AssetsRegistry.php instance, created fresh for each pass from the project's `public/build/manifest.json`.
+Yarn 1 copies a `file:` dependency, and the copy is what TypeScript falls back to when a file mapped by the tsconfig `paths` goes missing — errors then appear in files nobody edited. The full mechanism is written down in the `symfony-design-system` knowledge, page *contributing/assets-as-npm-package*.
 
-### Render nodes
+### Run
 
-src/Rendering/RenderNode/AbstractRenderNode.php is the base for every rendering context. It extends src/Rendering/RenderDataGenerator.php, which provides `serializeVariables()` and `toRenderData()` used to serialise a node to JSON. Each concrete render node holds its own `assets` array (CSS and JS), a `components` list, `translations`, `vars`, a CSS class name, and an inheritance stack of view names accumulated during Twig template inheritance.
+```bash
+yarn install
+yarn watch
+```
 
-`init()` on `AbstractRenderNode` registers the node in the `RenderPass` registry and context stack, assigns a unique ID and CSS class, and inherits translation domains from the parent context node.
+The manifest and tsconfig are updated automatically.
 
-Four concrete types exist:
+# wexample/symfony-loader
 
-- src/Rendering/RenderNode/AbstractLayoutRenderNode.php — the outermost context. Holds a `PageRenderNode`. Two subclasses: src/Rendering/RenderNode/InitialLayoutRenderNode.php (for HTML responses; marks its page as `isInitialPage = true`) and src/Rendering/RenderNode/AjaxLayoutRenderNode.php (for JSON responses; carries the rendered HTML body and any Vue templates; has `hasAssets = false` because assets are not re-emitted on AJAX).
-- src/Rendering/RenderNode/PageRenderNode.php — the page context nested inside the layout. Its `toRenderData()` adds `isInitialPage`.
-- src/Rendering/RenderNode/ComponentRenderNode.php — a reusable UI component. Tracks an `initMode` (`class`, `layout`, `parent`, `previous`, `template`) that tells the front-end how to attach the component to the DOM. `render()` asks Twig to render the component's template and stores the result in `body`.
+Version: 0.0.20
 
-### Rendering pipeline
+A dynamic rendering system for Symfony
 
-src/Controller/AbstractLoaderController.php is the base controller. `adaptiveRender()` delegates to src/Service/AdaptiveRendererService.php.
+## Table of Contents
 
-`AdaptiveRendererService::createRenderPass()`:
+- [Installation](#installation)
 
-1. Instantiates `RenderPass` with the view and a fresh `AssetsRegistry`.
-2. Loads each usage's config from the container and seeds the active value from the config default.
-3. Reads any saved UI state from the session and applies it.
-4. Sets output type and layout base from the request attributes. A request the kernel did not dispatch (pushed by hand onto the request stack) has not met the request subscriber, so the attributes are detected here the same way; with no request at all, the pass keeps its defaults, `html` and `default`.
-5. Optionally calls a `$configurator` closure so controllers can customise the pass.
 
-Rendering outside a request — a console command, or a test rendering a page through the real pipeline with an empty request stack — therefore produces the HTML document; `<html lang>` falls back to `app.locale` and `adaptive_response_standalone_uri()` to an empty string.
+## Installation
 
-`AdaptiveRendererService::adaptiveRender()` then branches on output type:
+### JS helpers resolution
 
-**HTML path**: creates an `InitialLayoutRenderNode`, calls `LayoutService::layoutInitialInit()` (see below), then `renderRenderPass()`. `renderRenderPass()` sets the `render_pass` Twig global (declared beforehand by src/Twig/RenderPassGlobalsExtension.php, since Twig refuses a new global once it has rendered anything, such as a mail sent by the controller), calls `$twig->render($view, $parameters)`, and passes the response to `injectLayoutAssets()`. That method finds the placeholder `<--  -->` left in the HTML by the layout macro, renders `@WexampleSymfonyLoaderBundle/macros/assets.html.twig` with the current render pass, and replaces the placeholder string with the resulting `<link>` and `<script>` tags. An error status is no reason to skip it: a `404` answered with a page is a page, and what decides is the placeholder — a response the loader did not render carries none, whatever its status.
+The webpack helper (`src/Resources/js/webpack/encore.manifest.js`) expects `@wexample/js-helpers` to be installed in the app.
 
-**JSON path**: creates an `AjaxLayoutRenderNode`, calls `LayoutService::initRenderNode()` to register it, renders the view to capture the page HTML, stores that HTML in the layout node's `body`, calls `toRenderData().toArray()` on the layout node, and returns a `JsonResponse` with the serialised tree. Any exception during rendering re-enters `adaptiveRender()` with `@WexampleSymfonyLoaderBundle/pages/system/render-failure.html.twig`, named by src/Helper/ErrorPageHelper.php: the front-end shows it in place of the page it asked for, which is what `hasError` on the page's vars says. The exception message is printed only on a debug kernel — it names a template or a service, and that is a developer's sentence.
+For local dev containers, use `link:` in `package.json`:
 
-### Error pages
+```json
+{
+  "devDependencies": {
+    "@wexample/js-helpers": "link:/var/www/javascript-dev/wexample/js-helpers"
+  }
+}
+```
 
-The bundle prepends `framework.error_controller` in src/DependencyInjection/WexampleSymfonyLoaderExtension.php, pointing it at src/Controller/System/ErrorController.php — prepended rather than set, so an application naming its own error controller keeps it. Symfony's error listener and the `/_error/{code}` preview route both go through that value, so one class covers the real error and the way an application looks at its pages.
+### Local JS packages (dev only)
 
-The controller renders through `adaptiveRender()` like any page: a browser gets a whole document with the stylesheets of the page, an XHR gets the render envelope, whose `responseType` stays `render` — which is what tells the front-end to show the page rather than report a request that failed (`AdaptiveService::isRenderedResponse()`).
+To use local JS packages in development, configure them in `config/packages/wexample_symfony_dev.yaml`:
 
-src/Helper/ErrorPageHelper.php names the templates, tried in that order: `@front/pages/system/error<code>`, `@front/pages/system/error`, then the bundle's two. The bundle's generic `error.html.twig` carries the wording of 401, 403, 404 and 500 in its own `.trans.yml`, and falls back to a generic sentence for any other status, so an unnamed code still reads as a page. An application says something else about a code by dropping an `error<code>.html.twig` in its front path, or draws the page in its own layout by overriding `error.html.twig`.
+```yaml
+wexample_symfony_dev:
+    js_dev_packages:
+        - '/var/www/javascript-dev/wexample/*'
+```
 
-Opened as a whole document, the bundle's page would stand in the bundle's own layout, whose assets no application builds: it would come without a stylesheet. So when no template of the application answers, the controller renders the self-contained fallback page (`FallbackPageHelper::TEMPLATE`, the one shown while the interface builds) instead, worded from that same `.trans.yml` in the request's language, with its way back to `/`. Fetched by a page already open — an XHR —, the bundle's page is still rendered as the envelope, drawn in that page's layout.
+The glob `*` scans all subdirectories containing a `package.json` and automatically:
+- Adds webpack aliases via `Encore.addAliases()`
+- Adds TypeScript paths in `tsconfig.json`
 
-A debug kernel still answers a real exception with the exception: the controller hands over to `error_renderer` when `kernel.debug` is set and the request does not say `showException: false`, the same rule Symfony's own Twig renderer applies. `/_error/{code}`, which sets that attribute, therefore shows the page in development too.
+### Run
 
-### Layout and page initialisation
+```bash
+yarn install
+yarn watch
+```
 
-src/Service/LayoutService.php extends `AbstractRenderNodeService`. `layoutInitialInit()` is called from the layout Twig template via the `layout_initial_init()` function exposed by src/Twig/LayoutExtension.php. It:
-
-1. Calls `layoutInit()`: initialises the layout render node (assets detection runs here via `AbstractRenderNodeService::initRenderNode()`), registers translation domains, and propagates entity translation aliases.
-2. Creates the `PageRenderNode` via `createLayoutPageInstance()` and hands it to src/Service/PageService.php`::pageInit()`.
-3. Optionally registers a layout-specific page-manager component (modal, panel, or overlay) if `loader.layout_bases` config provides one.
-
-`LayoutExtension` also exposes `layout_render_initial_data()`, which serialises the complete layout render node (including page, components, assets, translations) into the array that the front-end receives embedded in the HTML response.
-
-### Asset pipeline
-
-src/Service/AssetsRegistryService.php is a container-scoped singleton that reads `public/build/manifest.json` once at boot and maintains a flat registry of all `Asset` objects added during the request.
-
-src/Rendering/Asset.php holds two paths: `path` (the stable manifest key, e.g. `build/@Bundle/css/view.css`) and `publicPath` (the hashed URL from the manifest value). The browser loader uses `publicPath` directly when injecting assets dynamically, avoiding 404s on content-hashed filenames in production.
-
-Six usage services, all subclassing src/Service/Usage/AbstractAssetUsageService.php, define how asset file names are derived from a view path:
-
-- src/Service/Usage/DefaultAssetUsageService.php — looks for `build/@Bundle/css/<view>.css` and `build/@Bundle/js/<view>.js`.
-- The remaining six (`color_scheme`, `responsive`, `density`, `skin`, `animations`, `fonts`) append a usage-dimension suffix, e.g. `view.color-scheme.dark.css`.
-
-src/Service/AssetsService.php wires the seven services in CSS-loading order (default → color_scheme → responsive → density → skin → animations → fonts) and exposes `assetsDetect()`: for each file extension and each usage service, it walks the render node's inheritance stack and registers the first matching asset it finds. Assets are attached to `renderNode->assets` and added to `AssetsRegistryService`.
-
-`buildTags()` in `AssetsService` decides which assets to server-side-render on an HTML response. For each type/context/usage combination it emits an `AssetTag` carrying the asset, or a placeholder tag when no asset was resolved. The placeholder tags let the front-end loader fill in usage variants that were not rendered server-side.
-
-### Component management
-
-src/Rendering/ComponentManagerLocatorService.php resolves a component name (e.g. `@WexampleSymfonyLoaderBundle/components/modal`) to an optional src/Rendering/ComponentManager/AbstractComponentManager.php via a tagged service locator. Manager classes live under `Rendering/ComponentManager/` and are tagged `symfony_loader.component_manager` by the service definition.
-
-src/Service/ComponentService.php orchestrates the lifecycle:
-
-1. Normalise the component name (resolves short bundle aliases to full bundle names).
-2. Look up the manager; if none exists, fall back to a bare `ComponentRenderNode`.
-3. Call `initRenderNode()` (registers the node, detects assets, pushes it onto the context stack).
-4. Call `componentRenderBody()` if `$renderBody` is true: sets the translation domain, calls `ComponentRenderNode::render()` to get the Twig body, then reverts the domain and pops the context stack.
-
-src/Twig/ComponentsExtension.php exposes all component functions to Twig (`component`, `component_init_class`, `component_init_parent`, `component_init_previous`, `component_frontend`, `component_lazy`) and registers `ComponentTokenParser` for the `{% component … %}{% endcomponent %}` block syntax.
-
-### A component that waits to be seen
-
-assets/js/Class/Mixins/LazyActivationMixin.ts, applied in a component's `init()`, defers its `activateListeners()` until its element comes into view (one shared `IntersectionObserver`, `rootMargin: 50px`, as the lazy loader's). Its html is in the page from the start — unlike `component_lazy()`, which fetches the html itself when its placeholder shows. The page mounts its components one after the other, each awaiting the last: a heavy one below the fold — a chart, a map — no longer holds back the ones in view. Lazy by default once applied; `lazy: false` in the component's options activates it at once (a chart at the top of a page). One held out of view — a closed tab, a folded panel — waits until it shows. `deactivateListeners()` takes down only a component that was activated.
-
-### A theme axis switched
-
-`AssetsServiceEvents.USAGE_CHANGE` (`usage:change`, assets/js/Services/AssetsService.ts) is said once by the layout when `setUsage()` switched an axis — the colour scheme, the palette, the skin, the density —, after the new value's stylesheet is applied and the body's class switched: `detail` is `{ usage, value, previous }`. What reads the theme's variables in script, and draws with them in a canvas, listens to it instead of watching the body's class itself.
-
-### Front-end services that draw something
-
-Three services of assets/js/Services put markup on the page and do not own it: `BannerService` (an announcement), `OverlayService` through `showStandalone()` (a backdrop), and the confirm dialog, which is not here at all. Each of the two declares `static componentPath: string | null = null` and throws an `InvariantViolationError` naming itself when asked to draw with nothing set. The design system the application installed ships a subclass setting the path, and the application registers that subclass in its `App.getServices()`; `App.loadServices()` lets a subclass take the place of a service already registered under the same name, so the base arriving first — through `super.getServices()` or as another service's dependency — does not win. This is the whole of what the loader knows about any design system: a name it does not say.
-
-### Pages a manager holds
-
-assets/js/Class/PageManagerComponent.ts is the base of anything that holds a page other than the window: a modal, a panel, a dock, an embed. A page it holds opts into keeping its links inside the manager by marking an element `data-page-navigation="contained"`; `navigateContained()` then fetches the next page with the manager's layout base appended as `__layout=` and mounts it in place, which is how a tunnel's steps follow one another inside one modal.
-
-Three attributes are the whole contract with a design system, which draws what they announce: `data-page-navigation` (`contained` / `leave`), `data-page-transition="slide"` on an element of the page that wants the arriving page to slide in, and `data-page-scroll` on the box that scrolls — the body each JSON layout base of assets/bases/json marks. A page arriving from a navigation opens at the top of that box, as a page opened in the window does; nothing above it is scrolled, so the window behind an overlay stays where it was.
-
-A page replaced in place keeps the address of the one before it: no history entry is pushed, so a browser's back button leaves the page under the manager rather than stepping back inside it.
-
-### Vue integration
-
-src/Service/VueService.php wraps a `.vue.html.twig` template in a `<template>` element, registers assets against the vue's root component render node, collects translations via `@vue::*`, and deduplicates repeated renders of the same view. On AJAX responses it attaches all rendered Vue templates to `AjaxLayoutRenderNode::vueTemplates` so the front-end can pick them up from the JSON payload.
-
-### Serialisation
-
-src/Rendering/RenderData.php is the output format. It extends `AdaptiveResponse` (adds `ok` and `responseType` fields) and wraps an associative data array. `toArray()` recursively normalises nested `RenderData` instances. Every render node, asset, and the assets registry implement `toRenderData()` through `RenderDataGenerator`, which uses reflection to serialise named properties and calls `toRenderData()` on nested `RenderDataGenerator` values.
-
-## Integration in the Suite
-
-This package is part of the Wexample Suite — a collection of high-quality, modular tools designed to work seamlessly together across multiple languages and environments.
-
-### Related Packages
-
-The suite includes packages for configuration management, file handling, prompts, and more. Each package can be used independently or as part of the integrated suite.
-
-## Dependencies
-
-- php: >=8.5
-- wexample/php-date: >=2.1.0
-- wexample/php-html: >=0.1.6
-- wexample/symfony-dev: >=6.0.0
-- wexample/symfony-helpers: >=18.0.0
-- wexample/symfony-translations: >=17.0.0
-- friendsofsymfony/jsrouting-bundle: ^3.2.1
-- symfony/webpack-encore-bundle: ^2.0.1
-- fortawesome/font-awesome: ^6.7
-
-## Versioning & Compatibility Policy
-
-Wexample packages follow **Semantic Versioning** (SemVer):
-
-- **MAJOR**: Breaking changes
-- **MINOR**: New features, backward compatible
-- **PATCH**: Bug fixes, backward compatible
-
-We maintain backward compatibility within major versions and provide clear migration guides for breaking changes.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-Free to use in both personal and commercial projects.
-
-## About us
-
-[Wexample](https://wexample.com) stands as a cornerstone of the digital ecosystem — a collective of seasoned engineers, researchers, and creators driven by a relentless pursuit of technological excellence. More than a media platform, it has grown into a vibrant community where innovation meets craftsmanship, and where every line of code reflects a commitment to clarity, durability, and shared intelligence.
-
-This packages suite embodies this spirit. Trusted by professionals and enthusiasts alike, it delivers a consistent, high-quality foundation for modern development — open, elegant, and battle-tested. Its reputation is built on years of collaboration, refinement, and rigorous attention to detail, making it a natural choice for those who demand both robustness and beauty in their tools.
-
-Wexample cultivates a culture of mastery. Each package, each contribution carries the mark of a community that values precision, ethics, and innovation — a community proud to shape the future of digital craftsmanship.
-
-Built and maintained by [Romain Weeger](https://weeger.io).
-
-## Migration Notes
-
-When upgrading between major versions, refer to the migration guides in the documentation.
-
-Breaking changes are clearly documented with upgrade paths and examples.
+The manifest and tsconfig are updated automatically.
