@@ -79,8 +79,10 @@ class EncoreManifestBuilder
         $jsDevAliases = $this->getJsDevPackagesAliases();
 
         return [
+            // No generation time: webpack's persistent cache counts this file
+            // among its build dependencies, and a manifest that differs at
+            // every generation threw the whole cache away at every build.
             'version' => self::MANIFEST_VERSION,
-            'generatedAt' => (new \DateTimeImmutable())->format(DATE_ATOM),
             'projectDir' => $this->projectDir,
             'frontCount' => count($fronts),
             'aliases' => $aliases,
