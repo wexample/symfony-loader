@@ -795,6 +795,10 @@ function buildEncoreConfig(options = {}) {
   if (enableCache && !config.cache?.type) {
     config.cache = {
       type: 'filesystem',
+      // WEBPACK_CACHE_DIR: somewhere that outlives node_modules — an image
+      // build reinstalls node_modules each time, and webpack's default under
+      // it would never be found again.
+      ...(process.env.WEBPACK_CACHE_DIR ? { cacheDirectory: process.env.WEBPACK_CACHE_DIR } : {}),
       buildDependencies: {
         config: [
           fileURLToPath(import.meta.url),
