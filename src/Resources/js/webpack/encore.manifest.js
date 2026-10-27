@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
@@ -283,6 +284,18 @@ function logFronts(fronts) {
     const rel = front.paths?.relative || front.paths?.absolute || '';
     logPath(`  ${label}`, rel);
   });
+}
+
+function manifestCacheVersion(filePath = DEFAULT_MANIFEST_PATH) {
+  if (!fs.existsSync(filePath)) {
+    return '';
+  }
+  const { version, projectDir, aliases, jsDevAliases, tsconfigPath } = JSON.parse(
+    fs.readFileSync(filePath, 'utf8'),
+  );
+  return createHash('sha256')
+    .update(JSON.stringify({ version, projectDir, aliases, jsDevAliases, tsconfigPath }))
+    .digest('hex');
 }
 
 function loadManifest(filePath = DEFAULT_MANIFEST_PATH) {
@@ -807,11 +820,13 @@ function buildEncoreConfig(options = {}) {
       // build reinstalls node_modules each time, and webpack's default under
       // it would never be found again.
       ...(process.env.WEBPACK_CACHE_DIR ? { cacheDirectory: process.env.WEBPACK_CACHE_DIR } : {}),
+      // What of the manifest shapes how modules resolve — aliases, tsconfig,
+      // project dir —, not the manifest whole: its entries change with every
+      // asset added or removed, and webpack compiles a new entry from the cache
+      // as it is, where a changed build dependency threw it all away.
+      version: manifestCacheVersion(),
       buildDependencies: {
-        config: [
-          fileURLToPath(import.meta.url),
-          ...(fs.existsSync(DEFAULT_MANIFEST_PATH) ? [DEFAULT_MANIFEST_PATH] : []),
-        ],
+        config: [fileURLToPath(import.meta.url)],
       },
     };
   }
