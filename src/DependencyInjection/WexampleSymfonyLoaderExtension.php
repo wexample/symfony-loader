@@ -13,6 +13,7 @@ use Wexample\SymfonyHelpers\Interface\HeadStructuredDataProviderInterface;
 use Wexample\SymfonyHelpers\Interface\LoaderBundleInterface;
 use Wexample\SymfonyLoader\Controller\System\ErrorController;
 use Wexample\SymfonyLoader\Interface\DevelopTabInterface;
+use Wexample\SymfonyLoader\Interface\RequirementProviderInterface;
 
 class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
 {
@@ -54,6 +55,11 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
         $container
             ->registerForAutoconfiguration(HeadStructuredDataProviderInterface::class)
             ->addTag(HeadStructuredDataProviderInterface::TAG);
+
+        // And for what a bundle needs the application to give it.
+        $container
+            ->registerForAutoconfiguration(RequirementProviderInterface::class)
+            ->addTag(RequirementProviderInterface::TAG);
 
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
