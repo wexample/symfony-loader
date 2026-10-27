@@ -312,7 +312,7 @@ class App extends AsyncConstructor {
   // two.
   persistUiStates(values: Record<string, unknown>): void {
     this.uiStateQueue = this.uiStateQueue
-      .then(() => fetch('/api/preference/set', {
+      .then(() => fetch('/_api/preference/set', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ values }),
