@@ -8,6 +8,7 @@ import Page from './Page';
 import { RenderNodeServiceEvents } from "../Services/AbstractRenderNodeService";
 import ElementListenersMixin, { type ElementListenersType } from './Mixins/ElementListenersMixin';
 import InvariantViolationError from '../Errors/InvariantViolationError';
+import type AgentToolInterface from '../Interfaces/AgentToolInterface';
 import ErrorService from '../Services/ErrorService';
 import type { RenderNodeApiType } from '../Services/ApiService';
 import type { RenderNodeAssetsType } from '../Services/AssetsService';
@@ -226,6 +227,7 @@ abstract class RenderNode extends AppChild {
     this.attachHtmlElements();
     this.updateElSize();
     await this.activateListeners();
+    await this.activateTools();
 
     if (this.parentRenderNode) {
       this.parentRenderNode.childMounted(this);
@@ -260,6 +262,7 @@ abstract class RenderNode extends AppChild {
     this.detachHtmlElements();
 
     await this.deactivateListeners();
+    await this.deactivateTools();
     await this.unmounted();
   }
 
@@ -335,6 +338,26 @@ abstract class RenderNode extends AppChild {
 
   protected async deactivateListeners(): Promise<void> {
     this.deactivateElListeners();
+  }
+
+  // What an agent may do through this node, as long as it is mounted: none by
+  // default. Read once per mount, so a tool may describe the state it finds.
+  protected getAgentTools(): AgentToolInterface[] {
+    return [];
+  }
+
+  protected async activateTools(): Promise<void> {
+    const tools = this.getAgentTools();
+
+    if (tools.length && this.app.services.agentTools) {
+      for (const tool of tools) {
+        this.app.services.agentTools.register(this, tool);
+      }
+    }
+  }
+
+  protected async deactivateTools(): Promise<void> {
+    this.app.services.agentTools?.unregisterOwner(this);
   }
 
   protected async mounted(): Promise<void> {

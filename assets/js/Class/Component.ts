@@ -97,6 +97,7 @@ export default abstract class Component extends RenderNode {
     await super.exit();
 
     await this.deactivateListeners();
+    await this.deactivateTools();
 
     this.el.remove();
   }

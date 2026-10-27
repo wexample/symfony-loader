@@ -9,6 +9,7 @@ en:
     nodes: Nodes
     routes: Routes
     translations: Translations
+    agent_tools: 'Agent tools'
 
 ar:
   close: اغلاق
@@ -21,6 +22,7 @@ ar:
     nodes: العقد
     routes: المسارات
     translations: الترجمات
+    agent_tools: 'أدوات الوكيل'
 
 bn:
   close: 'বন্ধ করুন'
@@ -33,6 +35,7 @@ bn:
     nodes: নোডস
     routes: রুটস
     translations: অনুবাদগুলি
+    agent_tools: 'এজেন্ট টুলস'
 
 de:
   close: Schließen
@@ -45,6 +48,7 @@ de:
     nodes: Knoten
     routes: Routen
     translations: Übersetzungen
+    agent_tools: 'Agenten-Tools'
 
 es:
   close: Cerrar
@@ -57,6 +61,7 @@ es:
     nodes: Nodos
     routes: Rutas
     translations: Traducciones
+    agent_tools: 'Herramientas del agente'
 
 fa:
   close: بستن
@@ -69,6 +74,7 @@ fa:
     nodes: گره‌ها
     routes: مسیرها
     translations: ترجمه‌ها
+    agent_tools: 'ابزارهای عامل'
 
 fi:
   close: Sulje
@@ -81,6 +87,7 @@ fi:
     nodes: Solmut
     routes: Reitit
     translations: Käännökset
+    agent_tools: 'Agentin työkalut'
 
 fr:
   close: Fermer
@@ -93,6 +100,7 @@ fr:
     nodes: Nœuds
     routes: Routes
     translations: Traductions
+    agent_tools: 'Outils agent'
 
 he:
   close: סגור
@@ -105,6 +113,7 @@ he:
     nodes: צמתים
     routes: נתיבים
     translations: תרגומים
+    agent_tools: 'כלי סוכן'
 
 hi:
   close: 'बंद करें'
@@ -117,6 +126,7 @@ hi:
     nodes: नोड्स
     routes: मार्ग
     translations: अनुवाद
+    agent_tools: 'एजेंट टूल्स'
 
 id:
   close: Tutup
@@ -129,6 +139,7 @@ id:
     nodes: Node
     routes: Rute
     translations: Terjemahan
+    agent_tools: 'Alat agen'
 
 it:
   close: Chiudi
@@ -141,6 +152,7 @@ it:
     nodes: Nodi
     routes: Percorsi
     translations: Traduzioni
+    agent_tools: 'Strumenti agente'
 
 ja:
   close: 閉じる
@@ -153,6 +165,7 @@ ja:
     nodes: ノード
     routes: ルート
     translations: 翻訳
+    agent_tools: 'エージェントツール'
 
 ko:
   close: 닫기
@@ -165,6 +178,7 @@ ko:
     nodes: 노드
     routes: 라우트
     translations: 번역
+    agent_tools: '에이전트 도구'
 
 nl:
   close: Sluiten
@@ -177,6 +191,7 @@ nl:
     nodes: Knooppunten
     routes: Routes
     translations: Vertalingen
+    agent_tools: 'Agenttools'
 
 pl:
   close: Zamknij
@@ -189,6 +204,7 @@ pl:
     nodes: Węzły
     routes: Trasy
     translations: Tłumaczenia
+    agent_tools: 'Narzędzia agenta'
 
 pt_BR:
   close: Fechar
@@ -201,6 +217,7 @@ pt_BR:
     nodes: Nós
     routes: Rotas
     translations: Traduções
+    agent_tools: 'Ferramentas do agente'
 
 ru:
   close: Закрыть
@@ -213,6 +230,7 @@ ru:
     nodes: Узлы
     routes: Маршруты
     translations: Переводы
+    agent_tools: 'Инструменты агента'
 
 th:
   close: ปิด
@@ -225,6 +243,7 @@ th:
     nodes: โหนด
     routes: เส้นทาง
     translations: การแปล
+    agent_tools: 'เครื่องมือเอเจนต์'
 
 tr:
   close: Kapat
@@ -237,6 +256,7 @@ tr:
     nodes: Düğümler
     routes: Yollar
     translations: Çeviriler
+    agent_tools: 'Ajan araçları'
 
 ur:
   close: 'بند کریں'
@@ -249,6 +269,7 @@ ur:
     nodes: نوڈز
     routes: راستے
     translations: ترجمے
+    agent_tools: 'ایجنٹ ٹولز'
 
 vi:
   close: Đóng
@@ -261,6 +282,7 @@ vi:
     nodes: Nút
     routes: 'Đường dẫn'
     translations: 'Dịch thuật'
+    agent_tools: 'Công cụ tác tử'
 
 zh:
   close: 关闭
@@ -273,3 +295,4 @@ zh:
     nodes: 节点
     routes: 路由
     translations: 翻译
+    agent_tools: '智能体工具'

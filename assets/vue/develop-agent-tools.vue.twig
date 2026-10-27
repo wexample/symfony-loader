@@ -1,0 +1,32 @@
+{% block component %}
+<div class="develop-agent-tools">
+    <div v-if="!tools.length" class="develop-agent-tools__empty">No agent tool in the page.</div>
+    <div v-for="tool in tools" :key="tool.name" class="develop-agent-tools__item">
+        <div class="develop-agent-tools__head">
+            <span class="develop-agent-tools__name">{{ 'tool.name' | vue_key }}</span>
+            <span v-for="hint in hints(tool)" :key="hint" class="develop-agent-tools__hint">{{ 'hint' | vue_key }}</span>
+        </div>
+        <div class="develop-agent-tools__description">{{ 'tool.description' | vue_key }}</div>
+        <div class="develop-agent-tools__parameters">
+            <span v-for="parameter in parameters(tool)" :key="parameter.name" class="develop-agent-tools__parameter">
+                {{ 'parameter.name' | vue_key }}<template v-if="parameter.required">*</template>: {{ 'parameter.type' | vue_key }}
+            </span>
+        </div>
+        <div class="develop-agent-tools__call">
+            <input
+                class="develop-agent-tools__args"
+                type="text"
+                v-model="args[tool.name]"
+                placeholder="{}"
+                @keydown.enter="run(tool)"
+            />
+            <button class="develop-agent-tools__run" @click="run(tool)">Run</button>
+            <span
+                v-if="results[tool.name]"
+                class="develop-agent-tools__result"
+                :class="results[tool.name].error ? 'develop-agent-tools__result--error' : ''"
+            >{{ 'results[tool.name].error || results[tool.name].value' | vue_key }}</span>
+        </div>
+    </div>
+</div>
+{% endblock %}

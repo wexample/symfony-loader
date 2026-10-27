@@ -1,0 +1,93 @@
+@use '../css/partials/develop' as d;
+
+.develop-agent-tools {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+
+  &__empty {
+    padding: d.$space-sm;
+    color: d.$text-muted;
+    font-size: d.$size-sm;
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: d.$space-xs;
+    padding: d.$space-sm;
+    border-bottom: 1px solid d.$border;
+  }
+
+  &__head {
+    @include d.row(d.$space-sm);
+    align-items: center;
+  }
+
+  &__name {
+    color: d.$accent;
+    font-size: d.$size-base;
+  }
+
+  &__hint {
+    @include d.label;
+  }
+
+  &__description {
+    color: d.$text;
+    font-size: d.$size-sm;
+  }
+
+  &__parameters {
+    @include d.row(d.$space-sm);
+  }
+
+  &__parameter {
+    color: d.$text-muted;
+    font-size: d.$size-sm;
+  }
+
+  &__call {
+    @include d.row(d.$space-sm);
+    align-items: center;
+  }
+
+  &__args {
+    background: d.$bg-alt;
+    border: 1px solid d.$border;
+    border-radius: 3px;
+    color: d.$text;
+    font-family: d.$font;
+    font-size: d.$size-sm;
+    padding: d.$space-xs d.$space-sm;
+    min-width: 16rem;
+    outline: none;
+
+    &:focus {
+      border-color: d.$accent;
+    }
+
+    &::placeholder {
+      color: d.$text-dim;
+    }
+  }
+
+  &__run {
+    @include d.pill;
+    cursor: pointer;
+
+    &:hover {
+      @include d.pill-hover;
+    }
+  }
+
+  &__result {
+    color: d.$text-muted;
+    font-size: d.$size-sm;
+
+    &--error {
+      color: d.$warning;
+    }
+  }
+}

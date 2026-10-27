@@ -1,3 +1,4 @@
+import AgentToolsService from '../Services/AgentToolsService';
 import AssetsService from '../Services/AssetsService';
 import AdaptiveService from '../Services/AdaptiveService';
 import EventsService from '../Services/EventsService';
@@ -24,6 +25,7 @@ export default interface ServicesRegistryInterface {
   componentLazyLoader?: ComponentLazyLoaderService;
   developToolbar?: DevelopToolbarService;
   adaptive?: AdaptiveService;
+  agentTools?: AgentToolsService;
   assets?: AssetsService;
   components?: ComponentsService;
   debug?: DebugService;
