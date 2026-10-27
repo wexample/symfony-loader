@@ -171,8 +171,11 @@ export default class VueService extends AppService {
     };
   }
 
+  // Read through $props: reading `viewPath` on the proxy of a component that
+  // has no such prop — one a parent imports itself — raises a warning of its
+  // own from inside the handler, which then replaces the one being reported.
   protected describeVueInstance(instance: any): string | null {
-    return instance?.viewPath ?? instance?.$options?.__name ?? null;
+    return instance?.$props?.viewPath ?? instance?.$options?.__name ?? null;
   }
 
   inherit(vueComponent: Record<string, any>, rootComponent: Component) {
