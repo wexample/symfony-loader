@@ -133,6 +133,14 @@ function configureEncoreBase(options = {}) {
     }
   }
 
+  // The application's own otherwise. Left to ts-loader, the config is the one
+  // nearest to the first file it compiles: a package linked from its sources
+  // (`/var/www/javascript-dev`) brings its own, whose rootDir holds its files
+  // only, and every other path reaching them is refused (TS6059).
+  if (!loaderConfig.ts.configFile && fs.existsSync(path.resolve(process.cwd(), 'tsconfig.json'))) {
+    loaderConfig.ts.configFile = path.resolve(process.cwd(), 'tsconfig.json');
+  }
+
   if (options.dumpFosRoutes !== false) {
     execSync(
       options.fosCommand ||
