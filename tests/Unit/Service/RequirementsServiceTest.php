@@ -52,7 +52,7 @@ class RequirementsServiceTest extends TestCase
 
     private function provider(Requirement ...$requirements): RequirementProviderInterface
     {
-        return new class($requirements) implements RequirementProviderInterface {
+        return new class ($requirements) implements RequirementProviderInterface {
             public function __construct(private readonly array $requirements)
             {
             }
