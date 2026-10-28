@@ -19,6 +19,8 @@ export default class AgentToolsService extends AppService {
 
   private listeners: Set<() => void> = new Set();
 
+  private callsRun: Set<string> = new Set();
+
   register(owner: object, tool: AgentToolInterface): void {
     this.entries.push({ owner, tool });
     this.changed();
@@ -70,6 +72,22 @@ export default class AgentToolsService extends AppService {
     }
 
     return await tool.execute(args);
+  }
+
+  // A call an agent made, run once whatever reaches the page twice — the same
+  // message published again, two components listening —: what it returned
+  // (`value`), or the error it ended on; null when this call already ran.
+  async run(callId: string, name: string, args: Record<string, any> = {}): Promise<{ value?: any; error?: string } | null> {
+    if (this.callsRun.has(callId)) {
+      return null;
+    }
+    this.callsRun.add(callId);
+
+    try {
+      return { value: await this.call(name, args) };
+    } catch (error) {
+      return { error: String((error as Error)?.message ?? error) };
+    }
   }
 
   private find(name: string): AgentToolInterface | null {
