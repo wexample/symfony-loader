@@ -361,7 +361,7 @@ abstract class RenderNode extends AppChild {
     }
 
     const implementation = this.getAgentActions();
-    const actions = Object.values(contract.actions)
+    const actions = Object.values(contract.actions ?? {})
       .filter((action) => !Array.isArray(exposure) || exposure.includes(action.name))
       .flatMap((action) => {
         if (!implementation[action.name]) {
@@ -379,6 +379,14 @@ abstract class RenderNode extends AppChild {
       state: this.getAgentState(),
       actions,
     };
+  }
+
+  // Whether the node has a contract, and whether an agent is shown it: for
+  // whoever checks a page, not for the agent.
+  public getAgentStatus(): { type: string; exposed: boolean } | null {
+    const contract = this.getAgentContract();
+
+    return contract ? { type: contract.type, exposed: Boolean(this.getAgentExposure()) } : null;
   }
 
   // What the node tells an agent of itself: none by default — a component

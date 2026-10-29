@@ -1,11 +1,9 @@
 import Component from '../js/Class/Component';
-import DebugService from '../js/Services/DebugService';
 
 const HEIGHT_VAR = '--develop-toolbar-height';
 
 export default class DevelopToolbar extends Component {
   private activeTab: string = 'assets';
-  private debugInitialized: boolean = false;
 
   async activateListeners() {
     super.activateListeners();
@@ -75,29 +73,6 @@ export default class DevelopToolbar extends Component {
 
     this.el.querySelectorAll('[data-tab-panel]').forEach((el: HTMLElement) => {
       el.classList.toggle('develop-toolbar__mount--hidden', el.dataset.tabPanel !== tab);
-    });
-
-    if (tab === 'nodes') {
-      await this.initDebug();
-    }
-
-    const debugService = this.app.services.debug as DebugService | undefined;
-    if (debugService?.elDebugHelpers) {
-      debugService.elDebugHelpers.style.display = tab === 'nodes' ? '' : 'none';
-    }
-  }
-
-  private async initDebug() {
-    if (this.debugInitialized) return;
-    this.debugInitialized = true;
-
-    const debugService = new DebugService(this.app);
-    this.app.services.debug = debugService;
-    debugService.init();
-    debugService.elDebugHelpers.style.display = 'none';
-
-    await this.app.layout.forEachTreeRenderNode((node) => {
-      debugService.initRenderNode(node);
     });
   }
 }

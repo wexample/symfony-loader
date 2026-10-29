@@ -40,6 +40,11 @@
     gap: d.$space-xs;
     padding: d.$space-sm;
     border-bottom: 1px solid d.$border;
+
+    &--selected {
+      background: d.$bg-alt;
+      box-shadow: inset 2px 0 0 d.$accent;
+    }
   }
 
   &__head {
@@ -122,4 +127,38 @@
 .develop-agent-tools--highlight {
   outline: 2px dashed d.$accent;
   outline-offset: 2px;
+}
+
+// A component of the page that has a contract for agents: solid when the agent
+// is shown it, dashed when it could be. Only the badge takes the pointer.
+.develop-agent-tools-frame {
+  position: fixed;
+  z-index: 2147483000;
+  box-sizing: border-box;
+  pointer-events: none;
+  border: 2px solid d.$accent;
+
+  &--available {
+    border-style: dashed;
+    border-color: d.$text-muted;
+  }
+
+  &__badge {
+    position: absolute;
+    bottom: 100%;
+    left: -2px;
+    padding: 1px d.$space-xs;
+    background: d.$bg;
+    color: d.$accent;
+    font-family: d.$font;
+    font-size: d.$size-xs;
+    white-space: nowrap;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+
+  &--available &__badge {
+    color: d.$text-muted;
+    cursor: default;
+  }
 }

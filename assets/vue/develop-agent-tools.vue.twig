@@ -4,14 +4,30 @@
         <span class="develop-agent-tools__title">Page<template v-if="inspection"> · {{ 'inspection.locale' | vue_key }}</template></span>
         <button class="develop-agent-tools__run" @click="refreshPage()">Refresh</button>
         <button class="develop-agent-tools__run" :class="pageRaw ? 'develop-agent-tools__run--active' : ''" @click="pageRaw = !pageRaw">JSON</button>
+        <button class="develop-agent-tools__run" :class="overlay ? 'develop-agent-tools__run--active' : ''" @click="toggleOverlay()">Show on page</button>
     </div>
+    <teleport to="body">
+        <div
+            v-for="box in boxes"
+            :key="box.id"
+            class="develop-agent-tools-frame"
+            :class="box.exposed ? 'develop-agent-tools-frame--exposed' : 'develop-agent-tools-frame--available'"
+            :style="box.style"
+        >
+            <span class="develop-agent-tools-frame__badge" :title="box.exposed ? 'Shown to the agent' : 'Has a contract, not shown: draw it with the option agent'" @click="select(box)">
+                {{ 'box.label' | vue_key }} — {{ 'box.detail' | vue_key }}
+            </span>
+        </div>
+    </teleport>
     <div v-if="!page.length" class="develop-agent-tools__empty">No piece of the page shown to the agent: a component is, drawn with the option <code>agent</code>.</div>
     <pre v-else-if="pageRaw" class="develop-agent-tools__raw">{{ 'JSON.stringify(inspection, null, 2)' | vue_key }}</pre>
     <template v-else>
         <div
             v-for="row in pageRows()"
             :key="row.node.id"
+            :data-node-id="row.node.id"
             class="develop-agent-tools__item"
+            :class="selectedId === row.node.id ? 'develop-agent-tools__item--selected' : ''"
             :style="{ paddingLeft: `calc(8px + ${row.depth * 16}px)` }"
             @mouseenter="highlight(row.node, true)"
             @mouseleave="highlight(row.node, false)"

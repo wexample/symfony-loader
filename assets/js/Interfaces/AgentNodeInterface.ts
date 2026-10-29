@@ -4,10 +4,12 @@ import type { AgentToolDefinition } from './AgentToolInterface';
 // What a component says of itself to an agent, written in english in the
 // `.ai.yml` beside its template and handed over by the server: its kind, what
 // it is for, the actions it offers. The script runs them.
+//
+// A component not shown to an agent is handed its kind alone.
 export interface AgentContractInterface {
   type: string;
   description?: string;
-  actions: Record<string, AgentToolDefinition>;
+  actions?: Record<string, AgentToolDefinition>;
 }
 
 // How a component runs the actions its contract declares, by name.

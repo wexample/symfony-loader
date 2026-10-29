@@ -6,7 +6,6 @@ en:
     ssr: SSR
     responsive: Responsive
     usages: Usages
-    nodes: Nodes
     routes: Routes
     translations: Translations
     agent_tools: 'Agent tools'
@@ -19,7 +18,6 @@ ar:
     ssr: SSR
     responsive: متجاوب
     usages: الاستخدامات
-    nodes: العقد
     routes: المسارات
     translations: الترجمات
     agent_tools: 'أدوات الوكيل'
@@ -32,7 +30,6 @@ bn:
     ssr: SSR
     responsive: রেসপন্সিভ
     usages: ব্যবহার
-    nodes: নোডস
     routes: রুটস
     translations: অনুবাদগুলি
     agent_tools: 'এজেন্ট টুলস'
@@ -45,7 +42,6 @@ de:
     ssr: SSR
     responsive: Responsive
     usages: Verwendungen
-    nodes: Knoten
     routes: Routen
     translations: Übersetzungen
     agent_tools: 'Agenten-Tools'
@@ -58,7 +54,6 @@ es:
     ssr: SSR
     responsive: 'Adaptable'
     usages: Usos
-    nodes: Nodos
     routes: Rutas
     translations: Traducciones
     agent_tools: 'Herramientas del agente'
@@ -71,7 +66,6 @@ fa:
     ssr: SSR
     responsive: واکنش‌گرا
     usages: استفاده‌ها
-    nodes: گره‌ها
     routes: مسیرها
     translations: ترجمه‌ها
     agent_tools: 'ابزارهای عامل'
@@ -84,7 +78,6 @@ fi:
     ssr: SSR
     responsive: 'Responsiivisuus'
     usages: Käytöt
-    nodes: Solmut
     routes: Reitit
     translations: Käännökset
     agent_tools: 'Agentin työkalut'
@@ -97,7 +90,6 @@ fr:
     ssr: SSR
     responsive: 'Responsive'
     usages: Usages
-    nodes: Nœuds
     routes: Routes
     translations: Traductions
     agent_tools: 'Outils agent'
@@ -110,7 +102,6 @@ he:
     ssr: SSR
     responsive: רספונסיבי
     usages: שימושים
-    nodes: צמתים
     routes: נתיבים
     translations: תרגומים
     agent_tools: 'כלי סוכן'
@@ -123,7 +114,6 @@ hi:
     ssr: SSR
     responsive: 'रिस्पॉन्सिव'
     usages: उपयोग
-    nodes: नोड्स
     routes: मार्ग
     translations: अनुवाद
     agent_tools: 'एजेंट टूल्स'
@@ -136,7 +126,6 @@ id:
     ssr: SSR
     responsive: Responsif
     usages: Penggunaan
-    nodes: Node
     routes: Rute
     translations: Terjemahan
     agent_tools: 'Alat agen'
@@ -149,7 +138,6 @@ it:
     ssr: SSR
     responsive: Responsive
     usages: Usi
-    nodes: Nodi
     routes: Percorsi
     translations: Traduzioni
     agent_tools: 'Strumenti agente'
@@ -162,7 +150,6 @@ ja:
     ssr: SSR
     responsive: レスポンシブ
     usages: 使用状況
-    nodes: ノード
     routes: ルート
     translations: 翻訳
     agent_tools: 'エージェントツール'
@@ -175,7 +162,6 @@ ko:
     ssr: SSR
     responsive: 반응형
     usages: 사용량
-    nodes: 노드
     routes: 라우트
     translations: 번역
     agent_tools: '에이전트 도구'
@@ -188,7 +174,6 @@ nl:
     ssr: SSR
     responsive: 'Responsive'
     usages: Gebruik
-    nodes: Knooppunten
     routes: Routes
     translations: Vertalingen
     agent_tools: 'Agenttools'
@@ -201,7 +186,6 @@ pl:
     ssr: SSR
     responsive: 'Responsywność'
     usages: Użycia
-    nodes: Węzły
     routes: Trasy
     translations: Tłumaczenia
     agent_tools: 'Narzędzia agenta'
@@ -214,7 +198,6 @@ pt_BR:
     ssr: SSR
     responsive: Responsivo
     usages: Usos
-    nodes: Nós
     routes: Rotas
     translations: Traduções
     agent_tools: 'Ferramentas do agente'
@@ -227,7 +210,6 @@ ru:
     ssr: SSR
     responsive: 'Адаптивность'
     usages: Использования
-    nodes: Узлы
     routes: Маршруты
     translations: Переводы
     agent_tools: 'Инструменты агента'
@@ -240,7 +222,6 @@ th:
     ssr: SSR
     responsive: รองรับการแสดงผล
     usages: การใช้งาน
-    nodes: โหนด
     routes: เส้นทาง
     translations: การแปล
     agent_tools: 'เครื่องมือเอเจนต์'
@@ -253,7 +234,6 @@ tr:
     ssr: SSR
     responsive: 'Duyarlı tasarım'
     usages: Kullanımlar
-    nodes: Düğümler
     routes: Yollar
     translations: Çeviriler
     agent_tools: 'Ajan araçları'
@@ -266,7 +246,6 @@ ur:
     ssr: SSR
     responsive: 'ریسپانسیو'
     usages: استعمالات
-    nodes: نوڈز
     routes: راستے
     translations: ترجمے
     agent_tools: 'ایجنٹ ٹولز'
@@ -279,7 +258,6 @@ vi:
     ssr: SSR
     responsive: 'Responsive'
     usages: 'Sử dụng'
-    nodes: Nút
     routes: 'Đường dẫn'
     translations: 'Dịch thuật'
     agent_tools: 'Công cụ tác tử'
@@ -292,7 +270,6 @@ zh:
     ssr: SSR
     responsive: 响应式
     usages: 用法
-    nodes: 节点
     routes: 路由
     translations: 翻译
     agent_tools: '智能体工具'

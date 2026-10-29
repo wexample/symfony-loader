@@ -8,7 +8,6 @@ import PagesService from '../Services/PagesService';
 import RoutingService from '../Services/RoutingService';
 import ComponentsService from '../Services/ComponentsService';
 import VueService from '../Services/VueService';
-import DebugService from '../Services/DebugService';
 import LocaleService from '../Services/LocaleService';
 import EntityService from '../Services/EntityService';
 import OverlayService from '../Services/OverlayService';
@@ -28,7 +27,6 @@ export default interface ServicesRegistryInterface {
   agentTools?: AgentToolsService;
   assets?: AssetsService;
   components?: ComponentsService;
-  debug?: DebugService;
   error?: ErrorService;
   entity?: EntityService;
   keyboard?: KeyboardService;

@@ -37,20 +37,21 @@ class AgentContractService
 
     /**
      * The contract the browser is handed for a component an agent is shown,
-     * null for one it is not, or one with no contract.
+     * null for one with no contract. One that has a contract and is not shown
+     * travels with its kind alone, so a page can say what it could show.
      */
     public function forComponent(
         Environment $twig,
         ComponentRenderNode $component,
     ): ?array {
-        if (! ($component->options[self::OPTION_AGENT] ?? false)) {
-            return null;
-        }
-
         $contract = $this->resolve($twig, $component->getView());
 
         if (null === $contract) {
             return null;
+        }
+
+        if (! ($component->options[self::OPTION_AGENT] ?? false)) {
+            return ['type' => $contract['type']];
         }
 
         // Where it is drawn may say what this one is for better than its kind.
