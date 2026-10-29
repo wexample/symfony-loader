@@ -6,6 +6,28 @@
   height: 100%;
   overflow-y: auto;
 
+  &__section {
+    @include d.row(d.$space-sm);
+    align-items: center;
+    padding: d.$space-sm;
+    background: d.$bg-alt;
+    border-bottom: 1px solid d.$border;
+  }
+
+  &__title {
+    @include d.label;
+    flex: 1;
+  }
+
+  &__raw {
+    margin: 0;
+    padding: d.$space-sm;
+    color: d.$text;
+    font-family: d.$font;
+    font-size: d.$size-sm;
+    white-space: pre-wrap;
+  }
+
   &__empty {
     padding: d.$space-sm;
     color: d.$text-muted;
@@ -80,6 +102,10 @@
     &:hover {
       @include d.pill-hover;
     }
+
+    &--active {
+      @include d.pill-active;
+    }
   }
 
   &__result {
@@ -90,4 +116,10 @@
       color: d.$warning;
     }
   }
+}
+
+// The piece of the page the row under the pointer stands for.
+.develop-agent-tools--highlight {
+  outline: 2px dashed d.$accent;
+  outline-offset: 2px;
 }

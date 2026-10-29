@@ -18,6 +18,9 @@ class ComponentRenderNode extends AbstractRenderNode
 {
     use WithBodyClassTrait;
 
+    /** What an agent is told about the component, when it is shown one. */
+    public ?array $agent = null;
+
     public function __construct(
         public string $initMode,
         public array $options = []
@@ -89,6 +92,10 @@ class ComponentRenderNode extends AbstractRenderNode
             'initMode' => $this->initMode,
             'options' => $this->options,
         ]);
+
+        if (null !== $this->agent) {
+            $renderData->merge(['agent' => $this->agent]);
+        }
 
         return $renderData;
     }

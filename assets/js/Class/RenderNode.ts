@@ -8,6 +8,8 @@ import Page from './Page';
 import { RenderNodeServiceEvents } from "../Services/AbstractRenderNodeService";
 import ElementListenersMixin, { type ElementListenersType } from './Mixins/ElementListenersMixin';
 import InvariantViolationError from '../Errors/InvariantViolationError';
+import type AgentNodeInterface from '../Interfaces/AgentNodeInterface';
+import type { AgentActionsImplementation, AgentContractInterface } from '../Interfaces/AgentNodeInterface';
 import type AgentToolInterface from '../Interfaces/AgentToolInterface';
 import ErrorService from '../Services/ErrorService';
 import type { RenderNodeApiType } from '../Services/ApiService';
@@ -344,6 +346,65 @@ abstract class RenderNode extends AppChild {
   // default. Read once per mount, so a tool may describe the state it finds.
   protected getAgentTools(): AgentToolInterface[] {
     return [];
+  }
+
+  // What this node is to an agent reading the page, null when it shows
+  // nothing to it: its contract, joined to what it shows and is set to now
+  // and to the way it runs each action. An action declared and not run here
+  // is left out — said, in the console, for whoever wrote the component.
+  public describeForAgent(): AgentNodeInterface | null {
+    const exposure = this.getAgentExposure();
+    const contract = exposure ? this.getAgentContract() : null;
+
+    if (!contract) {
+      return null;
+    }
+
+    const implementation = this.getAgentActions();
+    const actions = Object.values(contract.actions)
+      .filter((action) => !Array.isArray(exposure) || exposure.includes(action.name))
+      .flatMap((action) => {
+        if (!implementation[action.name]) {
+          console.warn(`"${this.view}" declares the agent action "${action.name}" and does not run it.`);
+          return [];
+        }
+
+        return [{ ...action, execute: implementation[action.name] }];
+      });
+
+    return {
+      type: contract.type,
+      label: this.getAgentLabel(),
+      description: contract.description,
+      state: this.getAgentState(),
+      actions,
+    };
+  }
+
+  // What the node tells an agent of itself: none by default — a component
+  // reads it from its `.ai.yml`.
+  protected getAgentContract(): AgentContractInterface | null {
+    return null;
+  }
+
+  // How the actions of the contract run, by name.
+  protected getAgentActions(): AgentActionsImplementation {
+    return {};
+  }
+
+  // Read each time the page is inspected, so it tells what it finds.
+  protected getAgentState(): Record<string, any> | undefined {
+    return undefined;
+  }
+
+  protected getAgentLabel(): string | undefined {
+    return undefined;
+  }
+
+  // Whether an agent sees this node: all its actions (true), some of them by
+  // name, or nothing — the default, a page showing only what it chose to.
+  protected getAgentExposure(): boolean | string[] {
+    return false;
   }
 
   protected async activateTools(): Promise<void> {

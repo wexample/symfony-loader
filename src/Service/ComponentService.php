@@ -44,7 +44,8 @@ class ComponentService extends AbstractRenderNodeService
     public function __construct(
         AssetsService $assetsService,
         protected readonly ComponentManagerLocatorService $componentManagerLocatorService,
-        protected readonly Translator $translator
+        protected readonly Translator $translator,
+        protected readonly AgentContractService $agentContractService,
     ) {
         parent::__construct(
             $assetsService,
@@ -89,6 +90,11 @@ class ComponentService extends AbstractRenderNodeService
                         'render_pass' => $renderPass,
                         'component' => $component,
                     ] + $templateVars
+                );
+
+                $component->agent = $this->agentContractService->forComponent(
+                    $twig,
+                    $component
                 );
 
                 $this->translator->revertDomain(

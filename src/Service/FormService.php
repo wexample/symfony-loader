@@ -19,12 +19,14 @@ class FormService extends ComponentService
         AssetsService $assetsService,
         ComponentManagerLocatorService $componentManagerLocatorService,
         Translator $translator,
+        AgentContractService $agentContractService,
         private readonly AssetsRegistryService $assetsRegistryService
     ) {
         parent::__construct(
             $assetsService,
             $componentManagerLocatorService,
-            $translator
+            $translator,
+            $agentContractService
         );
     }
 

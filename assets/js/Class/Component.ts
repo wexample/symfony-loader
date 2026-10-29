@@ -2,10 +2,12 @@ import ComponentInterface from '../Interfaces/RenderData/ComponentInterface';
 import RenderNode from './RenderNode';
 import { domFindPreviousNode } from '@wexample/js-helpers/Helper/Dom';
 import InvariantViolationError from '../Errors/InvariantViolationError';
+import type { AgentContractInterface } from '../Interfaces/AgentNodeInterface';
 
 export default abstract class Component extends RenderNode {
   protected initMode: string;
   public options: any = {};
+  private agentContract: AgentContractInterface | null = null;
 
   public static INIT_MODE_CLASS: string = 'class';
 
@@ -107,6 +109,17 @@ export default abstract class Component extends RenderNode {
 
     this.initMode = renderData.initMode;
     this.options = {...this.options, ...renderData.options};
+    this.agentContract = renderData.agent ?? this.agentContract;
+  }
+
+  // Said where the component is drawn: `{ agent: true }`, or the actions it
+  // offers, `{ agent: ['get', 'toggle'] }`.
+  protected getAgentExposure(): boolean | string[] {
+    return this.options.agent ?? false;
+  }
+
+  protected getAgentContract(): AgentContractInterface | null {
+    return this.agentContract;
   }
 
   public getRenderNodeType(): string {

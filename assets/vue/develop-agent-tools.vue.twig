@@ -1,5 +1,53 @@
 {% block component %}
 <div class="develop-agent-tools">
+    <div class="develop-agent-tools__section">
+        <span class="develop-agent-tools__title">Page<template v-if="inspection"> · {{ 'inspection.locale' | vue_key }}</template></span>
+        <button class="develop-agent-tools__run" @click="refreshPage()">Refresh</button>
+        <button class="develop-agent-tools__run" :class="pageRaw ? 'develop-agent-tools__run--active' : ''" @click="pageRaw = !pageRaw">JSON</button>
+    </div>
+    <div v-if="!page.length" class="develop-agent-tools__empty">No piece of the page shown to the agent: a component is, drawn with the option <code>agent</code>.</div>
+    <pre v-else-if="pageRaw" class="develop-agent-tools__raw">{{ 'JSON.stringify(inspection, null, 2)' | vue_key }}</pre>
+    <template v-else>
+        <div
+            v-for="row in pageRows()"
+            :key="row.node.id"
+            class="develop-agent-tools__item"
+            :style="{ paddingLeft: `calc(8px + ${row.depth * 16}px)` }"
+            @mouseenter="highlight(row.node, true)"
+            @mouseleave="highlight(row.node, false)"
+        >
+            <div class="develop-agent-tools__head">
+                <span class="develop-agent-tools__hint">{{ 'row.node.type' | vue_key }}</span>
+                <span class="develop-agent-tools__name">{{ 'row.node.label || row.node.id' | vue_key }}</span>
+                <span v-if="row.node.state" class="develop-agent-tools__parameter">{{ 'JSON.stringify(row.node.state)' | vue_key }}</span>
+            </div>
+            <div v-if="row.node.description" class="develop-agent-tools__description">{{ 'row.node.description' | vue_key }}</div>
+            <div class="develop-agent-tools__call">
+                <input
+                    class="develop-agent-tools__args"
+                    type="text"
+                    v-model="actionArgs[row.node.id]"
+                    placeholder="{}"
+                />
+                <button
+                    v-for="action in row.node.actions"
+                    :key="action.name"
+                    class="develop-agent-tools__run"
+                    :title="action.description"
+                    @click="act(row.node, action)"
+                >{{ 'action.name' | vue_key }}</button>
+                <span
+                    v-if="actionResults[row.node.id]"
+                    class="develop-agent-tools__result"
+                    :class="actionResults[row.node.id].error ? 'develop-agent-tools__result--error' : ''"
+                >{{ 'actionResults[row.node.id].error || actionResults[row.node.id].value' | vue_key }}</span>
+            </div>
+        </div>
+    </template>
+
+    <div class="develop-agent-tools__section">
+        <span class="develop-agent-tools__title">Tools</span>
+    </div>
     <div v-if="!tools.length" class="develop-agent-tools__empty">No agent tool in the page.</div>
     <div v-for="tool in tools" :key="tool.name" class="develop-agent-tools__item">
         <div class="develop-agent-tools__head">
