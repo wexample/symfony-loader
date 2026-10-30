@@ -112,19 +112,34 @@ final readonly class AgentBackToolsService
      */
     public function resolve(array $call): ?array
     {
+        ['name' => $name, 'arguments' => $arguments] = self::unwrap($call);
+        $tool = is_string($name) ? $this->get($name) : null;
+
+        return $tool ? ['tool' => $tool, 'arguments' => $arguments] : null;
+    }
+
+    /**
+     * The tool a call reaches and its arguments, through as many `call_tool`
+     * as the agent wrapped it in — agents do wrap it twice —, its arguments
+     * taken flat when they are not under `arguments`.
+     *
+     * @param array<string, mixed> $call
+     *
+     * @return array{name: mixed, arguments: array<string, mixed>}
+     */
+    private static function unwrap(array $call): array
+    {
         $name = $call['name'] ?? null;
         $arguments = is_array($call['arguments'] ?? null) ? $call['arguments'] : [];
 
-        if (self::TOOL_CALL === $name) {
+        for ($depth = 0; self::TOOL_CALL === $name && $depth < 5; ++$depth) {
             $flat = $arguments;
             unset($flat['name'], $flat['arguments']);
             $name = $arguments['name'] ?? null;
             $arguments = is_array($arguments['arguments'] ?? null) ? $arguments['arguments'] : $flat;
         }
 
-        $tool = is_string($name) ? $this->get($name) : null;
-
-        return $tool ? ['tool' => $tool, 'arguments' => $arguments] : null;
+        return ['name' => $name, 'arguments' => $arguments];
     }
 
     /**
@@ -232,16 +247,8 @@ final readonly class AgentBackToolsService
      */
     private function toolListArguments(array $call): ?array
     {
-        $arguments = is_array($call['arguments'] ?? null) ? $call['arguments'] : [];
+        ['name' => $name, 'arguments' => $arguments] = self::unwrap($call);
 
-        if (self::TOOL_LIST === ($call['name'] ?? null)) {
-            return $arguments;
-        }
-
-        if (self::TOOL_CALL === ($call['name'] ?? null) && self::TOOL_LIST === ($arguments['name'] ?? null)) {
-            return is_array($arguments['arguments'] ?? null) ? $arguments['arguments'] : [];
-        }
-
-        return null;
+        return self::TOOL_LIST === $name ? $arguments : null;
     }
 }

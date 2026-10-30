@@ -31,6 +31,7 @@ class AgentBackToolsServiceTest extends TestCase
         self::assertSame(['said' => 'hi'], $this->service->resolve(['name' => 'echo', 'arguments' => ['said' => 'hi']])['arguments']);
         self::assertSame(['said' => 'hi'], $this->service->resolve(['name' => 'call_tool', 'arguments' => ['name' => 'echo', 'arguments' => ['said' => 'hi']]])['arguments']);
         self::assertSame(['said' => 'hi'], $this->service->resolve(['name' => 'call_tool', 'arguments' => ['name' => 'echo', 'said' => 'hi']])['arguments']);
+        self::assertSame(['said' => 'hi'], $this->service->resolve(['name' => 'call_tool', 'arguments' => ['name' => 'call_tool', 'arguments' => ['name' => 'echo', 'arguments' => ['said' => 'hi']]]])['arguments']);
         self::assertNull($this->service->resolve(['name' => 'act', 'arguments' => []]));
         self::assertNull($this->service->resolve(['name' => 'call_tool', 'arguments' => ['name' => 'inspect_page']]));
     }
