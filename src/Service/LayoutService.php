@@ -4,7 +4,9 @@ namespace Wexample\SymfonyLoader\Service;
 
 use Exception;
 use JetBrains\PhpStorm\Pure;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Twig\Environment;
+use Wexample\SymfonyLoader\Interface\LayoutRenderDataProviderInterface;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyTranslations\Translation\Translator;
 
@@ -17,7 +19,8 @@ class LayoutService extends AbstractRenderNodeService
         private readonly PageService $pageService,
         private readonly array $layoutBases,
         protected readonly Translator $translator,
-        private readonly AgentBackToolsService $agentBackTools,
+        #[AutowireIterator(LayoutRenderDataProviderInterface::TAG)]
+        private readonly iterable $layoutRenderDataProviders = [],
     ) {
         parent::__construct(
             $assetsService,
@@ -34,8 +37,12 @@ class LayoutService extends AbstractRenderNodeService
         $this->layoutInit($renderPass);
         $this->layoutInitPageManagerComponent($twig, $renderPass);
 
-        // What the page's agent tools may offer, as the application says.
-        $renderPass->getLayoutRenderNode()->agentTools = $this->agentBackTools->frontSettings();
+        // What the bundles add to the layout's render data, by key.
+        $layoutRenderNode = $renderPass->getLayoutRenderNode();
+
+        foreach ($this->layoutRenderDataProviders as $provider) {
+            $layoutRenderNode->extra = [...$layoutRenderNode->extra, ...$provider->provideLayoutRenderData()];
+        }
     }
 
     /**

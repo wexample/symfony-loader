@@ -39,12 +39,12 @@ abstract class AbstractLayoutRenderNode extends AbstractRenderNode
     public array $vueContracts = [];
 
     /**
-     * What the page's agent tools may offer (AgentBackToolsService::frontSettings):
-     * `{enabled, disabled}`.
+     * What the bundles add to the layout's render data, by key
+     * (LayoutRenderDataProviderInterface): spread beside the layout's own.
      *
-     * @var array{enabled?: bool, disabled?: string[]}
+     * @var array<string, mixed>
      */
-    public array $agentTools = [];
+    public array $extra = [];
 
     public function toRenderData(): RenderData
     {
@@ -55,8 +55,8 @@ abstract class AbstractLayoutRenderNode extends AbstractRenderNode
                 'renderRequestId',
                 'page',
                 'vueContracts',
-                'agentTools',
             ])
+            + $this->extra
             + ['templates' => $this->getComponentsTemplates()]
         );
 

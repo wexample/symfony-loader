@@ -2,7 +2,6 @@ parameters:
     loader.debug: false
     loader.environment: '%env(APP_ENV)%'
     loader.layout_bases: {}
-    loader.agent_tools: { front: true, back: true, disabled: [] }
     loader.date_locale: ~
     
     # Loader colors

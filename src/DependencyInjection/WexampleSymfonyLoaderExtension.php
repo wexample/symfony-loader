@@ -13,7 +13,7 @@ use Wexample\SymfonyHelpers\Interface\HeadStructuredDataProviderInterface;
 use Wexample\SymfonyHelpers\Interface\LoaderBundleInterface;
 use Wexample\SymfonyLoader\Controller\System\ErrorController;
 use Wexample\SymfonyLoader\Interface\DevelopTabInterface;
-use Wexample\SymfonyLoader\Interface\AgentBackToolInterface;
+use Wexample\SymfonyLoader\Interface\LayoutRenderDataProviderInterface;
 use Wexample\SymfonyLoader\Interface\RequirementProviderInterface;
 
 class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
@@ -57,11 +57,10 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
             ->registerForAutoconfiguration(HeadStructuredDataProviderInterface::class)
             ->addTag(HeadStructuredDataProviderInterface::TAG);
 
-        // And for the tools an agent runs on the server, whichever bundle
-        // ships one (AgentBackToolsService).
+        // And for what a bundle adds to the render data of every layout.
         $container
-            ->registerForAutoconfiguration(AgentBackToolInterface::class)
-            ->addTag(AgentBackToolInterface::TAG);
+            ->registerForAutoconfiguration(LayoutRenderDataProviderInterface::class)
+            ->addTag(LayoutRenderDataProviderInterface::TAG);
 
         // And for what a bundle needs the application to give it.
         $container
@@ -87,11 +86,6 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
         $container->setParameter(
             'loader.develop_toolbar',
             $config['develop_toolbar'] ?? false
-        );
-
-        $container->setParameter(
-            'loader.agent_tools',
-            $config['agent_tools']
         );
 
         $container->setParameter(
