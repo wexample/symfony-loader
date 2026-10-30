@@ -11,19 +11,16 @@ use Attribute;
  * one an agent never hears of, however open it is: a logout link, a login
  * link, an api's documentation.
  *
- * `description` says, in english, what the page is for — the agent chooses
- * on it rather than on a route's name. Conditions on who an agent may take
- * there will come here too.
+ * A page offered says what it is for (`#[RouteDescription]`, symfony-helpers):
+ * the agent chooses on it. One that does not is left out, and the log says
+ * so. Conditions on who an agent may take there will come here.
  *
- *     #[AgentRoute(description: 'The models the account runs, with their state.')]
+ *     #[AgentRoute]
+ *     #[RouteDescription('The models the manager runs, with their state.')]
  *     #[Route(path: '', name: self::ROUTE_INDEX)]
  *     public function index(): Response
  */
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 final readonly class AgentRoute
 {
-    public function __construct(
-        public ?string $description = null,
-    ) {
-    }
 }
