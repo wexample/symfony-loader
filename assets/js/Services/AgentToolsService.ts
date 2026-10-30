@@ -15,6 +15,9 @@ export const TOOL_ACT = 'act';
 export const TOOL_FIND = 'find_nodes';
 export const TOOL_FOCUS = 'focus';
 export const SCOPE_FRONT = 'front';
+// The tools the application runs on its server: listed by it, not by the
+// page — it completes the page's answer to list_tools on its way to the agent.
+export const SCOPE_BACK = 'back';
 
 interface AgentToolEntry {
   owner: object;
@@ -81,8 +84,8 @@ export default class AgentToolsService extends AppService {
         properties: {
           scope: {
             type: 'string',
-            enum: [SCOPE_FRONT],
-            description: 'Where the tools run: "front" for the page the user is looking at.',
+            enum: [SCOPE_FRONT, SCOPE_BACK],
+            description: 'Where the tools run: "front" for the page the user is looking at, "back" for the application\'s server. Both when left out.',
           },
           filter: {
             type: 'string',
@@ -91,7 +94,7 @@ export default class AgentToolsService extends AppService {
         },
       },
       annotations: { readOnlyHint: true },
-      execute: (args) => this.listFor(args.scope ?? SCOPE_FRONT, args.filter),
+      execute: (args) => this.listFor(args.scope, args.filter),
     });
 
     this.register(this, {
@@ -262,9 +265,10 @@ export default class AgentToolsService extends AppService {
 
   // The list the agent reads: the page's own tools, not the two it reads them
   // through.
-  private listFor(scope: string, filter?: string): AgentToolDefinition[] {
-    if (scope !== SCOPE_FRONT) {
-      throw new Error(`The page lists its "${SCOPE_FRONT}" tools only.`);
+  // The server's tools are added by the server, to this very answer.
+  private listFor(scope: string | undefined, filter?: string): AgentToolDefinition[] {
+    if (scope === SCOPE_BACK) {
+      return [];
     }
 
     const needle = filter?.toLowerCase();

@@ -13,6 +13,7 @@ use Wexample\SymfonyHelpers\Interface\HeadStructuredDataProviderInterface;
 use Wexample\SymfonyHelpers\Interface\LoaderBundleInterface;
 use Wexample\SymfonyLoader\Controller\System\ErrorController;
 use Wexample\SymfonyLoader\Interface\DevelopTabInterface;
+use Wexample\SymfonyLoader\Interface\AgentBackToolInterface;
 use Wexample\SymfonyLoader\Interface\RequirementProviderInterface;
 
 class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
@@ -55,6 +56,12 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
         $container
             ->registerForAutoconfiguration(HeadStructuredDataProviderInterface::class)
             ->addTag(HeadStructuredDataProviderInterface::TAG);
+
+        // And for the tools an agent runs on the server, whichever bundle
+        // ships one (AgentBackToolsService).
+        $container
+            ->registerForAutoconfiguration(AgentBackToolInterface::class)
+            ->addTag(AgentBackToolInterface::TAG);
 
         // And for what a bundle needs the application to give it.
         $container

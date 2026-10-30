@@ -90,6 +90,15 @@ Between two of its turns the agent is blind: the user opens a panel, searches a 
 
 The develop toolbar's *User events* tab shows the log as it stands.
 
+## Tools of the server
+
+Some tools run on the application's server, as the user the agent talks to: `whoami`, `list_pages` (the design system's, the routes the user may open, as a menu decides). A service implementing `AgentBackToolInterface` is one — name, english description, schema, annotations, `execute()` —, tagged by the loader. The page never hears of them; the application intercepts:
+
+- An agent's call reaches the application before the page — a callback, a worker saving it. The application asks `AgentBackToolsService::resolve()`: a call to a tool of the server, directly or through `call_tool`, is marked as answered here (`runBy: 'back'`) before it is published, so the chat shows it and does not run it, then answered as the conversation's owner (`answer()`, the user's token in place while it runs) and sent to the engine as the page sends its answers.
+- The page answers `list_tools` with its own tools; on its way to the engine, the application completes that answer with the server's (`completeToolList()`), unless the agent asked for `scope: 'front'`.
+
+Two applications do it today, each where its messages pass: symfony-ai (`AgentBackToolListener`, on the tool messages any engine writes, and its message endpoint for `list_tools`), and the Syrtis manager (`AgentBackToolRelay`, in the worker publishing saved messages). `loader:agent-tools` lists the tools of the server; `--run=list_pages --arguments='{"query":"model"}' --user=…` runs one as an account.
+
 ## Seeing it
 
 The develop toolbar's *Agent tools* tab shows the page as `inspect_page` returns it, runs each action, and *Show on page* frames every component that has a contract: solid when the agent is shown it, dashed when it could be.
