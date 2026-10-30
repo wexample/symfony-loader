@@ -2,6 +2,7 @@
 
 namespace Wexample\SymfonyLoader\Service;
 
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -26,6 +27,12 @@ use Wexample\SymfonyLoader\Interface\AgentBackToolInterface;
  * Calls come as the agent writes them: `{name, arguments}`, or through
  * `call_tool` — `{name: 'call_tool', arguments: {name, arguments}}` —, its
  * arguments sometimes flat beside the name.
+ *
+ * What the application lets the agents use is its configuration
+ * (`wexample_symfony_loader.agent_tools`): the server's tools off (`back`),
+ * the page's off (`front`) — the server then answers every call, `list_tools`
+ * included, the page only showing them —, and tools off by name (`disabled`),
+ * whichever side runs them; the page reads its part (`frontSettings()`).
  */
 final readonly class AgentBackToolsService
 {
@@ -47,12 +54,54 @@ final readonly class AgentBackToolsService
 
     /**
      * @param iterable<AgentBackToolInterface> $tools
+     * @param array{front?: bool, back?: bool, disabled?: string[]} $settings
      */
     public function __construct(
         #[AutowireIterator(AgentBackToolInterface::TAG)]
         private iterable $tools,
         private TokenStorageInterface $tokenStorage,
+        #[Autowire(param: 'loader.agent_tools')]
+        private array $settings = [],
     ) {
+    }
+
+    public function isFrontEnabled(): bool
+    {
+        return $this->settings['front'] ?? true;
+    }
+
+    public function isBackEnabled(): bool
+    {
+        return $this->settings['back'] ?? true;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function disabledTools(): array
+    {
+        return $this->settings['disabled'] ?? [];
+    }
+
+    /**
+     * What the page is told of the settings, with the layout's render data.
+     *
+     * @return array{enabled: bool, disabled: string[]}
+     */
+    public function frontSettings(): array
+    {
+        return ['enabled' => $this->isFrontEnabled(), 'disabled' => $this->disabledTools()];
+    }
+
+    /**
+     * Whether the server answers a call: one of its tools — or any call, the
+     * page's tools being off.
+     *
+     * @param array<string, mixed> $call
+     */
+    public function handles(array $call): bool
+    {
+        return ! $this->isFrontEnabled() || null !== $this->resolve($call);
     }
 
     /**
@@ -60,10 +109,16 @@ final readonly class AgentBackToolsService
      */
     public function all(): array
     {
+        if (! $this->isBackEnabled()) {
+            return [];
+        }
+
         $tools = [];
 
         foreach ($this->tools as $tool) {
-            $tools[$tool->getName()] = $tool;
+            if (! in_array($tool->getName(), $this->disabledTools(), true)) {
+                $tools[$tool->getName()] = $tool;
+            }
         }
 
         return $tools;
@@ -158,10 +213,21 @@ final readonly class AgentBackToolsService
      */
     public function answer(array $call, ?UserInterface $user = null): array
     {
+        // The page's tools off, the list is the server's alone.
+        if (! $this->isFrontEnabled() && null !== ($listArguments = $this->toolListArguments($call))) {
+            return self::SCOPE_FRONT === ($listArguments['scope'] ?? null)
+                ? [[]]
+                : [$this->definitions(is_string($listArguments['filter'] ?? null) ? $listArguments['filter'] : null)];
+        }
+
         $resolved = $this->resolve($call);
 
         if (! $resolved) {
-            return [['error' => sprintf('No tool "%s" on the server.', (string) ($call['name'] ?? ''))]];
+            $named = self::TOOL_CALL === ($call['name'] ?? null) && is_array($call['arguments'] ?? null)
+                ? ($call['arguments']['name'] ?? '')
+                : ($call['name'] ?? '');
+
+            return [['error' => sprintf('No tool "%s": list_tools returns the ones there are.', is_string($named) ? $named : '')]];
         }
 
         try {

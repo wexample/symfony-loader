@@ -14,7 +14,7 @@ An agent talking to the user from a chat of the page — Syrtis, Claude through 
 | `act({node, action, arguments})` | Runs an action of a node. |
 | `find_nodes({query, type?})` | The nodes whose kind, label or description holds a text, each with the way to it from the top of the page. |
 | `focus({nodes})` | Shows the user pieces of the page: unfolds what hides them, scrolls to the first, frames them all. |
-| `navigate({url})` | Opens a page of the application by its address — as the server's `list_pages` gives it, its `{parameters}` filled in —, answered from the page reached. An address elsewhere, or with a parameter left unfilled, is refused. |
+| `navigate({url})` | Off where an application says so (`disabled: [navigate]`, the manager and portfolio today: it opens any address, a 404 as well). Opens a page of the application by its address — as the server's `list_pages` gives it, its `{parameters}` filled in —, answered from the page reached. An address elsewhere, or with a parameter left unfilled, is refused. |
 
 Arguments given flat beside the name — `{name: 'act', node, action, value}` — are taken as the tool's, and a piece and an action given with no name at all as `act`'s: agents do it, and nothing is gained by refusing. A call with neither is told what `call_tool` takes, not that a tool named "undefined" is missing.
 
@@ -99,6 +99,20 @@ Some tools run on the application's server, as the user the agent talks to: `who
 - The page answers `list_tools` with its own tools; on its way to the engine, the application completes that answer with the server's (`completeToolList()`), unless the agent asked for `scope: 'front'`.
 
 Two applications do it today, each where its messages pass: symfony-ai (`AgentBackToolListener`, on the tool messages any engine writes, and its message endpoint for `list_tools`), and the Syrtis manager (`AgentBackToolRelay`, in the worker publishing saved messages). `loader:agent-tools` lists the tools of the server; `--run=list_pages --arguments='{"query":"model"}' --user=…` runs one as an account.
+
+## What an application lets the agents use
+
+{% raw %}```yaml
+wexample_symfony_loader:
+    agent_tools:
+        front: true           # the page's tools
+        back: true            # the server's tools, and the interception
+        disabled: [navigate]  # tools off by name, whichever side runs them
+```{% endraw %}
+
+- `disabled` takes a tool out of `list_tools` and refuses its calls, on the page (the layout's render data carries the list, `agentTools`) and on the server alike.
+- `back: false` leaves every call to the page: nothing is intercepted, `list_tools` is not completed.
+- `front: false` leaves every call to the server: it answers `list_tools` with its own tools and any other call itself, the page only showing them.
 
 ## Seeing it
 

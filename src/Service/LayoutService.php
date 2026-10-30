@@ -17,6 +17,7 @@ class LayoutService extends AbstractRenderNodeService
         private readonly PageService $pageService,
         private readonly array $layoutBases,
         protected readonly Translator $translator,
+        private readonly AgentBackToolsService $agentBackTools,
     ) {
         parent::__construct(
             $assetsService,
@@ -32,6 +33,9 @@ class LayoutService extends AbstractRenderNodeService
     ): void {
         $this->layoutInit($renderPass);
         $this->layoutInitPageManagerComponent($twig, $renderPass);
+
+        // What the page's agent tools may offer, as the application says.
+        $renderPass->getLayoutRenderNode()->agentTools = $this->agentBackTools->frontSettings();
     }
 
     /**

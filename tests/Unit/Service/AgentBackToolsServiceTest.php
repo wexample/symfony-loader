@@ -71,6 +71,32 @@ class AgentBackToolsServiceTest extends TestCase
         self::assertSame($page, $this->service->completeToolList(['name' => 'act'], $page));
     }
 
+    public function testAToolTurnedOffByNameIsNeitherListedNorRun(): void
+    {
+        $service = new AgentBackToolsService([$this->tool('echo'), $this->tool('fail')], $this->tokenStorage, ['disabled' => ['fail']]);
+
+        self::assertSame(['echo'], array_column($service->definitions(), 'name'));
+        self::assertNull($service->resolve(['name' => 'fail']));
+        self::assertSame(['enabled' => true, 'disabled' => ['fail']], $service->frontSettings());
+    }
+
+    public function testTheServersToolsOffLeaveEveryCallToThePage(): void
+    {
+        $service = new AgentBackToolsService([$this->tool('echo')], $this->tokenStorage, ['back' => false]);
+
+        self::assertFalse($service->handles(['name' => 'echo']));
+        self::assertSame([[['name' => 'inspect_page']]], $service->completeToolList(['name' => 'list_tools'], [[['name' => 'inspect_page']]]));
+    }
+
+    public function testThePagesToolsOffLeaveEveryCallToTheServer(): void
+    {
+        $service = new AgentBackToolsService([$this->tool('echo')], $this->tokenStorage, ['front' => false]);
+
+        self::assertTrue($service->handles(['name' => 'inspect_page']));
+        self::assertSame(['echo'], array_column($service->answer(['name' => 'list_tools'])[0], 'name'));
+        self::assertSame([['error' => 'No tool "inspect_page": list_tools returns the ones there are.']], $service->answer(['name' => 'call_tool', 'arguments' => ['name' => 'inspect_page']]));
+    }
+
     private function tool(string $name): AgentBackToolInterface
     {
         $tokenStorage = &$this->tokenStorage;

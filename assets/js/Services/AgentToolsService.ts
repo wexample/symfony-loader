@@ -292,6 +292,10 @@ export default class AgentToolsService extends AppService {
     const definitions = new Map<string, AgentToolDefinition>();
 
     for (const { tool } of this.entries) {
+      if (!this.isAllowed(tool.name)) {
+        continue;
+      }
+
       const { execute, ...definition } = tool;
       definitions.set(tool.name, definition);
     }
@@ -485,7 +489,20 @@ export default class AgentToolsService extends AppService {
     return nodes.map((node) => ({ ...page.toPageNode(node), path: page.path(node) }));
   }
 
+  // What the application lets the page offer (`wexample_symfony_loader.agent_tools`):
+  // nothing when the page's tools are off — the server then answers every
+  // call —, nor a tool turned off by name.
+  private isAllowed(name: string): boolean {
+    const settings = (window as any).appRegistry?.layoutRenderData?.agentTools ?? {};
+
+    return settings.enabled !== false && !(settings.disabled ?? []).includes(name);
+  }
+
   private find(name: string): AgentToolInterface | null {
+    if (!this.isAllowed(name)) {
+      return null;
+    }
+
     for (let index = this.entries.length - 1; index >= 0; index--) {
       if (this.entries[index].tool.name === name) {
         return this.entries[index].tool;

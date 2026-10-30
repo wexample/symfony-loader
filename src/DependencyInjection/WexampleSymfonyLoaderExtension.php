@@ -90,6 +90,11 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
         );
 
         $container->setParameter(
+            'loader.agent_tools',
+            $config['agent_tools']
+        );
+
+        $container->setParameter(
             'loader.themes',
             $config['themes'] ?? []
         );
