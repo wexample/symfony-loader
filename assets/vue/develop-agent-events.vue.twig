@@ -1,0 +1,22 @@
+{% block component %}
+<div class="develop-agent-events">
+    <div class="develop-agent-events__section">
+        <span class="develop-agent-events__title">User events · {{ 'events.length' | vue_key }}</span>
+        <button class="develop-agent-events__run" @click="refresh()">Refresh</button>
+        <button class="develop-agent-events__run" @click="clear()">Clear</button>
+    </div>
+    <div v-if="!events.length" class="develop-agent-events__empty">Nothing done in the page since the agent last heard from it: pages reached, veils opened, what the components say they were done.</div>
+    <div
+        v-for="(event, index) in events"
+        :key="index"
+        class="develop-agent-events__item"
+    >
+        <span class="develop-agent-events__time">{{ 'timeOf(event)' | vue_key }}</span>
+        <span class="develop-agent-events__kind">{{ 'event.kind' | vue_key }}</span>
+        <span class="develop-agent-events__summary">{{ 'event.summary' | vue_key }}</span>
+        <span v-if="event.count > 1" class="develop-agent-events__count">× {{ 'event.count' | vue_key }}</span>
+        <span v-if="event.node && event.node.type" class="develop-agent-events__hint">{{ 'event.node.type' | vue_key }}</span>
+        <span v-if="event.detail" class="develop-agent-events__detail">{{ 'detailOf(event)' | vue_key }}</span>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+# What an agent is told about a form (Class/Form.ts runs the actions): its
+# fields are nodes of their own, inside it, each with the contract of its
+# kind; the form fills them in order, and sends them. In english, never
+# translated: see AgentContractService.
+type: form
+description: "A form: its fields stand inside it, each a piece of its own. `fill` writes several at once, in order; nothing written is saved until `submit` sends it as its button does — its state says `unsaved` while so."
+actions:
+  fill:
+    description: "Writes values in the fields named, one after the other, as a person would: `values` maps field names (as the fields' state says them) to what to write — a text, a choice's value or label, true or false for a box. Writing saves nothing: `submit` does."
+    input_schema:
+      properties:
+        values:
+          type: object
+          additionalProperties: true
+      required: [values]
+  submit:
+    description: "Sends the form, as its submit button does. A form that asks for confirmation asks the user first. One answered in place reports its errors (`errors`); one leaving the page is answered from the page reached."
+  errors:
+    description: What the form was told of its last sending, for the form and for each field.
+    annotations:
+      readOnlyHint: true

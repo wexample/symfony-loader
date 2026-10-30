@@ -38,7 +38,8 @@ class VueService implements ResetInterface
         protected readonly AssetsService $assetsService,
         protected readonly ComponentService $componentsService,
         protected readonly Translator $translator,
-        protected readonly JsService $jsService
+        protected readonly JsService $jsService,
+        protected readonly AgentContractService $agentContractService,
     ) {
     }
 
@@ -209,6 +210,12 @@ class VueService implements ResetInterface
 
         if ($renderPass->isJsonRequest()) {
             $renderPass->getLayoutRenderNode()->vueTemplates = $this->renderedTemplates;
+        }
+
+        // What an agent is told of this vue, once per view for the page: the
+        // vues drawn from it, however many, read it there (VueAgentNode).
+        if ($contract = $this->agentContractService->resolve($twig, $view)) {
+            $renderPass->getLayoutRenderNode()->vueContracts[$view] = $contract;
         }
 
         $wrapperClass = trim(

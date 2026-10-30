@@ -1,0 +1,5 @@
+type: form
+description: A form.
+actions:
+  submit:
+    description: Sends the form.

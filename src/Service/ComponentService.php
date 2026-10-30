@@ -92,11 +92,6 @@ class ComponentService extends AbstractRenderNodeService
                     ] + $templateVars
                 );
 
-                $component->agent = $this->agentContractService->forComponent(
-                    $twig,
-                    $component
-                );
-
                 $this->translator->revertDomain(
                     Translator::DOMAIN_TYPE_COMPONENT
                 );
@@ -275,6 +270,13 @@ class ComponentService extends AbstractRenderNodeService
             $component,
             $renderPass,
             $name,
+        );
+
+        // Whatever draws the markup — this call, or the component's own
+        // template asking for its class —, what an agent is told of it.
+        $component->agent = $this->agentContractService->forComponent(
+            $twig,
+            $component
         );
 
         if ($renderBody) {

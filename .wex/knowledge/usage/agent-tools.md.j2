@@ -1,0 +1,95 @@
+# What an agent may do in a page
+
+An agent talking to the user from a chat of the page — Syrtis, Claude through symfony-ai — acts in the page through tools the page itself offers, and reads the page as a tree of the components it shows. The loader holds the mechanics; the design system writes what each component says of itself. Nothing is listed by hand: a component declares what it is and what may be done to it, and the agent discovers it.
+
+## The tools of the page
+
+`AgentToolsService` registers six tools of its own, and whatever tools the components of the page add while they are mounted (`getAgentTools()` on a render node). An agent's scenario declares only the first two: the rest it finds.
+
+| Tool | What it does |
+|---|---|
+| `list_tools({scope?, filter?})` | The tools available right now, with their schema. |
+| `call_tool({name, arguments})` | Runs one of them. |
+| `inspect_page({node?, depth?})` | The page as a tree: `{locale, nodes}`, each node with its id, kind, label, description, state and actions. |
+| `act({node, action, arguments})` | Runs an action of a node. |
+| `find_nodes({query, type?})` | The nodes whose kind, label or description holds a text, each with the way to it from the top of the page. |
+| `focus({nodes})` | Shows the user pieces of the page: unfolds what hides them, scrolls to the first, frames them all. |
+
+Arguments given flat beside the name — `{name: 'act', node, action, value}` — are taken as the tool's, and a piece and an action given with no name at all as `act`'s: agents do it, and nothing is gained by refusing. A call with neither is told what `call_tool` takes, not that a tool named "undefined" is missing.
+
+A call reaches the page as a message of the conversation; `AgentToolsService.run(callId, name, args, context)` runs it once whatever publishes it twice, and the chat sends the answer back. `context.caller` names the conversation, so that what a tool leaves in the page — a frame — is that agent's beside another's.
+
+## A node
+
+A node is an instance of a component that has a contract: a `.ai.yml` beside its template, read by `AgentContractService`.
+
+{% raw %}```yaml
+# components/switch/switch.ai.yml
+type: switch
+description: A switch, on or off.
+actions:
+  get:
+    description: Tells whether the switch is on.
+    annotations: { readOnlyHint: true }
+  set:
+    description: Turns the switch on or off.
+    input_schema:
+      properties: { checked: { type: boolean } }
+      required: [checked]
+  toggle:
+    description: Turns the switch to the other state, as a click does.
+```{% endraw %}
+
+- Written in english and never translated: a description is an instruction, as a schema is, and one wording is what gets tested. What the agent finds in the user's language is what the user sees — the labels.
+- `extends: '@Bundle/components/switch/switch'` makes a contract another's, with its own `description`: `color-scheme-switch` is a switch, and only says what it is for.
+- One contract serves every twin of the component's directory — `switch.ts` and `switch.vue` alike — and each has to run every action it declares; one that does not is left out of the page, and said in the console.
+
+The script runs the actions and says the rest, through the same hooks whatever draws the component:
+
+| Hook | Render node (`.ts`) | Vue (`.vue`, as methods) |
+|---|---|---|
+| The actions, by name | `getAgentActions(): AgentActionsImplementation` | `getAgentActions()` |
+| The state, read at each inspection | `getAgentState()` | `getAgentState()` |
+| The label, as the user reads it | `getAgentLabel()` | `getAgentLabel()` |
+| The element a frame goes round | `getAgentFrameElement()` | `getAgentFrameElement()` |
+| Making a node it holds visible before an agent points at it | `revealAgentChild(child)` | `revealAgentChild(child)` |
+
+Both kinds implement `AgentNodeProviderInterface` — a vue through `VueAgentNode` — and register with the service as they mount, a render node in `activateTools()`, a vue from the global mixin. The contracts of the vues drawn in a page travel once per view (`vueContracts` of the layout's render data); a vue finds its own by its `viewPath`, or by the id of its template when it was imported rather than registered by name.
+
+## What the page is to the agent
+
+`AgentPage` is the page taken at one moment: every registered node standing in the document, nested as its element is — not as any render tree holds it, where an item of the side menu is the layout's and not the menu's. A node not shown is skipped and what it holds raised to its place.
+
+A node is shown when it says so, or, saying nothing, when what holds it is:
+
+- `{ agent: true }` where a component is drawn, or the actions it offers, `{ agent: ['get', 'toggle'] }`; `{ agent: false }` holds it back — the `button-target`s inside a table's cells say so, reached through the table instead;
+- `data-agent` on an element exposes everything under it: `layout_agent = true` in a layout sets it on the body, and the whole application is read;
+- `data-agent="false"` holds a region back.
+
+## Parts of a node
+
+A row, a cell, an item of a menu are not nodes: hundreds of them would drown the agent. They are reached through an action of the node holding them — `point_row({row})` on a table, `point({item})` on a menu —, which frames them for the agent that asked:
+
+{% raw %}```ts
+this.app.services.agentTools?.pointer.point([element], context);
+```{% endraw %}
+
+`AgentPointer` keeps what each caller points at: a pointing replaces the caller's last, and a frame stays until the user acts in its layer of the page or the agent points elsewhere. The frames themselves are drawn by `AgentFrameLayer`, in a layer over the page: an outline worn by an element is cut by the first ancestor hiding its overflow, one drawn there never is. One layer per layer of the page — the page's own under the veil of an overlay, one in each modal or panel (`OverlayService.layerOf`) —, so a row pointed at waits dimmed under a panel opened over it, and is there again once the panel closes; the user acting in the panel takes back the panel's frames, not the page's.
+
+## Leaving the page
+
+An action that leaves the page — a link followed, a form sent — returns an `AgentNavigation` (an address, or a press that will leave) rather than acting at once. The chat holds the answer in the tab for its conversation (`AgentHeldResults`, in `sessionStorage`, two minutes), lets the page go, and the chat of the page reached sends it, with where it arrived (`arrived`) and what the page said in toasts (`notifications`). A press that ends up not leaving — a form sent in the background — is answered from where it was made after two seconds.
+
+## What the user did meanwhile
+
+Between two of its turns the agent is blind: the user opens a panel, searches a table, changes page, and the agent reads the difference without its cause. So the page writes down what the user does (`AgentUserEvents`, in `sessionStorage`, the last ten), and the chat sends it with whatever goes to the agent next — a message, a tool's answer — through `takeUserEvents()`, given to `postMessage(content, userEvents)` and `postToolResult(call, callId, results, userEvents)`. An event is `{at, kind, summary, count, node?, detail?}`, the summary a sentence in english: `Switched "Theme" on`. The same thing done again is counted, not written again: a switch flipped forty times is one line.
+
+- The loader writes the pages reached (`navigate`) and the veils opened or closed (`overlay`) on its own.
+- A component says the rest: `this.logAgentEvent('Searched "pfn" in the table "Models"', { key: 'search' })` on a render node or a vue, which dispatches `agent:event` on its element with the node's kind and label; `key` says what counts as the same thing again — the node and the action —, the node and the sentence by default. What matters is that it was done, not what it holds: a field says it was edited, once, when the user is done with it.
+- What the agent does itself is not written down: nothing is, while one of its calls runs or just after, and the page its action leaves for is told so before it goes.
+
+The develop toolbar's *User events* tab shows the log as it stands.
+
+## Seeing it
+
+The develop toolbar's *Agent tools* tab shows the page as `inspect_page` returns it, runs each action, and *Show on page* frames every component that has a contract: solid when the agent is shown it, dashed when it could be.

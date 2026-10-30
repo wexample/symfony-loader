@@ -1,0 +1,14 @@
+type: switch
+description: A switch, on or off.
+actions:
+  get:
+    description: Tells whether the switch is on.
+    annotations:
+      readOnlyHint: true
+  set:
+    description: Turns the switch on or off.
+    input_schema:
+      properties:
+        checked:
+          type: boolean
+      required: [checked]

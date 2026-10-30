@@ -10,6 +10,9 @@ import { stringBuildIdentifier, stringToKebab } from '@wexample/js-helpers/Helpe
 import { objectDeepAssign } from "@wexample/js-helpers/Helper/Object";
 import ErrorService from './ErrorService';
 import InvariantViolationError from '../Errors/InvariantViolationError';
+import VueAgentNode from '../Class/VueAgentNode';
+import { EVENT_AGENT, type AgentUserEventDetail } from '../Class/AgentUserEvents';
+import type { AgentContractInterface } from '../Interfaces/AgentNodeInterface';
 
 export default class VueService extends AppService {
   public static readonly CLASS_NAME_PREFIX: string = 'vue:';
@@ -27,9 +30,47 @@ export default class VueService extends AppService {
       app: {
         default: null,
       },
+      // Whether an agent is shown this vue: as a component's `agent` option
+      // (VueAgentNode). Unsaid, the vue follows what holds it.
+      agent: {
+        default: undefined,
+      },
     },
 
-    methods: {},
+    methods: {
+      // Says the user did something to this vue, for the agent to read at
+      // its next turn — as RenderNode.logAgentEvent() says it of a node.
+      logAgentEvent(summary: string, options: { key?: string; detail?: Record<string, any> } = {}): void {
+        const node = this.agentNode;
+        const detail: AgentUserEventDetail = {
+          summary,
+          kind: 'node',
+          key: `${node?.id ?? this.$.uid}:${options.key ?? summary}`,
+          node: { type: node?.getAgentContract()?.type, label: node?.getAgentLabel() ?? this.getAgentLabel?.() },
+          ...(options.detail ? { detail: options.detail } : {}),
+        };
+
+        (this.$el instanceof Element ? this.$el : document).dispatchEvent(new CustomEvent(EVENT_AGENT, { bubbles: true, detail }));
+      },
+    },
+
+    // A vue drawn from a view that has a contract is a node of the page to
+    // the agent tools, from the moment it stands to the moment it goes.
+    mounted() {
+      const found = this.app?.services?.vue?.contractFor(this);
+
+      if (found && this.app.services.agentTools) {
+        this.agentNode = new VueAgentNode(this, found.view, found.contract);
+        this.app.services.agentTools.registerNode(this.agentNode);
+      }
+    },
+
+    beforeUnmount() {
+      if (this.agentNode) {
+        this.app.services.agentTools?.unregisterNode(this.agentNode);
+        this.agentNode = null;
+      }
+    },
 
     async updated() {
       if (this !== this.$root) {
@@ -48,6 +89,13 @@ export default class VueService extends AppService {
   };
 
   public renderedTemplates: { [key: string]: boolean } = {};
+
+  // What an agent is told of each vue, by view, as the pages handed it over
+  // — and by the id of the view's template, which is what a vue imported by
+  // another rather than registered by name still carries.
+  public contracts: { [view: string]: AgentContractInterface } = {};
+
+  private contractsByTemplate: { [templateId: string]: { view: string; contract: AgentContractInterface } } = {};
 
   constructor(app: App, globalConfig: object = {}) {
     super(app);
@@ -86,6 +134,7 @@ export default class VueService extends AppService {
 
         hookLoadLayoutRenderData(renderData: LayoutInterface) {
           this.app.services.vue.addTemplatesHtml(renderData.vueTemplates);
+          this.app.services.vue.addContracts(renderData.vueContracts);
         },
       },
     };
@@ -303,6 +352,27 @@ export default class VueService extends AppService {
     }
 
     return this.componentRegistered[vueName];
+  }
+
+  addContracts(contracts?: { [view: string]: AgentContractInterface }) {
+    for (const [view, contract] of Object.entries(contracts ?? {})) {
+      this.contracts[view] = contract;
+      this.contractsByTemplate[`#vue-template-${stringBuildIdentifier(view)}`] = { view, contract };
+    }
+  }
+
+  // The contract of the view a vue is drawn from, with that view: by its
+  // `viewPath` when it was registered by name, by its template otherwise.
+  contractFor(instance: any): { view: string; contract: AgentContractInterface } | null {
+    const viewPath = instance.$props?.viewPath;
+
+    if (viewPath && this.contracts[viewPath]) {
+      return { view: viewPath, contract: this.contracts[viewPath] };
+    }
+
+    const template = instance.$options?.template;
+
+    return typeof template === 'string' ? this.contractsByTemplate[template] ?? null : null;
   }
 
   addTemplatesHtml(renderedTemplates: string[]) {

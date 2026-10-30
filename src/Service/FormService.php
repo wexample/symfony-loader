@@ -45,6 +45,9 @@ class FormService extends ComponentService
     ): string {
         $options = $this->mergeFormOptions($formView, $options, ['ajax', 'name']);
         $options['embedType'] = $renderPass->getLayoutBase();
+        // To an agent, every form is the loader's form (components/form.ai.yml),
+        // whatever template draws it.
+        $options[AgentContractService::OPTION_AGENT_CONTRACT] = ComponentService::buildCoreComponentName('components/form');
 
         // The form tag carries an id, for a button standing outside it — in the
         // foot of a card, of a modal — to send it (`form="…"`).

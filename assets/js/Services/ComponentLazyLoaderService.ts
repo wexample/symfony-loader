@@ -121,6 +121,10 @@ export default class ComponentLazyLoaderService extends AppService {
       (this.app.services.vue as VueService).addTemplatesHtml(data.vueTemplates);
     }
 
+    if (data.vueContracts && this.app.services.vue) {
+      (this.app.services.vue as VueService).addContracts(data.vueContracts);
+    }
+
     let owner: RenderNode | undefined = parentRenderNode;
 
     // Only a component with a script has a class to build; the others are done

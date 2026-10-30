@@ -1,4 +1,7 @@
+import AgentNavigation from './AgentNavigation';
 import Component from './Component';
+import type { AgentActionsImplementation } from '../Interfaces/AgentNodeInterface';
+import type { AgentCallContext } from '../Interfaces/AgentToolInterface';
 import AdaptiveService from '../Services/AdaptiveService';
 import LocaleService from '../Services/LocaleService';
 import ToastService from '../Services/ToastService';
@@ -168,6 +171,8 @@ export default class Form extends Component implements FieldRegistryInterface {
       (window.location.hash || '');
 
     const isEmbedded = this.options?.embedType && this.options.embedType !== 'default';
+
+    this.logAgentEvent(`Submitted the form${this.getAgentLabel() ? ` "${this.getAgentLabel()}"` : ''}`, { key: 'submit' });
 
     if (!this.options?.ajax && !isEmbedded) {
       this.isSent = true;
@@ -396,6 +401,148 @@ export default class Form extends Component implements FieldRegistryInterface {
   // Its name, which the server knows it by; its id when it has none.
   private get formName(): string {
     return this.el.getAttribute('name') || this.el.id;
+  }
+
+  // What an agent reads and does (`components/form.ai.yml`). The fields are
+  // nodes of their own: here, the form as a whole — filled in order, sent,
+  // and what came back.
+  public getAgentLabel(): string | undefined {
+    return this.el.getAttribute('aria-label')
+      || this.el.querySelector<HTMLElement>('legend, .form--title')?.textContent?.trim()
+      || this.formName
+      || undefined;
+  }
+
+  public getAgentState(): Record<string, any> {
+    const errors = this.readFormErrors();
+
+    return {
+      name: this.formName,
+      fields: [...this.fields.keys()],
+      // Changed and not sent: what is written is not saved until `submit`.
+      unsaved: this.isDirty && !this.isSent,
+      ...(errors.length ? { errors } : {}),
+    };
+  }
+
+  public getAgentActions(): AgentActionsImplementation {
+    return {
+      fill: async ({ values }) => {
+        const filled: string[] = [];
+        const unknown: string[] = [];
+
+        for (const [name, value] of Object.entries(values ?? {})) {
+          const field = this.getField(name) ?? this.findFieldByLabel(name);
+
+          if (!field) {
+            unknown.push(name);
+            continue;
+          }
+
+          // One after the other, as a person fills a form.
+          await field.setValueAssisted(value);
+          filled.push(field.fieldName);
+        }
+
+        if (unknown.length) {
+          throw new Error(`No field ${unknown.map((name) => `"${name}"`).join(', ')} in the form: ${[...this.fields.keys()].join(', ')}.`);
+        }
+
+        return { filled, saved: false };
+      },
+      submit: (_args, context) => this.submitForAgent(context),
+      errors: () => ({
+        form: this.readFormErrors(),
+        fields: Object.fromEntries([...this.fields.values()]
+          .map((field) => [field.fieldName, this.readFieldErrors(field.fieldName)])
+          .filter(([, errors]) => errors.length)),
+      }),
+    };
+  }
+
+  // A field named by what the reader sees — its label — as well as by name.
+  private findFieldByLabel(label: string): FieldControllerInterface | null {
+    const wanted = String(label).toLowerCase();
+
+    for (const field of this.fields.values()) {
+      const named = (field as any).getAgentLabel?.();
+
+      if (typeof named === 'string' && named.toLowerCase() === wanted) {
+        return field;
+      }
+    }
+
+    return null;
+  }
+
+  // Sent as its button sends it — pressed as the agent presses a button,
+  // when the button is a node of its own: the user sees the press, and a
+  // confirmation is asked first. Answered in place — ajax, or embedded —,
+  // the answer is what the form was told; leaving the page, it comes from
+  // the page reached.
+  private async submitForAgent(context?: AgentCallContext): Promise<AgentNavigation | Record<string, any>> {
+    const form = this.el as HTMLFormElement;
+    const submitter = Array.from(form.elements).find((element) => (element as HTMLInputElement).type === 'submit') as HTMLButtonElement | undefined;
+    const isEmbedded = this.options?.embedType && this.options.embedType !== 'default';
+    const press = await this.pressSubmitter(submitter, context);
+
+    if (press && !(press instanceof AgentNavigation)) {
+      return { submitted: this.formName, refused: true };
+    }
+
+    const send = () => (press ? press.go() : form.requestSubmit(submitter));
+
+    if (!this.options?.ajax && !isEmbedded) {
+      return new AgentNavigation(send, { submitted: this.formName });
+    }
+
+    return new Promise((resolve) => {
+      const done = () => {
+        this.el.removeEventListener('loading:end', done);
+        resolve({
+          submitted: this.formName,
+          ...(this.readFormErrors().length || this.hasFieldErrors() ? { errors: (this.getAgentActions().errors as () => any)() } : {}),
+        });
+      };
+
+      this.el.addEventListener('loading:end', done);
+      send();
+    });
+  }
+
+  // The button pressed the way its own node presses it, when it has one
+  // with a `click`: the press to run (AgentNavigation), or what the button
+  // answered instead — a confirmation refused. Null when the button has no
+  // node: the form sends itself.
+  private async pressSubmitter(submitter: HTMLButtonElement | undefined, context?: AgentCallContext): Promise<AgentNavigation | Record<string, any> | null> {
+    const click = this.app.services.agentTools?.nodeFor(submitter)?.getAgentActions().click;
+
+    if (!click) {
+      return null;
+    }
+
+    const pressed = await click({}, context);
+
+    return pressed instanceof AgentNavigation || pressed?.refused ? pressed : null;
+  }
+
+  private readFormErrors(): string[] {
+    return Array.from(this.el.querySelectorAll(':scope > .form--errors li'))
+      .map((item) => item.textContent?.trim() ?? '')
+      .filter(Boolean);
+  }
+
+  private readFieldErrors(name: string): string[] {
+    const control = this.el.querySelector(`[name="${CSS.escape(name)}"]`);
+    const group = control?.closest('.form--group');
+
+    return Array.from(group?.querySelectorAll('.form--field-errors li') ?? [])
+      .map((item) => item.textContent?.trim() ?? '')
+      .filter(Boolean);
+  }
+
+  private hasFieldErrors(): boolean {
+    return [...this.fields.keys()].some((name) => this.readFieldErrors(name).length > 0);
   }
 
   private tell(eventName: string, detail: Record<string, unknown> = {}): void {

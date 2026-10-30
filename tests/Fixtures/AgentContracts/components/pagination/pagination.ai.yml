@@ -1,0 +1,5 @@
+type: pagination
+description: The pages of a list.
+actions:
+  next:
+    description: Goes to the next page.

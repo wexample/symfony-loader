@@ -90,7 +90,10 @@
             {{- base_template_render_head_structured_data(document_title_resolved, document_meta_description|default(null), canonical_href, document_subject|default(null)) -}}
         {%- endblock -%}
     </head>
-    <body class="{% for usage_name, usage_value in render_pass.usages %}{% if usage_value %}usage-{{ usage_name|replace({'_': '-'}) }}-{{ usage_value }} {% endif %}{% endfor %}{{ body_class|default('') }}">
+    {#- `layout_agent` shows the whole application to an agent reading the
+        page (AgentPage): every component with a contract, unless one says
+        `agent: false`. -#}
+    <body class="{% for usage_name, usage_value in render_pass.usages %}{% if usage_value %}usage-{{ usage_name|replace({'_': '-'}) }}-{{ usage_value }} {% endif %}{% endfor %}{{ body_class|default('') }}"{% if layout_agent|default(false) %} data-agent{% endif %}>
     <a href="#main-content" class="skip-link">{{ 'WexampleSymfonyLoaderBundle.common.system::skip_to_main' | trans }}</a>
     <div id="layout-initial" class="layout-loading {{ layout_class|default('') }}">
         {%- if render_pass.isUseJs() -%}

@@ -90,34 +90,32 @@ export default {
     // the screen; one with no size is not drawn.
     placeBoxes() {
       const boxes = [];
-      const walk = (renderNode) => {
-        const status = renderNode.getAgentStatus();
-        const rect = status && renderNode.el?.getBoundingClientRect();
+      const page = this.app.services.agentTools.page();
 
-        if (rect && (rect.width || rect.height)) {
-          const node = status.exposed ? renderNode.describeForAgent() : null;
+      for (const renderNode of page.all()) {
+        const status = page.statusOf(renderNode);
+        const rect = status && renderNode.el.getBoundingClientRect();
 
-          boxes.push({
-            id: renderNode.id,
-            exposed: status.exposed,
-            label: node?.label ? `${status.type} · ${node.label}` : status.type,
-            detail: node
-              ? node.actions.map((action) => action.name).join(', ') || 'no action'
-              : 'not exposed',
-            style: {
-              top: `${rect.top}px`,
-              left: `${rect.left}px`,
-              width: `${rect.width}px`,
-              height: `${rect.height}px`,
-            },
-          });
+        if (!rect || !(rect.width || rect.height)) {
+          continue;
         }
 
-        renderNode.eachChildRenderNode().forEach(walk);
-      };
+        const node = status.exposed ? page.describe(renderNode) : null;
 
-      if (this.app?.layout) {
-        walk(this.app.layout);
+        boxes.push({
+          id: renderNode.id,
+          exposed: status.exposed,
+          label: node?.label ? `${status.type} · ${node.label}` : status.type,
+          detail: node
+            ? node.actions.map((action) => action.name).join(', ') || 'no action'
+            : 'not exposed',
+          style: {
+            top: `${rect.top}px`,
+            left: `${rect.left}px`,
+            width: `${rect.width}px`,
+            height: `${rect.height}px`,
+          },
+        });
       }
 
       this.boxes = boxes;
@@ -136,7 +134,7 @@ export default {
     },
 
     highlight(node, on) {
-      this.app.services.agentTools.findNode(node.id)?.el?.classList.toggle('develop-agent-tools--highlight', on);
+      this.app.services.agentTools.page().get(node.id)?.el?.classList.toggle('develop-agent-tools--highlight', on);
     },
 
     async act(node, action) {

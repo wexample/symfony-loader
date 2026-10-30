@@ -7,6 +7,7 @@ use Symfony\Component\Yaml\Yaml;
 use Twig\Environment;
 use Wexample\SymfonyHelpers\Attribute\WorkerSafe;
 use Wexample\SymfonyLoader\Rendering\RenderNode\ComponentRenderNode;
+use Wexample\SymfonyLoader\Twig\VueExtension;
 use Wexample\SymfonyTemplate\Helper\TemplateHelper;
 
 /**
@@ -27,31 +28,38 @@ class AgentContractService
 {
     final public const string FILE_EXTENSION = '.ai.yml';
 
-    final public const string OPTION_AGENT = 'agent';
-
     final public const string OPTION_AGENT_DESCRIPTION = 'agent_description';
 
-    /** @var array<string, array|null> The contracts already read, by view. */
-    #[WorkerSafe('A cache of what the component files say, the same for every request.')]
-    private array $contracts = [];
+    /**
+     * The view whose contract a component takes, when its own view has none
+     * to offer: a form, drawn from the application's template, is the
+     * loader's form to an agent.
+     */
+    final public const string OPTION_AGENT_CONTRACT = 'agent_contract';
 
     /**
-     * The contract the browser is handed for a component an agent is shown,
-     * null for one with no contract. One that has a contract and is not shown
-     * travels with its kind alone, so a page can say what it could show.
+     * The files already read, by view, with the time they were read at: one
+     * changed since — while developing, a worker serving on — is read again.
+     *
+     * @var array<string, array{mtime: int|null, declaration: array|null}>
+     */
+    #[WorkerSafe('A cache of what the component files say, checked against the files each time.')]
+    private array $declarations = [];
+
+    /**
+     * The contract the browser is handed for a component that has one, null
+     * otherwise. Whether an agent is shown it is settled in the page, where
+     * nesting is known: a component saying nothing follows what holds it —
+     * an item of an exposed menu is exposed —, so every one carries its own.
      */
     public function forComponent(
         Environment $twig,
         ComponentRenderNode $component,
     ): ?array {
-        $contract = $this->resolve($twig, $component->getView());
+        $contract = $this->resolve($twig, $component->options[self::OPTION_AGENT_CONTRACT] ?? $component->getView());
 
         if (null === $contract) {
             return null;
-        }
-
-        if (! ($component->options[self::OPTION_AGENT] ?? false)) {
-            return ['type' => $contract['type']];
         }
 
         // Where it is drawn may say what this one is for better than its kind.
@@ -69,14 +77,10 @@ class AgentContractService
         Environment $twig,
         string $view,
     ): ?array {
-        if (array_key_exists($view, $this->contracts)) {
-            return $this->contracts[$view];
-        }
-
         $declaration = $this->read($twig, $view);
 
         if (null === $declaration) {
-            return $this->contracts[$view] = null;
+            return null;
         }
 
         $parent = isset($declaration['extends'])
@@ -89,7 +93,7 @@ class AgentContractService
             $actions[$name] = $this->buildAction($name, $action ?? []);
         }
 
-        return $this->contracts[$view] = [
+        return [
             'type' => $declaration['type'] ?? $parent['type'] ?? null,
             'description' => $declaration['description'] ?? $parent['description'] ?? null,
             'actions' => $actions,
@@ -97,26 +101,54 @@ class AgentContractService
     }
 
     /**
-     * The file beside the template, null when the component has none.
+     * The file beside the template — a component's, or a vue's —, null when
+     * there is none.
      */
     private function read(
         Environment $twig,
         string $view,
     ): ?array {
-        $template = $view . TemplateHelper::TEMPLATE_FILE_EXTENSION;
-        $loader = $twig->getLoader();
+        $path = $this->findFile($twig, $view);
+        $mtime = null !== $path && is_file($path) ? filemtime($path) : null;
+        $cached = $this->declarations[$view] ?? null;
 
-        if (! $loader->exists($template)) {
-            return null;
+        if (null !== $cached && $cached['mtime'] === $mtime) {
+            return $cached['declaration'];
         }
 
-        $path = substr(
-            $loader->getSourceContext($template)->getPath(),
-            0,
-            -strlen(TemplateHelper::TEMPLATE_FILE_EXTENSION)
-        ) . self::FILE_EXTENSION;
+        $declaration = null !== $mtime ? Yaml::parseFile($path) : null;
+        $this->declarations[$view] = ['mtime' => $mtime, 'declaration' => $declaration];
 
-        return is_file($path) ? Yaml::parseFile($path) : null;
+        return $declaration;
+    }
+
+    /**
+     * Where the file would be, beside the template — a component's, or a
+     * vue's —, null when there is no template to stand beside.
+     */
+    private function findFile(
+        Environment $twig,
+        string $view,
+    ): ?string {
+        $loader = $twig->getLoader();
+
+        foreach ([TemplateHelper::TEMPLATE_FILE_EXTENSION, VueExtension::TEMPLATE_FILE_EXTENSION] as $extension) {
+            if ($loader->exists($view . $extension)) {
+                return substr(
+                    $loader->getSourceContext($view . $extension)->getPath(),
+                    0,
+                    -strlen($extension)
+                ) . self::FILE_EXTENSION;
+            }
+        }
+
+        // A contract standing alone, beside a script and no template: the
+        // loader's form, whose markup is the application's.
+        if ($loader->exists($view . self::FILE_EXTENSION)) {
+            return $loader->getSourceContext($view . self::FILE_EXTENSION)->getPath();
+        }
+
+        return null;
     }
 
     /**

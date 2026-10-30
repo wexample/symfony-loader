@@ -8,9 +8,9 @@ import Page from './Page';
 import { RenderNodeServiceEvents } from "../Services/AbstractRenderNodeService";
 import ElementListenersMixin, { type ElementListenersType } from './Mixins/ElementListenersMixin';
 import InvariantViolationError from '../Errors/InvariantViolationError';
-import type AgentNodeInterface from '../Interfaces/AgentNodeInterface';
-import type { AgentActionsImplementation, AgentContractInterface } from '../Interfaces/AgentNodeInterface';
+import type { AgentActionsImplementation, AgentContractInterface, AgentNodeProviderInterface } from '../Interfaces/AgentNodeInterface';
 import type AgentToolInterface from '../Interfaces/AgentToolInterface';
+import { EVENT_AGENT, type AgentUserEventDetail } from './AgentUserEvents';
 import ErrorService from '../Services/ErrorService';
 import type { RenderNodeApiType } from '../Services/ApiService';
 import type { RenderNodeAssetsType } from '../Services/AssetsService';
@@ -29,7 +29,7 @@ interface RenderNode extends
   RenderNodeResponsiveType {
 }
 
-abstract class RenderNode extends AppChild {
+abstract class RenderNode extends AppChild implements AgentNodeProviderInterface {
   public callerPage: Page;
   public childRenderNodes: { [key: string]: RenderNode } = {};
   public components: Component[] = [];
@@ -348,84 +348,80 @@ abstract class RenderNode extends AppChild {
     return [];
   }
 
-  // What this node is to an agent reading the page, null when it shows
-  // nothing to it: its contract, joined to what it shows and is set to now
-  // and to the way it runs each action. An action declared and not run here
-  // is left out — said, in the console, for whoever wrote the component.
-  public describeForAgent(): AgentNodeInterface | null {
-    const exposure = this.getAgentExposure();
-    const contract = exposure ? this.getAgentContract() : null;
-
-    if (!contract) {
-      return null;
-    }
-
-    const implementation = this.getAgentActions();
-    const actions = Object.values(contract.actions ?? {})
-      .filter((action) => !Array.isArray(exposure) || exposure.includes(action.name))
-      .flatMap((action) => {
-        if (!implementation[action.name]) {
-          console.warn(`"${this.view}" declares the agent action "${action.name}" and does not run it.`);
-          return [];
-        }
-
-        return [{ ...action, execute: implementation[action.name] }];
-      });
-
-    return {
-      type: contract.type,
-      label: this.getAgentLabel(),
-      description: contract.description,
-      state: this.getAgentState(),
-      actions,
-    };
-  }
-
-  // Whether the node has a contract, and whether an agent is shown it: for
-  // whoever checks a page, not for the agent.
-  public getAgentStatus(): { type: string; exposed: boolean } | null {
-    const contract = this.getAgentContract();
-
-    return contract ? { type: contract.type, exposed: Boolean(this.getAgentExposure()) } : null;
-  }
-
-  // What the node tells an agent of itself: none by default — a component
-  // reads it from its `.ai.yml`.
-  protected getAgentContract(): AgentContractInterface | null {
+  // What the agent tools read of this node (AgentNodeProviderInterface):
+  // nothing, by default — a component reads its contract from its `.ai.yml`,
+  // and says the rest through the hooks below.
+  public getAgentContract(): AgentContractInterface | null {
     return null;
   }
 
+  // Whether this node says it is shown to an agent: all its actions (true),
+  // some of them by name, nothing (false), or nothing said — undefined, the
+  // default —, the node then shown when what holds it in the page is.
+  public getAgentExposure(): boolean | string[] | undefined {
+    return undefined;
+  }
+
+  // Makes a node it holds visible, before an agent points at it: a folded
+  // container unfolds. Nothing by default.
+  public async revealAgentChild(child: AgentNodeProviderInterface): Promise<void> {
+  }
+
+  // The part of the node a frame goes round: the node, unless the reader
+  // sees it as one of its parts — the link of a menu entry.
+  public getAgentFrameElement(): HTMLElement | null {
+    return this.el ?? null;
+  }
+
   // How the actions of the contract run, by name.
-  protected getAgentActions(): AgentActionsImplementation {
+  public getAgentActions(): AgentActionsImplementation {
     return {};
   }
 
   // Read each time the page is inspected, so it tells what it finds.
-  protected getAgentState(): Record<string, any> | undefined {
+  public getAgentState(): Record<string, any> | undefined {
     return undefined;
   }
 
-  protected getAgentLabel(): string | undefined {
+  public getAgentLabel(): string | undefined {
     return undefined;
   }
 
-  // Whether an agent sees this node: all its actions (true), some of them by
-  // name, or nothing — the default, a page showing only what it chose to.
-  protected getAgentExposure(): boolean | string[] {
-    return false;
+  // Says the user did something to this node, for the agent to read at its
+  // next turn (AgentUserEvents): a short sentence in english, 'Switched
+  // "Theme" on'. Done again, it is counted, not written again: `key` says
+  // what counts as the same — the node and the action, by default the node
+  // and the sentence. What an agent does itself is not written down.
+  protected logAgentEvent(summary: string, options: { key?: string; detail?: Record<string, any> } = {}): void {
+    const detail: AgentUserEventDetail = {
+      summary,
+      kind: 'node',
+      key: `${this.id}:${options.key ?? summary}`,
+      node: { type: this.getAgentContract()?.type, label: this.getAgentLabel() },
+      ...(options.detail ? { detail: options.detail } : {}),
+    };
+
+    (this.el ?? document).dispatchEvent(new CustomEvent(EVENT_AGENT, { bubbles: true, detail }));
   }
 
+  // Known to the agent tools while mounted: as a node of the page, and
+  // through the tools it offers of its own.
   protected async activateTools(): Promise<void> {
-    const tools = this.getAgentTools();
+    const agentTools = this.app.services.agentTools;
 
-    if (tools.length && this.app.services.agentTools) {
-      for (const tool of tools) {
-        this.app.services.agentTools.register(this, tool);
-      }
+    if (!agentTools) {
+      return;
+    }
+
+    agentTools.registerNode(this);
+
+    for (const tool of this.getAgentTools()) {
+      agentTools.register(this, tool);
     }
   }
 
   protected async deactivateTools(): Promise<void> {
+    this.app.services.agentTools?.unregisterNode(this);
     this.app.services.agentTools?.unregisterOwner(this);
   }
 

@@ -204,6 +204,10 @@ export default class OverlayService extends AppService {
 
     this.activeOverlay = this.overlayStack[this.overlayStack.length - 1] || null;
 
+    if (currentIndex === -1) {
+      this.recordAgentEvent('Opened', overlay);
+    }
+
     if (this.overlayStack.length === 1) {
       this.previousFocusedEl = document.activeElement as HTMLElement;
     }
@@ -229,6 +233,7 @@ export default class OverlayService extends AppService {
 
     this.overlayStack.splice(index, 1);
     this.activeOverlay = this.overlayStack[this.overlayStack.length - 1] || null;
+    this.recordAgentEvent('Closed', overlay);
 
     if (this.overlayStack.length === 0 && this.previousFocusedEl) {
       this.previousFocusedEl.focus();
@@ -242,6 +247,22 @@ export default class OverlayService extends AppService {
 
   getActiveOverlay(): any {
     return this.activeOverlay;
+  }
+
+  // Whether an element stands behind an open overlay's veil — a page under a
+  // modal —, out of the reader's reach until it closes. What the overlay
+  // itself holds is not, nor what stands over the veil by design
+  // (`data-overlay-rise`): the tools of the overlay layer.
+  isCovered(el: Element | null | undefined): boolean {
+    const backdrop = this.getBackdropOverlay();
+
+    if (!el || !backdrop || el.closest('[data-overlay-rise]')) {
+      return false;
+    }
+
+    const overlayEl = backdrop.overlayGetElement?.() || backdrop.el;
+
+    return !overlayEl?.contains(el);
   }
 
   private getOverlayTarget(overlay: any): string {
@@ -276,6 +297,40 @@ export default class OverlayService extends AppService {
     return null;
   }
 
+  // The element of the overlay an element stands in — the innermost, a
+  // select opened in a modal being the select's —, null for the page itself.
+  layerOf(el: Element | null | undefined): HTMLElement | null {
+    if (!el) {
+      return null;
+    }
+
+    let found: HTMLElement | null = null;
+
+    for (const overlay of this.registered) {
+      const overlayEl = overlay?.overlayGetElement?.() || overlay?.el;
+
+      if (overlayEl instanceof HTMLElement && overlayEl.contains(el) && (!found || found.contains(overlayEl))) {
+        found = overlayEl;
+      }
+    }
+
+    return found;
+  }
+
+  // A veil opened or closed is what the user did, for the agent to read at
+  // its next turn (AgentUserEvents): 'Opened the panel "Edit model"'.
+  private recordAgentEvent(verb: string, overlay: any): void {
+    const kind = overlay?.overlayDepthGroup || 'overlay';
+    const label = overlay?.getAgentLabel?.();
+
+    this.app.services.agentTools?.events.record({
+      kind: 'overlay',
+      key: `overlay:${verb}:${kind}:${label ?? ''}`,
+      summary: `${verb} the ${kind}${label ? ` "${label}"` : ''}`,
+      detail: { kind, label },
+    });
+  }
+
   private hideOverlayEl(overlayEl: HTMLElement | null): void {
     if (!overlayEl) {
       return;
@@ -289,13 +344,28 @@ export default class OverlayService extends AppService {
       return;
     }
 
+    const backdropOverlay = this.overlayStack.length ? this.getBackdropOverlay() : null;
+
+    // Said on the body, for what shows only while a veil is up — the tools
+    // of the overlay layer (components/overlay-tools) —, and to whoever
+    // listens for what the veil changes (`overlay:change`): a chat behind it
+    // handing over to the one in front.
+    document.body.classList.toggle('has-overlay-backdrop', Boolean(backdropOverlay));
+    // And which kind holds the page — `modal`, `panel` —, for what dresses
+    // differently over one or the other.
+    if (backdropOverlay?.overlayDepthGroup) {
+      document.body.dataset.overlayKind = backdropOverlay.overlayDepthGroup;
+    } else {
+      delete document.body.dataset.overlayKind;
+    }
+    document.dispatchEvent(new CustomEvent('overlay:change'));
+
     if (!this.overlayStack.length) {
       this.hideOverlayEl(this.overlayElGlobal);
       this.hideOverlayEl(this.overlayElMain);
       return;
     }
 
-    const backdropOverlay = this.getBackdropOverlay();
     if (!backdropOverlay) {
       this.hideOverlayEl(this.overlayElGlobal);
       this.hideOverlayEl(this.overlayElMain);

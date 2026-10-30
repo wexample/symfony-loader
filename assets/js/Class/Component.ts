@@ -112,13 +112,14 @@ export default abstract class Component extends RenderNode {
     this.agentContract = renderData.agent ?? this.agentContract;
   }
 
-  // Said where the component is drawn: `{ agent: true }`, or the actions it
-  // offers, `{ agent: ['get', 'toggle'] }`.
-  protected getAgentExposure(): boolean | string[] {
-    return this.options.agent ?? false;
+  // Said where the component is drawn: `{ agent: true }`, the actions it
+  // offers (`{ agent: ['get', 'toggle'] }`), `{ agent: false }` — or nothing,
+  // the component then following what holds it.
+  public getAgentExposure(): boolean | string[] | undefined {
+    return this.options.agent ?? undefined;
   }
 
-  protected getAgentContract(): AgentContractInterface | null {
+  public getAgentContract(): AgentContractInterface | null {
     return this.agentContract;
   }
 

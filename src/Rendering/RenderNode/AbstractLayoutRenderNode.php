@@ -29,6 +29,15 @@ abstract class AbstractLayoutRenderNode extends AbstractRenderNode
         return RenderingHelper::CONTEXT_LAYOUT;
     }
 
+    /**
+     * What an agent is told of each vue the page draws, by view
+     * (AgentContractService): with the templates, the one thing a vue needs
+     * that its own render data does not carry, since it has none.
+     *
+     * @var array<string, array>
+     */
+    public array $vueContracts = [];
+
     public function toRenderData(): RenderData
     {
         $renderData = parent::toRenderData();
@@ -37,6 +46,7 @@ abstract class AbstractLayoutRenderNode extends AbstractRenderNode
                 'env',
                 'renderRequestId',
                 'page',
+                'vueContracts',
             ])
             + ['templates' => $this->getComponentsTemplates()]
         );

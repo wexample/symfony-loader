@@ -1,0 +1,73 @@
+@use '../css/partials/develop' as d;
+
+.develop-agent-events {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+
+  &__section {
+    @include d.row(d.$space-sm);
+    align-items: center;
+    padding: d.$space-sm;
+    background: d.$bg-alt;
+    border-bottom: 1px solid d.$border;
+  }
+
+  &__title {
+    @include d.label;
+    flex: 1;
+  }
+
+  &__run {
+    @include d.pill;
+    cursor: pointer;
+
+    &:hover {
+      @include d.pill-hover;
+    }
+  }
+
+  &__empty {
+    padding: d.$space-sm;
+    color: d.$text-muted;
+    font-size: d.$size-sm;
+  }
+
+  &__item {
+    @include d.row(d.$space-sm);
+    align-items: baseline;
+    padding: d.$space-xs d.$space-sm;
+    border-bottom: 1px solid d.$border;
+    font-size: d.$size-sm;
+  }
+
+  &__time,
+  &__kind,
+  &__hint {
+    color: d.$text-muted;
+    font-family: d.$font;
+    white-space: nowrap;
+  }
+
+  &__summary {
+    color: d.$text;
+  }
+
+  &__count {
+    padding: 0 d.$space-xs;
+    border-radius: 3px;
+    background: d.$bg-alt;
+    color: d.$text;
+    font-family: d.$font;
+  }
+
+  &__detail {
+    flex: 1;
+    color: d.$text-muted;
+    font-family: d.$font;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

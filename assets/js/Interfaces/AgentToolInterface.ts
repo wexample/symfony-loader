@@ -11,13 +11,20 @@ export interface AgentToolAnnotationsInterface {
   idempotentHint?: boolean;
 }
 
+// Who a call is made for: the conversation that asked, so that what a tool
+// leaves in the page — an outline — is that agent's, beside another's.
+// Absent for a call made by hand (the develop toolbar).
+export type AgentCallContext = {
+  caller?: string;
+};
+
 export default interface AgentToolInterface {
   name: string;
   description: string;
   // A JSON schema of the arguments, `type: object` at its root.
   inputSchema: Record<string, any>;
   annotations?: AgentToolAnnotationsInterface;
-  execute(args: Record<string, any>): any | Promise<any>;
+  execute(args: Record<string, any>, context?: AgentCallContext): any | Promise<any>;
 }
 
 // What the list says of a tool: everything but the way it runs.

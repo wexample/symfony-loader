@@ -36,6 +36,11 @@
                 <span class="tabs--item-label">{{ '@component::tab.agent_tools' | trans }}</span>
             </span>
         </a>
+        <a class="tabs--item" href="#" data-tab="agent-events">
+            <span class="tabs--item-content">
+                <span class="tabs--item-label">{{ '@component::tab.agent_events' | trans }}</span>
+            </span>
+        </a>
         {%- for tab in render_pass.developTabs -%}
             <a class="tabs--item" href="#" data-tab="{{ tab.id }}">
                 <span class="tabs--item-content">
@@ -71,6 +76,9 @@
         </div>
         <div class="develop-toolbar__mount develop-toolbar__mount--hidden" data-tab-panel="agent-tools">
             {{ vue_include(render_pass, '@WexampleSymfonyLoaderBundle/vue/develop-agent-tools') }}
+        </div>
+        <div class="develop-toolbar__mount develop-toolbar__mount--hidden" data-tab-panel="agent-events">
+            {{ vue_include(render_pass, '@WexampleSymfonyLoaderBundle/vue/develop-agent-events') }}
         </div>
         {%- for tab in render_pass.developTabs -%}
             <div class="develop-toolbar__mount develop-toolbar__mount--hidden" data-tab-panel="{{ tab.id }}">

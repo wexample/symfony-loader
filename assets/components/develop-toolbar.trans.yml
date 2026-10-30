@@ -9,6 +9,7 @@ en:
     routes: Routes
     translations: Translations
     agent_tools: 'Agent tools'
+    agent_events: 'User events'
 
 ar:
   close: اغلاق
@@ -21,6 +22,7 @@ ar:
     routes: المسارات
     translations: الترجمات
     agent_tools: 'أدوات الوكيل'
+    agent_events: 'أحداث المستخدم'
 
 bn:
   close: 'বন্ধ করুন'
@@ -33,6 +35,7 @@ bn:
     routes: রুটস
     translations: অনুবাদগুলি
     agent_tools: 'এজেন্ট টুলস'
+    agent_events: 'ব্যবহারকারীর ইভেন্ট'
 
 de:
   close: Schließen
@@ -45,6 +48,7 @@ de:
     routes: Routen
     translations: Übersetzungen
     agent_tools: 'Agenten-Tools'
+    agent_events: 'Benutzerereignisse'
 
 es:
   close: Cerrar
@@ -57,6 +61,7 @@ es:
     routes: Rutas
     translations: Traducciones
     agent_tools: 'Herramientas del agente'
+    agent_events: 'Eventos del usuario'
 
 fa:
   close: بستن
@@ -69,6 +74,7 @@ fa:
     routes: مسیرها
     translations: ترجمه‌ها
     agent_tools: 'ابزارهای عامل'
+    agent_events: 'رویدادهای کاربر'
 
 fi:
   close: Sulje
@@ -81,6 +87,7 @@ fi:
     routes: Reitit
     translations: Käännökset
     agent_tools: 'Agentin työkalut'
+    agent_events: 'Käyttäjän tapahtumat'
 
 fr:
   close: Fermer
@@ -93,6 +100,7 @@ fr:
     routes: Routes
     translations: Traductions
     agent_tools: 'Outils agent'
+    agent_events: 'Événements utilisateur'
 
 he:
   close: סגור
@@ -105,6 +113,7 @@ he:
     routes: נתיבים
     translations: תרגומים
     agent_tools: 'כלי סוכן'
+    agent_events: 'אירועי משתמש'
 
 hi:
   close: 'बंद करें'
@@ -117,6 +126,7 @@ hi:
     routes: मार्ग
     translations: अनुवाद
     agent_tools: 'एजेंट टूल्स'
+    agent_events: 'उपयोगकर्ता घटनाएँ'
 
 id:
   close: Tutup
@@ -129,6 +139,7 @@ id:
     routes: Rute
     translations: Terjemahan
     agent_tools: 'Alat agen'
+    agent_events: 'Peristiwa pengguna'
 
 it:
   close: Chiudi
@@ -141,6 +152,7 @@ it:
     routes: Percorsi
     translations: Traduzioni
     agent_tools: 'Strumenti agente'
+    agent_events: 'Eventi utente'
 
 ja:
   close: 閉じる
@@ -153,6 +165,7 @@ ja:
     routes: ルート
     translations: 翻訳
     agent_tools: 'エージェントツール'
+    agent_events: 'ユーザーイベント'
 
 ko:
   close: 닫기
@@ -165,6 +178,7 @@ ko:
     routes: 라우트
     translations: 번역
     agent_tools: '에이전트 도구'
+    agent_events: '사용자 이벤트'
 
 nl:
   close: Sluiten
@@ -177,6 +191,7 @@ nl:
     routes: Routes
     translations: Vertalingen
     agent_tools: 'Agenttools'
+    agent_events: 'Gebruikersgebeurtenissen'
 
 pl:
   close: Zamknij
@@ -189,6 +204,7 @@ pl:
     routes: Trasy
     translations: Tłumaczenia
     agent_tools: 'Narzędzia agenta'
+    agent_events: 'Zdarzenia użytkownika'
 
 pt_BR:
   close: Fechar
@@ -201,6 +217,7 @@ pt_BR:
     routes: Rotas
     translations: Traduções
     agent_tools: 'Ferramentas do agente'
+    agent_events: 'Zdarzenia użytkownika'
 
 ru:
   close: Закрыть
@@ -213,6 +230,7 @@ ru:
     routes: Маршруты
     translations: Переводы
     agent_tools: 'Инструменты агента'
+    agent_events: 'События пользователя'
 
 th:
   close: ปิด
@@ -225,6 +243,7 @@ th:
     routes: เส้นทาง
     translations: การแปล
     agent_tools: 'เครื่องมือเอเจนต์'
+    agent_events: 'เหตุการณ์ของผู้ใช้'
 
 tr:
   close: Kapat
@@ -237,6 +256,7 @@ tr:
     routes: Yollar
     translations: Çeviriler
     agent_tools: 'Ajan araçları'
+    agent_events: 'Kullanıcı olayları'
 
 ur:
   close: 'بند کریں'
@@ -249,6 +269,7 @@ ur:
     routes: راستے
     translations: ترجمے
     agent_tools: 'ایجنٹ ٹولز'
+    agent_events: 'صارف کے واقعات'
 
 vi:
   close: Đóng
@@ -261,6 +282,7 @@ vi:
     routes: 'Đường dẫn'
     translations: 'Dịch thuật'
     agent_tools: 'Công cụ tác tử'
+    agent_events: 'Sự kiện người dùng'
 
 zh:
   close: 关闭
@@ -273,3 +295,4 @@ zh:
     routes: 路由
     translations: 翻译
     agent_tools: '智能体工具'
+    agent_events: '用户事件'

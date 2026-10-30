@@ -1,0 +1,5 @@
+extends: '@Fixtures/components/switch/switch'
+description: Light or dark colours for the interface.
+actions:
+  set:
+    description: Shows the interface in light (on) or dark (off) colours.
