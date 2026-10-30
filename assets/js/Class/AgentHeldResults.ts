@@ -14,7 +14,7 @@ const TTL_MS = 2 * 60 * 1000;
 
 // The answers of calls that left the page — a link followed, a form sent —,
 // kept in the tab for the conversation that asked, until the page reached
-// opens it again and sends them (AbstractEntityChat.sendHeldToolResults).
+// opens it again and sends them (the design system's abstract-agent-chat, sendHeldToolResults).
 export default class AgentHeldResults {
   hold(conversation: string, result: AgentHeldResult): void {
     const held = this.read();
