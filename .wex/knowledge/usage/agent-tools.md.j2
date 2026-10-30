@@ -4,7 +4,7 @@ An agent talking to the user from a chat of the page — Syrtis, Claude through 
 
 ## The tools of the page
 
-`AgentToolsService` registers six tools of its own, and whatever tools the components of the page add while they are mounted (`getAgentTools()` on a render node). An agent's scenario declares only the first two: the rest it finds.
+`AgentToolsService` registers seven tools of its own, and whatever tools the components of the page add while they are mounted (`getAgentTools()` on a render node). An agent's scenario declares only the first two: the rest it finds.
 
 | Tool | What it does |
 |---|---|
@@ -14,6 +14,7 @@ An agent talking to the user from a chat of the page — Syrtis, Claude through 
 | `act({node, action, arguments})` | Runs an action of a node. |
 | `find_nodes({query, type?})` | The nodes whose kind, label or description holds a text, each with the way to it from the top of the page. |
 | `focus({nodes})` | Shows the user pieces of the page: unfolds what hides them, scrolls to the first, frames them all. |
+| `navigate({url})` | Opens a page of the application by its address — as the server's `list_pages` gives it, its `{parameters}` filled in —, answered from the page reached. An address elsewhere, or with a parameter left unfilled, is refused. |
 
 Arguments given flat beside the name — `{name: 'act', node, action, value}` — are taken as the tool's, and a piece and an action given with no name at all as `act`'s: agents do it, and nothing is gained by refusing. A call with neither is told what `call_tool` takes, not that a tool named "undefined" is missing.
 

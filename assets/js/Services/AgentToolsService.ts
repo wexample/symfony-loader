@@ -14,6 +14,7 @@ export const TOOL_INSPECT = 'inspect_page';
 export const TOOL_ACT = 'act';
 export const TOOL_FIND = 'find_nodes';
 export const TOOL_FOCUS = 'focus';
+export const TOOL_NAVIGATE = 'navigate';
 export const SCOPE_FRONT = 'front';
 // The tools the application runs on its server: listed by it, not by the
 // page — it completes the page's answer to list_tools on its way to the agent.
@@ -193,6 +194,41 @@ export default class AgentToolsService extends AppService {
       annotations: { idempotentHint: true },
       execute: (args, context) => this.focus(args.nodes ?? [], context),
     });
+
+    // Straight to a page, its address found by whatever lists them — the
+    // server's `list_pages` —: answered from the page reached, as a link is.
+    this.register(this, {
+      name: TOOL_NAVIGATE,
+      description: 'Opens a page of the application, by its address — as list_pages gives it, its parameters filled in: "/models/12/edit". Answered from the page reached, with where it arrived. Only addresses of this application.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          url: { type: 'string', description: 'The address of the page, from the root of the application: "/models/".' },
+        },
+        required: ['url'],
+      },
+      execute: (args) => this.navigate(String(args.url ?? '')),
+    });
+  }
+
+  // An address of this application, whole: one leading elsewhere, or with
+  // a parameter left unfilled, is refused with what to do instead.
+  private navigate(url: string): AgentNavigation {
+    if (!url.trim()) {
+      throw new Error(`${TOOL_NAVIGATE} needs the address of a page, as list_pages gives it.`);
+    }
+
+    if (/\{[^}]+\}/.test(url)) {
+      throw new Error(`"${url}" still holds a parameter to fill in: replace each {name} with its value.`);
+    }
+
+    const target = new URL(url, window.location.href);
+
+    if (target.origin !== window.location.origin) {
+      throw new Error(`"${url}" is not an address of this application.`);
+    }
+
+    return new AgentNavigation(target.href, { url: target.pathname + target.search + target.hash });
   }
 
   registerNode(node: AgentNodeProviderInterface): void {
