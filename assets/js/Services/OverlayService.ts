@@ -136,7 +136,7 @@ export default class OverlayService extends AppService {
     };
   }
 
-  private onDocumentMouseDown = (event: MouseEvent) => {
+  private onDocumentPointerDown = (event: MouseEvent) => {
     const overlay = this.getActiveOverlay();
     if (!overlay || !overlay.overlayIsOpen?.()) {
       return;
@@ -177,7 +177,7 @@ export default class OverlayService extends AppService {
             });
           }
 
-          document.addEventListener('mousedown', this.onDocumentMouseDown);
+          document.addEventListener('pointerdown', this.onDocumentPointerDown);
         }
       }
     };
