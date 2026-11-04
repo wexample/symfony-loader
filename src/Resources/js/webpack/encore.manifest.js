@@ -127,7 +127,9 @@ function configureEncoreBase(options = {}) {
     try {
       const loaderRuntimeConfig = JSON.parse(fs.readFileSync(DEFAULT_MANIFEST_PATH, 'utf8'));
       if (loaderRuntimeConfig && typeof loaderRuntimeConfig.tsconfigPath === 'string' && loaderRuntimeConfig.tsconfigPath.length) {
-        loaderConfig.ts.configFile = loaderRuntimeConfig.tsconfigPath;
+        // Absolute: ts-loader reads a relative one from the first file it
+        // compiles, which may be a linked package carrying its own (TS6059).
+        loaderConfig.ts.configFile = path.resolve(process.cwd(), loaderRuntimeConfig.tsconfigPath);
       }
     } catch (e) {
       // Ignore invalid manifest file and keep default tsconfig resolution.
