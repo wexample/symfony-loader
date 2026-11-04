@@ -4,7 +4,7 @@ An agent talking to the user from a chat of the page — Syrtis, Claude through 
 
 ## The tools of the page
 
-`AgentToolsService` registers six tools of its own, and whatever tools the components of the page add while they are mounted (`getAgentTools()` on a render node). An agent's scenario declares only the first two: the rest it finds.
+`AgentToolsService` registers seven tools of its own, and whatever tools the components of the page add while they are mounted (`getAgentTools()` on a render node). An agent's scenario declares only the first two: the rest it finds.
 
 | Tool | What it does |
 |---|---|
@@ -14,6 +14,7 @@ An agent talking to the user from a chat of the page — Syrtis, Claude through 
 | `act({node, action, arguments})` | Runs an action of a node. |
 | `find_nodes({query, type?})` | The nodes whose kind, label or description holds a text, each with the way to it from the top of the page. |
 | `focus({nodes})` | Shows the user pieces of the page: unfolds what hides them, scrolls to the first, frames them all. |
+| `navigate({url})` | Off where an application says so (`disabled: [navigate]`, the manager and portfolio today: it opens any address, a 404 as well). Opens a page of the application by its address — as the server's `list_pages` gives it, its `{parameters}` filled in —, answered from the page reached. An address elsewhere, or with a parameter left unfilled, is refused. |
 
 Arguments given flat beside the name — `{name: 'act', node, action, value}` — are taken as the tool's, and a piece and an action given with no name at all as `act`'s: agents do it, and nothing is gained by refusing. A call with neither is told what `call_tool` takes, not that a tool named "undefined" is missing.
 
@@ -89,6 +90,10 @@ Between two of its turns the agent is blind: the user opens a panel, searches a 
 - What the agent does itself is not written down: nothing is, while one of its calls runs or just after, and the page its action leaves for is told so before it goes.
 
 The develop toolbar's *User events* tab shows the log as it stands.
+
+## Tools of the server, and what the application allows
+
+The tools an application runs for the agent on its server, the pages it opens to it, the regrouping of a turn's answers and what it lets the agents use are `wexample/symfony-ai`'s (*What an application offers to an agent*). The page reads one setting of it with the layout's render data, `agentTools` — `{enabled, disabled}` —, and lists nothing the application turned off; `list_tools({scope: 'back'})` is answered by the application, not here.
 
 ## Seeing it
 
