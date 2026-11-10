@@ -134,7 +134,15 @@ class WexampleSymfonyLoaderExtension extends AbstractWexampleSymfonyExtension
 
                 $realPaths = [];
                 foreach ($bundleFronts as $alias => $frontPath) {
-                    $relativePath = FileHelper::normalizeDirectoryPath((string) realpath($frontPath));
+                    $realPath = realpath($frontPath);
+                    // A directory the bundle declares but does not ship — a
+                    // package published without its assets: nothing to load.
+                    // Kept as "", it read as the filesystem's root, which the
+                    // manifest then walked whole, into /proc.
+                    if ($realPath === false) {
+                        continue;
+                    }
+                    $relativePath = FileHelper::normalizeDirectoryPath($realPath);
 
                     if (is_string($alias)) {
                         $realPaths[$alias] = $relativePath;
