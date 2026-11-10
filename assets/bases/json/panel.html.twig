@@ -11,6 +11,13 @@
 
 {%- block page_composer_json -%}
     {%- include '@WexampleSymfonyLoaderBundle/bases/json/_overlay-shell-header.html.twig' with { overlay_type: 'panel' } -%}
+    {#- What the page does, as it stands beside its title on a page of its own
+        (`page_title_actions`): the same block, written once, drawn here as a
+        toolbar under the header — a page read in a panel keeps its actions. -#}
+    {%- set pageTitleActions %}{% block page_title_actions %}{% endblock %}{% endset -%}
+    {%- if pageTitleActions|trim is not empty -%}
+        <div class="toolbar toolbar--wrap panel-toolbar">{{ pageTitleActions }}</div>
+    {%- endif -%}
     {%- if export_navigation is defined and export_navigation -%}
         {{- block('page_navigation') -}}
     {%- endif -%}
