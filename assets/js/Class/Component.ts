@@ -101,7 +101,8 @@ export default abstract class Component extends RenderNode {
     await this.deactivateListeners();
     await this.deactivateTools();
 
-    this.el.remove();
+    // Already gone when its page was unmounted first.
+    this.el?.remove();
   }
 
   mergeRenderData(renderData: ComponentInterface) {

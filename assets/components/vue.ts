@@ -36,4 +36,13 @@ export default class VueComponent extends Component {
 
     this.vue = vueApp;
   }
+
+  // Its app goes with it: unmounted, its components say goodbye — a chat
+  // stops listening —, and nothing of it draws itself again.
+  public async exit() {
+    this.vue?.unmount();
+    this.vue = undefined;
+
+    await super.exit();
+  }
 }

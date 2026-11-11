@@ -1,6 +1,7 @@
 import Component from './Component';
 import Page from './Page';
 import ComponentInterface from "../Interfaces/RenderData/ComponentInterface";
+import ErrorService from '../Services/ErrorService';
 
 export default abstract class PageManagerComponent extends Component {
   public page: Page;
@@ -79,9 +80,22 @@ export default abstract class PageManagerComponent extends Component {
     this.el.removeAttribute('aria-busy');
   }
 
+  // The page arriving takes the place of the one held before, which goes:
+  // its components exit, its vue apps are unmounted — or they would live on
+  // detached, still hearing what the server pushes and trying to draw
+  // themselves again where nothing holds them any more.
   public setPage(page: Page) {
+    const previous = this.page;
     this.page = page;
     this.pageTransitionEnter();
+
+    if (previous && previous !== page && !previous.destroyed) {
+      previous.exit().catch((error: unknown) => {
+        (this.app.getServiceOrFail(ErrorService) as ErrorService).capture(error, {
+          context: { source: 'page-manager.previous-page-exit' },
+        });
+      });
+    }
   }
 
   // The page leaving slides a few pixels the way the visitor goes and fades,
