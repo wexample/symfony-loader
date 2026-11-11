@@ -2,7 +2,9 @@
 
 namespace Wexample\SymfonyLoader\Service;
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Wexample\SymfonyHelpers\Helper\FileHelper;
 use Wexample\SymfonyLoader\Helper\AdaptiveRequestHelper;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
@@ -41,6 +43,48 @@ class AdaptiveResponseService
             . $request->getBaseUrl()
             . $request->getPathInfo()
             . ($query ? '?' . http_build_query($query) : '');
+    }
+
+    /**
+     * A page held somewhere — a panel, an embed — that redirects stays where it
+     * is held: the shell it was asked in (`__format`, `__layout`) goes along to
+     * the page it sends to. Followed by the browser without them, the next page
+     * would be rendered into the default shell, a modal's, inside the panel.
+     * A redirect leaving the site, or already naming its shell, is left alone.
+     */
+    public function keepShellOnRedirect(Request $request, Response $response): void
+    {
+        if (! $response instanceof RedirectResponse) {
+            return;
+        }
+
+        $shell = array_intersect_key($request->query->all(), [
+            self::QUERY_STRING_CONFIG_KEY_FORMAT => true,
+            self::QUERY_STRING_CONFIG_KEY_LAYOUT => true,
+        ]);
+
+        $target = $response->getTargetUrl();
+        $host = parse_url($target, PHP_URL_HOST);
+
+        if (! $shell || ($host && $host !== $request->getHost())) {
+            return;
+        }
+
+        parse_str((string) parse_url($target, PHP_URL_QUERY), $query);
+        $missing = array_diff_key($shell, $query);
+
+        if (! $missing) {
+            return;
+        }
+
+        [$base, $fragment] = array_pad(explode('#', $target, 2), 2, null);
+
+        $response->setTargetUrl(
+            $base
+            . (str_contains($base, '?') ? '&' : '?')
+            . http_build_query($missing)
+            . (null !== $fragment ? '#' . $fragment : '')
+        );
     }
 
     public function getLayoutBasePath(RenderPass $renderPass): string
