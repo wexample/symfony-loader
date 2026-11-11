@@ -45,6 +45,17 @@ export default class EmbedService extends AppService {
       });
     }
 
+    return this.loadInto(embed, path, requestOptions);
+  }
+
+  // Into this very embed, not the one its name finds: a page may draw the
+  // same embed twice — the dock's, and its copy over a modal's veil —, and a
+  // link held in one goes on in that one.
+  loadInto(
+    embed: PageManagerComponent,
+    path: string,
+    requestOptions: RequestOptionsInterface = {}
+  ): Promise<any> {
     const separator = path.includes('?') ? '&' : '?';
 
     // destPage sends the rendered page to this embed instead of the manager the
