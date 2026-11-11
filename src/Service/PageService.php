@@ -130,7 +130,14 @@ class PageService extends AbstractRenderNodeService
                 $controllerName
             );
 
-            $explodeController = array_splice($explodeController, 3);
+            // What follows the bundle's `Controller` namespace, however deep
+            // the bundle's own namespace is: `Vendor\Bundle\Controller\…`
+            // as well as `Bundle\Controller\…`.
+            $controllerIndex = array_search('Controller', $explodeController, true);
+            $explodeController = array_slice(
+                $explodeController,
+                false === $controllerIndex ? 3 : $controllerIndex + 1
+            );
 
             // Append method name.
             $explodeController[] = $methodName;
