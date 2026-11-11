@@ -292,6 +292,40 @@ export default class AssetsService extends AppService {
     });
   }
 
+  /**
+   * The stylesheets a page and everything it holds will wear — its own, its
+   * components', theirs in turn —, loaded before its markup enters the
+   * document: inserted first, the page showed for a moment bare, a column of
+   * faces drawn as plain links until its sheet arrived. The default usage
+   * only: what depends on the place the page will take (responsive) can only
+   * be told once it stands there.
+   */
+  public async preloadTreeStyles(renderData: RenderDataInterface): Promise<void> {
+    const pending: Promise<AssetInterface>[] = [];
+
+    const walk = (data: RenderDataInterface | undefined) => {
+      if (!data) {
+        return;
+      }
+
+      if (data.assets) {
+        data.assets = this.registerAssetsInCollection(data.assets);
+
+        data.assets.css.forEach((asset: AssetInterface) => {
+          if (asset.usage === AssetUsage.USAGE_DEFAULT && !asset.active) {
+            pending.push(this.appendAsset(asset));
+          }
+        });
+      }
+
+      (data.components || []).forEach((component) => walk(component as RenderDataInterface));
+    };
+
+    walk(renderData);
+
+    await Promise.all(pending);
+  }
+
   registerAssetsInCollection(
     assetsCollection: AssetsCollectionInterface
   ): AssetsCollectionInterface {

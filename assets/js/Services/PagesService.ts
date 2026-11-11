@@ -68,6 +68,12 @@ export default class PagesService extends AbstractRenderNodeService {
       // This will be handled by createRenderNode
     }
 
+    // Its sheets there before its markup: nothing of the page shows undressed.
+    // The first page came with its sheets in the document already.
+    if (renderData.page && !renderData.page.isInitialPage) {
+      await this.app.services.assets.preloadTreeStyles(renderData.page);
+    }
+
     if (parentNode && renderData.body) {
       parentNode.setLayoutBody(renderData.body);
     }
