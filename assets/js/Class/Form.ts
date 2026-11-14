@@ -61,6 +61,11 @@ export default class Form extends Component implements FieldRegistryInterface {
       this.el.addEventListener('change', this.submitOnChange);
     }
 
+    // Rows shown only for some values of another field (`data-visible-when`).
+    this.el.addEventListener('input', this.syncVisibleRows);
+    this.el.addEventListener('change', this.syncVisibleRows);
+    this.syncVisibleRows();
+
     this.onFieldRegisterProxy = (event: Event) => {
       const field = (event as CustomEvent).detail?.field as FieldControllerInterface;
 
@@ -106,6 +111,8 @@ export default class Form extends Component implements FieldRegistryInterface {
     this.el.removeEventListener('input', this.updateSubmittable);
     this.el.removeEventListener('change', this.updateSubmittable);
     this.el.removeEventListener('change', this.submitOnChange);
+    this.el.removeEventListener('input', this.syncVisibleRows);
+    this.el.removeEventListener('change', this.syncVisibleRows);
 
     if (this.onFieldRegisterProxy) {
       this.el.removeEventListener(FORM_FIELD_REGISTER, this.onFieldRegisterProxy);
@@ -117,6 +124,58 @@ export default class Form extends Component implements FieldRegistryInterface {
 
     this.fields.clear();
   }
+
+  /**
+   * The value the form holds for one of its fields, by the name the
+   * definition gives it — the last part of the name it is sent under
+   * (`slot[scope]` for `scope`): a radio's checked one, a box's when checked.
+   */
+  public readFieldValue(name: string): string {
+    const controls = [...this.el.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('[name]')]
+      .filter((control) => control.name === name || control.name.endsWith(`[${name}]`));
+    const chosen = controls.find((control) => !(control instanceof HTMLInputElement) || !['radio', 'checkbox'].includes(control.type) || control.checked);
+
+    return chosen?.value ?? '';
+  }
+
+  /**
+   * A row shown only while another field holds one of some values
+   * (`data-visible-when`, `{ field, in }`), shown and hidden as that one
+   * changes. Hidden, its controls are emptied — what they held kept aside,
+   * given back when it shows again —: the field is sent empty.
+   */
+  private syncVisibleRows = (): void => {
+    this.el.querySelectorAll<HTMLElement>('[data-visible-when]').forEach((row) => {
+      let when: { field: string; in: string[] };
+
+      try {
+        when = JSON.parse(row.dataset.visibleWhen ?? '');
+      } catch {
+        return;
+      }
+
+      const shown = when.in.includes(this.readFieldValue(when.field));
+
+      if (shown === !row.hidden) {
+        return;
+      }
+
+      row.hidden = !shown;
+      row.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('[name]').forEach((control) => {
+        if (control instanceof HTMLInputElement && ['radio', 'checkbox', 'submit', 'button'].includes(control.type)) {
+          return;
+        }
+
+        if (shown) {
+          control.value = control.dataset.keptValue ?? control.value;
+          delete control.dataset.keptValue;
+        } else {
+          control.dataset.keptValue = control.value;
+          control.value = '';
+        }
+      });
+    });
+  };
 
   public registerField(field: FieldControllerInterface): void {
     if (field.fieldName) {
