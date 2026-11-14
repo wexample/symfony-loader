@@ -106,4 +106,47 @@ class AgentContractServiceTest extends TestCase
 
         $this->assertNull($this->service->forComponent($this->twig, $plain));
     }
+
+    /**
+     * A contract written to a temporary bundle, its description changed and
+     * its time moved on after the first read.
+     */
+    private function resolveTwiceWithAChangeBetween(bool $debug): array
+    {
+        $dir = sys_get_temp_dir().'/agent-contract-test-'.uniqid();
+        mkdir($dir.'/components', 0777, true);
+        file_put_contents($dir.'/components/probe.html.twig', '<div></div>');
+        file_put_contents($dir.'/components/probe.ai.yml', "type: probe\ndescription: First.\n");
+
+        $loader = new FilesystemLoader();
+        $loader->addPath($dir, 'Probe');
+        $twig = new Environment($loader);
+        $service = new AgentContractService($debug);
+
+        $first = $service->resolve($twig, '@Probe/components/probe');
+
+        file_put_contents($dir.'/components/probe.ai.yml', "type: probe\ndescription: Second.\n");
+        touch($dir.'/components/probe.ai.yml', time() + 10);
+        clearstatcache();
+
+        $second = $service->resolve($twig, '@Probe/components/probe');
+
+        unlink($dir.'/components/probe.ai.yml');
+        unlink($dir.'/components/probe.html.twig');
+        rmdir($dir.'/components');
+        rmdir($dir);
+
+        return [$first['description'], $second['description']];
+    }
+
+    public function testWhileDevelopingAChangedContractIsReadAgain(): void
+    {
+        $this->assertSame(['First.', 'Second.'], $this->resolveTwiceWithAChangeBetween(true));
+    }
+
+    public function testOutOfDebugAContractIsReadOnce(): void
+    {
+        // The files are those deployed with the code: no stat for each page.
+        $this->assertSame(['First.', 'First.'], $this->resolveTwiceWithAChangeBetween(false));
+    }
 }

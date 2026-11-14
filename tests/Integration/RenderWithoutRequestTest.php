@@ -52,6 +52,20 @@ class RenderWithoutRequestTest extends AbstractSymfonyKernelTestCase
         $this->assertStringContainsString('TEST PAGE', (string) $response->getContent());
     }
 
+    /**
+     * The environment outlives the render: once done, the global is back to
+     * what it held before, not left on a pass the next render does not own.
+     */
+    public function testTheRenderPassGlobalIsRestoredAfterTheRender(): void
+    {
+        self::bootKernel();
+        $twig = self::getContainer()->get('twig');
+
+        $this->getRenderer()->adaptiveRender(self::VIEW);
+
+        $this->assertNull($twig->getGlobals()['render_pass']);
+    }
+
     public function testRequestWithoutAdaptiveAttributesIsDetectedLikeTheSubscriberDoes(): void
     {
         self::bootKernel();

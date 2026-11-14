@@ -3,6 +3,7 @@
 namespace Wexample\SymfonyLoader\Service;
 
 use stdClass;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Yaml\Yaml;
 use Twig\Environment;
 use Wexample\SymfonyHelpers\Attribute\WorkerSafe;
@@ -40,11 +41,28 @@ class AgentContractService
     /**
      * The files already read, by view, with the time they were read at: one
      * changed since — while developing, a worker serving on — is read again.
+     * Out of debug the files are the ones deployed with the code, and what
+     * was read stays without asking the disk again.
      *
      * @var array<string, array{mtime: int|null, declaration: array|null}>
      */
-    #[WorkerSafe('A cache of what the component files say, checked against the files each time.')]
+    #[WorkerSafe('A cache of what the component files say, checked against the files in debug.')]
     private array $declarations = [];
+
+    /**
+     * Where each view's contract would be, found once: finding it means
+     * loading the template's whole source to learn its path.
+     *
+     * @var array<string, string|null>
+     */
+    #[WorkerSafe('Template locations, fixed for the code deployed; a missing one is looked for again in debug.')]
+    private array $paths = [];
+
+    public function __construct(
+        #[Autowire('%kernel.debug%')]
+        private readonly bool $debug = true,
+    ) {
+    }
 
     /**
      * The contract the browser is handed for a component that has one, null
@@ -108,9 +126,14 @@ class AgentContractService
         Environment $twig,
         string $view,
     ): ?array {
-        $path = $this->findFile($twig, $view);
-        $mtime = null !== $path && is_file($path) ? filemtime($path) : null;
         $cached = $this->declarations[$view] ?? null;
+
+        if (null !== $cached && ! $this->debug) {
+            return $cached['declaration'];
+        }
+
+        $path = $this->findPath($twig, $view);
+        $mtime = null !== $path && is_file($path) ? filemtime($path) : null;
 
         if (null !== $cached && $cached['mtime'] === $mtime) {
             return $cached['declaration'];
@@ -120,6 +143,24 @@ class AgentContractService
         $this->declarations[$view] = ['mtime' => $mtime, 'declaration' => $declaration];
 
         return $declaration;
+    }
+
+    private function findPath(
+        Environment $twig,
+        string $view,
+    ): ?string {
+        if (array_key_exists($view, $this->paths)) {
+            return $this->paths[$view];
+        }
+
+        $path = $this->findFile($twig, $view);
+
+        // While developing, a template not there yet may be by the next page.
+        if (null !== $path || ! $this->debug) {
+            $this->paths[$view] = $path;
+        }
+
+        return $path;
     }
 
     /**

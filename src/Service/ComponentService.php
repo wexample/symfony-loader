@@ -74,29 +74,40 @@ class ComponentService extends AbstractRenderNodeService
                     $component
                 );
 
-                $domain = $component->getContextType();
-                $component->addTranslationDomain(
-                    $domain,
-                    $this->translator->setDomainFromTemplatePath(
+                // Both the context node and the translation domain are put
+                // back whatever the render does: the exception is rethrown
+                // below, and a caller catching it — an error page drawn
+                // instead — would otherwise go on in this component's
+                // context and with its words.
+                try {
+                    $domain = $component->getContextType();
+                    $translationDomain = $this->translator->setDomainFromTemplatePath(
                         $domain,
                         $component->getView()
-                    ),
-                    $component->getView()
-                );
+                    );
 
-                $component->render(
-                    $twig,
-                    [
-                        'render_pass' => $renderPass,
-                        'component' => $component,
-                    ] + $templateVars
-                );
+                    try {
+                        $component->addTranslationDomain(
+                            $domain,
+                            $translationDomain,
+                            $component->getView()
+                        );
 
-                $this->translator->revertDomain(
-                    Translator::DOMAIN_TYPE_COMPONENT
-                );
-
-                $renderPass->revertCurrentContextRenderNode();
+                        $component->render(
+                            $twig,
+                            [
+                                'render_pass' => $renderPass,
+                                'component' => $component,
+                            ] + $templateVars
+                        );
+                    } finally {
+                        $this->translator->revertDomain(
+                            Translator::DOMAIN_TYPE_COMPONENT
+                        );
+                    }
+                } finally {
+                    $renderPass->revertCurrentContextRenderNode();
+                }
             } else {
                 $component->setBody(null);
             }

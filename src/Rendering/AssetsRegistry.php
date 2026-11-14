@@ -5,13 +5,23 @@ namespace Wexample\SymfonyLoader\Rendering;
 use JsonSerializable;
 use RuntimeException;
 
+/**
+ * @deprecated Nothing in the loader reads a render pass's own registry any
+ * more: AssetsRegistryService holds the manifest, read once per process. Kept
+ * because RenderPass still carries one; its manifest is only read when asked.
+ */
 class AssetsRegistry implements JsonSerializable
 {
     public const DIR_PUBLIC = 'public/';
     public const DIR_BUILD = 'build/';
     public const FILE_MANIFEST = 'manifest.json';
 
-    private array $manifest = [];
+    /**
+     * Null until something asks for it: a render pass is given a registry
+     * every time, and reading the manifest for one nobody consults was a
+     * file read and a json decode for each page.
+     */
+    private ?array $manifest = null;
 
     protected array $registry = [];
 
@@ -21,7 +31,6 @@ class AssetsRegistry implements JsonSerializable
         string $projectDir
     ) {
         $this->pathPublic = rtrim($projectDir, '/') . '/' . self::DIR_PUBLIC;
-        $this->loadManifest();
     }
 
     protected function loadManifest(): void
@@ -29,6 +38,8 @@ class AssetsRegistry implements JsonSerializable
         $manifestPath = $this->pathPublic . self::DIR_BUILD . self::FILE_MANIFEST;
 
         if (! is_file($manifestPath)) {
+            $this->manifest = [];
+
             return;
         }
 
@@ -47,14 +58,23 @@ class AssetsRegistry implements JsonSerializable
         $this->manifest = $data;
     }
 
+    private function manifest(): array
+    {
+        if ($this->manifest === null) {
+            $this->loadManifest();
+        }
+
+        return $this->manifest ?? [];
+    }
+
     public function assetExists(string $pathInManifest): bool
     {
-        return isset($this->manifest[$pathInManifest]);
+        return isset($this->manifest()[$pathInManifest]);
     }
 
     public function getBuiltPath(string $pathInManifest): ?string
     {
-        return $this->manifest[$pathInManifest] ?? null;
+        return $this->manifest()[$pathInManifest] ?? null;
     }
 
     public function getRealPath(string $pathInManifest): ?string
@@ -111,6 +131,6 @@ class AssetsRegistry implements JsonSerializable
 
     public function getManifest(): array
     {
-        return $this->manifest;
+        return $this->manifest();
     }
 }

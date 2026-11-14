@@ -121,7 +121,14 @@ services:
         exclude:
             - '../../Twig/Node'
             - '../../Twig/TokenParser'
+            # Deprecated alias of the template's extension, registered below.
+            - '../../Twig/SystemExtension.php'
         tags: ['controller.service_arguments']
+
+    # `system_version` is symfony-template's. Registered here too, under the
+    # same id, for an app that has the loader without the template bundle; with
+    # both, the two definitions are one service and the function exists once.
+    Wexample\SymfonyTemplate\Twig\SystemExtension: ~
 
     # Symfony aliases no interface to its error renderer, so the one the error
     # controller delegates to in development is named here.

@@ -68,6 +68,12 @@ class HtmlPageTest extends WebTestCase
         $this->assertStringContainsString('<link id="css-front-css-pages-test-page" rel="stylesheet"', $html);
         $this->assertStringNotContainsString('id="css-front-css-pages-test-page-color-scheme-dark"', $html);
         $this->assertStringContainsString('id="css-color_scheme-page-placeholder"', $html);
+        // Inside the marker of its own slot, named as the front end looks it
+        // up to put the dark stylesheet there.
+        $this->assertMatchesRegularExpression(
+            '/<!--USAGE\[css-color_scheme-page\]-->\s*<link id="css-color_scheme-page-placeholder"[^>]*>\s*<!--END_USAGE\[css-color_scheme-page\]-->/',
+            $html
+        );
 
         $assets = $this->assetsByUsage($this->layoutRenderData($html)['page']['assets']['css']);
         $this->assertTrue($assets['default']['initialLayout']);

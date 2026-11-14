@@ -1,8 +1,10 @@
 {% set assets_tags = assets_build_tags(render_pass) %}
 
+    {#- Nested type, context, usage, as AssetsService::buildTags() builds it;
+        the marker reads type-usage-context, as the front end looks it up. -#}
     {% for type, types_groups in assets_tags -%}
-        {%- for usage_name, assets_groups in types_groups -%}
-            {%- for context, tags in assets_groups -%}
+        {%- for context, context_groups in types_groups -%}
+            {%- for usage_name, tags in context_groups -%}
                 {%- for tag in tags -%}
                     {%- set assets_group_name = type ~ '-' ~ usage_name ~ '-' ~ context %}
                     <!--USAGE[{{ assets_group_name }}]-->

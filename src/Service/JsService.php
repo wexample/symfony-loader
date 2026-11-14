@@ -7,6 +7,7 @@ use function is_array;
 use function is_object;
 use function is_subclass_of;
 
+use LogicException;
 use ReflectionClass;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
@@ -48,12 +49,20 @@ class JsService
         string $name,
         mixed $value,
     ): void {
-        $renderPass
-            ->getCurrentContextRenderNode()
-            ->setVar(
-                $name,
-                $this->serializeValue($value)
+        $renderNode = $renderPass->getCurrentContextRenderNode();
+
+        // The variable goes to the page, layout or component being drawn;
+        // called outside of one, there is nowhere to send it.
+        if (! $renderNode) {
+            throw new LogicException(
+                'Unable to export "'.$name.'" to javascript: no page, layout or component is being rendered.'
             );
+        }
+
+        $renderNode->setVar(
+            $name,
+            $this->serializeValue($value)
+        );
     }
 
     /**

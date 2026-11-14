@@ -416,7 +416,9 @@ export default class AssetsService extends AppService {
   }
 
   addAssetEl(asset: AssetInterface, assetReplacement?: AssetInterface) {
-    const elReplacement = assetReplacement ? assetReplacement.el : document.getElementById(`${asset.type}-${asset.usage}-placeholder`)
+    // Both named type-usage-context, as AssetsService::buildTags() and the
+    // assets macro write them in the head.
+    const elReplacement = assetReplacement ? assetReplacement.el : document.getElementById(`${asset.type}-${asset.usage}-${asset.context}-placeholder`)
     const usageMarkerKey = `USAGE[${asset.type}-${asset.usage}-${asset.context}]`;
     const elUsageMarker = Array.from(document.head.childNodes)
       .find(node => node.nodeType === 8 && node.nodeValue === `END_${usageMarkerKey}`);

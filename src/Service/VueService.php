@@ -34,11 +34,9 @@ class VueService implements ResetInterface
     public const string TAG_TEMPLATE = 'template';
 
     public function __construct(
-        protected readonly AdaptiveResponseService $adaptiveResponseService,
         protected readonly AssetsService $assetsService,
         protected readonly ComponentService $componentsService,
         protected readonly Translator $translator,
-        protected readonly JsService $jsService,
         protected readonly AgentContractService $agentContractService,
     ) {
     }

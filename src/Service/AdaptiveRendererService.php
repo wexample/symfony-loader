@@ -3,6 +3,7 @@
 namespace Wexample\SymfonyLoader\Service;
 
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -34,6 +35,7 @@ class AdaptiveRendererService
         private readonly RequestStack $requestStack,
         private readonly Translator $translator,
         private readonly ?UsageChoiceReaderInterface $usageChoices = null,
+        private readonly ?LoggerInterface $logger = null,
     ) {
     }
 
@@ -156,6 +158,17 @@ class AdaptiveRendererService
 
                 return $finalResponse;
             } catch (Exception $exception) {
+                // Answered here as an error page, the exception never reaches
+                // the kernel's listeners: logged here or nowhere.
+                $this->logger?->error(
+                    'Rendering "{view}" as json failed: {message}',
+                    [
+                        'view' => $view,
+                        'message' => $exception->getMessage(),
+                        'exception' => $exception,
+                    ]
+                );
+
                 $errorView = ErrorPageHelper::renderFailureView();
 
                 if ($view !== $errorView) {
@@ -173,7 +186,14 @@ class AdaptiveRendererService
                     );
                 }
 
-                return new JsonResponse($exception->getMessage());
+                // The error page itself failed: a bare failure, said to be
+                // one, and the message — a path, a query — kept to debug.
+                return new JsonResponse(
+                    $this->kernel->isDebug()
+                        ? $exception->getMessage()
+                        : Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
+                    Response::HTTP_INTERNAL_SERVER_ERROR
+                );
             }
         }
 
@@ -203,7 +223,11 @@ class AdaptiveRendererService
         }
 
         // Declared by RenderPassGlobalsExtension, so this only updates it,
-        // whatever Twig rendered before.
+        // whatever Twig rendered before. The one it replaces comes back once
+        // this render is done: the environment outlives the request, and a
+        // render nested in another (an error page drawn for a failed json
+        // render) must not leave the outer one pointing at its pass.
+        $previousRenderPass = $this->twig->getGlobals()[RenderPassGlobalsExtension::GLOBAL_RENDER_PASS] ?? null;
         $this->twig->addGlobal(RenderPassGlobalsExtension::GLOBAL_RENDER_PASS, $renderPass);
 
         // The page's own words are reachable from its first line: a page
@@ -219,6 +243,7 @@ class AdaptiveRendererService
             );
         } finally {
             $this->translator->revertDomain(Translator::DOMAIN_TYPE_PAGE);
+            $this->twig->addGlobal(RenderPassGlobalsExtension::GLOBAL_RENDER_PASS, $previousRenderPass);
         }
 
         $response ??= new Response();

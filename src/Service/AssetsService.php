@@ -144,24 +144,32 @@ class AssetsService
         $tags = [];
         $registry = $this->assetsRegistryService->getRegistry();
 
+        // Shaped $tags[type][context][usage], the placeholder of an empty slot
+        // named type-usage-context-placeholder: the assets macro and the front
+        // end's AssetsService read both under these names.
         foreach (Asset::ASSETS_EXTENSIONS as $type) {
             $tags[$type] = array_fill_keys(Asset::CONTEXTS, []);
 
+            // Grouped once by context and usage, in registry order, rather
+            // than the whole registry scanned for each slot.
+            $grouped = [];
+            /** @var Asset $asset */
+            foreach ($registry[$type] ?? [] as $asset) {
+                $grouped[$asset->getContext()][$asset->getUsage()][] = $asset;
+            }
+
             foreach (Asset::CONTEXTS as $context) {
                 foreach (array_keys($usages) as $usageName) {
-                    /** @var Asset $asset */
-                    foreach ($registry[$type] as $asset) {
-                        if ($asset->getUsage() == $usageName && $asset->getContext() == $context) {
-                            if ($this->assetNeedsInitialRender(
-                                $asset,
-                                $renderPass,
-                            )) {
-                                $tag = new AssetTag($asset);
+                    foreach ($grouped[$context][$usageName] ?? [] as $asset) {
+                        if ($this->assetNeedsInitialRender(
+                            $asset,
+                            $renderPass,
+                        )) {
+                            $tag = new AssetTag($asset);
 
-                                $asset->setServerSideRendered();
+                            $asset->setServerSideRendered();
 
-                                $tags[$type][$context][$usageName][] = $tag;
-                            }
+                            $tags[$type][$context][$usageName][] = $tag;
                         }
                     }
 
@@ -199,8 +207,9 @@ class AssetsService
         // chunks it needs are there, and lets one needing none run at once —
         // last, they ran in that mixed order, a vue registering itself before
         // the layout had created the app. Here every entry finds what it needs
-        // and runs as it arrives, in the order of the document.
-        $tags[Asset::EXTENSION_JS] = ['runtime' => ['extra' => $runtimeTags]]
+        // and runs as it arrives, in the order of the document. Context
+        // "extra", as the tags say, usage "runtime".
+        $tags[Asset::EXTENSION_JS] = ['extra' => ['runtime' => $runtimeTags]]
             + $tags[Asset::EXTENSION_JS];
 
         return $tags;

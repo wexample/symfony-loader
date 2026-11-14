@@ -4,6 +4,7 @@ namespace Wexample\SymfonyLoader\Service\Usage;
 
 use Wexample\Helpers\Helper\PathHelper;
 use Wexample\Helpers\Helper\TextHelper;
+use Wexample\SymfonyHelpers\Attribute\WorkerSafe;
 use Wexample\SymfonyLoader\Exception\AssetsNotBuiltException;
 use Wexample\SymfonyLoader\Rendering\Asset;
 use Wexample\SymfonyLoader\Rendering\RenderNode\AbstractRenderNode;
@@ -12,6 +13,13 @@ use Wexample\SymfonyLoader\Service\AssetsRegistryService;
 
 abstract class AbstractAssetUsageService
 {
+    /**
+     * The usage name as it reads in a file name, worked out once: asked for
+     * each view, extension and node of every render.
+     */
+    #[WorkerSafe('Derived from the class name of the usage, fixed for the process.')]
+    private ?string $usageKebab = null;
+
     public function __construct(
         protected readonly AssetsRegistryService $assetsRegistryService
     ) {
@@ -62,7 +70,7 @@ abstract class AbstractAssetUsageService
         );
 
         $usage = $this->getName();
-        $usageKebab = TextHelper::toKebab($usage);
+        $usageKebab = $this->usageKebab ??= TextHelper::toKebab($usage);
         $hasAsset = false;
 
         if (isset($renderPass->usagesConfig[$usage]['list'])) {

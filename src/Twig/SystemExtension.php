@@ -2,43 +2,15 @@
 
 namespace Wexample\SymfonyLoader\Twig;
 
-use Exception;
-use Symfony\Component\HttpKernel\KernelInterface;
-use Twig\TwigFunction;
-use Wexample\SymfonyHelpers\Twig\AbstractExtension;
+use Wexample\SymfonyTemplate\Twig\SystemExtension as TemplateSystemExtension;
 
-class SystemExtension extends AbstractExtension
+/**
+ * @deprecated `system_version` belongs to symfony-template, which this package
+ * depends on; use Wexample\SymfonyTemplate\Twig\SystemExtension. Kept for code
+ * naming this class, and no longer registered as a service: an app with both
+ * bundles had the function registered twice. The loader's services.yaml
+ * registers the template's extension instead.
+ */
+class SystemExtension extends TemplateSystemExtension
 {
-    public function __construct(private readonly KernelInterface $kernel)
-    {
-
-    }
-
-    public function getFunctions(): array
-    {
-        return [
-            new TwigFunction(
-                'system_version',
-                [
-                    $this,
-                    'systemVersion',
-                ]
-            ),
-        ];
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function systemVersion(
-        string $versionFile = 'version.txt'
-    ): ?string {
-        $versionFilePath = $this->kernel->getProjectDir().'/'.$versionFile;
-
-        if (is_file($versionFilePath)) {
-            return trim(file_get_contents($versionFilePath));
-        }
-
-        return null;
-    }
 }

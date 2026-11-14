@@ -20,7 +20,8 @@ class FormService extends ComponentService
         ComponentManagerLocatorService $componentManagerLocatorService,
         Translator $translator,
         AgentContractService $agentContractService,
-        private readonly AssetsRegistryService $assetsRegistryService
+        private readonly AssetsRegistryService $assetsRegistryService,
+        private readonly DefaultAssetUsageService $defaultAssetUsageService,
     ) {
         parent::__construct(
             $assetsService,
@@ -127,10 +128,12 @@ class FormService extends ComponentService
         string $path
     ): bool {
         $view = TemplateHelper::removeExtension($path);
-        $jsPath = (new DefaultAssetUsageService($this->assetsRegistryService))
+        $jsPath = $this->defaultAssetUsageService
             ->buildPublicAssetPathFromView($view, 'js');
 
-        return $renderPass->getAssetsRegistry()->assetExists($jsPath);
+        // The manifest the service read once, rather than the render pass's
+        // own copy, read again for every page.
+        return $this->assetsRegistryService->assetExists($jsPath);
     }
 
     private function renderWithFallbackFormComponent(

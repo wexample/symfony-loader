@@ -6,9 +6,20 @@ use function is_a;
 use function is_object;
 
 use Wexample\Helpers\Helper\ClassHelper;
+use Wexample\SymfonyHelpers\Attribute\WorkerSafe;
 
 abstract class RenderDataGenerator
 {
+    /**
+     * Whether each field of each class is private, keyed "class::field":
+     * every asset and node of every render is serialized, and the answer only
+     * depends on the class declaring the field.
+     *
+     * @var array<string, bool>
+     */
+    #[WorkerSafe('Read from the class declarations, fixed for the process.')]
+    private static array $privateFields = [];
+
     public function arrayToRenderData(array $array): array
     {
         $output = [];
@@ -28,8 +39,10 @@ abstract class RenderDataGenerator
         $output = [];
 
         foreach ($variables as $variable) {
-            $reflect = new \ReflectionProperty($this, $variable);
-            if ($reflect->isPrivate()) {
+            $isPrivate = self::$privateFields[static::class.'::'.$variable]
+                ??= (new \ReflectionProperty($this, $variable))->isPrivate();
+
+            if ($isPrivate) {
                 // Try to use $this->getVariable().
                 $value = ClassHelper::getFieldGetterValue($this, $variable);
             } else {

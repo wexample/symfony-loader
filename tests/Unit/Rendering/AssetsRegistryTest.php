@@ -33,7 +33,22 @@ class AssetsRegistryTest extends TestCase
         file_put_contents($tmp.'/public/build/manifest.json', '{invalid json');
 
         $this->expectException(\RuntimeException::class);
-        new AssetsRegistry($tmp);
+        (new AssetsRegistry($tmp))->getManifest();
+    }
+
+    public function testManifestIsOnlyReadWhenAsked(): void
+    {
+        $tmp = sys_get_temp_dir().'/symfony-loader-registry-'.uniqid();
+        mkdir($tmp.'/public/build', 0777, true);
+
+        file_put_contents($tmp.'/public/build/manifest.json', '{invalid json');
+
+        // A render pass is given a registry for every page: building one
+        // must not read the manifest, which only a caller asking pays for.
+        $registry = new AssetsRegistry($tmp);
+
+        $this->expectException(\RuntimeException::class);
+        $registry->assetExists('entry.js');
     }
 
     public function testLoadManifestReadFailureThrows(): void
@@ -46,7 +61,7 @@ class AssetsRegistryTest extends TestCase
             $projectDir = $protocol.'://root';
             $this->expectException(\RuntimeException::class);
             set_error_handler(static fn () => true);
-            new AssetsRegistry($projectDir);
+            (new AssetsRegistry($projectDir))->getManifest();
         } finally {
             restore_error_handler();
             stream_wrapper_unregister($protocol);

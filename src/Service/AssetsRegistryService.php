@@ -18,11 +18,6 @@ class AssetsRegistryService extends RenderDataGenerator implements ResetInterfac
 
     private string $pathPublic;
 
-    /**
-     * @var string
-     */
-    private const CACHE_KEY_ASSETS_REGISTRY = 'assets_registry';
-
     public const DIR_BUILD = 'build/';
 
     public const DIR_PUBLIC = 'public/';
