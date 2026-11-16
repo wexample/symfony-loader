@@ -2,9 +2,9 @@
 
 namespace Wexample\SymfonyLoader\Twig;
 
+use LogicException;
 use Twig\TwigFunction;
 use Wexample\SymfonyHelpers\Twig\AbstractExtension;
-use LogicException;
 use Wexample\SymfonyLoader\Rendering\RenderPass;
 use Wexample\SymfonyTranslations\Translation\Translator;
 
