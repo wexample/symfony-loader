@@ -298,8 +298,9 @@ class App extends AsyncConstructor {
   }
 
   // Persists a UI state key/value pair server-side, as a preference
-  // (symfony-preference): where it is kept — the session, or the database per
-  // user or for everybody — is the server's choice, never the client's.
+  // (symfony-preference): where it is kept — a cookie, the session, or the
+  // database per user or for everybody — is the server's choice, never the
+  // client's.
   persistUiState(key: string, value: unknown): void {
     this.persistUiStates({ [key]: value });
   }
@@ -307,9 +308,9 @@ class App extends AsyncConstructor {
   // Several keys in one request — a theme setting its axes together —, the
   // request kept alive by the browser if the page is left before it is
   // answered, so a choice made just before following a link is not lost.
-  // One after the other all the same: each request reads the session, adds
-  // its keys and writes it back whole, so two sent together lose one of the
-  // two.
+  // One after the other all the same: each request reads what is kept — a
+  // cookie, the session —, adds its keys and writes it back whole, so two
+  // sent together lose one of the two.
   persistUiStates(values: Record<string, unknown>): void {
     this.uiStateQueue = this.uiStateQueue
       .then(() => fetch('/_api/preference/set', {
