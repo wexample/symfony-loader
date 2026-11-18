@@ -16,6 +16,7 @@ import LiveUpdatesService from '../Services/LiveUpdatesService';
 import ConnectionStatusService from '../Services/ConnectionStatusService';
 import ConnectionStatusNoticeService from '../Services/ConnectionStatusNoticeService';
 import PendingWritesService from '../Services/PendingWritesService';
+import PollingService from '../Services/PollingService';
 import ErrorService from '../Services/ErrorService';
 import ComponentLazyLoaderService from '../Services/ComponentLazyLoaderService';
 import DevelopToolbarService from '../Services/DevelopToolbarService';
@@ -40,6 +41,7 @@ export default interface ServicesRegistryInterface {
   overlay?: OverlayService;
   pages?: PagesService;
   pendingWrites?: PendingWritesService;
+  polling?: PollingService;
   routing?: RoutingService;
   vue?: VueService;
 }

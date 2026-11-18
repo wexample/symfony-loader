@@ -13,6 +13,7 @@ import ErrorService from '../Services/ErrorService';
 import ComponentLazyLoaderService from '../Services/ComponentLazyLoaderService';
 import DevelopToolbarService from '../Services/DevelopToolbarService';
 import AgentToolsService from '../Services/AgentToolsService';
+import PollingService from '../Services/PollingService';
 import MissingServiceError from '../Errors/MissingServiceError';
 import RenderDataInterface from '../Interfaces/RenderData/RenderDataInterface';
 import LayoutInitial from './LayoutInitial';
@@ -159,6 +160,8 @@ class App extends AsyncConstructor {
       ComponentLazyLoaderService,
       DevelopToolbarService,
       AgentToolsService,
+      // What a page reads again on a clock, where it chose to poll.
+      PollingService,
     ];
   }
 
