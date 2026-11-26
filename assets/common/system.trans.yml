@@ -41,6 +41,10 @@ en:
       range: "Week %week% · %range%"
 
   frontend:
+    agent:
+      presence:
+        working: Agent at work
+        stop: Stop
     confirm:
       title: Confirmation
     embed:
@@ -440,6 +444,10 @@ fr:
       label: "Semaine %week%"
       range: "Semaine %week% · %range%"
   frontend:
+    agent:
+      presence:
+        working: Agent au travail
+        stop: Arrêter
     confirm:
       title: Confirmation
     embed:

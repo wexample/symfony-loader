@@ -1,10 +1,12 @@
 import AgentHeldResults from '../Class/AgentHeldResults';
 import AgentNavigation from '../Class/AgentNavigation';
 import AgentPointer from '../Class/AgentPointer';
+import AgentPresence from '../Class/AgentPresence';
 import AgentUserEvents, { EVENT_AGENT, type AgentUserEventDetail } from '../Class/AgentUserEvents';
 import AgentPage, { type AgentPageNode } from '../Class/AgentPage';
 import App from '../Class/App';
 import AppService from '../Class/AppService';
+import LocaleService from './LocaleService';
 import type { AgentNodeProviderInterface } from '../Interfaces/AgentNodeInterface';
 import AgentToolInterface, { type AgentCallContext, type AgentToolDefinition } from '../Interfaces/AgentToolInterface';
 
@@ -19,6 +21,12 @@ export const SCOPE_FRONT = 'front';
 // The tools the application runs on its server: listed by it, not by the
 // page — it completes the page's answer to list_tools on its way to the agent.
 export const SCOPE_BACK = 'back';
+
+// Said on the document when the user stops the agent (AgentToolsService.stop()).
+export const EVENT_AGENT_STOP = 'agent:stop';
+
+// What a call made after the user stopped the agent is answered.
+const STOPPED_BY_USER = 'The user stopped you: do nothing more in the page until they write again.';
 
 interface AgentToolEntry {
   owner: object;
@@ -51,6 +59,25 @@ export default class AgentToolsService extends AppService {
   public readonly pointer: AgentPointer = new AgentPointer((el) => this.app.services.overlay?.layerOf(el) ?? null);
 
   public readonly events: AgentUserEvents = new AgentUserEvents();
+
+  // That an agent is at work, over the whole window (AgentPresence): held by
+  // each call while it runs, and by a chat while it awaits the agent's
+  // answer. Its Stop is the user's: `stop()`.
+  public readonly presence: AgentPresence = new AgentPresence(
+    () => {
+      const locale = this.app.getServiceOrFail(LocaleService) as LocaleService;
+
+      return {
+        working: locale.trans('WexampleSymfonyLoaderBundle.common.system::frontend.agent.presence.working'),
+        stop: locale.trans('WexampleSymfonyLoaderBundle.common.system::frontend.agent.presence.stop'),
+      };
+    },
+    () => this.stop(),
+  );
+
+  // Stopped by the user: every call refused until they speak again
+  // (`resume()`, a chat sending their next message).
+  private stopped: boolean = false;
 
   // How many of the agent's calls are running: what the components say
   // meanwhile is the agent's doing.
@@ -350,10 +377,15 @@ export default class AgentToolsService extends AppService {
     }
     this.callsRun.add(callId);
 
+    if (this.stopped) {
+      return { error: STOPPED_BY_USER, readOnly: true };
+    }
+
     // Read before the call: one that leaves the page takes its nodes with it.
     const readOnly = this.isReadOnly(name, args);
 
     this.acting += 1;
+    this.presence.hold(`call:${callId}`);
 
     try {
       const value = await this.call(name, args, context);
@@ -365,10 +397,25 @@ export default class AgentToolsService extends AppService {
       return { error: String((error as Error)?.message ?? error), readOnly };
     } finally {
       this.acting -= 1;
+      this.presence.release(`call:${callId}`);
       if (!readOnly) {
         this.events.ignoreFor(AgentToolsService.AGENT_ACTION_SETTLE_MS);
       }
     }
+  }
+
+  // The user takes the page back: what the agent asks of it is refused until
+  // they speak again, the presence let go, and whoever drives the agent told
+  // (`agent:stop`, on the document) — a chat that can cut its answer short.
+  stop(): void {
+    this.stopped = true;
+    this.presence.clear();
+    document.dispatchEvent(new CustomEvent(EVENT_AGENT_STOP));
+  }
+
+  // The user spoke again: the agent may act on what they said.
+  resume(): void {
+    this.stopped = false;
   }
 
   // The navigation an action returned, said to be the agent's before it
