@@ -228,12 +228,11 @@ export default class AgentToolsService extends AppService {
             items: { type: 'string' },
             description: `The ids of the pieces, as ${TOOL_FIND} or ${TOOL_INSPECT} returned them.`,
           },
-          label: { type: 'string', description: LABEL_DESCRIPTION },
         },
         required: ['nodes'],
       },
       annotations: { idempotentHint: true },
-      execute: (args, context) => this.focus(args.nodes ?? [], context, args.label ?? null),
+      execute: (args, context) => this.focus(args.nodes ?? [], context),
     });
 
     // Straight to a page, its address found by whatever lists them — the
@@ -529,16 +528,20 @@ export default class AgentToolsService extends AppService {
       throw new Error(`No action "${actionName}" on "${nodeId}": ${node.actions.map((candidate) => candidate.name).join(', ')}.`);
     }
 
-    // The hand goes there first: the user sees what is about to change.
-    await this.cursor.moveTo(renderNode.getAgentFrameElement(), { label });
+    // The hand goes there first, for an action that changes the page: the
+    // user sees what is about to change. One that only reads or shows —
+    // `rows`, `point` — moves no hand: the hand means the agent acts.
+    if (!action.annotations?.readOnlyHint) {
+      await this.cursor.moveTo(renderNode.getAgentFrameElement(), { label });
+    }
 
     return await action.execute(args, context);
   }
 
   // Each container holding a node, the outermost first, makes way for it;
-  // then the hand goes to the first, and they are all framed for the agent
-  // that asked as it arrives.
-  private async focus(nodeIds: string[], context: AgentCallContext = {}, label: string | null = null): Promise<AgentPageNode[]> {
+  // then the page brings the first into view, and frames them all for the
+  // agent that asked.
+  private async focus(nodeIds: string[], context: AgentCallContext = {}): Promise<AgentPageNode[]> {
     const page = this.page();
     const nodes = nodeIds.map((nodeId) => {
       const node = page.get(nodeId);
@@ -556,10 +559,9 @@ export default class AgentToolsService extends AppService {
       }
     }
 
-    // One gesture: the hand goes there — bringing it into view —, and the
-    // frames come as it arrives, not before.
-    await this.cursor.moveTo(nodes[0]?.getAgentFrameElement(), { label });
-    this.pointer.point(nodes.map((node) => node.getAgentFrameElement()), context, { scroll: false });
+    // Shown, not touched: framed and brought into view, no hand — the hand
+    // means the agent acts.
+    this.pointer.point(nodes.map((node) => node.getAgentFrameElement()), context);
 
     return nodes.map((node) => ({ ...page.toPageNode(node), path: page.path(node) }));
   }
