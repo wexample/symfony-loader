@@ -6,9 +6,10 @@
 // the smaller the target (Fitts),
 // speeding up then braking on arrival (minimum jerk), a short trail behind it
 // while it moves. It settles on arriving, pinches when it presses, and fades
-// once the agent leaves it idle; it comes in from the agent's side — the
-// window's end, where its chat stands. Without movement (`prefers-reduced-
-// motion`) it fades from one target to the next.
+// once the agent leaves it idle; it comes out of the agent's presence — the
+// pill saying it works (AgentPresence), the agent's own place on the screen —,
+// or from the window's middle without one, the same for every layout. Without
+// movement (`prefers-reduced-motion`) it fades from one target to the next.
 //
 // Drawn by the loader, painted by the design system (shapes/agent-cursor).
 type Point = { x: number; y: number };
@@ -54,6 +55,9 @@ export default class AgentCursor {
   private moving: number = 0;
 
   private idleTimer: number | null = null;
+
+  // Where it comes out from: a point of the window, or none for its middle.
+  constructor(private readonly origin: () => Point | null = () => null) {}
 
   private get reducedMotion(): boolean {
     return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
@@ -128,7 +132,7 @@ export default class AgentCursor {
     this.el?.classList.remove('agent-cursor--shown');
     this.label?.classList.remove('agent-cursor-label--shown');
     this.trail.forEach((dot) => (dot.style.opacity = '0'));
-    // Gone: it comes in again from the agent's side.
+    // Gone: it comes out again from where the agent stands.
     this.position = null;
   }
 
@@ -255,10 +259,9 @@ export default class AgentCursor {
     el.classList.add('agent-cursor--settle');
   }
 
-  // Where it comes in from: the agent's side, the window's end — where its
-  // chat stands —, at mid-height.
+  // Where it comes out from: the agent's presence, or the window's middle.
   private entry(): Point {
-    const entry = { x: window.innerWidth - 32, y: window.innerHeight * 0.55 };
+    const entry = this.origin() ?? { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     this.place(entry);
     // Drawn there first, then shown: the fade happens in place.
     void this.el!.offsetWidth;

@@ -82,7 +82,8 @@ export default class AgentToolsService extends AppService {
 
   // The agent's hand (AgentCursor): it goes to what the agent is about to act
   // on or point at, before it does — the user sees where it is.
-  public readonly cursor: AgentCursor = new AgentCursor();
+  // Its hand comes out of its presence.
+  public readonly cursor: AgentCursor = new AgentCursor(() => this.presence.origin);
 
   // Stopped by the user: every call refused until they speak again
   // (`resume()`, a chat sending their next message).

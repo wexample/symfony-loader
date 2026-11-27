@@ -28,6 +28,15 @@ export default class AgentPresence {
     return this.holds.size > 0;
   }
 
+  // The middle of its pill while it is shown: where the agent's hand comes
+  // out from (AgentCursor).
+  public get origin(): { x: number; y: number } | null {
+    const pill = this.shown ? this.el?.querySelector('.agent-presence--pill') : null;
+    const box = pill?.getBoundingClientRect();
+
+    return box && box.width ? { x: box.left + box.width / 2, y: box.top + box.height / 2 } : null;
+  }
+
   hold(key: string): void {
     this.holds.add(key);
     this.cancelRelease();
