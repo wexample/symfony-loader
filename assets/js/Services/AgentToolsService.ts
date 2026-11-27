@@ -1,6 +1,7 @@
 import AgentHeldResults from '../Class/AgentHeldResults';
 import AgentNavigation from '../Class/AgentNavigation';
 import AgentPointer from '../Class/AgentPointer';
+import AgentCursor from '../Class/AgentCursor';
 import AgentPresence from '../Class/AgentPresence';
 import AgentUserEvents, { EVENT_AGENT, type AgentUserEventDetail } from '../Class/AgentUserEvents';
 import AgentPage, { type AgentPageNode } from '../Class/AgentPage';
@@ -74,6 +75,10 @@ export default class AgentToolsService extends AppService {
     },
     () => this.stop(),
   );
+
+  // The agent's hand (AgentCursor): it goes to what the agent is about to act
+  // on or point at, before it does — the user sees where it is.
+  public readonly cursor: AgentCursor = new AgentCursor();
 
   // Stopped by the user: every call refused until they speak again
   // (`resume()`, a chat sending their next message).
@@ -410,6 +415,7 @@ export default class AgentToolsService extends AppService {
   stop(): void {
     this.stopped = true;
     this.presence.clear();
+    this.cursor.hide();
     document.dispatchEvent(new CustomEvent(EVENT_AGENT_STOP));
   }
 
@@ -507,6 +513,9 @@ export default class AgentToolsService extends AppService {
       throw new Error(`No action "${actionName}" on "${nodeId}": ${node.actions.map((candidate) => candidate.name).join(', ')}.`);
     }
 
+    // The hand goes there first: the user sees what is about to change.
+    await this.cursor.moveTo(renderNode.getAgentFrameElement());
+
     return await action.execute(args, context);
   }
 
@@ -532,6 +541,7 @@ export default class AgentToolsService extends AppService {
     }
 
     this.pointer.point(nodes.map((node) => node.getAgentFrameElement()), context);
+    await this.cursor.moveTo(nodes[0]?.getAgentFrameElement());
 
     return nodes.map((node) => ({ ...page.toPageNode(node), path: page.path(node) }));
   }
