@@ -33,6 +33,9 @@ export default class AgentCursor {
 
   public static readonly TRAIL_GAP: number = 3;
 
+  // The room a label wants after the dot before it goes to its other side.
+  public static readonly LABEL_ROOM: number = 260;
+
   // How long it waits idle before fading.
   public static readonly IDLE_MS: number = 2200;
 
@@ -42,6 +45,9 @@ export default class AgentCursor {
   private el: HTMLElement | null = null;
 
   private trail: HTMLElement[] = [];
+
+  // What the agent says it is doing, beside the dot, following it.
+  private label: HTMLElement | null = null;
 
   private position: Point | null = null;
 
@@ -55,9 +61,15 @@ export default class AgentCursor {
 
   // To the element — brought into view first —, at its middle, or a point
   // of the window. Resolves on arrival.
-  async moveTo(target: HTMLElement | Point | null | undefined): Promise<void> {
+  // `label`: what the agent is doing, in a few words, shown beside the dot
+  // as it goes (`say()`).
+  async moveTo(target: HTMLElement | Point | null | undefined, options: { label?: string | null } = {}): Promise<void> {
     if (!target) {
       return;
+    }
+
+    if (options.label !== undefined) {
+      this.say(options.label);
     }
 
     const point = target instanceof HTMLElement ? await this.pointOf(target) : target;
@@ -93,6 +105,19 @@ export default class AgentCursor {
     this.scheduleIdle();
   }
 
+  // What the agent is doing, in a few words, beside the dot — « Archiving
+  // the report » —; none takes it away. It goes with the dot.
+  say(text: string | null): void {
+    this.ensure();
+    const label = this.label!;
+    const shown = Boolean(text && text.trim());
+
+    if (shown) {
+      label.textContent = text!.trim();
+    }
+    label.classList.toggle('agent-cursor-label--shown', shown);
+  }
+
   // Where it stands, for a wave started from it.
   get at(): Point | null {
     return this.position;
@@ -101,6 +126,7 @@ export default class AgentCursor {
   hide(): void {
     this.cancelIdle();
     this.el?.classList.remove('agent-cursor--shown');
+    this.label?.classList.remove('agent-cursor-label--shown');
     this.trail.forEach((dot) => (dot.style.opacity = '0'));
     // Gone: it comes in again from the agent's side.
     this.position = null;
@@ -213,6 +239,12 @@ export default class AgentCursor {
   // would scale the position too and throw the dot across the window.
   private place(point: Point): void {
     this.el!.style.translate = `${point.x}px ${point.y}px`;
+
+    if (this.label) {
+      this.label.style.translate = `${point.x}px ${point.y}px`;
+      // Near the window's end it reads on the dot's other side.
+      this.label.classList.toggle('agent-cursor-label--before', point.x > window.innerWidth - AgentCursor.LABEL_ROOM);
+    }
   }
 
   // On arriving: a small settle, the hand finding its spot.
@@ -275,6 +307,14 @@ export default class AgentCursor {
     el.setAttribute('aria-hidden', 'true');
     document.body.appendChild(el);
     this.el = el;
+
+    // Said aloud too, politely: what the agent does is news to whoever does
+    // not see the dot.
+    const label = document.createElement('div');
+    label.className = 'agent-cursor-label';
+    label.setAttribute('aria-live', 'polite');
+    document.body.appendChild(label);
+    this.label = label;
   }
 
   private scheduleIdle(): void {

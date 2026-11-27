@@ -26,6 +26,9 @@ export const SCOPE_BACK = 'back';
 // Said on the document when the user stops the agent (AgentToolsService.stop()).
 export const EVENT_AGENT_STOP = 'agent:stop';
 
+// What an agent says it is doing, shown beside its pointer.
+const LABEL_DESCRIPTION = 'What you are doing, in a few words in the page\'s language — "Archiving the report": shown beside your pointer while you do it.';
+
 // What a call made after the user stopped the agent is answered.
 const STOPPED_BY_USER = 'The user stopped you: do nothing more in the page until they write again.';
 
@@ -180,12 +183,13 @@ export default class AgentToolsService extends AppService {
           node: { type: 'string' },
           action: { type: 'string' },
           arguments: { type: 'object' },
+          label: { type: 'string', description: LABEL_DESCRIPTION },
         },
         required: ['node', 'action'],
       },
       // Arguments given flat beside the node and the action are taken as
       // the action's, as they were meant.
-      execute: ({ node, action, arguments: given, ...flat }, context) => this.act(node, action, given ?? flat, context),
+      execute: ({ node, action, arguments: given, label, ...flat }, context) => this.act(node, action, given ?? flat, context, label),
     });
 
     this.register(this, {
@@ -220,11 +224,12 @@ export default class AgentToolsService extends AppService {
             items: { type: 'string' },
             description: `The ids of the pieces, as ${TOOL_FIND} or ${TOOL_INSPECT} returned them.`,
           },
+          label: { type: 'string', description: LABEL_DESCRIPTION },
         },
         required: ['nodes'],
       },
       annotations: { idempotentHint: true },
-      execute: (args, context) => this.focus(args.nodes ?? [], context),
+      execute: (args, context) => this.focus(args.nodes ?? [], context, args.label ?? null),
     });
 
     // Straight to a page, its address found by whatever lists them — the
@@ -498,7 +503,7 @@ export default class AgentToolsService extends AppService {
     };
   }
 
-  private async act(nodeId: string, actionName: string, args: Record<string, any>, context: AgentCallContext = {}): Promise<any> {
+  private async act(nodeId: string, actionName: string, args: Record<string, any>, context: AgentCallContext = {}, label: string | null = null): Promise<any> {
     const page = this.page();
     const renderNode = page.get(nodeId);
     const node = renderNode ? page.describe(renderNode) : null;
@@ -514,7 +519,7 @@ export default class AgentToolsService extends AppService {
     }
 
     // The hand goes there first: the user sees what is about to change.
-    await this.cursor.moveTo(renderNode.getAgentFrameElement());
+    await this.cursor.moveTo(renderNode.getAgentFrameElement(), { label });
 
     return await action.execute(args, context);
   }
@@ -522,7 +527,7 @@ export default class AgentToolsService extends AppService {
   // Each container holding a node, the outermost first, makes way for it;
   // then the page brings the first into view, and frames them all for the
   // agent that asked.
-  private async focus(nodeIds: string[], context: AgentCallContext = {}): Promise<AgentPageNode[]> {
+  private async focus(nodeIds: string[], context: AgentCallContext = {}, label: string | null = null): Promise<AgentPageNode[]> {
     const page = this.page();
     const nodes = nodeIds.map((nodeId) => {
       const node = page.get(nodeId);
@@ -541,7 +546,7 @@ export default class AgentToolsService extends AppService {
     }
 
     this.pointer.point(nodes.map((node) => node.getAgentFrameElement()), context);
-    await this.cursor.moveTo(nodes[0]?.getAgentFrameElement());
+    await this.cursor.moveTo(nodes[0]?.getAgentFrameElement(), { label });
 
     return nodes.map((node) => ({ ...page.toPageNode(node), path: page.path(node) }));
   }
