@@ -1,6 +1,6 @@
 # symfony_loader
 
-Version: 28.0.9
+Version: 28.0.10
 
 A dynamic rendering system for Symfony
 

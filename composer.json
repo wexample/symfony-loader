@@ -3,7 +3,7 @@
   "description": "A dynamic rendering system for Symfony",
   "type": "library",
   "license": "MIT",
-  "version": "28.0.9",
+  "version": "28.0.10",
   "keywords": [
     "symfony-ux"
   ],
