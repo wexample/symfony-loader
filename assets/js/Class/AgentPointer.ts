@@ -22,9 +22,9 @@ export default class AgentPointer {
     this.frames = new AgentFrameLayer(hostOf);
   }
 
-  // The first element brought into view, all framed. None takes the
-  // caller's frames back.
-  point(elements: (HTMLElement | null)[], context: AgentCallContext = {}): void {
+  // The first element brought into view — unless the caller already did
+  // (`scroll: false`) —, all framed. None takes the caller's frames back.
+  point(elements: (HTMLElement | null)[], context: AgentCallContext = {}, options: { scroll?: boolean } = {}): void {
     const caller = context.caller ?? CALLER_DEFAULT;
     const pointed = elements.filter((el): el is HTMLElement => Boolean(el));
     const before = this.pointed.get(caller) ?? [];
@@ -49,7 +49,9 @@ export default class AgentPointer {
       }
     }
 
-    pointed[0]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (options.scroll !== false) {
+      pointed[0]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
     this.syncListening();
   }
 

@@ -536,8 +536,8 @@ export default class AgentToolsService extends AppService {
   }
 
   // Each container holding a node, the outermost first, makes way for it;
-  // then the page brings the first into view, and frames them all for the
-  // agent that asked.
+  // then the hand goes to the first, and they are all framed for the agent
+  // that asked as it arrives.
   private async focus(nodeIds: string[], context: AgentCallContext = {}, label: string | null = null): Promise<AgentPageNode[]> {
     const page = this.page();
     const nodes = nodeIds.map((nodeId) => {
@@ -556,8 +556,10 @@ export default class AgentToolsService extends AppService {
       }
     }
 
-    this.pointer.point(nodes.map((node) => node.getAgentFrameElement()), context);
+    // One gesture: the hand goes there — bringing it into view —, and the
+    // frames come as it arrives, not before.
     await this.cursor.moveTo(nodes[0]?.getAgentFrameElement(), { label });
+    this.pointer.point(nodes.map((node) => node.getAgentFrameElement()), context, { scroll: false });
 
     return nodes.map((node) => ({ ...page.toPageNode(node), path: page.path(node) }));
   }
