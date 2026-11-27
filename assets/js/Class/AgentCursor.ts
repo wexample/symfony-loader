@@ -208,8 +208,11 @@ export default class AgentCursor {
     });
   }
 
+  // Its position is `translate`, never `transform`: the browser applies the
+  // `scale` of its moods — the settle, the pinch — before `transform`, which
+  // would scale the position too and throw the dot across the window.
   private place(point: Point): void {
-    this.el!.style.transform = `translate(${point.x}px, ${point.y}px)`;
+    this.el!.style.translate = `${point.x}px ${point.y}px`;
   }
 
   // On arriving: a small settle, the hand finding its spot.
