@@ -5,8 +5,9 @@
 // aside and coming in straight on its target; longer the farther it goes and
 // the smaller the target (Fitts),
 // speeding up then braking on arrival (minimum jerk), a short trail behind it
-// while it moves. It settles on arriving, pinches when it presses, and fades
-// once the agent leaves it idle; it comes out of the agent's presence — the
+// while it moves. It settles on arriving, pinches when it presses, and stays
+// where it stopped while the agent is at work — the next move leaves from
+// there —, fading once the agent is done and has left it idle; it comes out of the agent's presence — the
 // pill saying it works (AgentPresence), the agent's own place on the screen —,
 // or from the window's middle without one, the same for every layout. Without
 // movement (`prefers-reduced-motion`) it fades from one target to the next.
@@ -56,8 +57,13 @@ export default class AgentCursor {
 
   private idleTimer: number | null = null;
 
-  // Where it comes out from: a point of the window, or none for its middle.
-  constructor(private readonly origin: () => Point | null = () => null) {}
+  // Where it comes out from: a point of the window, or none for its middle;
+  // and whether the agent is still at work, keeping it where it stands
+  // between two of its acts.
+  constructor(
+    private readonly origin: () => Point | null = () => null,
+    private readonly working: () => boolean = () => false,
+  ) {}
 
   private get reducedMotion(): boolean {
     return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
@@ -320,9 +326,17 @@ export default class AgentCursor {
     this.label = label;
   }
 
+  // Idle a while, it fades — unless the agent is still at work: the time it
+  // thinks between two acts, the hand waits where it is.
   private scheduleIdle(): void {
     this.cancelIdle();
-    this.idleTimer = window.setTimeout(() => this.hide(), AgentCursor.IDLE_MS);
+    this.idleTimer = window.setTimeout(() => {
+      if (this.working()) {
+        this.scheduleIdle();
+      } else {
+        this.hide();
+      }
+    }, AgentCursor.IDLE_MS);
   }
 
   private cancelIdle(): void {
