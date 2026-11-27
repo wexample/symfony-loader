@@ -1,8 +1,9 @@
 // The agent's pointer: a dot of the agent's colour going to what it is about
 // to act on, so the user sees where the agent's hand is before it acts.
 //
-// It moves as a hand does — never in a straight line: along a curve bent to
-// one side, longer the farther it goes and the smaller the target (Fitts),
+// It moves as a hand does: along an arc, always bent to the same side, leaving
+// aside and coming in straight on its target; longer the farther it goes and
+// the smaller the target (Fitts),
 // speeding up then braking on arrival (minimum jerk), a short trail behind it
 // while it moves. It settles on arriving, pinches when it presses, and fades
 // once the agent leaves it idle; it comes in from the agent's side — the
@@ -21,8 +22,11 @@ export default class AgentCursor {
 
   public static readonly MAX_MS: number = 950;
 
-  // How far the curve bends aside, a share of the distance.
-  public static readonly CURVE: number = 0.22;
+  // How far the curve bends aside, a share of the distance; a move shorter
+  // than STRAIGHT_BELOW pixels goes straight.
+  public static readonly CURVE: number = 0.14;
+
+  public static readonly STRAIGHT_BELOW: number = 80;
 
   // Dots of the trail, and how many frames behind each the one before.
   public static readonly TRAIL: number = 4;
@@ -117,13 +121,22 @@ export default class AgentCursor {
       AgentCursor.BASE_MS + AgentCursor.BIT_MS * Math.log2(distance / Math.max(size, 8) + 1)
     );
 
-    // The bend: aside of the straight line, to one side or the other, a
-    // little more or less each time — never the same gesture twice.
-    const side = Math.random() < 0.5 ? -1 : 1;
-    const bend = distance * AgentCursor.CURVE * (0.7 + Math.random() * 0.6) * side;
-    const control = {
-      x: from.x + dx / 2 - (dy / distance) * bend,
-      y: from.y + dy / 2 + (dx / distance) * bend,
+    // The bend: a hand's arc, always to the same side of the way — two moves
+    // in a row bent opposite ways read as a zigzag — and more at the start
+    // than at the end: the hand leaves in an arc and comes in straight on its
+    // target, as one aims (a cubic curve, its first handle aside, its second
+    // on the line). Short moves are straight.
+    const bend = distance < AgentCursor.STRAIGHT_BELOW
+      ? 0
+      : distance * AgentCursor.CURVE * (0.85 + Math.random() * 0.3);
+    const normal = { x: -dy / distance, y: dx / distance };
+    const first = {
+      x: from.x + dx * 0.3 + normal.x * bend,
+      y: from.y + dy * 0.3 + normal.y * bend,
+    };
+    const second = {
+      x: from.x + dx * 0.75,
+      y: from.y + dy * 0.75,
     };
 
     const run = ++this.moving;
@@ -145,8 +158,8 @@ export default class AgentCursor {
         const s = t * t * t * (10 - 15 * t + 6 * t * t);
         const u = 1 - s;
         const point = {
-          x: u * u * from.x + 2 * u * s * control.x + s * s * to.x,
-          y: u * u * from.y + 2 * u * s * control.y + s * s * to.y,
+          x: u * u * u * from.x + 3 * u * u * s * first.x + 3 * u * s * s * second.x + s * s * s * to.x,
+          y: u * u * u * from.y + 3 * u * u * s * first.y + 3 * u * s * s * second.y + s * s * s * to.y,
         };
 
         this.place(point);
