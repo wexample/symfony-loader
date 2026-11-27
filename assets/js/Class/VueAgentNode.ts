@@ -28,8 +28,12 @@ export default class VueAgentNode implements AgentNodeProviderInterface {
     return 'vue';
   }
 
+  // Where it is drawn may say what this one is for better than its kind
+  // (`agentDescription`, a component's `agent_description`).
   getAgentContract(): AgentContractInterface | null {
-    return this.contract;
+    const description = this.instance.agentDescription;
+
+    return description ? { ...this.contract, description } : this.contract;
   }
 
   getAgentExposure(): boolean | string[] | undefined {

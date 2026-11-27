@@ -35,6 +35,13 @@ export default class VueService extends AppService {
       agent: {
         default: undefined,
       },
+      // What this vue is for where it is drawn, in english, said to an agent
+      // in place of its contract's description — a component's
+      // `agent_description`: a board is the scenario's editor here, a
+      // pipeline's there.
+      agentDescription: {
+        default: undefined,
+      },
     },
 
     methods: {
