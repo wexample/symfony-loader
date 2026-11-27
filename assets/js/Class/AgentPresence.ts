@@ -77,13 +77,14 @@ export default class AgentPresence {
     const labels = this.labels();
     const el = document.createElement('div');
     el.className = 'agent-presence';
+    // The design system's pieces: a floating capsule holding the agent's led,
+    // beating, and a flat compact button.
     el.innerHTML = '<div class="agent-presence--edge" aria-hidden="true"></div>'
-      + '<div class="agent-presence--pill" role="status">'
-      + '<span class="agent-presence--dot" aria-hidden="true"></span>'
-      + '<span class="agent-presence--label"></span>'
-      + '<button type="button" class="agent-presence--stop"></button>'
+      + '<div class="capsule capsule--floating agent-presence--pill" role="status">'
+      + '<span class="led led--accent led--pulse"><span class="led--dot" aria-hidden="true"></span><span class="led--label"></span></span>'
+      + '<button type="button" class="button button--flat button--compact agent-presence--stop"></button>'
       + '</div>';
-    el.querySelector('.agent-presence--label')!.textContent = labels.working;
+    el.querySelector('.led--label')!.textContent = labels.working;
 
     const stop = el.querySelector<HTMLButtonElement>('.agent-presence--stop')!;
     stop.textContent = labels.stop;
