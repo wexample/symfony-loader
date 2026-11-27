@@ -1,4 +1,5 @@
 import AgentHeldResults from '../Class/AgentHeldResults';
+import AgentCallClaims from '../Class/AgentCallClaims';
 import AgentNavigation from '../Class/AgentNavigation';
 import AgentPointer from '../Class/AgentPointer';
 import AgentCursor from '../Class/AgentCursor';
@@ -100,6 +101,9 @@ export default class AgentToolsService extends AppService {
   private listeners: Set<() => void> = new Set();
 
   private callsRun: Set<string> = new Set();
+
+  // Which page runs a call heard by several.
+  private claims: AgentCallClaims = new AgentCallClaims();
 
   private nodes: Set<AgentNodeProviderInterface> = new Set();
 
@@ -374,8 +378,10 @@ export default class AgentToolsService extends AppService {
   }
 
   // A call an agent made, run once whatever reaches the page twice — the same
-  // message published again, two components listening —: what it returned
-  // (`value`), or the error it ended on; null when this call already ran.
+  // message published again, two components listening — and by one page of
+  // those the conversation is open in (AgentCallClaims): what it returned
+  // (`value`), or the error it ended on; null when this call already ran,
+  // here or in another page.
   //
   // A call leaving the page says where it goes (`navigation`): its value is
   // what to tell the agent, and the caller holds it before going. A call
@@ -386,6 +392,11 @@ export default class AgentToolsService extends AppService {
       return null;
     }
     this.callsRun.add(callId);
+
+    // The conversation open in another tab too: one of them runs it.
+    if (!(await this.claims.claim(callId))) {
+      return null;
+    }
 
     if (this.stopped) {
       return { error: STOPPED_BY_USER, readOnly: true };
@@ -494,7 +505,7 @@ export default class AgentToolsService extends AppService {
     const from = nodeId ? page.get(nodeId) : null;
 
     if (nodeId && !from) {
-      throw new Error(`No piece "${nodeId}" in the page.`);
+      throw new Error(`No piece "${nodeId}" in the page: it is gone, or the page was drawn again since it was read — read it again.`);
     }
 
     return {
@@ -509,7 +520,7 @@ export default class AgentToolsService extends AppService {
     const node = renderNode ? page.describe(renderNode) : null;
 
     if (!node) {
-      throw new Error(`No piece "${nodeId}" in the page.`);
+      throw new Error(`No piece "${nodeId}" in the page: it is gone, or the page was drawn again since it was read — read it again.`);
     }
 
     const action = node.actions.find((candidate) => candidate.name === actionName);
@@ -533,7 +544,7 @@ export default class AgentToolsService extends AppService {
       const node = page.get(nodeId);
 
       if (!node || !page.describe(node)) {
-        throw new Error(`No piece "${nodeId}" in the page.`);
+        throw new Error(`No piece "${nodeId}" in the page: it is gone, or the page was drawn again since it was read — read it again.`);
       }
 
       return node;
